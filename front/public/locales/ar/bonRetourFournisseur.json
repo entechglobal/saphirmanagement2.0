@@ -1,0 +1,29 @@
+{
+  "title": "مرتجعات المورد",
+  "document_date": "تاريخ الوثيقة",
+  "fournisseur": "المورد",
+  "depot": "المستودع",
+  "return_reason": "سبب الإرجاع",
+  "status": "الحالة",
+  "amounts": "المبالغ",
+  "print": "طباعة",
+  "draft": "مسودة",
+  "completed": "مكتمل",
+  "status_badge": {
+    "draft": "مسودة",
+    "completed": "مكتمل"
+  },
+  "toast": {
+    "delete_success": "تم حذف مرتجع المورد",
+    "validate_success_completed": "تم التحقق من مرتجع المورد",
+    "validate_success_draft": "تمت إعادة مرتجع المورد إلى المسودة",
+    "depot_required": "يرجى اختيار المستودع",
+    "supplier_required": "يرجى اختيار المورد",
+    "select_at_least_one_article": "يرجى اختيار منتج واحد على الأقل"
+  },
+  "create_title": "مرتجع مورد جديد",
+  "edit_title": "تعديل مرتجع المورد",
+  "linked_br_optional": "إيصال استلام (اختياري)",
+  "select_depot": "اختر المستودع",
+  "select_supplier": "اختر المورد"
+}

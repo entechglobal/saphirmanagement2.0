@@ -1,0 +1,25 @@
+{
+  "title": "Se connecter",
+  "subtitle": "Connectez-vous à votre compte pour commencer à utiliser SaphirCaisse",
+
+  "email_label": "Email",
+  "email_placeholder": "admin@example.com",
+
+  "password_label": "Mot de passe",
+  "password_placeholder": "••••••••",
+
+  "forgot_password": "Mot de passe oublié ?",
+
+  "submit": "Se connecter",
+  "submitting": "Connexion en cours...",
+
+  "errors": {
+    "email_required": "L’email est obligatoire",
+    "email_invalid": "Adresse email invalide",
+    "password_required": "Le mot de passe est obligatoire",
+    "password_min": "Le mot de passe doit contenir au moins 6 caractères",
+    "invalid_credentials": "Identifiants incorrects"
+  },
+
+  "allRightsReserved": "Tous droits réservés"
+}

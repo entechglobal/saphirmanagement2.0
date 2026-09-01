@@ -1,0 +1,193 @@
+{
+  "title": "Articles Management",
+  "id": "ID",
+  "barcode": "Barcode",
+  "name": "Name",
+  "image": "Image",
+  "family": "Family",
+  "unit": "Unit",
+  "purchase_price": "Purchase Price",
+  "sale_price": "Sale Price",
+  "manage_stock": "Manage In Stock",
+  "status": "Status",
+  "expiration_date": "Expiration Date",
+  "expiration_duration": "Expiration Duration",
+  "discount": "Discount",
+  "yes": "Yes",
+  "no": "No",
+  "visible": "Visible",
+  "hidden": "Hidden",
+  "days": "days",
+  "back": "Back",
+  "upload_image": "Upload Image",
+  "import": "Import",
+  "export": "Export",
+  "create_new": "Create New",
+  "export_csv": "Export CSV",
+  "export_xlsx": "Export XLSX",
+  "print_barcode": "Barcodes",
+  "breadcrumb": {
+    "articles": "Articles",
+    "view": "Article View"
+  },
+  "header": {
+    "title": "Article Details",
+    "reference": "Reference ID",
+    "add_variant": "Add Variant",
+    "back_list": "Back"
+  },
+  "sections": {
+    "identification": "Product Identification",
+    "variants": "Product Variants",
+    "financials": "Financial Metrics",
+    "logistics": "Inventory & Logistics",
+    "image": "Product Image",
+    "status": "Operational Status",
+    "metadata": "System Metadata"
+  },
+  "fields": {
+    "full_name": "Full Name",
+    "barcode": "Barcode / EAN",
+    "family": "Product Family",
+    "primary_unit": "Primary Unit",
+    "secondary_unit": "Secondary Unit",
+    "comp_unit": "Complementary Unit",
+    "conversion": "Conversion Ratio",
+    "purchase_cost": "Purchase Cost",
+    "rate_v1": "Standard Rate (V1)",
+    "rate_v2": "Wholesale Rate (V2)",
+    "rate_v3": "Partner Rate (V3)",
+    "discount": "Standard Discount",
+    "availability": "Current Availability",
+    "safety_stock": "Safety Stock Alert",
+    "expiry_date": "Expiration Date",
+    "grace_period": "Expiry Grace Period",
+    "visibility": "Visibility",
+    "tracking": "Inventory Tracking",
+    "created": "Created On",
+    "updated": "Last Updated"
+  },
+  "values": {
+    "no_barcode": "No Barcode Assigned",
+    "not_assigned": "Not Assigned",
+    "no_expiry": "No Expiry",
+    "no_image": "No Image",
+    "days": "Days",
+    "market_visible": "Market Visible",
+    "internal_only": "Internal Only",
+    "stock_controlled": "Stock Controlled",
+    "non_stock": "Service/Non-Stock",
+    "failed_load": "Failed to load article"
+  },
+  "form": {
+    "required": "Required",
+    "identification": "Product Identification",
+    "pricing": "Pricing and Discount",
+    "stock_control": "Stock Control",
+    "image_card": "Product Image",
+    "status_card": "Visibility and Logs",
+    "fields": {
+      "name": "Name",
+      "barcode": "Barcode",
+      "family": "Family",
+      "unit_main": "Primary Unit",
+      "unit_secondary": "Secondary Unit",
+      "unit_complementary": "Complementary Unit",
+      "conversion_secondary": "Secondary Conversion",
+      "conversion_complementary": "Complementary Conversion",
+      "purchase_price": "Purchase Price",
+      "sale_price_1": "Sale Price 1",
+      "sale_price_2": "Sale Price 2",
+      "sale_price_3": "Sale Price 3",
+      "discount_percent": "Discount %",
+      "expiration_date": "Expiration Date",
+      "expiration_alert": "Expiration Alert (days)",
+      "manage_stock": "Manage Stock",
+      "manage_stock_desc": "Records every stock movement",
+      "visible": "Visible",
+      "visible_desc": "Show article in POS and store"
+    },
+    "placeholders": {
+      "product_name": "Product Name",
+      "conversion_secondary": "ex: 1 Box = 12 Units",
+      "conversion_complementary": "ex: 1 Pallet = 100 Boxes",
+      "days": "Number of days",
+      "select": "Select"
+    },
+    "buttons": {
+      "generate": "Generate",
+      "add_secondary": "+ Add secondary unit",
+      "add_complementary": "+ Add complementary unit",
+      "back": "Back to Articles",
+      "save_new": "Create Product",
+      "save_edit": "Update Product",
+      "saving": "Saving...",
+      "updating": "Updating..."
+    }
+  },
+  "create_mode": {
+    "new_product": "New Product",
+    "create_title": "Create an Article",
+    "description": "Select the data structure that best fits your new product to optimize stock management.",
+    "back_to_list": "Back to Articles",
+    "simple_title": "Simple Article",
+    "simple_desc": "Ideal for unique products without variations (e.g., a specific tool, a service, or a one-size-fits-all item).",
+    "simple_badge": "Standard",
+    "variants_title": "Article with Variants",
+    "variants_desc": "For products available in multiple sizes, colors, or materials. Manages a separate inventory for each variant.",
+    "variants_badge": "Configurable",
+    "start_creation": "Start creation"
+  },
+  "delete_modal": {
+    "title": "Delete Article?",
+    "message": "Are you sure? This cannot be undone.",
+    "confirm": "Delete",
+    "cancel": "Cancel"
+  },
+  "toast": {
+    "delete_success": "Article deleted successfully",
+    "delete_error": "Failed to delete Article",
+    "import_success": "Import successful",
+    "import_error": "Import failed",
+    "export_error_csv": "CSV export failed",
+    "export_error_xlsx": "XLSX export failed",
+    "barcode_copied": "Barcode copied!",
+    "required_fields": "Please fill in required fields",
+    "no_changes": "No changes detected",
+    "update_success": "Product updated successfully!",
+    "create_success": "Product created successfully!",
+    "update_error": "Update failed.",
+    "create_error": "Creation failed."
+  },
+
+  "variants": {
+    "steps": {
+      "step_1": "Step 1",
+      "step_2": "Step 2",
+      "article": "Article",
+      "variants": "Variants",
+      "stock": "Article Stock"
+    },
+    "header": {
+      "add_variants": "Add Variants",
+      "new_article": "New Article",
+      "create_article": "Create Article",
+      "reference_id": "Reference ID",
+      "back": "Back",
+      "add_stock": "Add Stock"
+    },
+    "messages": {
+      "fetching": "Fetching article details...",
+      "error_title": "Error Loading Article",
+      "error_desc": "Please check your connection or try again."
+    }
+  },
+  "leave_modal": {
+    "title": "Leave without saving?",
+    "message": "You have unsaved changes. If you leave now, they will be lost.",
+    "no_variants_message": "You haven't added any variants yet. The article will be saved as a simple article without variants.",
+    "no_stock_message": "You haven't set up any stock yet. The article will be saved with no available stock.",
+    "confirm": "Leave",
+    "cancel": "Stay"
+  }
+}

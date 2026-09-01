@@ -1,0 +1,73 @@
+{
+  "refresh": "تحديث",
+  "loading": "جارٍ تحميل الإعدادات…",
+  "loading_short": "جارٍ التحميل…",
+
+  "neg_stock": {
+    "title": "المخزون السالب",
+    "allow_label": "السماح بالمخزون السالب",
+    "enabled": "مفعّل",
+    "disabled": "معطّل"
+  },
+
+  "hour_range": {
+    "title": "ساعات التشغيل",
+    "mode_none": "بدون قيود",
+    "mode_custom": "ساعات محددة",
+    "start": "ساعة البداية",
+    "end": "ساعة النهاية",
+    "preview_none": "بدون قيود زمنية — النظام يعمل 24/7",
+    "preview_range": "الساعات: {{start}} → {{end}} ({{duration}}س/يوم)"
+  },
+
+  "history": {
+    "title": "سجل التعديلات",
+    "filter_all": "الكل",
+    "filter_neg_stock": "المخزون السالب",
+    "filter_start_hour": "ساعة البداية",
+    "filter_end_hour": "ساعة النهاية",
+    "empty": "لا يوجد سجل متاح",
+    "no_results": "لا توجد نتائج",
+    "results": "{{from}}–{{to}} نتيجة"
+  },
+
+  "form": {
+    "reason_label": "السبب (اختياري)",
+    "reason_placeholder": "سبب التعديل لسجل المراجعة…",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ…"
+  },
+
+  "toast": {
+    "already_up_to_date": "محدّث بالفعل",
+    "setting_updated": "تم تحديث الإعداد",
+    "hour_updated": "تم تحديث ساعات التشغيل",
+    "error": "خطأ في تحديث الإعداد"
+  },
+
+  "modal": {
+    "subtitle": "تأكيد مطلوب",
+    "cancel": "إلغاء",
+    "processing": "جارٍ المعالجة…",
+    "force_update": "فرض التحديث",
+    "warnings_title": "تحذيرات",
+    "more_items": "+ {{count}} أخرى…",
+    "impacts_title": "التأثيرات",
+    "confirm_question": "هل تريد تطبيق هذا التعديل على أي حال؟",
+    "neg_stock_title": "خطر: مخزون سالب موجود",
+    "hour_title": "معاملات خارج ساعات التشغيل"
+  },
+
+  "setting_label": {
+    "allowNegativeStock": "المخزون السالب",
+    "systemStartHour": "ساعة البداية",
+    "systemEndHour": "ساعة النهاية"
+  },
+
+  "value": {
+    "null_value": "فارغ",
+    "enabled": "مفعّل",
+    "disabled": "معطّل"
+  }
+}

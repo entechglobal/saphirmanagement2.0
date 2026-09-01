@@ -1,0 +1,78 @@
+{
+  "title": "Gestion des Agences",
+  "table": {
+    "id": "ID",
+    "name": "Nom",
+    "localisation": "Localisation",
+    "responsable": "Responsable",
+    "societe": "Société",
+    "created_date": "Date de création",
+    "status": "Statut",
+    "create_new": "Nouvelle Agence"
+  },
+  "form": {
+    "basic_info": "Informations de base",
+    "status_card": "Statut",
+    "fields": {
+      "name": "Nom de l'agence",
+      "localisation": "Localisation",
+      "responsable": "Responsable",
+      "societe": "Société",
+      "active": "Active",
+      "active_desc": "Activer ou désactiver cette agence"
+    },
+    "placeholders": {
+      "agence_name": "Entrez le nom de l'agence",
+      "localisation": "Entrez la localisation",
+      "responsable": "Entrez le nom du responsable",
+      "select": "Sélectionner..."
+    },
+    "buttons": {
+      "save_new": "Créer l'agence",
+      "save_edit": "Mettre à jour",
+      "back": "Retour",
+      "saving": "Enregistrement...",
+      "updating": "Mise à jour..."
+    },
+    "validation": {
+      "name_required": "Le nom de l'agence est requis",
+      "localisation_required": "La localisation est requise",
+      "responsable_required": "Le nom du responsable est requis",
+      "societe_required": "La société est requise",
+      "fill_required": "Veuillez remplir tous les champs requis",
+      "no_changes": "Aucun changement détecté"
+    }
+  },
+  "back_to_list": "Retour aux agences",
+  "active": "Active",
+  "inactive": "Inactive",
+  "tooltip": {
+    "activate": "Activer",
+    "deactivate": "Désactiver"
+  },
+  "delete_modal": {
+    "title": "Supprimer l'agence ?",
+    "message": "Voulez-vous vraiment supprimer \"{{name}}\" ? Cette action est irréversible.",
+    "confirm": "Supprimer",
+    "cancel": "Annuler"
+  },
+  "toggle_modal": {
+    "activate_title": "Activer l'agence ?",
+    "deactivate_title": "Désactiver l'agence ?",
+    "activate_message": "Voulez-vous vraiment activer \"{{name}}\" ?",
+    "deactivate_message": "Voulez-vous vraiment désactiver \"{{name}}\" ?",
+    "activate_confirm": "Activer",
+    "deactivate_confirm": "Désactiver",
+    "cancel": "Annuler"
+  },
+  "toast": {
+    "create_success": "Agence créée avec succès !",
+    "create_error": "Erreur lors de la création de l'agence",
+    "update_success": "Agence mise à jour avec succès !",
+    "update_error": "Erreur lors de la mise à jour de l'agence",
+    "delete_success": "Agence supprimée avec succès !",
+    "delete_error": "Erreur lors de la suppression de l'agence",
+    "status_updated": "Statut de l'agence mis à jour !",
+    "status_error": "Erreur lors de la mise à jour du statut"
+  }
+}

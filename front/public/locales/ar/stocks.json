@@ -1,0 +1,69 @@
+{
+  "form": {
+    "buttons": {
+      "finish": "إنهاء",
+      "skip": "تخطي والإنهاء"
+    }
+  },
+  "article_info": {
+    "title": "معلومات المنتج",
+    "name": "الاسم",
+    "barcode": "الباركود",
+    "family": "العائلة",
+    "reference": "المرجع",
+    "standard": "قياسي"
+  },
+  "card": {
+    "stock_levels": "مستويات المخزون",
+    "add": "إضافة مخزون",
+    "col_depot": "المستودع",
+    "col_qty": "الكمية",
+    "col_alert": "حد التنبيه",
+    "col_actions": "الإجراءات",
+    "main_company": "الشركة الرئيسية",
+    "edit_title": "تعديل المخزون",
+    "add_title": "إضافة مخزون جديد",
+    "cancel": "إلغاء",
+    "save": "حفظ التغييرات",
+    "close": "إغلاق",
+    "stock_management": "إدارة المخزون",
+    "delete_stock": "حذف المخزون",
+    "no_stock_entries": "لا توجد إدخالات مخزون بعد",
+    "confirm_deletion": "تأكيد الحذف",
+    "confirm_remove": "هل أنت متأكد من إزالة إدخال المخزون للمستودع"
+  },
+  "badge": {
+    "no_stock": "لا يوجد مخزون",
+    "depot_count": "{{count}} مستودع"
+  },
+  "entries": {
+    "select_depots": "اختيار المستودعات",
+    "choose_depots": "اختر المستودعات",
+    "choose_depot": "اختر المستودع",
+    "select_error": "الرجاء تحديد مستودع واحد على الأقل",
+    "apply_all": "تطبيق نفس المخزون على جميع المستودعات المحددة",
+    "qty_available": "الكمية المتاحة",
+    "alert_threshold": "حد التنبيه",
+    "required": "مطلوب"
+  },
+  "dialog": {
+    "delete_title": "حذف المخزون",
+    "delete_confirm": "هل تريد حذف مخزون",
+    "cancel": "إلغاء",
+    "delete_action": "حذف"
+  },
+  "skip_modal": {
+    "title": "إنهاء بدون مخزون؟",
+    "message": "لم تقم بإضافة أي مخزون بعد. سيتم حفظ المنتج بدون مخزون متاح. يمكنك إضافته لاحقاً.",
+    "confirm": "تخطي والإنهاء",
+    "cancel": "إلغاء"
+  },
+  "toast": {
+    "fill_error": "يرجى ملء جميع تفاصيل المخزون بشكل صحيح",
+    "updated": "تم تحديث المخزون بنجاح",
+    "created": "تم إنشاء المخزون بنجاح",
+    "operation_failed": "فشلت العملية. تأكد من ملء جميع الحقول بشكل صحيح",
+    "deleted": "تم حذف المخزون بنجاح",
+    "delete_failed": "فشل حذف المخزون"
+  }
+}

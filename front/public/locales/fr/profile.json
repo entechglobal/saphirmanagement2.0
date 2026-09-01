@@ -1,0 +1,56 @@
+{
+  "entity_name": "Tableau de bord",
+  "page_title": "Mon Profil",
+  "user_name_placeholder": "Nom d'utilisateur",
+  "member_fallback": "Membre",
+  "sidebar": {
+    "change_password": "Changer le mot de passe",
+    "logout": "Déconnexion"
+  },
+  "personal_info": {
+    "section_title": "Informations personnelles",
+    "edit": "Modifier",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "cancel": "Annuler",
+    "full_name_label": "Nom complet",
+    "full_name_placeholder": "ex. Jean Dupont",
+    "email_label": "Adresse e-mail",
+    "email_placeholder": "ex. jean@entreprise.com",
+    "edit_hint": "Cliquez sur « Modifier » pour mettre à jour vos informations."
+  },
+  "account_details": {
+    "section_title": "Détails du compte",
+    "company_role": "Rôle",
+    "account_status": "Statut du compte",
+    "active": "Actif",
+    "inactive": "Inactif"
+  },
+  "change_password": {
+    "modal_title": "Changer le mot de passe",
+    "modal_subtitle": "Min. 8 caractères · majuscule · minuscule · chiffre",
+    "current_password": "Mot de passe actuel",
+    "new_password": "Nouveau mot de passe",
+    "confirm_password": "Confirmer le nouveau mot de passe",
+    "update": "Mettre à jour",
+    "updating": "Mise à jour…",
+    "cancel": "Annuler"
+  },
+  "validation": {
+    "name_min": "Le nom doit comporter au moins 2 caractères",
+    "name_max": "Le nom ne peut pas dépasser 80 caractères",
+    "email_invalid": "Veuillez saisir une adresse email valide",
+    "image_too_large": "L'image de profil doit être inférieure à 2 Mo",
+    "image_invalid_type": "Seules les images JPG, PNG ou WebP sont autorisées",
+    "password_min": "Le mot de passe doit contenir au moins 8 caractères",
+    "password_required": "Le mot de passe est requis",
+    "passwords_mismatch": "Les mots de passe ne correspondent pas",
+    "current_password_required": "Le mot de passe actuel est requis"
+  },
+  "toast": {
+    "update_success": "Profil mis à jour avec succès !",
+    "update_error": "Échec de la mise à jour",
+    "password_success": "Mot de passe mis à jour avec succès",
+    "password_error": "Échec de la mise à jour du mot de passe"
+  }
+}

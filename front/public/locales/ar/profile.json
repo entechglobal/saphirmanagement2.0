@@ -1,0 +1,56 @@
+{
+  "entity_name": "لوحة التحكم",
+  "page_title": "ملفي الشخصي",
+  "user_name_placeholder": "اسم المستخدم",
+  "member_fallback": "عضو",
+  "sidebar": {
+    "change_password": "تغيير كلمة المرور",
+    "logout": "تسجيل الخروج"
+  },
+  "personal_info": {
+    "section_title": "المعلومات الشخصية",
+    "edit": "تعديل",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ…",
+    "cancel": "إلغاء",
+    "full_name_label": "الاسم الكامل",
+    "full_name_placeholder": "مثال: أحمد بن علي",
+    "email_label": "البريد الإلكتروني",
+    "email_placeholder": "مثال: ahmed@company.com",
+    "edit_hint": "انقر على «تعديل» لتحديث معلوماتك."
+  },
+  "account_details": {
+    "section_title": "تفاصيل الحساب",
+    "company_role": "الدور",
+    "account_status": "حالة الحساب",
+    "active": "نشط",
+    "inactive": "غير نشط"
+  },
+  "change_password": {
+    "modal_title": "تغيير كلمة المرور",
+    "modal_subtitle": "8 أحرف على الأقل · حرف كبير · حرف صغير · رقم",
+    "current_password": "كلمة المرور الحالية",
+    "new_password": "كلمة المرور الجديدة",
+    "confirm_password": "تأكيد كلمة المرور الجديدة",
+    "update": "تحديث",
+    "updating": "جارٍ التحديث…",
+    "cancel": "إلغاء"
+  },
+  "validation": {
+    "name_min": "يجب أن يحتوي الاسم على حرفين على الأقل",
+    "name_max": "يجب ألا يتجاوز الاسم 80 حرفًا",
+    "email_invalid": "يرجى إدخال بريد إلكتروني صحيح",
+    "image_too_large": "يجب أن تكون صورة الملف الشخصي أصغر من 2 ميجابايت",
+    "image_invalid_type": "يُسمح فقط بصور JPG أو PNG أو WebP",
+    "password_min": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل",
+    "password_required": "كلمة المرور مطلوبة",
+    "passwords_mismatch": "كلمات المرور غير متطابقة",
+    "current_password_required": "كلمة المرور الحالية مطلوبة"
+  },
+  "toast": {
+    "update_success": "تم تحديث الملف الشخصي بنجاح!",
+    "update_error": "فشل التحديث",
+    "password_success": "تم تحديث كلمة المرور بنجاح",
+    "password_error": "فشل تحديث كلمة المرور"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "page_title": "Gestion des Packs",
+  "create_button": "Nouveau Pack",
+  "print_barcode": "Code-barres",
+  "columns": {
+    "barcode": "Code-barres",
+    "name": "Nom du Pack",
+    "cost": "Coût Revient",
+    "margin": "Marge (%)",
+    "total_articles": "Montant Articles",
+    "discount": "Remise (%)",
+    "sale_price": "Prix Vente Pack",
+    "purchase_price": "Prix Achat Pack",
+    "status": "Statut",
+    "created_at": "Créé le"
+  },
+  "status": {
+    "active": "Actif",
+    "inactive": "Inactif"
+  },
+  "delete_modal": {
+    "title": "Supprimer le Pack ?",
+    "message": "Voulez-vous vraiment supprimer le pack \"{{name}}\" ? Tous les composants liés resteront en tant qu'articles individuels.",
+    "confirm": "Supprimer",
+    "cancel": "Annuler"
+  },
+  "toast": {
+    "delete_success": "Pack supprimé avec succès",
+    "delete_error": "Erreur lors de la suppression",
+    "barcode_copied": "Code-barres copié !"
+  },
+  "form": {
+    "create_title": "Nouveau Pack",
+    "edit_title": "Modifier le Pack",
+    "back_label": "Retour aux packs",
+    "entity_name": "Packs",
+    "sections": {
+      "general": "Informations générales",
+      "components": "Composants du Pack",
+      "pricing": "Stratégie de prix",
+      "status": "Statut"
+    },
+    "fields": {
+      "name": "Nom du Pack",
+      "name_placeholder": "Ex: Pack Bureau Premium",
+      "barcode": "Code-barres",
+      "barcode_placeholder": "Ex: PACK-2026-001",
+      "generate": "Générer",
+      "societe": "Société",
+      "select_societe": "Sélectionner une société",
+      "margin_rate": "Taux de Marge (%)",
+      "margin_rate_placeholder": "Ex: 30",
+      "cost_price": "Coût de revient (DH)",
+      "discount": "Remise (%)",
+      "discount_placeholder": "Ex: 10",
+      "sale_amount": "Montant de Vente (DH)",
+      "custom_price": "Prix de Vente Pack (DH)",
+      "custom_price_placeholder": "Ex: 712.50",
+      "estimated_price": "Prix de vente estimé",
+      "active_label": "Pack actif",
+      "active_desc": "Un pack inactif n'apparaîtra pas dans les bons de livraison"
+    },
+    "pricing_modes": {
+      "marge_label": "Marge",
+      "marge_desc": "Prix calculé selon le coût de revient + marge",
+      "remise_label": "Remise",
+      "remise_desc": "Prix calculé depuis le total articles avec remise",
+      "personnalise_label": "Personnalisé",
+      "personnalise_desc": "Saisir directement le prix de vente"
+    },
+    "components_table": {
+      "product": "Produit",
+      "qty": "Qté",
+      "buy_price": "Prix Achat",
+      "sell_price": "Prix Vente",
+      "subtotal": "Sous-total",
+      "empty": "Aucun composant ajouté",
+      "empty_hint": "Cliquez sur « Ajouter des produits »",
+      "add_products": "Ajouter des produits"
+    },
+    "actions": {
+      "cancel": "Annuler",
+      "save": "Enregistrer les modifications",
+      "create": "Créer le Pack",
+      "saving": "Mise à jour...",
+      "creating": "Création..."
+    },
+    "validation": {
+      "barcode_required": "Code-barres obligatoire",
+      "name_required": "Nom obligatoire",
+      "societe_required": "Société obligatoire",
+      "components_required": "Ajoutez au moins un composant",
+      "qty_required": "Quantité > 0 requise",
+      "margin_required": "Taux de marge obligatoire",
+      "must_be_gte_zero": "Doit être >= 0",
+      "discount_required": "Remise obligatoire",
+      "price_required": "Prix de vente obligatoire",
+      "must_be_gt_zero": "Doit être > 0"
+    },
+    "toast": {
+      "form_errors": "Veuillez corriger les erreurs du formulaire",
+      "component_id_error": "Chaque composant doit contenir soit un articleId soit un variantId",
+      "update_success": "Pack mis à jour avec succès",
+      "update_error": "Erreur lors de la mise à jour",
+      "create_success": "Pack créé avec succès",
+      "create_error": "Erreur lors de la création",
+      "no_changes": "Aucune modification détectée"
+    }
+  },
+  "picker": {
+    "title": "Sélectionner des produits",
+    "available": "produits disponibles",
+    "selected": "sélectionné",
+    "selected_plural": "sélectionnés",
+    "search_placeholder": "Rechercher par nom ou code-barres...",
+    "col_product": "Produit",
+    "col_buy_price": "Prix Achat",
+    "col_sell_price": "Prix Vente",
+    "already_added": "Déjà ajouté",
+    "type_variant": "Variante",
+    "type_article": "Article",
+    "empty": "Aucun produit trouvé",
+    "cancel": "Annuler",
+    "add": "Ajouter",
+    "price_field_1": "Prix Vente 1",
+    "price_field_2": "Prix Vente 2",
+    "price_field_3": "Prix Vente 3"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "title": "إدارة الوكالات",
+  "table": {
+    "id": "المعرّف",
+    "name": "الاسم",
+    "localisation": "الموقع",
+    "responsable": "المسؤول",
+    "societe": "الشركة",
+    "created_date": "تاريخ الإنشاء",
+    "status": "الحالة",
+    "create_new": "وكالة جديدة"
+  },
+  "form": {
+    "basic_info": "المعلومات الأساسية",
+    "status_card": "الحالة",
+    "fields": {
+      "name": "اسم الوكالة",
+      "localisation": "الموقع",
+      "responsable": "المسؤول",
+      "societe": "الشركة",
+      "active": "نشطة",
+      "active_desc": "تفعيل أو تعطيل هذه الوكالة"
+    },
+    "placeholders": {
+      "agence_name": "أدخل اسم الوكالة",
+      "localisation": "أدخل الموقع",
+      "responsable": "أدخل اسم المسؤول",
+      "select": "اختر..."
+    },
+    "buttons": {
+      "save_new": "إنشاء وكالة",
+      "save_edit": "تحديث",
+      "back": "رجوع",
+      "saving": "جاري الحفظ...",
+      "updating": "جاري التحديث..."
+    },
+    "validation": {
+      "name_required": "اسم الوكالة مطلوب",
+      "localisation_required": "الموقع مطلوب",
+      "responsable_required": "اسم المسؤول مطلوب",
+      "societe_required": "الشركة مطلوبة",
+      "fill_required": "الرجاء ملء جميع الحقول المطلوبة",
+      "no_changes": "لم يتم اكتشاف أي تغييرات"
+    }
+  },
+  "back_to_list": "العودة إلى الوكالات",
+  "active": "نشطة",
+  "inactive": "غير نشطة",
+  "tooltip": {
+    "activate": "تفعيل",
+    "deactivate": "تعطيل"
+  },
+  "delete_modal": {
+    "title": "حذف الوكالة ؟",
+    "message": "هل أنت متأكد من رغبتك في حذف \"{{name}}\" ؟ لا يمكن التراجع عن هذا الإجراء.",
+    "confirm": "حذف",
+    "cancel": "إلغاء"
+  },
+  "toggle_modal": {
+    "activate_title": "تفعيل الوكالة ؟",
+    "deactivate_title": "تعطيل الوكالة ؟",
+    "activate_message": "هل أنت متأكد من رغبتك في تفعيل \"{{name}}\" ؟",
+    "deactivate_message": "هل أنت متأكد من رغبتك في تعطيل \"{{name}}\" ؟",
+    "activate_confirm": "تفعيل",
+    "deactivate_confirm": "تعطيل",
+    "cancel": "إلغاء"
+  },
+  "toast": {
+    "create_success": "تم إنشاء الوكالة بنجاح !",
+    "create_error": "خطأ في إنشاء الوكالة",
+    "update_success": "تم تحديث الوكالة بنجاح !",
+    "update_error": "خطأ في تحديث الوكالة",
+    "delete_success": "تم حذف الوكالة بنجاح !",
+    "delete_error": "خطأ في حذف الوكالة",
+    "status_updated": "تم تحديث حالة الوكالة !",
+    "status_error": "خطأ في تحديث الحالة"
+  }
+}

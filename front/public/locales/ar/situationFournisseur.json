@@ -1,0 +1,20 @@
+{
+  "page_title": "وضعية المورد",
+  "page_subtitle": "بونات الاستلام غير المدفوعة أو المدفوعة جزئياً",
+  "currency": "MAD",
+  "summary_docs": "وثائق قيد الانتظار",
+  "summary_paid": "المجموع المدفوع",
+  "summary_reste": "المتبقي للدفع",
+  "filter_search_placeholder": "البحث عن بون استلام أو مورد…",
+  "all": "الكل",
+  "filter_fournisseur": "المورد",
+  "filter_all_fournisseurs": "كل الموردين",
+  "filter_start_date": "تاريخ البداية",
+  "filter_end_date": "تاريخ النهاية",
+  "col_document": "رقم BR",
+  "col_date": "التاريخ",
+  "col_fournisseur": "المورد",
+  "col_amount_due": "مبلغ BR",
+  "col_paid": "مدفوع",
+  "col_reste": "المتبقي"
+}

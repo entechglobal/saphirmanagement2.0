@@ -1,0 +1,192 @@
+{
+  "title": "إدارة المنتجات",
+  "id": "المعرف",
+  "barcode": "الباركود",
+  "name": "الاسم",
+  "image": "الصورة",
+  "family": "العائلة",
+  "unit": "الوحدة",
+  "purchase_price": "ثمن الشراء",
+  "sale_price": "ثمن البيع",
+  "manage_stock": "إدارة المخزون",
+  "status": "الحالة",
+  "expiration_date": "تاريخ الانتهاء",
+  "expiration_duration": "مدة الصلاحية",
+  "discount": "تخفيض",
+  "yes": "نعم",
+  "no": "لا",
+  "visible": "مرئي",
+  "hidden": "مخفي",
+  "days": "أيام",
+  "back": "رجوع",
+  "upload_image": "تحميل الصورة",
+  "import": "استيراد",
+  "export": "تصدير",
+  "create_new": "إنشاء جديد",
+  "export_csv": "تصدير CSV",
+  "export_xlsx": "تصدير XLSX",
+  "print_barcode": "الباركود",
+  "breadcrumb": {
+    "articles": "المنتجات",
+    "view": "عرض المنتج"
+  },
+  "header": {
+    "title": "تفاصيل المنتج",
+    "reference": "رقم المرجع",
+    "add_variant": "إضافة نوع",
+    "back_list": "العودة"
+  },
+  "sections": {
+    "identification": "تعريف المنتج",
+    "variants": "أنواع المنتج",
+    "financials": "المقاييس المالية",
+    "logistics": "المخزون واللوجستيات",
+    "image": "صورة المنتج",
+    "status": "الحالة التشغيلية",
+    "metadata": "بيانات النظام"
+  },
+  "fields": {
+    "full_name": "الاسم الكامل",
+    "barcode": "الباركود / EAN",
+    "family": "فئة المنتج",
+    "primary_unit": "الوحدة الأساسية",
+    "secondary_unit": "الوحدة الثانوية",
+    "comp_unit": "الوحدة التكميلية",
+    "conversion": "نسبة التحويل",
+    "purchase_cost": "تكلفة الشراء",
+    "rate_v1": "السعر القياسي (V1)",
+    "rate_v2": "سعر الجملة (V2)",
+    "rate_v3": "سعر الشركاء (V3)",
+    "discount": "الخصم القياسي",
+    "availability": "التوفر الحالي",
+    "safety_stock": "تنبيه مخزون الأمان",
+    "expiry_date": "تاريخ الانتهاء",
+    "grace_period": "فترة السماح",
+    "visibility": "الظهور",
+    "tracking": "تتبع المخزون",
+    "created": "تاريخ الإنشاء",
+    "updated": "آخر تحديث"
+  },
+  "values": {
+    "no_barcode": "لا يوجد باركود",
+    "not_assigned": "غير محدد",
+    "no_expiry": "بدون تاريخ انتهاء",
+    "no_image": "لا توجد صورة",
+    "days": "أيام",
+    "market_visible": "مرئي للسوق",
+    "internal_only": "للاستخدام الداخلي",
+    "stock_controlled": "مخزون مراقب",
+    "non_stock": "خدمة/غير مخزني",
+    "failed_load": "فشل في تحميل بيانات المنتج"
+  },
+  "form": {
+    "required": "مطلوب",
+    "identification": "تعريف المنتج",
+    "pricing": "الأسعار والخصم",
+    "stock_control": "مراقبة المخزون",
+    "image_card": "صورة المنتج",
+    "status_card": "الرؤية والسجلات",
+    "fields": {
+      "name": "الاسم",
+      "barcode": "باركود",
+      "family": "الفئة",
+      "unit_main": "الوحدة الأساسية",
+      "unit_secondary": "الوحدة الثانوية",
+      "unit_complementary": "الوحدة التكميلية",
+      "conversion_secondary": "تحويل الثانوي",
+      "conversion_complementary": "تحويل التكميلي",
+      "purchase_price": "ثمن الشراء",
+      "sale_price_1": "ثمن البيع 1",
+      "sale_price_2": "ثمن البيع 2",
+      "sale_price_3": "ثمن البيع 3",
+      "discount_percent": "تخفيض %",
+      "expiration_date": "تاريخ الانتهاء",
+      "expiration_alert": "تنبيه الانتهاء (أيام)",
+      "manage_stock": "إدارة في المخزون",
+      "manage_stock_desc": "يسجل كل حركة مخزنية",
+      "visible": "مرئي",
+      "visible_desc": "إظهار المنتج في نقطة البيع"
+    },
+    "placeholders": {
+      "product_name": "اسم المنتج",
+      "conversion_secondary": "مثال: 1 صندوق = 12 وحدة",
+      "conversion_complementary": "مثال: 1 منصة = 100 صندوق",
+      "days": "عدد الأيام",
+      "select": "اختر"
+    },
+    "buttons": {
+      "generate": "توليد",
+      "add_secondary": "+ إضافة وحدة ثانوية",
+      "add_complementary": "+ إضافة وحدة تكميلية",
+      "back": "رجوع",
+      "save_new": "إنشاء المنتج",
+      "save_edit": "تحديث المنتج",
+      "saving": "جاري الحفظ...",
+      "updating": "جاري التحديث..."
+    }
+  },
+  "create_mode": {
+    "new_product": "منتج جديد",
+    "create_title": "إنشاء منتج",
+    "description": "اختر هيكل البيانات الذي يناسب منتجك الجديد لتحسين إدارة المخزون.",
+    "back_to_list": "العودة إلى القائمة",
+    "simple_title": "منتج بسيط",
+    "simple_desc": "مثالي للمنتجات الفريدة بدون تنوعات (مثل أداة محددة، خدمة، أو عنصر بمقاس واحد).",
+    "simple_badge": "قياسي",
+    "variants_title": "منتج مع تنوعات",
+    "variants_desc": "لمنتجات متوفرة بأحجام، ألوان، أو مواد متعددة. يدير مخزونًا منفصلًا لكل تنوع.",
+    "variants_badge": "قابل للتكوين",
+    "start_creation": "بدء الإنشاء"
+  },
+  "delete_modal": {
+    "title": "حذف المنتج؟",
+    "message": "هل أنت متأكد؟ لا يمكن التراجع عن هذا الإجراء.",
+    "confirm": "حذف",
+    "cancel": "إلغاء"
+  },
+  "toast": {
+    "delete_success": "تم حذف المنتج بنجاح",
+    "delete_error": "فشل حذف المنتج",
+    "import_success": "تم الاستيراد بنجاح",
+    "import_error": "فشل الاستيراد",
+    "export_error_csv": "فشل تصدير CSV",
+    "export_error_xlsx": "فشل تصدير XLSX",
+    "barcode_copied": "تم نسخ الباركود!",
+    "required_fields": "يرجى ملء جميع الحقول المطلوبة",
+    "no_changes": "لم يتم اكتشاف أي تغييرات",
+    "update_success": "تم تحديث المنتج بنجاح!",
+    "create_success": "تم إنشاء المنتج بنجاح!",
+    "update_error": "فشل التحديث.",
+    "create_error": "فشل الإنشاء."
+  },
+  "variants": {
+    "steps": {
+      "step_1": "الخطوة ١",
+      "step_2": "الخطوة ٢",
+      "article": "المنتج",
+      "variants": "المتغيرات",
+      "stock": "مخزون المنتج"
+    },
+    "header": {
+      "add_variants": "إضافة متغيرات",
+      "new_article": "منتج جديد",
+      "create_article": "إنشاء منتج",
+      "reference_id": "رقم المرجع",
+      "back": "العودة",
+      "add_stock": "إضافة المخزون"
+    },
+    "messages": {
+      "fetching": "جاري جلب تفاصيل المنتج...",
+      "error_title": "خطأ في تحميل المنتج",
+      "error_desc": "يرجى التحقق من الاتصال أو المحاولة مرة أخرى."
+    }
+  },
+  "leave_modal": {
+    "title": "مغادرة دون حفظ؟",
+    "message": "لديك تعديلات غير محفوظة. إذا غادرت الآن، ستُفقد هذه التعديلات.",
+    "no_variants_message": "لم تقم بإضافة أي متغيرات بعد. سيتم حفظ المنتج كمنتج بسيط بدون متغيرات.",
+    "no_stock_message": "لم تقم بتحديد أي مخزون بعد. سيتم حفظ المنتج بدون مخزون متاح.",
+    "confirm": "مغادرة",
+    "cancel": "البقاء"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "form": {
+    "buttons": {
+      "finish": "Done & Finish",
+      "skip": "Skip and Finish"
+    }
+  },
+  "article_info": {
+    "title": "Article Information",
+    "name": "Name",
+    "barcode": "Barcode",
+    "family": "Family",
+    "reference": "Reference",
+    "standard": "Standard"
+  },
+  "card": {
+    "stock_levels": "Stock Levels",
+    "add": "Add Stock",
+    "col_depot": "Depot",
+    "col_qty": "Quantity",
+    "col_alert": "Alert Threshold",
+    "col_actions": "Actions",
+    "main_company": "Main Company",
+    "edit_title": "Edit Stock",
+    "add_title": "Add New Stock",
+    "cancel": "Cancel",
+    "save": "Save Changes",
+    "close": "Close",
+    "stock_management": "Stock Management",
+    "delete_stock": "Delete Stock",
+    "no_stock_entries": "No stock entries yet",
+    "confirm_deletion": "Confirm Deletion",
+    "confirm_remove": "Are you sure you want to remove the stock entry for depot"
+  },
+  "badge": {
+    "no_stock": "No stock",
+    "depot_count": "{{count}} depot(s)"
+  },
+  "entries": {
+    "select_depots": "Select Depots",
+    "choose_depots": "Choose depots",
+    "choose_depot": "Choose depot",
+    "select_error": "Please select at least one depot",
+    "apply_all": "Apply same stock to all selected depots",
+    "qty_available": "Quantity Available",
+    "alert_threshold": "Alert Threshold",
+    "required": "Required"
+  },
+  "dialog": {
+    "delete_title": "Delete Stock",
+    "delete_confirm": "Do you want to delete stock for",
+    "cancel": "Cancel",
+    "delete_action": "Delete"
+  },
+  "skip_modal": {
+    "title": "Finish without stock?",
+    "message": "You haven't added any stock yet. The article will be saved with no available stock. You can add it later.",
+    "confirm": "Skip and finish",
+    "cancel": "Cancel"
+  },
+  "toast": {
+    "fill_error": "Please fill in all stock details correctly",
+    "updated": "Stock updated successfully",
+    "created": "Stock created successfully",
+    "operation_failed": "Operation failed. Make sure to fill in all fields correctly",
+    "deleted": "Stock deleted successfully",
+    "delete_failed": "Failed to delete stock"
+  }
+}

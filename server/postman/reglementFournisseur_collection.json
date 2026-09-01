@@ -1,0 +1,607 @@
+{
+  "info": {
+    "name": "ReglementFournisseur API — Full Test Suite",
+    "description": "Complete test suite for the ReglementFournisseur (supplier payment) module. Mirrors ReglementClient: advance creation, payments settling BonReception-backed FournisseurDocuments, payments consuming advances, cheque/virement mode rules, PDF, deletion with rollback, and validation errors.\n\nSet {{fournisseurId}}, {{banqueId}} and {{documentNumber}} before running. {{rfId}} and {{advanceId}} are captured automatically from create responses.",
+    "_postman_id": "reglement-fournisseur-full-v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl",        "value": "http://localhost:3000", "type": "string" },
+    { "key": "token",          "value": "YOUR_JWT_TOKEN",        "type": "string" },
+    { "key": "rfId",           "value": "1",                     "type": "string" },
+    { "key": "advanceId",      "value": "1",                     "type": "string" },
+    { "key": "fournisseurId",  "value": "1",                     "type": "string" },
+    { "key": "banqueId",       "value": "1",                     "type": "string" },
+    { "key": "documentNumber", "value": "BR-2026-000001",        "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+
+    {
+      "name": "1 — Helpers",
+      "item": [
+        {
+          "name": "GET Unpaid BonReceptions (+ advances)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur/unpaid/{{fournisseurId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur", "unpaid", "{{fournisseurId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has unpaidDocuments + advances', () => {",
+                  "  const d = pm.response.json().data;",
+                  "  pm.expect(d).to.have.property('unpaidDocuments');",
+                  "  pm.expect(d).to.have.property('advances');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Fournisseur Advances",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur/advances/{{fournisseurId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur", "advances", "{{fournisseurId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Data is array', () => {",
+                  "  pm.expect(pm.response.json().data).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "2 — Create ReglementFournisseur",
+      "item": [
+        {
+          "name": "Create — advance (no documents)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-06-12\",\n  \"fournisseurId\": {{fournisseurId}},\n  \"modeReglement\": \"ESPECE\",\n  \"montantRegle\": 500.00\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Is advance (montantBR = 0, solde = 0)', () => {",
+                  "  const d = pm.response.json().data;",
+                  "  pm.expect(parseFloat(d.montantBR)).to.equal(0);",
+                  "  pm.expect(parseFloat(d.solde)).to.equal(0);",
+                  "  pm.collectionVariables.set('advanceId', d.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create — cash payment settling a BonReception",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-06-12\",\n  \"fournisseurId\": {{fournisseurId}},\n  \"modeReglement\": \"ESPECE\",\n  \"montantRegle\": 100.00,\n  \"solde\": 0,\n  \"documentNumbers\": [\"{{documentNumber}}\"]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('201 or 404 (no matching BR for this fournisseur)', () => {",
+                  "  pm.expect([201, 404]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 201) {",
+                  "  pm.test('Has id and documentNumbers', () => {",
+                  "    const d = pm.response.json().data;",
+                  "    pm.expect(d.id).to.exist;",
+                  "    pm.expect(d.documentNumbers).to.be.an('array');",
+                  "    pm.collectionVariables.set('rfId', d.id);",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create — cheque (refDocument + dateEcheance required)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-06-12\",\n  \"fournisseurId\": {{fournisseurId}},\n  \"modeReglement\": \"CHEQUE\",\n  \"montantRegle\": 250.00,\n  \"refDocument\": \"CHQ-001234\",\n  \"dateEcheance\": \"2026-07-12\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('refDocument persisted', () => {",
+                  "  const d = pm.response.json().data;",
+                  "  pm.expect(d.refDocument).to.equal('CHQ-001234');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create — virement (banqueId required)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-06-12\",\n  \"fournisseurId\": {{fournisseurId}},\n  \"modeReglement\": \"VIREMENT\",\n  \"montantRegle\": 300.00,\n  \"banqueId\": {{banqueId}}\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('201 or 404 (banque not found)', () => {",
+                  "  pm.expect([201, 404]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create — payment consuming an advance",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-06-12\",\n  \"fournisseurId\": {{fournisseurId}},\n  \"modeReglement\": \"ESPECE\",\n  \"montantRegle\": 50.00,\n  \"solde\": 0,\n  \"documentNumbers\": [\"{{documentNumber}}\"],\n  \"advanceIds\": [{{advanceId}}]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('201, 400 or 404 (depends on BR reste vs amounts)', () => {",
+                  "  pm.expect([201, 400, 404]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "3 — Read",
+      "item": [
+        {
+          "name": "GET All Reglements",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur"],
+              "query": [
+                { "key": "page",  "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has pagination and data', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d).to.have.property('pagination');",
+                  "  pm.expect(d).to.have.property('data');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET All — filter by fournisseur + mode",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur?fournisseurId={{fournisseurId}}&modeReglement=ESPECE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur"],
+              "query": [
+                { "key": "fournisseurId", "value": "{{fournisseurId}}" },
+                { "key": "modeReglement", "value": "ESPECE" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET All — filter by date range",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur?startDate=2026-06-01&endDate=2026-06-30",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur"],
+              "query": [
+                { "key": "startDate", "value": "2026-06-01" },
+                { "key": "endDate",   "value": "2026-06-30" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur/{{rfId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur", "{{rfId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('200 or 404', () => {",
+                  "  pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "  pm.test('Has fournisseur + montantBR', () => {",
+                  "    const d = pm.response.json().data;",
+                  "    pm.expect(d).to.have.property('fournisseur');",
+                  "    pm.expect(d).to.have.property('montantBR');",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET By ID — not found (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur/999999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur", "999999"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 404', () => pm.response.to.have.status(404));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET PDF",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur/{{rfId}}/pdf",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur", "{{rfId}}", "pdf"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('200 or 404', () => {",
+                  "  pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "4 — Delete ReglementFournisseur",
+      "item": [
+        {
+          "name": "DELETE — rolls back BonReception payments",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur/{{rfId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur", "{{rfId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('200 or 404', () => {",
+                  "  pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "  pm.test('Deleted message', () => {",
+                  "    pm.expect(pm.response.json().message).to.include('deleted');",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE — already deleted (404)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur/{{rfId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur", "{{rfId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 404', () => pm.response.to.have.status(404));"]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "5 — Validation Errors",
+      "item": [
+        {
+          "name": "Missing fournisseurId (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-06-12\",\n  \"modeReglement\": \"ESPECE\",\n  \"montantRegle\": 100.00\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Missing montantRegle (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-06-12\",\n  \"fournisseurId\": {{fournisseurId}},\n  \"modeReglement\": \"ESPECE\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Invalid modeReglement (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-06-12\",\n  \"fournisseurId\": {{fournisseurId}},\n  \"modeReglement\": \"BITCOIN\",\n  \"montantRegle\": 100.00\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "CHEQUE without refDocument/dateEcheance (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-06-12\",\n  \"fournisseurId\": {{fournisseurId}},\n  \"modeReglement\": \"CHEQUE\",\n  \"montantRegle\": 100.00\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "VIREMENT without banqueId (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-06-12\",\n  \"fournisseurId\": {{fournisseurId}},\n  \"modeReglement\": \"VIREMENT\",\n  \"montantRegle\": 100.00\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "advanceIds without documentNumbers (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/reglements-fournisseur",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reglements-fournisseur"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"date\": \"2026-06-12\",\n  \"fournisseurId\": {{fournisseurId}},\n  \"modeReglement\": \"ESPECE\",\n  \"montantRegle\": 100.00,\n  \"advanceIds\": [{{advanceId}}]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        }
+      ]
+    }
+
+  ]
+}

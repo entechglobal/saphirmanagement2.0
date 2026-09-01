@@ -1,0 +1,104 @@
+{
+  "mainNavigation": "القائمة الرئيسية",
+  "sections": {
+    "catalogue": "الكتالوج",
+    "sales": "المبيعات",
+    "purchases": "المشتريات",
+    "stock": "المخزون",
+    "cash": "الصندوق",
+    "partners": "الشركاء",
+    "admin": "الإدارة"
+  },
+  "dashboard": "لوحة التحكم",
+  "stock": "المخزون",
+  "inventaires": "الجرد",
+  "comingSoon": "قريباً",
+  "structure": {
+    "label": "الهيكل",
+    "children": {
+      "categories": "الفئات",
+      "families": "العائلات",
+      "articles": "المنتجات",
+      "packs": "الحزم",
+      "clients": "العملاء",
+      "suppliers": "الموردون",
+      "banques": "البنوك",
+      "deliveries": "الموصلون",
+      "deliveryProviderConfigs": "الأعمال",
+      "users": "المستخدمون",
+      "companies": "الشركات",
+      "depots": "المستودعات"
+    }
+  },
+  "stockManagement": {
+    "label": "إدارة المخزون",
+    "situationStock": "وضعية المخزون",
+    "mouvements": "حركة المخزون",
+    "transfer": "تحويل المخزون",
+    "transactions": "معاملات المخزون",
+    "deliveryNotes": "سندات التسليم",
+    "clientPayments": "مدفوعات العملاء",
+    "bonRetour": "سندات الإرجاع"
+  },
+  "ventesManagement": {
+    "label": "إدارة المبيعات",
+    "bonsCommande": "أوامر البيع",
+    "devis": "عروض الأسعار",
+    "bonLivraison": "سندات التسليم",
+    "bonRetour": "سندات إرجاع العملاء",
+    "reglementClient": "تسوية العملاء",
+    "situationClient": "وضعية العميل",
+    "facture": "الفاتورة",
+    "factureAvoir": "فاتورة الإضافة"
+  },
+  "achatsManagement": {
+    "label": "إدارة المشتريات",
+    "bonCommande": "أمر الشراء",
+    "bonReception": "سند الاستلام",
+    "bonRetourFournisseur": "سند إرجاع المورد",
+    "reglementFournisseur": "تسوية المورد",
+    "situationFournisseur": "وضعية المورد",
+    "factureFournisseur": "فاتورة المورد"
+  },
+  "saphirManagement": {
+    "label": "إدارة سفير",
+    "dashboard": "لوحة التحكم",
+    "agences": "الوكالات",
+    "commandes": "الطلبات",
+    "colisTracking": "تتبع الشحنة",
+    "planningLivraison": "تخطيط التسليم"
+  },
+  "gestion": {
+    "label": "الإدارة",
+    "children": {
+      "achats": "المشتريات",
+      "ventes": "المبيعات"
+    }
+  },
+  "myCompany": "شركتي",
+  "depots": "المستودعات",
+  "companies": "الشركات",
+  "users": "المستخدمون",
+  "settings": "الإعدادات",
+  "attributes": "السمات",
+  "adminPermissions": "صلاحيات المدير",
+  "allRightsReserved": "جميع الحقوق محفوظة",
+  "menu": "القائمة",
+  "close": "إغلاق",
+  "collapse": "تصغير",
+  "expand": "توسيع",
+  "pin": "تثبيت",
+  "unpin": "إلغاء التثبيت",
+  "profile": "الملف",
+  "Bons de Retour": "سندات الإرجاع",
+  "caisseManagement": {
+    "label": "إدارة الصندوق",
+    "caisseUsers": "محافظ المستخدمين",
+    "caisses": "الصناديق",
+    "labels": "تصنيفات المصاريف"
+  },
+  "colis_copied": "تم نسخ رمز الشحنة!",
+  "filters": "الفلاتر",
+  "all": "الكل",
+  "reset": "إعادة تعيين"
+}

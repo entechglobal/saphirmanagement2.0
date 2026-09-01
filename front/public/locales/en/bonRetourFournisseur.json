@@ -1,0 +1,29 @@
+{
+  "title": "Supplier Return Notes",
+  "document_date": "Document Date",
+  "fournisseur": "Supplier",
+  "depot": "Warehouse",
+  "return_reason": "Return Reason",
+  "status": "Status",
+  "amounts": "Amounts",
+  "print": "Print",
+  "draft": "Draft",
+  "completed": "Completed",
+  "status_badge": {
+    "draft": "Draft",
+    "completed": "Completed"
+  },
+  "toast": {
+    "delete_success": "Supplier return deleted",
+    "validate_success_completed": "Supplier return validated",
+    "validate_success_draft": "Supplier return set back to draft",
+    "depot_required": "Please select a warehouse",
+    "supplier_required": "Please select a supplier",
+    "select_at_least_one_article": "Please select at least one product"
+  },
+  "create_title": "New supplier return",
+  "edit_title": "Edit supplier return",
+  "linked_br_optional": "Goods receipt (optional)",
+  "select_depot": "Select warehouse",
+  "select_supplier": "Select supplier"
+}

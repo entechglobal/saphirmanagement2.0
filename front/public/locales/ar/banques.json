@@ -1,0 +1,56 @@
+{
+  "title": "إدارة البنوك",
+  "create_new": "بنك جديد",
+  "export_simple": "تصدير",
+  "export_csv": "تصدير CSV",
+  "export_xlsx": "تصدير XLSX",
+  "columns": {
+    "id": "المعرف",
+    "name": "اسم البنك",
+    "rib": "الـRIB",
+    "city": "المدينة",
+    "createdAt": "تاريخ الإنشاء",
+    "updatedAt": "تاريخ التعديل"
+  },
+  "delete": {
+    "title": "حذف البنك",
+    "message": "هل تريد حذف هذا البنك؟",
+    "confirm": "حذف",
+    "cancel": "إلغاء",
+    "success": "تم حذف البنك بنجاح",
+    "error": "فشل حذف البنك"
+  },
+  "form": {
+    "entity_name": "بنك",
+    "create_title": "بنك جديد",
+    "edit_title_prefix": "تعديل · ",
+    "back_label": "العودة إلى البنوك",
+    "section_info": "معلومات البنك",
+    "fields": {
+      "name": "اسم البنك",
+      "name_placeholder": "مثال: CIH Bank",
+      "ville": "المدينة",
+      "ville_placeholder": "مثال: الدار البيضاء",
+      "rib": "الـRIB",
+      "rib_placeholder": "مثال: 011 810 0000123456789012 33"
+    },
+    "validation": {
+      "required": "مطلوب",
+      "fill_required": "يرجى ملء الحقول الإلزامية"
+    },
+    "toast": {
+      "no_changes": "لم يتم اكتشاف أي تغييرات",
+      "update_success": "تم تحديث البنك بنجاح!",
+      "update_error": "فشل التحديث",
+      "create_success": "تم إنشاء البنك بنجاح!",
+      "create_error": "فشل الإنشاء"
+    },
+    "actions": {
+      "cancel": "إلغاء",
+      "saving": "جارٍ الحفظ…",
+      "creating": "جارٍ الإنشاء…",
+      "save": "حفظ",
+      "create": "إنشاء البنك"
+    }
+  }
+}

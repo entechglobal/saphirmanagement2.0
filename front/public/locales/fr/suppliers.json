@@ -1,0 +1,88 @@
+{
+  "title": "Gestion des Fournisseurs",
+  "create_new": "Nouveau Fournisseur",
+  "import_simple": "Importer",
+  "export_simple": "Exporter",
+  "export_csv": "Exporter CSV",
+  "export_xlsx": "Exporter XLSX",
+  "columns": {
+    "id": "ID",
+    "name": "Raison Sociale",
+    "type": "Type",
+    "phone": "Téléphone",
+    "email": "Email",
+    "address": "Adresse",
+    "region": "Région / Ville",
+    "website": "Site Web",
+    "ice": "ICE",
+    "if": "IF",
+    "rc": "RC",
+    "tp": "TP",
+    "paymentDeadline": "Délai (Jours)",
+    "days": "jours",
+    "bank": "Banque",
+    "bankAccount": "Compte Bancaire (RIB)",
+    "status": "Statut",
+    "societe": "Société"
+  },
+  "types": {
+    "particulier": "Particulier",
+    "societe": "Société"
+  },
+  "status": {
+    "active": "Actif",
+    "inactive": "Inactif"
+  },
+  "import": {
+    "title": "Importer des Fournisseurs",
+    "societe_label": "Société",
+    "cancel": "Annuler",
+    "submit": "Importer",
+    "importing": "Importation...",
+    "success": "Importation réussie",
+    "error": "Échec de l'importation"
+  },
+  "export": {
+    "csv_error": "Échec de l'exportation CSV",
+    "xlsx_error": "Échec de l'exportation XLSX"
+  },
+  "delete": {
+    "title": "Supprimer le Fournisseur ?",
+    "message": "Êtes-vous sûr ? Cette action est irréversible.",
+    "confirm": "Supprimer",
+    "cancel": "Annuler",
+    "success": "Fournisseur supprimé avec succès",
+    "error": "Échec de la suppression"
+  },
+  "form": {
+    "entity_name": "Fournisseurs",
+    "create_title": "Nouveau Fournisseur",
+    "edit_title": "Modifier Fournisseur",
+    "back": "Retour",
+    "loading": "Chargement du fournisseur...",
+    "processing": "Traitement...",
+    "update_btn": "Mettre à jour",
+    "create_btn": "Créer le Fournisseur",
+    "success_create": "Fournisseur créé avec succès",
+    "success_update": "Fournisseur mis à jour",
+    "active_account": "Compte Actif",
+    "active_description": "Autoriser les transactions avec ce fournisseur",
+    "sections": {
+      "identification": "Identification & Contact",
+      "fiscal": "Informations Fiscales",
+      "banking": "Informations Bancaires",
+      "settings": "Paramètres",
+      "status": "Statut du Compte"
+    },
+    "placeholders": {
+      "name": "Entrer la raison sociale",
+      "address": "ex: Rue 123, Casablanca",
+      "region": "Entrer région ou ville",
+      "ice": "15 chiffres",
+      "rib": "24 chiffres"
+    },
+    "errors": {
+      "select_company": "Veuillez sélectionner une société"
+    }
+  }
+}

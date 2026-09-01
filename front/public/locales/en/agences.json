@@ -1,0 +1,78 @@
+{
+  "title": "Agences Management",
+  "table": {
+    "id": "ID",
+    "name": "Name",
+    "localisation": "Location",
+    "responsable": "Manager",
+    "societe": "Company",
+    "created_date": "Created Date",
+    "status": "Status",
+    "create_new": "New Agency"
+  },
+  "form": {
+    "basic_info": "Basic Information",
+    "status_card": "Status",
+    "fields": {
+      "name": "Agency Name",
+      "localisation": "Location",
+      "responsable": "Manager",
+      "societe": "Company",
+      "active": "Active",
+      "active_desc": "Enable or disable this agency"
+    },
+    "placeholders": {
+      "agence_name": "Enter agency name",
+      "localisation": "Enter location",
+      "responsable": "Enter manager name",
+      "select": "Select..."
+    },
+    "buttons": {
+      "save_new": "Create Agency",
+      "save_edit": "Update Agency",
+      "back": "Back",
+      "saving": "Saving...",
+      "updating": "Updating..."
+    },
+    "validation": {
+      "name_required": "Agency name is required",
+      "localisation_required": "Location is required",
+      "responsable_required": "Manager name is required",
+      "societe_required": "Company is required",
+      "fill_required": "Please fill in all required fields",
+      "no_changes": "No changes detected"
+    }
+  },
+  "back_to_list": "Back to Agencies",
+  "active": "Active",
+  "inactive": "Inactive",
+  "tooltip": {
+    "activate": "Activate",
+    "deactivate": "Deactivate"
+  },
+  "delete_modal": {
+    "title": "Delete Agency?",
+    "message": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+    "confirm": "Delete",
+    "cancel": "Cancel"
+  },
+  "toggle_modal": {
+    "activate_title": "Activate Agency?",
+    "deactivate_title": "Deactivate Agency?",
+    "activate_message": "Are you sure you want to activate \"{{name}}\"?",
+    "deactivate_message": "Are you sure you want to deactivate \"{{name}}\"?",
+    "activate_confirm": "Activate",
+    "deactivate_confirm": "Deactivate",
+    "cancel": "Cancel"
+  },
+  "toast": {
+    "create_success": "Agency created successfully!",
+    "create_error": "Failed to create agency",
+    "update_success": "Agency updated successfully!",
+    "update_error": "Failed to update agency",
+    "delete_success": "Agency deleted successfully!",
+    "delete_error": "Failed to delete agency",
+    "status_updated": "Agency status updated successfully!",
+    "status_error": "Failed to update agency status"
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "title": "Gestion des Articles",
+  "id": "ID",
+  "barcode": "Code-barres",
+  "name": "Intitulé",
+  "image": "Image",
+  "family": "Famille",
+  "unit": "Unité",
+  "purchase_price": "Prix d'achat",
+  "sale_price": "Prix de vente",
+  "manage_stock": "Gérer le stock",
+  "status": "Statut",
+  "expiration_date": "Date d'expiration",
+  "expiration_duration": "Délai d'expiration",
+  "discount": "Remise",
+  "yes": "Oui",
+  "no": "Non",
+  "visible": "Visible",
+  "hidden": "Masqué",
+  "days": "jours",
+  "back": "Retour",
+  "upload_image": "Télécharger l'image",
+  "import": "Importer",
+  "export": "Exporter",
+  "create_new": "Créer un nouveau",
+  "export_csv": "Exporter CSV",
+  "export_xlsx": "Exporter XLSX",
+  "print_barcode": "Code-barres",
+  "breadcrumb": {
+    "articles": "Articles",
+    "view": "Vue Article"
+  },
+  "header": {
+    "title": "Détails de l'article",
+    "reference": "ID Référence",
+    "add_variant": "Ajouter Variante",
+    "back_list": "Retour"
+  },
+  "sections": {
+    "identification": "Identification du Produit",
+    "variants": "Variantes du Produit",
+    "financials": "Indicateurs Financiers",
+    "logistics": "Inventaire & Logistique",
+    "image": "Image du Produit",
+    "status": "Statut Opérationnel",
+    "metadata": "Métadonnées Système"
+  },
+
+  "fields": {
+    "full_name": "Intitulé complet",
+    "barcode": "Code-barres / EAN",
+    "family": "Famille de produit",
+    "primary_unit": "Unité principale",
+    "secondary_unit": "Unité secondaire",
+    "comp_unit": "Unité complémentaire",
+    "conversion": "Taux de conversion",
+    "purchase_cost": "Coût d'achat",
+    "rate_v1": "Tarif Standard (V1)",
+    "rate_v2": "Tarif Gros (V2)",
+    "rate_v3": "Tarif Partenaire (V3)",
+    "discount": "Remise standard",
+    "availability": "Disponibilité actuelle",
+    "safety_stock": "Alerte stock de sécurité",
+    "expiry_date": "Date d'expiration",
+    "grace_period": "Délai de grâce",
+    "visibility": "Visibilité",
+    "tracking": "Suivi d'inventaire",
+    "created": "Créé le",
+    "updated": "Mis à jour le"
+  },
+  "values": {
+    "no_barcode": "Aucun code-barres",
+    "not_assigned": "Non assigné",
+    "no_expiry": "Sans expiration",
+    "no_image": "Aucune Image",
+    "days": "Jours",
+    "market_visible": "Visible Marché",
+    "internal_only": "Interne Uniquement",
+    "stock_controlled": "Stock Contrôlé",
+    "non_stock": "Service/Hors-Stock",
+    "failed_load": "Échec du chargement de l'article"
+  },
+  "form": {
+    "required": "Requis",
+    "identification": "Identification du produit",
+    "pricing": "Prix ​​et remise",
+    "stock_control": "Contrôle des stocks",
+    "image_card": "Image du produit",
+    "status_card": "Visibilité et journaux",
+    "fields": {
+      "name": "Intitulé",
+      "barcode": "Code-barres",
+      "family": "Famille",
+      "unit_main": "Unité Principale",
+      "unit_secondary": "Unité Secondaire",
+      "unit_complementary": "Unité Complémentaire",
+      "conversion_secondary": "Conversion Secondaire",
+      "conversion_complementary": "Conversion Complémentaire",
+      "purchase_price": "Prix Achat",
+      "sale_price_1": "Prix Vente 1",
+      "sale_price_2": "Prix Vente 2",
+      "sale_price_3": "Prix Vente 3",
+      "discount_percent": "Remise %",
+      "expiration_date": "Date d'Expiration",
+      "expiration_alert": "Durée Alerte Expiration (jours)",
+      "manage_stock": "Gérer en Stock",
+      "manage_stock_desc": "Enregistre chaque mouvement de stock",
+      "visible": "Visible",
+      "visible_desc": "Afficher l'article au point de vente"
+    },
+    "placeholders": {
+      "product_name": "Nom du produit",
+      "conversion_secondary": "ex: 1 Carton = 12 Unités",
+      "conversion_complementary": "ex: 1 Palette = 100 Cartons",
+      "days": "Nombre de jours",
+      "select": "Sélectionnez"
+    },
+    "buttons": {
+      "generate": "Générer",
+      "add_secondary": "+ Ajouter une unité secondaire",
+      "add_complementary": "+ Ajouter une unité complémentaire",
+      "back": "Retour",
+      "save_new": "Créer l'article",
+      "save_edit": "Modifier l'article",
+      "saving": "Enregistrement...",
+      "updating": "Mise à jour..."
+    }
+  },
+  "create_mode": {
+    "new_product": "Nouveau Produit",
+    "create_title": "Créer un article",
+    "description": "Sélectionnez la structure de données qui correspond le mieux à votre nouveau produit pour optimiser sa gestion en stock.",
+    "back_to_list": "Retour aux Articles",
+    "simple_title": "Article Simple",
+    "simple_desc": "Idéal pour les produits uniques sans variations (ex: un outil spécifique, un service, ou un objet à taille unique).",
+    "simple_badge": "Standard",
+    "variants_title": "Article avec Variantes",
+    "variants_desc": "Pour les produits déclinés en plusieurs tailles, couleurs ou matières. Gère un inventaire distinct par variante.",
+    "variants_badge": "Configurable",
+    "start_creation": "Commencer la création"
+  },
+  "delete_modal": {
+    "title": "Supprimer l'article ?",
+    "message": "Êtes-vous sûr ? Cette action est irréversible.",
+    "confirm": "Supprimer",
+    "cancel": "Annuler"
+  },
+  "toast": {
+    "delete_success": "Article supprimé avec succès",
+    "delete_error": "Échec de la suppression de l'article",
+    "import_success": "Importation réussie",
+    "import_error": "Échec de l'importation",
+    "export_error_csv": "Échec de l'exportation CSV",
+    "export_error_xlsx": "Échec de l'exportation XLSX",
+    "barcode_copied": "Code-barres copié !",
+    "required_fields": "Veuillez remplir tous les champs obligatoires",
+    "no_changes": "Aucune modification détectée",
+    "update_success": "Article mis à jour avec succès !",
+    "create_success": "Article créé avec succès !",
+    "update_error": "Échec de la mise à jour.",
+    "create_error": "Échec de la création."
+  },
+  "variants": {
+    "steps": {
+      "step_1": "Étape 1",
+      "step_2": "Étape 2",
+      "article": "Article",
+      "variants": "Variantes",
+      "stock": "Stock de l'article"
+    },
+    "header": {
+      "add_variants": "Ajouter des variantes",
+      "new_article": "Nouvel article",
+      "create_article": "Créer un article",
+      "reference_id": "ID Référence",
+      "back": "Retour",
+      "add_stock": "Ajouter le stock"
+    },
+    "messages": {
+      "fetching": "Récupération des détails...",
+      "error_title": "Erreur lors du chargement",
+      "error_desc": "Veuillez vérifier votre connexion ou réessayer."
+    }
+  },
+  "leave_modal": {
+    "title": "Quitter sans sauvegarder ?",
+    "message": "Vous avez des modifications non sauvegardées. Si vous quittez maintenant, elles seront perdues.",
+    "no_variants_message": "Vous n'avez pas encore ajouté de variantes. L'article sera enregistré comme un article simple sans variantes.",
+    "no_stock_message": "Vous n'avez pas encore défini de stock. L'article sera enregistré sans stock disponible.",
+    "confirm": "Quitter",
+    "cancel": "Rester"
+  }
+}

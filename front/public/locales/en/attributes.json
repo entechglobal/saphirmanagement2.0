@@ -1,0 +1,27 @@
+{
+  "page_title": "Attribute Management",
+  "loading": "Loading attributes…",
+  "form": {
+    "edit_title": "Edit Attribute",
+    "create_title": "Attribute Management",
+    "name_label": "Attribute Name",
+    "name_placeholder": "e.g. Color",
+    "values_label": "Attribute Values",
+    "values_placeholder": "Type and press Enter",
+    "cancel": "Cancel",
+    "update": "Update Attribute",
+    "create": "Create Attribute"
+  },
+  "table": {
+    "title": "Defined Attributes",
+    "col_attribute": "Attribute",
+    "col_values": "Values",
+    "col_actions": "Actions",
+    "empty": "No attributes created yet."
+  },
+  "toast": {
+    "create_success": "Attribute created",
+    "update_success": "Attribute updated",
+    "update_error": "Failed to update attribute"
+  }
+}

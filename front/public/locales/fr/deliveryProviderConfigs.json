@@ -1,0 +1,77 @@
+{
+  "title": "Business",
+  "create_new": "Nouvelle configuration",
+  "columns": {
+    "id": "ID",
+    "name": "Nom",
+    "provider": "Société de livraison",
+    "societe": "Société",
+    "status": "Statut"
+  },
+  "status": {
+    "active": "Actif",
+    "inactive": "Inactif"
+  },
+  "filters": "Filtres",
+  "all": "Tous",
+  "reset": "Réinitialiser",
+  "filter_livreur": "Société de livraison externe",
+  "filter_all_livreurs": "Toutes les sociétés",
+  "filter_societe": "Société",
+  "filter_all_societes": "Toutes les sociétés",
+  "delete": {
+    "title": "Supprimer la configuration",
+    "message": "Êtes-vous sûr de vouloir supprimer cette configuration ? Cette action est irréversible.",
+    "confirm": "Supprimer",
+    "cancel": "Annuler",
+    "success": "Configuration supprimée avec succès",
+    "error": "Erreur lors de la suppression"
+  },
+  "form": {
+    "entity_name": "Configuration Business",
+    "create_title": "Nouvelle configuration Business",
+    "edit_title": "Modifier : {{name}}",
+    "back_label": "Retour aux configurations",
+    "sections": {
+      "info": "Informations générales",
+      "credentials": "Identifiants API",
+      "status": "Statut"
+    },
+    "fields": {
+      "provider": "Société de livraison externe",
+      "provider_placeholder": "Sélectionner une société de livraison",
+      "provider_empty": "Aucune société de livraison externe disponible pour cette société",
+      "name": "Nom de la boutique",
+      "name_placeholder": "Ex: Boutique deroua",
+      "societe": "Société",
+      "societe_placeholder": "Sélectionner une société",
+      "societe_locked": "La société ne peut pas être modifiée après création.",
+      "api_id": "API ID",
+      "api_id_placeholder": "Identifiant API de la société de livraison",
+      "api_key": "Clé API",
+      "api_key_placeholder": "Clé secrète API de la société de livraison",
+      "api_key_placeholder_edit": "Laisser vide pour ne pas modifier",
+      "credentials_edit_hint": "Laissez les champs vides si vous ne souhaitez pas modifier les identifiants API.",
+      "active_label": "Configuration active",
+      "active_desc": "Activer ou désactiver cette configuration Business"
+    },
+    "validation": {
+      "required": "Ce champ est requis"
+    },
+    "toast": {
+      "create_success": "Configuration créée avec succès",
+      "create_error": "Erreur lors de la création",
+      "update_success": "Configuration mise à jour avec succès",
+      "update_error": "Erreur lors de la mise à jour",
+      "no_changes": "Aucune modification détectée",
+      "form_errors": "Veuillez corriger les erreurs du formulaire"
+    },
+    "actions": {
+      "cancel": "Annuler",
+      "create": "Créer",
+      "creating": "Création…",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…"
+    }
+  }
+}

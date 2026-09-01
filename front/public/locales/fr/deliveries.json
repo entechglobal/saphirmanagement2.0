@@ -1,0 +1,87 @@
+{
+  "page_title": "Gestion des livreurs",
+  "create_button": "Nouveau livreur",
+  "columns": {
+    "id": "ID",
+    "name": "Nom",
+    "type": "Type",
+    "societe": "Société",
+    "phone": "Téléphone",
+    "bls": "BLs",
+    "status": "Statut",
+    "created_at": "Créé le"
+  },
+  "entity_type": {
+    "societe": "Société",
+    "particulier": "Particulier"
+  },
+  "tooltip": {
+    "disable": "Désactiver",
+    "enable": "Activer"
+  },
+  "delete_modal": {
+    "title": "Supprimer le livreur",
+    "message": "Voulez-vous supprimer \"{{name}}\" ? Cette action est irréversible.",
+    "confirm": "Supprimer",
+    "cancel": "Annuler"
+  },
+  "toggle_modal": {
+    "disable_title": "Désactiver le livreur",
+    "enable_title": "Activer le livreur",
+    "disable_message": "Voulez-vous désactiver \"{{name}}\" ? Il ne sera plus disponible pour les bons de livraison.",
+    "enable_message": "Voulez-vous activer \"{{name}}\" ?",
+    "disable_confirm": "Désactiver",
+    "enable_confirm": "Activer",
+    "cancel": "Annuler"
+  },
+  "toast": {
+    "delete_success": "Livreur supprimé avec succès",
+    "delete_error": "Échec de la suppression",
+    "enable_success": "{{name}} activé",
+    "disable_success": "{{name}} désactivé",
+    "toggle_error": "Échec du changement de statut"
+  },
+  "form": {
+    "entity_name": "Livreur",
+    "create_title": "Nouveau livreur",
+    "edit_title": "Modifier · {{name}}",
+    "back_label": "Retour aux livreurs",
+    "sections": {
+      "info": "Informations du livreur",
+      "status": "Statut"
+    },
+    "fields": {
+      "societe": "Société",
+      "societe_placeholder": "Sélectionner une société",
+      "societe_locked": "La société ne peut pas être modifiée après création.",
+      "name": "Nom du livreur",
+      "name_placeholder": "ex. Yassine Express",
+      "type": "Type",
+      "phone": "Téléphone",
+      "phone_placeholder": "ex. 0612345678",
+      "address": "Adresse",
+      "address_placeholder": "ex. 12 Rue Hassan II, Casablanca",
+      "active_label": "Actif",
+      "active_desc": "Le livreur est disponible pour les bons de livraison"
+    },
+    "validation": {
+      "required": "Requis",
+      "phone_invalid": "Numéro invalide. Format attendu : 0612345678 ou +212612345678"
+    },
+    "actions": {
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "create": "Créer le livreur",
+      "saving": "Enregistrement…",
+      "creating": "Création…"
+    },
+    "toast": {
+      "create_success": "Livreur créé avec succès !",
+      "create_error": "Échec de la création",
+      "update_success": "Livreur mis à jour !",
+      "update_error": "Échec de la mise à jour",
+      "no_changes": "Aucune modification détectée",
+      "form_errors": "Veuillez remplir les champs obligatoires et corriger les erreurs"
+    }
+  }
+}

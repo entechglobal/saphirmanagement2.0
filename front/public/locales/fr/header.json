@@ -1,0 +1,58 @@
+{
+  "branding": {
+    "system_level": "Niveau Système",
+    "global_mgmt": "Gestion Globale",
+    "current_company": "Société Actuelle",
+    "loading": "Chargement..."
+  },
+  "profile": {
+    "access_level": "Niveau d'accès",
+    "connected_to": "Connecté à",
+    "super_admin": "Super Administrateur",
+    "my_profile": "Mon Profil",
+    "logout": "Déconnexion",
+    "my_company": "Ma Société"
+  },
+  "preferences": {
+    "title": "Préférences",
+    "subtitle": "Langue et apparence de l'application",
+    "language": "Langue",
+    "theme": "Thème",
+    "theme_light": "Clair",
+    "theme_dark": "Sombre",
+    "switching_language": "Changement de langue...",
+    "switching_theme": "Changement de thème..."
+  },
+  "menu": "Menu",
+  "confirmation": {
+    "logout_title": "Confirmer la déconnexion",
+    "logout_message": "Êtes-vous sûr de vouloir vous déconnecter ?",
+    "logout_confirm": "Se déconnecter",
+    "logout_cancel": "Annuler"
+  },
+  "tooltips": {
+    "theme_toggle": "Changer le thème",
+    "fullscreen": "Plein écran"
+  },
+  "palette": {
+    "placeholder": "Rechercher une page ou action...",
+    "no_results": "Aucun résultat pour",
+    "hint_navigate": "naviguer",
+    "hint_open": "ouvrir",
+    "hint_close": "fermer",
+    "result": "résultat",
+    "results": "résultats",
+    "escape_key": "Échap",
+    "categories": {
+      "navigation": "Navigation",
+      "catalogue": "Catalogue",
+      "contacts": "Contacts",
+      "stock": "Stock",
+      "saphir": "Saphir",
+      "achats": "Achats",
+      "admin": "Administration",
+      "system": "Système",
+      "account": "Compte"
+    }
+  }
+}

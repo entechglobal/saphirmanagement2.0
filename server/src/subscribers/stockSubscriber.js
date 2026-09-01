@@ -1,0 +1,1 @@
+// [NEW] Stock change events

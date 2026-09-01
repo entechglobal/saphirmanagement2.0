@@ -1,0 +1,136 @@
+{
+  "title": "العملاء",
+  "page_title": "إدارة العملاء",
+  "currency": "درهم",
+  "import_simple": "استيراد",
+  "export_simple": "تصدير",
+  "create_new": "إنشاء جديد",
+  "export_csv": "تصدير CSV",
+  "export_xlsx": "تصدير XLSX",
+  "breadcrumb": {
+    "list": "العملاء",
+    "edit": "تعديل العميل",
+    "create": "عميل جديد",
+    "details": "تفاصيل العميل"
+  },
+  "header": {
+    "back": "العودة للعملاء",
+    "client_id": "معرف العميل",
+    "loading": "جاري تحميل العميل...",
+    "edit": "تعديل العميل",
+    "error": "فشل تحميل تفاصيل العميل"
+  },
+  "sections": {
+    "identification": "تفاصيل الهوية",
+    "fiscal": "المعلومات القانونية والضريبية",
+    "financial": "الائتمان والإعدادات",
+    "status": "حالة الحساب",
+    "affiliation": "الشركة التابعة",
+    "operational": "الحالة التشغيلية",
+    "system": "بيانات النظام الوصفية"
+  },
+  "fields": {
+    "name": {
+      "label": "الاسم الكامل / الاسم التجاري",
+      "placeholder": "أدخل الاسم"
+    },
+    "phone": { "label": "الهاتف", "placeholder": "+212 6XX XX XX XX" },
+    "societe": { "label": "الشركة", "placeholder": "اختر شركة" },
+    "type": { "label": "نوع العميل", "placeholder": "اختر النوع" },
+    "email": {
+      "label": "البريد الإلكتروني",
+      "placeholder": "contact@client.com"
+    },
+    "address": {
+      "label": "عنوان المقر",
+      "placeholder": "مثال: Client-CASA-01"
+    },
+    "region": {
+      "label": "الجهة / المدينة",
+      "placeholder": "أدخل الجهة أو المدينة"
+    },
+    "website": {
+      "label": "الموقع الإلكتروني",
+      "placeholder": "https://example.com"
+    },
+    "ice": { "label": "ICE", "placeholder": "المعرف الموحد للمقاولة (15 رقم)" },
+    "if": { "label": "الرقم الضريبي (IF)", "placeholder": "المعرف الضريبي" },
+    "rc": { "label": "السجل التجاري (RC)", "placeholder": "السجل التجاري" },
+    "tp": { "label": "الضريبة المهنية (TP)", "placeholder": "الضريبة المهنية" },
+    "creditLimit": { "label": "سقف الائتمان (درهم)" },
+    "paymentDeadline": {
+      "label": "أجل الأداء (أيام)",
+      "placeholder": "مثال: 30"
+    },
+    "discount": { "label": "الخصم الافتراضي (%)" },
+    "active": {
+      "label": "حساب نشط",
+      "description": "السماح بالمعاملات لهذا العميل"
+    },
+    "structure": "الهيكل التابع",
+    "reference": "مرجع داخلي",
+    "view_societe": "عرض ملف الشركة",
+    "account_status": "حالة الحساب",
+    "suspended": "موقوف",
+    "created_at": "أنشئ في",
+    "updated_at": "آخر تحديث",
+    "days": "أيام"
+  },
+  "actions": {
+    "cancel": "إلغاء",
+    "submit_create": "إنشاء عميل",
+    "submit_update": "تحديث العميل",
+    "processing": "جاري المعالجة..."
+  },
+  "messages": {
+    "create_success": "تم إنشاء العميل بنجاح",
+    "update_success": "تم تحديث العميل بنجاح",
+    "societe_required": "يرجى اختيار شركة"
+  },
+  "columns": {
+    "id": "المعرف",
+    "name": "الاسم",
+    "type": "النوع",
+    "phone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "address": "العنوان",
+    "region": "الجهة",
+    "website": "الموقع الإلكتروني",
+    "ice": "ICE",
+    "if": "IF",
+    "rc": "RC",
+    "tp": "TP",
+    "creditLimit": "سقف الائتمان",
+    "status": "الحالة",
+    "societe": "الشركة"
+  },
+  "types": {
+    "particulier": "فرد",
+    "societe": "شركة"
+  },
+  "status": {
+    "active": "نشط",
+    "inactive": "غير نشط"
+  },
+  "import": {
+    "title": "استيراد العملاء",
+    "societe_label": "الشركة",
+    "cancel": "إلغاء",
+    "submit": "استيراد",
+    "importing": "جاري الاستيراد...",
+    "success": "تم الاستيراد بنجاح",
+    "error": "فشل الاستيراد"
+  },
+  "delete": {
+    "title": "حذف العميل؟",
+    "message": "هل أنت متأكد؟ لا يمكن التراجع عن هذا الإجراء.",
+    "confirm": "حذف",
+    "cancel": "إلغاء",
+    "success": "تم حذف العميل بنجاح",
+    "error": "فشل حذف العميل"
+  },
+  "export": {
+    "csv_error": "فشل تصدير CSV",
+    "xlsx_error": "فشل تصدير XLSX"
+  }
+}

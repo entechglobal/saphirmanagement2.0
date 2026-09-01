@@ -1,0 +1,52 @@
+{
+  "title": "Paramètres",
+  "subtitle": "Configuration et administration de l'application",
+  "nav_label": "Sections",
+  "tabs": {
+    "prices": "Grilles de prix",
+    "prices_desc": "Afficher ou masquer les grilles tarifaires",
+    "documents": "Documents",
+    "documents_desc": "Thèmes des PDF et impressions",
+    "attributes": "Attributs",
+    "attributes_desc": "Gérer les attributs produits",
+    "labels": "Libellés Caisse",
+    "labels_desc": "Libellés affichés en caisse",
+    "permissions": "Permissions & Accès",
+    "permissions_desc": "Rôles et droits utilisateurs",
+    "system": "Système",
+    "system_desc": "Options globales de la plateforme"
+  },
+  "price_grid": {
+    "title": "Grilles de prix",
+    "subtitle": "Choisissez les grilles visibles dans l'application",
+    "badge_default": "Défaut",
+    "badge_hidden": "Masqué",
+    "min_one_warning": "Au moins une grille doit rester active"
+  },
+  "doc_header": {
+    "title": "Modèles de documents",
+    "subtitle": "5 templates d'en-tête pour PDF et impressions",
+    "preview": "Aperçu",
+    "societe_label": "Société",
+    "themes": {
+      "ledger": "Ledger",
+      "strip": "Strip",
+      "framed": "Framed",
+      "wave": "Wave",
+      "atelier": "Atelier"
+    },
+    "theme_desc": {
+      "ledger": "Société à gauche · méta à droite · barre BILL TO",
+      "strip": "Bandeau ambre · blocs N° / date / total",
+      "framed": "Barre teal haut + bas · client à droite",
+      "wave": "En-tête vague · Bill To / From",
+      "atelier": "Titre + logo · colonnes · filet orange"
+    },
+    "save": "Enregistrer",
+    "toast_saved": "Modèle enregistré",
+    "toast_error": "Échec de l'enregistrement",
+    "no_societe_title": "Aucune société",
+    "no_societe_list": "Créez une société pour personnaliser ses documents.",
+    "load_error": "Impossible de charger cette société."
+  }
+}

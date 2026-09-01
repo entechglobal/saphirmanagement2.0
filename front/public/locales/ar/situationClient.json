@@ -1,0 +1,20 @@
+{
+  "page_title": "وضعية العميل",
+  "page_subtitle": "بونات التسليم غير المدفوعة أو المدفوعة جزئياً",
+  "currency": "MAD",
+  "summary_docs": "وثائق قيد الانتظار",
+  "summary_paid": "المجموع المدفوع",
+  "summary_reste": "المتبقي للدفع",
+  "filter_search_placeholder": "البحث عن بون تسليم أو عميل…",
+  "all": "الكل",
+  "filter_client": "العميل",
+  "filter_all_clients": "كل العملاء",
+  "filter_start_date": "تاريخ البداية",
+  "filter_end_date": "تاريخ النهاية",
+  "col_document": "رقم BL",
+  "col_date": "التاريخ",
+  "col_client": "العميل",
+  "col_amount_due": "مبلغ BL",
+  "col_paid": "مدفوع",
+  "col_reste": "المتبقي"
+}

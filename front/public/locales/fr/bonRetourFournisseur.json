@@ -1,0 +1,29 @@
+{
+  "title": "Bons de Retour Fournisseur",
+  "document_date": "Date Document",
+  "fournisseur": "Fournisseur",
+  "depot": "Dépôt",
+  "return_reason": "Motif Retour",
+  "status": "Statut",
+  "amounts": "Montants",
+  "print": "Imprimer",
+  "draft": "Brouillon",
+  "completed": "Validé",
+  "status_badge": {
+    "draft": "Brouillon",
+    "completed": "Validé"
+  },
+  "toast": {
+    "delete_success": "Bon de retour fournisseur supprimé",
+    "validate_success_completed": "Bon de retour fournisseur validé",
+    "validate_success_draft": "Bon de retour fournisseur remis en brouillon",
+    "depot_required": "Veuillez sélectionner un dépôt",
+    "supplier_required": "Veuillez sélectionner un fournisseur",
+    "select_at_least_one_article": "Veuillez sélectionner au moins un article"
+  },
+  "create_title": "Nouveau retour fournisseur",
+  "edit_title": "Modifier le retour fournisseur",
+  "linked_br_optional": "Bon de réception (optionnel)",
+  "select_depot": "Sélectionner un dépôt",
+  "select_supplier": "Sélectionner un fournisseur"
+}

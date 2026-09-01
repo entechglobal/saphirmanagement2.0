@@ -1,0 +1,213 @@
+import ApiError from "../utils/apiError.js";
+
+const BANK_MODES = ["CARTE_BANCAIRE", "VIREMENT", "CHEQUE", "EFFET"];
+const CASH_MODES = ["ESPECE"];
+
+const CAISSE_INCLUDE = {
+  user: {
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: { select: { name: true } },
+    },
+  },
+  societe: { select: { id: true, raisonSocial: true } },
+  banque: { select: { id: true, name: true, RIB: true } },
+};
+
+export { CAISSE_INCLUDE };
+
+export async function resolveWalletForIncome(tx, {
+  societeId,
+  modeReglement,
+  banqueId,
+  caisseId,
+}) {
+  if (caisseId) {
+    const caisse = await tx.caisse.findFirst({
+      where: {
+        id: parseInt(caisseId),
+        societeId,
+        active: true,
+      },
+    });
+    if (!caisse) {
+      throw new ApiError("Wallet destination introuvable ou inactif", 404);
+    }
+    return caisse;
+  }
+
+  if (CASH_MODES.includes(modeReglement)) {
+    const coffre = await tx.caisse.findFirst({
+      where: { societeId, caisseType: "COFFRE", active: true },
+      orderBy: { createdAt: "asc" },
+    });
+    if (!coffre) {
+      throw new ApiError(
+        "Aucun coffre-fort actif. Créez un wallet Coffre Fort pour encaisser les espèces.",
+        400,
+      );
+    }
+    return coffre;
+  }
+
+  if (BANK_MODES.includes(modeReglement)) {
+    if (banqueId) {
+      const bankWallet = await tx.caisse.findFirst({
+        where: {
+          societeId,
+          banqueId: parseInt(banqueId),
+          caisseType: "BANK",
+          active: true,
+        },
+      });
+      if (!bankWallet) {
+        throw new ApiError(
+          "Aucun wallet banque actif pour cette banque. Créez-le dans la gestion des wallets.",
+          400,
+        );
+      }
+      return bankWallet;
+    }
+
+    // Chèque/Effet sans banque → coffre par défaut
+    const coffre = await tx.caisse.findFirst({
+      where: { societeId, caisseType: "COFFRE", active: true },
+      orderBy: { createdAt: "asc" },
+    });
+    if (coffre) return coffre;
+
+    throw new ApiError(
+      `Aucun wallet disponible pour le mode ${modeReglement}. Créez un wallet banque ou coffre.`,
+      400,
+    );
+  }
+
+  return null;
+}
+
+export async function resolveWalletForExpense(tx, {
+  societeId,
+  modeReglement,
+  banqueId,
+  caisseId,
+}) {
+  return resolveWalletForIncome(tx, { societeId, modeReglement, banqueId, caisseId });
+}
+
+export async function creditWallet(tx, {
+  caisse,
+  amount,
+  note,
+  createdBy,
+  reglementClientId,
+}) {
+  const creditAmount = parseFloat(amount);
+  if (!caisse || creditAmount <= 0) return null;
+
+  const currentBalance = parseFloat(caisse.currentBalance);
+  const newBalance = parseFloat((currentBalance + creditAmount).toFixed(2));
+
+  await tx.caisse.update({
+    where: { id: caisse.id },
+    data: { currentBalance: newBalance },
+  });
+
+  return tx.caisseTransaction.create({
+    data: {
+      caisseId: caisse.id,
+      transactionType: "INCOME",
+      amount: creditAmount,
+      oldBalance: currentBalance,
+      newBalance,
+      note: note || null,
+      reglementClientId: reglementClientId ?? null,
+      createdBy: createdBy ?? null,
+    },
+  });
+}
+
+export async function debitWallet(tx, {
+  caisse,
+  amount,
+  note,
+  createdBy,
+  reglementFournisseurId,
+}) {
+  const debitAmount = parseFloat(amount);
+  if (!caisse || debitAmount <= 0) return null;
+
+  const currentBalance = parseFloat(caisse.currentBalance);
+  if (debitAmount > currentBalance) {
+    throw new ApiError(
+      `Solde insuffisant dans « ${caisse.name} ». Solde actuel: ${currentBalance.toFixed(2)} MAD`,
+      400,
+    );
+  }
+
+  const newBalance = parseFloat((currentBalance - debitAmount).toFixed(2));
+
+  await tx.caisse.update({
+    where: { id: caisse.id },
+    data: { currentBalance: newBalance },
+  });
+
+  return tx.caisseTransaction.create({
+    data: {
+      caisseId: caisse.id,
+      transactionType: "EXPENSE",
+      amount: -debitAmount,
+      oldBalance: currentBalance,
+      newBalance,
+      note: note || null,
+      reglementFournisseurId: reglementFournisseurId ?? null,
+      createdBy: createdBy ?? null,
+    },
+  });
+}
+
+export async function reverseIncome(tx, reglementClientId) {
+  const txRows = await tx.caisseTransaction.findMany({
+    where: { reglementClientId, transactionType: "INCOME" },
+  });
+
+  for (const row of txRows) {
+    const caisse = await tx.caisse.findUnique({ where: { id: row.caisseId } });
+    if (!caisse) continue;
+
+    const amount = Math.abs(parseFloat(row.amount));
+    const currentBalance = parseFloat(caisse.currentBalance);
+    const newBalance = parseFloat((currentBalance - amount).toFixed(2));
+
+    await tx.caisse.update({
+      where: { id: caisse.id },
+      data: { currentBalance: newBalance },
+    });
+    await tx.caisseTransaction.delete({ where: { id: row.id } });
+  }
+}
+
+export async function reverseExpense(tx, reglementFournisseurId) {
+  const txRows = await tx.caisseTransaction.findMany({
+    where: { reglementFournisseurId, transactionType: "EXPENSE" },
+  });
+
+  for (const row of txRows) {
+    const caisse = await tx.caisse.findUnique({ where: { id: row.caisseId } });
+    if (!caisse) continue;
+
+    const amount = Math.abs(parseFloat(row.amount));
+    const currentBalance = parseFloat(caisse.currentBalance);
+    const newBalance = parseFloat((currentBalance + amount).toFixed(2));
+
+    await tx.caisse.update({
+      where: { id: caisse.id },
+      data: { currentBalance: newBalance },
+    });
+    await tx.caisseTransaction.delete({ where: { id: row.id } });
+  }
+}
+
+export const INCOME_TYPES = ["TRANSFER_IN", "INITIAL_BALANCE", "INCOME"];
+export const OUTFLOW_TYPES = ["CHARGE", "TRANSFER_OUT", "EXPENSE"];

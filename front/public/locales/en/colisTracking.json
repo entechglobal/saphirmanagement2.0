@@ -1,0 +1,23 @@
+{
+  "page_title": "Colis Tracking",
+  "col_client": "Client",
+  "col_document": "Document #",
+  "col_colis_code": "Colis Code",
+  "col_delivery_date": "Delivery Date",
+  "col_order_status": "Order Status",
+  "col_financials": "Financials",
+  "col_agency": "Agency",
+  "scan_label": "Scan colis barcode",
+  "btn_receiving": "Receiving...",
+  "btn_mark_received": "Mark received",
+  "error_update_status": "Failed to update colis status.",
+  "success_title": "Package received",
+  "success_colis_code": "Colis code#:",
+  "success_status": "Status:",
+  "success_document": "Document:",
+  "success_client": "Client:",
+  "col_total": "Total",
+  "col_paid": "Paid",
+  "search_placeholder": "Search tracking list",
+  "colis_copied": "Code copied!"
+}

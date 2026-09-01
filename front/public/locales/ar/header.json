@@ -1,0 +1,58 @@
+{
+  "branding": {
+    "system_level": "مستوى النظام",
+    "global_mgmt": "الإدارة العامة",
+    "current_company": "الشركة الحالية",
+    "loading": "جاري التحميل..."
+  },
+  "profile": {
+    "access_level": "مستوى الوصول",
+    "connected_to": "متصل بـ",
+    "super_admin": "مدير عام",
+    "my_profile": "ملفي الشخصي",
+    "logout": "تسجيل الخروج",
+    "my_company": "شركتي"
+  },
+  "preferences": {
+    "title": "التفضيلات",
+    "subtitle": "اللغة ومظهر التطبيق",
+    "language": "اللغة",
+    "theme": "المظهر",
+    "theme_light": "فاتح",
+    "theme_dark": "داكن",
+    "switching_language": "جاري تغيير اللغة...",
+    "switching_theme": "جاري تغيير المظهر..."
+  },
+  "menu": "القائمة",
+  "confirmation": {
+    "logout_title": "تأكيد تسجيل الخروج",
+    "logout_message": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+    "logout_confirm": "تسجيل الخروج",
+    "logout_cancel": "إلغاء"
+  },
+  "tooltips": {
+    "theme_toggle": "تغيير المظهر",
+    "fullscreen": "ملء الشاشة"
+  },
+  "palette": {
+    "placeholder": "ابحث عن صفحة أو إجراء...",
+    "no_results": "لا نتائج لـ",
+    "hint_navigate": "تنقل",
+    "hint_open": "فتح",
+    "hint_close": "إغلاق",
+    "result": "نتيجة",
+    "results": "نتائج",
+    "escape_key": "Échap",
+    "categories": {
+      "navigation": "التنقل",
+      "catalogue": "الكتالوج",
+      "contacts": "جهات الاتصال",
+      "stock": "المخزون",
+      "saphir": "سفير",
+      "achats": "المشتريات",
+      "admin": "الإدارة",
+      "system": "النظام",
+      "account": "الحساب"
+    }
+  }
+}

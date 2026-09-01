@@ -1,0 +1,129 @@
+{
+  "page_title": "Pack Management",
+  "create_button": "New Pack",
+  "print_barcode": "Barcodes",
+  "columns": {
+    "barcode": "Barcode",
+    "name": "Pack Name",
+    "cost": "Cost Price",
+    "margin": "Margin (%)",
+    "total_articles": "Articles Amount",
+    "discount": "Discount (%)",
+    "sale_price": "Pack Sale Price",
+    "purchase_price": "Pack Purchase Price",
+    "status": "Status",
+    "created_at": "Created At"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "delete_modal": {
+    "title": "Delete Pack?",
+    "message": "Are you sure you want to delete the pack \"{{name}}\"? All linked components will remain as individual articles.",
+    "confirm": "Delete",
+    "cancel": "Cancel"
+  },
+  "toast": {
+    "delete_success": "Pack deleted successfully",
+    "delete_error": "Error deleting pack",
+    "barcode_copied": "Barcode copied!"
+  },
+  "form": {
+    "create_title": "New Pack",
+    "edit_title": "Edit Pack",
+    "back_label": "Back to packs",
+    "entity_name": "Packs",
+    "sections": {
+      "general": "General Information",
+      "components": "Pack Components",
+      "pricing": "Pricing Strategy",
+      "status": "Status"
+    },
+    "fields": {
+      "name": "Pack Name",
+      "name_placeholder": "Ex: Premium Office Pack",
+      "barcode": "Barcode",
+      "barcode_placeholder": "Ex: PACK-2026-001",
+      "generate": "Generate",
+      "societe": "Company",
+      "select_societe": "Select a company",
+      "margin_rate": "Margin Rate (%)",
+      "margin_rate_placeholder": "Ex: 30",
+      "cost_price": "Cost Price (MAD)",
+      "discount": "Discount (%)",
+      "discount_placeholder": "Ex: 10",
+      "sale_amount": "Sale Amount (MAD)",
+      "custom_price": "Pack Sale Price (MAD)",
+      "custom_price_placeholder": "Ex: 712.50",
+      "estimated_price": "Estimated sale price",
+      "active_label": "Pack active",
+      "active_desc": "An inactive pack will not appear in delivery notes"
+    },
+    "pricing_modes": {
+      "marge_label": "Margin",
+      "marge_desc": "Price calculated based on cost price + margin",
+      "remise_label": "Discount",
+      "remise_desc": "Price calculated from total articles with discount",
+      "personnalise_label": "Custom",
+      "personnalise_desc": "Enter the sale price directly"
+    },
+    "components_table": {
+      "product": "Product",
+      "qty": "Qty",
+      "buy_price": "Purchase Price",
+      "sell_price": "Sale Price",
+      "subtotal": "Subtotal",
+      "empty": "No components added",
+      "empty_hint": "Click \"Add products\" to get started",
+      "add_products": "Add products"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "save": "Save changes",
+      "create": "Create Pack",
+      "saving": "Updating...",
+      "creating": "Creating..."
+    },
+    "validation": {
+      "barcode_required": "Barcode is required",
+      "name_required": "Name is required",
+      "societe_required": "Company is required",
+      "components_required": "Add at least one component",
+      "qty_required": "Quantity must be > 0",
+      "margin_required": "Margin rate is required",
+      "must_be_gte_zero": "Must be >= 0",
+      "discount_required": "Discount is required",
+      "price_required": "Sale price is required",
+      "must_be_gt_zero": "Must be > 0"
+    },
+    "toast": {
+      "form_errors": "Please fix the form errors",
+      "component_id_error": "Each component must have either an articleId or a variantId",
+      "update_success": "Pack updated successfully",
+      "update_error": "Error updating pack",
+      "create_success": "Pack created successfully",
+      "create_error": "Error creating pack",
+      "no_changes": "No changes detected"
+    }
+  },
+  "picker": {
+    "title": "Select products",
+    "available": "products available",
+    "selected": "selected",
+    "selected_plural": "selected",
+    "search_placeholder": "Search by name or barcode...",
+    "col_product": "Product",
+    "col_buy_price": "Purchase Price",
+    "col_sell_price": "Sale Price",
+    "already_added": "Already added",
+    "type_variant": "Variant",
+    "type_article": "Article",
+    "empty": "No products found",
+    "cancel": "Cancel",
+    "add": "Add",
+    "price_field_1": "Sale Price 1",
+    "price_field_2": "Sale Price 2",
+    "price_field_3": "Sale Price 3"
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "article_info": {
+    "title": "Informations sur l'article",
+    "name": "Nom de l'article",
+    "family": "Groupe de famille",
+    "barcode": "Code-barres / GTIN",
+    "reference": "ID Référence",
+    "total": "Total",
+    "variants_count": "{{count}} Variantes",
+    "no_barcode": "Aucun code-barres assigné"
+  },
+  "manager": {
+    "title": "Variantes",
+    "add_button": "Ajouter une variante",
+    "finish_button": "Terminer et Enregistrer"
+  },
+  "table": {
+    "variant": "Variante",
+    "barcode": "Code-barres",
+    "attributes": "Attributs",
+    "actions": "Actions",
+    "no_barcode": "Pas de code-barres",
+    "stock": "Stock"
+  },
+  "form": {
+    "add_title": "Ajouter une Variante",
+    "edit_basic": "Modifier les infos de base",
+    "manage_attr": "Gérer les attributs",
+    "name_label": "Nom de la variante",
+    "barcode_label": "Code-barres",
+    "barcode_placeholder": "Générer ou saisir",
+    "generate": "Générer",
+    "attr_config": "Configurer les caractéristiques spécifiques",
+    "attr_type": "Type d'attribut",
+    "attr_value": "Valeur",
+    "select_type": "Choisir type...",
+    "select_value": "Choisir valeur...",
+    "add_another": "Ajouter un autre attribut"
+  },
+  "dialog": {
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "delete_title": "Supprimer la Variante",
+    "delete_confirm": "Confirmer la suppression de",
+    "delete_action": "Supprimer"
+  },
+  "notifications": {
+    "save_success": "Enregistré avec succès",
+    "op_failed": "L'opération a échoué",
+    "attr_incomplete": "Veuillez compléter toutes les sélections d'attributs",
+    "deleted": "Supprimé",
+    "select_attr_first": "Veuillez sélectionner au moins un attribut avec une ou plusieurs valeurs.",
+    "too_many_variants": "Cette combinaison générerait {{total}} variantes. Le maximum autorisé est {{limit}}. Veuillez réduire vos sélections.",
+    "variants_created": "{{count}} variante(s) créée(s) !",
+    "create_failed": "Échec de la création des variantes",
+    "barcode_required": "Code-barres requis"
+  },
+  "builder": {
+    "title_step1": "Créer des variantes",
+    "title_step2": "Réviser et confirmer",
+    "desc_step1": "Sélectionnez les attributs et leurs valeurs possibles",
+    "desc_step2": "Définissez les codes-barres, supprimez les lignes non souhaitées, puis enregistrez",
+    "step1_label": "Sélectionner les attributs",
+    "step2_label": "Aperçu & Enregistrer",
+    "select_attr": "Sélectionner un attribut...",
+    "n_selected": "{{count}} sélectionné(s)",
+    "pick_hint": "← Choisissez un attribut pour voir les valeurs",
+    "will_generate": "Cela générera {{count}} variante(s)",
+    "exceeds_limit": "— dépasse la limite de {{limit}}",
+    "add_another_attr": "Ajouter un autre attribut",
+    "n_generated": "{{count}} variante(s) générée(s)",
+    "auto_barcodes": "Auto-générer tous les codes-barres",
+    "barcode_placeholder": "Saisir ou générer…",
+    "missing_barcodes": "Certaines variantes n'ont pas de code-barres. Veuillez les renseigner ou utiliser l'auto-génération.",
+    "save_variants": "Enregistrer {{count}} variante(s) en base",
+    "cancel": "Annuler",
+    "generate_btn": "Générer les variantes",
+    "back": "← Retour"
+  },
+  "finish_modal": {
+    "title": "Terminer sans stock ?",
+    "message": "Vous n'avez pas encore ajouté de stock aux variantes. L'article sera enregistré sans stock disponible. Vous pourrez en ajouter plus tard.",
+    "confirm": "Terminer quand même",
+    "cancel": "Annuler"
+  },
+  "view": {
+    "stock_info": "Le stock est géré par variante",
+    "manage_attributes_title": "Gérer les attributs de variante",
+    "loading_attributes": "Chargement des attributs…",
+    "barcode_label": "Code-barres :"
+  }
+}

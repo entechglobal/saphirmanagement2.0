@@ -1,0 +1,67 @@
+{
+  "modal": {
+    "title": "Barcode Printing",
+    "tab_articles": "Articles & Variants",
+    "tab_packs": "Packs",
+    "products_available": "products available",
+    "packs_available": "packs available",
+    "selected": "selected",
+    "search_article": "Search an article or variant...",
+    "search_pack": "Search a pack...",
+    "no_results": "No results",
+    "cancel": "Cancel",
+    "preview": "Preview",
+    "page": "Page",
+    "col_article": "Article / Variant",
+    "col_type": "Type",
+    "col_price": "Sale Price",
+    "col_pack": "Pack",
+    "col_barcode": "Barcode",
+    "type_article": "Article",
+    "type_variant": "Variant"
+  },
+  "config": {
+    "selected_article": "Selected article",
+    "purchase_price": "Purchase price",
+    "sale_price": "Sale price",
+    "label_type": "Label type",
+    "label_types": {
+      "avecPrix": "With Price",
+      "sansPrix": "Without Price",
+      "parametre": "Parameter",
+      "intitule": "Label"
+    },
+    "price_grid": "Price grid",
+    "label_size": "Label size",
+    "quantity_mode": "Quantity mode",
+    "qty_custom": "Custom",
+    "qty_available": "Available",
+    "quantity": "Quantity",
+    "quantity_per_pack": "Quantity per pack",
+    "no_depot": "No warehouse found",
+    "parameters": "Parameters",
+    "prefix": "Prefix",
+    "suffix": "Suffix",
+    "param_placeholder": "e.g. 9999"
+  },
+  "preview": {
+    "title": "Label preview",
+    "subtitle_labels": "labels",
+    "subtitle_items": "item(s)",
+    "total": "Total",
+    "size": "Size",
+    "col_type": "Type",
+    "col_size": "Size",
+    "col_qty": "Quantity",
+    "col_price_grid": "Grid",
+    "back": "Back",
+    "print": "Print",
+    "popup_blocked": "Allow pop-ups to print"
+  },
+  "toast": {
+    "generate_error": "Error generating labels",
+    "select_pack": "Select at least one pack",
+    "select_article": "Select at least one article",
+    "select_depot": "Select at least one warehouse"
+  }
+}

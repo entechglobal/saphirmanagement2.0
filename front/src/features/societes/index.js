@@ -1,0 +1,5 @@
+export { SocietesPage } from "./pages/SocietesPage"
+export { SocietesForm } from "./components/SocietesForm"
+export { SocietesView } from "./components/SocietesView"
+export {SocieteUpdate} from "./pages/societe/SocieteUpdate"
+export {SocieteView} from "./pages/societe/SocieteView"

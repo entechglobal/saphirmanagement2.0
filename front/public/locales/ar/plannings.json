@@ -1,0 +1,57 @@
+{
+  "page_title": "جدول التسليم",
+
+  "status_paye": "مدفوع",
+  "status_en_attente": "قيد الانتظار",
+  "status_annule": "ملغى",
+
+  "mode_VIREMENT": "تحويل بنكي",
+  "mode_ESPECES": "نقداً",
+  "mode_CHEQUE": "شيك",
+  "mode_CB": "بطاقة بنكية",
+
+  "day_sun": "أح",
+  "day_mon": "إث",
+  "day_tue": "ثل",
+  "day_wed": "أر",
+  "day_thu": "خم",
+  "day_fri": "جم",
+  "day_sat": "سب",
+
+  "legend_with_deliveries": "مع تسليمات",
+  "legend_without": "بدون تسليم",
+  "legend_out_of_range": "خارج النطاق",
+
+  "filter_label": "الفلاتر",
+  "filter_start_date": "تاريخ البداية",
+  "filter_end_date": "تاريخ النهاية",
+  "filter_livreur": "الموصّل",
+  "filter_all_livreurs": "كل الموصّلين",
+
+  "stat_bl": "وثائق التسليم",
+  "stat_colis": "إجمالي الطرود",
+  "stat_montant": "المبلغ الإجمالي",
+  "stat_jours": "الأيام المجدولة",
+
+  "detail_document": "الوثيقة",
+  "detail_created_by": "أُنشئ بواسطة",
+  "detail_livreur": "الموصّل",
+  "detail_telephone": "الهاتف",
+  "detail_whatsapp": "واتساب",
+  "detail_ville": "المدينة",
+  "detail_localisation": "الموقع",
+  "detail_reglement": "الدفع",
+  "detail_montant": "المبلغ",
+  "detail_notes": "ملاحظات",
+  "detail_reste": "المتبقي",
+
+  "badge_reported": "مؤجل",
+  "badge_suspended": "معلق",
+
+  "bl_colis": "{{count}} طرد",
+  "delivery_count": "{{count}} تسليم",
+  "no_delivery": "لا توجد تسليمات",
+  "day_no_delivery": "لا توجد تسليمات هذا اليوم",
+  "empty_period": "لا توجد تسليمات لهذه الفترة",
+  "back_all_days": "← عرض كل الأيام"
+}

@@ -1,0 +1,6 @@
+export {ClientsPage} from "./pages/clients/ClientsPage"
+export {ClientsForm} from "./components/ClientsForm"
+export {ClientsView} from "./components/ClientsView"
+export {SuppliersPage} from "./pages/suppliers/SuppliersPage"
+export {SuppliersForm} from "./components/SuppliersForm"
+export {SuppliersView} from "./components/SuppliersView"

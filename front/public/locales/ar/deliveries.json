@@ -1,0 +1,87 @@
+{
+  "page_title": "إدارة الموصّلين",
+  "create_button": "موصّل جديد",
+  "columns": {
+    "id": "المعرّف",
+    "name": "الاسم",
+    "type": "النوع",
+    "societe": "الشركة",
+    "phone": "الهاتف",
+    "bls": "سندات التسليم",
+    "status": "الحالة",
+    "created_at": "تاريخ الإنشاء"
+  },
+  "entity_type": {
+    "societe": "شركة",
+    "particulier": "فرد"
+  },
+  "tooltip": {
+    "disable": "تعطيل",
+    "enable": "تفعيل"
+  },
+  "delete_modal": {
+    "title": "حذف الموصّل",
+    "message": "هل تريد حذف \"{{name}}\"؟ هذا الإجراء لا يمكن التراجع عنه.",
+    "confirm": "حذف",
+    "cancel": "إلغاء"
+  },
+  "toggle_modal": {
+    "disable_title": "تعطيل الموصّل",
+    "enable_title": "تفعيل الموصّل",
+    "disable_message": "هل تريد تعطيل \"{{name}}\"؟ لن يكون متاحًا لسندات التسليم بعد الآن.",
+    "enable_message": "هل تريد تفعيل \"{{name}}\"؟",
+    "disable_confirm": "تعطيل",
+    "enable_confirm": "تفعيل",
+    "cancel": "إلغاء"
+  },
+  "toast": {
+    "delete_success": "تم حذف الموصّل بنجاح",
+    "delete_error": "فشل الحذف",
+    "enable_success": "تم تفعيل {{name}}",
+    "disable_success": "تم تعطيل {{name}}",
+    "toggle_error": "فشل تغيير الحالة"
+  },
+  "form": {
+    "entity_name": "الموصّل",
+    "create_title": "موصّل جديد",
+    "edit_title": "تعديل · {{name}}",
+    "back_label": "العودة إلى الموصّلين",
+    "sections": {
+      "info": "معلومات الموصّل",
+      "status": "الحالة"
+    },
+    "fields": {
+      "societe": "الشركة",
+      "societe_placeholder": "اختر شركة",
+      "societe_locked": "لا يمكن تغيير الشركة بعد الإنشاء.",
+      "name": "الاسم الكامل",
+      "name_placeholder": "مثال: سريع للتوصيل",
+      "type": "النوع",
+      "phone": "الهاتف",
+      "phone_placeholder": "مثال: 0612345678",
+      "address": "العنوان",
+      "address_placeholder": "مثال: 12 شارع الحسن الثاني، الدار البيضاء",
+      "active_label": "نشط",
+      "active_desc": "الموصّل متاح لسندات التسليم"
+    },
+    "validation": {
+      "required": "مطلوب",
+      "phone_invalid": "رقم غير صالح. الصيغة المتوقعة: 0612345678 أو +212612345678"
+    },
+    "actions": {
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "create": "إنشاء موصّل",
+      "saving": "جارٍ الحفظ…",
+      "creating": "جارٍ الإنشاء…"
+    },
+    "toast": {
+      "create_success": "تم إنشاء الموصّل بنجاح!",
+      "create_error": "فشل الإنشاء",
+      "update_success": "تم تحديث الموصّل!",
+      "update_error": "فشل التحديث",
+      "no_changes": "لم يتم اكتشاف أي تغييرات",
+      "form_errors": "يُرجى تعبئة الحقول المطلوبة وتصحيح الأخطاء"
+    }
+  }
+}

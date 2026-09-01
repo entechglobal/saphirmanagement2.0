@@ -1,0 +1,2092 @@
+// ========================================
+// COMPLETE PRISMA SCHEMA - MULTI-SOCIÉTÉ MULTI-DÉPÔT ERP
+// Version: 6.0 - FULL RETURN DOCUMENT ARCHITECTURE
+// Last Updated: March 2026
+// Total Models: 44
+// ========================================
+//
+// Architecture: Generic Header + Specialized Extension Tables
+//
+// KEY PRINCIPLE — Physical movement != Financial adjustment:
+//   Every return scenario splits into two independent documents:
+//     1. Physical document  — moves stock (INBOUND or OUTBOUND)
+//     2. Financial document — adjusts accounting (credit note)
+//   They link optionally; either can exist without the other.
+//
+// Document Family A — Client (Sales):
+//   ClientDocument (header)
+//     |- Devis                (quote)
+//     |- Commande             (sales order)
+//     |- BonLivraison         (delivery note       — OUTBOUND stock)
+//     |- BonRetourClient      (client return note  — RETURN_IN stock, goods come back)
+//     |- Facture              (invoice             — triggers payment received)
+//     +- Avoir                (credit note         — financial credit to client,
+//                                                    optionally linked to BonRetourClient)
+//
+// Document Family B — Fournisseur (Purchases):
+//   FournisseurDocument (header)
+//     |- CommandeFournisseur   (purchase order       — no stock, quantities only)
+//     |- BonReception          (goods receipt        — INBOUND stock)
+//     |- BonRetourFournisseur  (return to supplier   — RETURN_OUT stock, goods leave)
+//     +- AvoirFournisseur      (supplier credit note — financial credit from supplier,
+//                                                      optionally linked to BonRetourFournisseur)
+//
+// Lines:
+//   ClientDocumentLine      — articles/variants on client documents
+//   FournisseurDocumentLine — articles/variants on fournisseur documents
+//
+// Workflow chains:
+//   Sales:    Devis -> Commande -> BonLivraison -> Facture
+//                                      | (if return)
+//                               BonRetourClient -> Avoir (credit)
+//
+//   Purchase: CommandeFournisseur -> BonReception (goods arrive)
+//                                       | (if return)
+//                                  BonRetourFournisseur -> AvoirFournisseur (credit from supplier)
+//
+// Stock impact summary:
+//   BonLivraison         -> OUTBOUND    (stock decreases at depot)
+//   BonRetourClient      -> RETURN_IN   (stock increases at depot, goods come back)
+//   BonReception         -> INBOUND     (stock increases at depot)
+//   BonRetourFournisseur -> RETURN_OUT  (stock decreases at depot, goods leave)
+//   Avoir                -> no stock impact (financial only)
+//   AvoirFournisseur     -> no stock impact (financial only)
+//
+// ========================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// ENUMS
+// ========================================
+
+enum DepotType {
+  PRINCIPAL
+  SECONDARY
+  OUTLET
+  TRANSIT
+}
+
+enum TransactionType {
+  INBOUND      // BonReception validated — stock arrives from supplier
+  OUTBOUND     // BonLivraison validated — stock leaves to client
+  RETURN_IN    // BonRetourClient — client returns goods, stock comes back IN
+  RETURN_OUT   // BonRetourFournisseur — we return goods to supplier, stock goes OUT
+  ADJUSTMENT   // Inventory correction
+  TRANSFER_OUT // StockTransfer — leaves source depot
+  TRANSFER_IN  // StockTransfer — arrives at destination depot
+  DAMAGED      // Write-off
+}
+
+enum ReservationStatus {
+  PENDING
+  FULFILLED
+  CANCELLED
+  EXPIRED
+}
+
+enum EntityType {
+  PARTICULIER
+  SOCIETE
+}
+
+enum DeliveryType {
+  INTERN
+  EXTERN
+}
+
+enum DocumentStatus {
+  DRAFT      // Brouillon — editable, no impact
+  CONFIRMED  // Confirme  — locked, awaiting execution
+  PARTIAL    // Partiel   — partially executed
+  COMPLETED  // Complete  — fully executed
+  CANCELLED  // Annule    — voided
+  PAID       // Paye      — financial settlement complete
+}
+
+enum PaymentMethod {
+  ESPECES
+  CHEQUE
+  VIREMENT
+  CARTE
+  TRAITE
+  EFFET
+}
+
+enum PaymentType {
+  CLIENT       // Payment received from client
+  FOURNISSEUR  // Payment sent to supplier
+}
+
+enum TransferStatus {
+  PENDING
+  COMPLETED
+}
+
+enum ModeReglement {
+  ESPECE
+  CARTE_BANCAIRE
+  CHEQUE
+  EFFET
+  CARTE_FIDELITE
+  BON_ACHAT
+  REMISE
+  VIREMENT
+}
+
+enum BonLivraisonType {
+  STANDARD
+  ADVANCED
+}
+
+// ----------------------------------------
+// DELIVERY PROVIDER CONFIG (per-société, per-business-entity)
+// Stores encrypted credentials for external delivery providers.
+// One société can have multiple configs for the same provider
+// (e.g. two Ameex accounts for different business entities).
+// ----------------------------------------
+model DeliveryProviderConfig {
+  id        Int     @id @default(autoincrement())
+  societeId Int     @map("societe_id")
+  provider  String  @db.VarChar(50)   // "AMEEX", "AMANA", …
+  name      String  @db.VarChar(100)  // display label in picker
+  apiId     String  @map("api_id")    @db.VarChar(255) // AES-256-GCM encrypted
+  apiKey    String  @map("api_key")   @db.VarChar(255) // AES-256-GCM encrypted
+  active    Boolean @default(true)
+  metadata  Json?
+
+  societe       Societe        @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  bonLivraisons BonLivraison[] @relation("BLProviderConfig")
+
+  @@index([societeId, provider])
+  @@index([active])
+  @@map("delivery_provider_configs")
+}
+
+enum WebhookLogStatus {
+  PENDING
+  PROCESSING
+  PROCESSED
+  FAILED
+}
+
+enum ColisSync {
+  NOT_APPLICABLE
+  PENDING
+  CREATED
+  FAILED
+  RECEIVED
+}
+
+enum BonLivraisonStatus {
+  EN_COURS
+  CONFIRME
+  PREPARE
+  COLLECTE
+  EN_ROUTE
+  LIVRE
+  ANNULE
+  REPORTE
+  PAYE
+  UPDATE
+  SUSPENDED
+  CONTINUED
+}
+
+enum CaisseType {
+  CENTRAL
+  SOCIETE
+  USER
+  BANK
+  COFFRE
+}
+
+enum CaisseTransactionType {
+  INITIAL_BALANCE
+  CHARGE
+  TRANSFER_IN
+  TRANSFER_OUT
+  INCOME
+  EXPENSE
+}
+
+// ========================================
+// SOCIETE (Core Multi-Tenancy)
+// ========================================
+
+model Societe {
+  id           Int     @id @default(autoincrement())
+  raisonSocial String  @map("raison_social") @db.VarChar(255)
+  logo         String? @db.Text
+
+  address String? @db.Text
+  tel     String? @db.VarChar(20)
+  phone   String? @db.VarChar(20)
+  email   String? @db.VarChar(100)
+  siteWeb String? @map("site_web") @db.VarChar(255)
+
+  ice String? @unique @db.VarChar(15)
+  rc  String? @db.VarChar(20)
+  tp  String? @db.VarChar(20)
+  if  String? @db.VarChar(20)
+
+  fixedStructure Json? @map("fixed_structure")
+
+  /// PDF / printable document header branding (colors, logo, layout)
+  documentHeaderConfig Json? @map("document_header_config")
+
+  depots               Depot[]
+  users                User[]
+  clients              Client[]
+  fournisseurs         Fournisseur[]
+  deliveries           Delivery[]
+  clientDocuments      ClientDocument[]
+  fournisseurDocuments FournisseurDocument[]
+  societePricing       SocietePricing[]
+  stockTransfers       StockTransfer[]
+  inventories          Inventory[]
+  reglements           ReglementClient[]
+  reglementsFournisseur ReglementFournisseur[]
+  agences              Agence[]
+  packs                Pack[]
+  deliveryProviderConfigs DeliveryProviderConfig[]
+  caisses                 Caisse[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([ice])
+  @@map("societes")
+}
+
+// ========================================
+// DEPOT
+// ========================================
+
+model Depot {
+  id        Int    @id @default(autoincrement())
+  societeId Int    @map("societe_id")
+  code      String @db.VarChar(20)
+  name      String @db.VarChar(255)
+
+  address String? @db.Text
+  city    String? @db.VarChar(100)
+  region  String? @db.VarChar(100)
+  phone   String? @db.VarChar(20)
+  email   String? @db.VarChar(100)
+  manager String? @db.VarChar(255)
+
+  type     DepotType @default(PRINCIPAL)
+  surface  Decimal?  @db.Decimal(10, 2)
+  capacity Decimal?  @db.Decimal(10, 2)
+  active   Boolean   @default(true)
+
+  societe                Societe               @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  stockByDepot           StockByDepot[]
+  stockTransactions      StockTransaction[]
+  stockReservations      StockReservation[]
+  transfersAsSource      StockTransfer[]       @relation("SourceDepot")
+  transfersAsDestination StockTransfer[]       @relation("DestinationDepot")
+  inventories            Inventory[]
+  // Stock-movement documents only — these are the only doc types that touch a depot
+  bonLivraisons          BonLivraison[]
+  bonRetourClients       BonRetourClient[]
+  bonReceptions          BonReception[]
+  bonRetourFournisseurs  BonRetourFournisseur[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([societeId, code])
+  @@index([societeId])
+  @@index([active])
+  @@index([type])
+  @@map("depots")
+}
+
+// ========================================
+// STOCK BY DEPOT
+// ========================================
+
+model StockByDepot {
+  id        Int  @id @default(autoincrement())
+  depotId   Int  @map("depot_id")
+  articleId Int? @map("article_id")
+  variantId Int? @map("variant_id")
+
+  quantityAvailable Decimal   @default(0) @map("quantity_available") @db.Decimal(10, 3)
+  quantityReserved  Decimal   @default(0) @map("quantity_reserved") @db.Decimal(10, 3)
+  quantityInTransit Decimal   @default(0) @map("quantity_in_transit") @db.Decimal(10, 3)
+  alertThreshold    Decimal   @default(0) @map("alert_threshold") @db.Decimal(10, 3)
+  location          String?   @db.VarChar(50)
+  lastInventoryDate DateTime? @map("last_inventory_date")
+
+  depot   Depot           @relation(fields: [depotId], references: [id], onDelete: Cascade)
+  article Article?        @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  variant ArticleVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([depotId, articleId])
+  @@unique([depotId, variantId])
+  @@index([depotId])
+  @@index([articleId])
+  @@index([variantId])
+  @@index([quantityAvailable])
+  @@map("stock_by_depot")
+}
+
+// ========================================
+// SYSTEM SETTINGS
+// ========================================
+
+model SystemSettings {
+  id                 Int     @id @default(autoincrement())
+  allowNegativeStock Boolean @default(false)
+  systemStartHour    Int?
+  systemEndHour      Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("system_settings")
+}
+
+// ========================================
+// SETTINGS CHANGE LOG
+// ========================================
+
+model SettingsChangeLog {
+  id          Int      @id @default(autoincrement())
+  settingName String   @db.VarChar(100)
+  oldValue    String?  @db.Text
+  newValue    String?  @db.Text
+  changedBy   Int
+  reason      String?  @db.VarChar(500)
+  changedAt   DateTime @default(now())
+
+  user User @relation(fields: [changedBy], references: [id])
+
+  @@index([settingName])
+  @@index([changedAt])
+  @@map("settings_change_log")
+}
+
+// ========================================
+// USER
+// ========================================
+
+model User {
+  id           Int     @id @default(autoincrement())
+  societeId    Int?    @map("societe_id")
+  email        String  @unique
+  name         String
+  password     String
+  isSuperAdmin Boolean @default(false) @map("is_super_admin")
+  profile      String?
+  active       Boolean @default(true)
+
+  roleId Int  @map("role_id")
+  role   Role @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  extraPermissions   UserExtraPermission[]
+  removedPermissions UserRemovedPermission[]
+  settingsChanges    SettingsChangeLog[]
+
+  societe              Societe?  @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  stockTransactions    StockTransaction[]
+  payments             Payment[]
+  createdTransfers     StockTransfer[] @relation("TransferCreatedBy")
+  validatedTransfers   StockTransfer[] @relation("TransferValidatedBy")
+  createdInventories   Inventory[]     @relation("InventoryCreatedBy")
+  validatedInventories Inventory[]     @relation("InventoryValidatedBy")
+
+  createdClientDocuments      ClientDocument[]      @relation("ClientDocCreatedBy")
+  createdFournisseurDocuments FournisseurDocument[] @relation("FournisseurDocCreatedBy")
+
+  // Advanced BonLivraison assignment back-references
+  commercialBLs   BonLivraison[] @relation("BLCommercial")
+  preparateurBLs  BonLivraison[] @relation("BLPreparateur")
+  reportedBLs     BonLivraison[] @relation("BLReportedBy")
+
+  // Status transitions performed by this user
+  blStatusHistory BonLivraisonStatusHistory[] @relation("BLStatusHistoryUser")
+
+  // Linked Delivery (operational identity) for INTERN livreur users
+  delivery Delivery?
+
+  // Caisse (cash register)
+  caisse             Caisse?
+  caissesCreated     Caisse[]            @relation("CaisseCreatedBy")
+  caisseTransactions CaisseTransaction[] @relation("CaisseTransactionCreatedBy")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([roleId])
+  @@index([email])
+  @@index([societeId])
+  @@index([isSuperAdmin])
+  @@map("users")
+}
+
+// ========================================
+// RBAC
+// ========================================
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  users           User[]
+  rolePermissions RolePermission[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("roles")
+}
+
+model Permission {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  rolePermissions  RolePermission[]
+  extraForUsers    UserExtraPermission[]
+  removedFromUsers UserRemovedPermission[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       Int @map("role_id")
+  permissionId Int @map("permission_id")
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+model UserExtraPermission {
+  userId       Int @map("user_id")
+  permissionId Int @map("permission_id")
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, permissionId])
+  @@index([permissionId])
+  @@map("user_extra_permissions")
+}
+
+model UserRemovedPermission {
+  userId       Int @map("user_id")
+  permissionId Int @map("permission_id")
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, permissionId])
+  @@index([permissionId])
+  @@map("user_removed_permissions")
+}
+
+// ========================================
+// CATEGORY / FAMILY / UNIT (GLOBAL)
+// ========================================
+
+model Category {
+  id       Int     @id @default(autoincrement())
+  name     String  @unique
+  image    String? @db.Text
+  visible  Boolean @default(true)
+  afficher Json?
+
+  families Family[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([visible])
+  @@map("categories")
+}
+
+model Family {
+  id            Int      @id @default(autoincrement())
+  categoryId    Int      @map("category_id")
+  name          String   @unique
+  manageInStock Boolean  @default(false) @map("manage_in_stock")
+  TVA           Decimal  @db.Decimal(10, 2)
+  image         String?  @db.Text
+  visible       Boolean  @default(true)
+  afficher      Json?
+  remise        Decimal? @db.Decimal(10, 2)
+
+  category Category  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  articles Article[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([categoryId])
+  @@index([visible])
+  @@map("families")
+}
+
+model Unit {
+  id               Int     @id @default(autoincrement())
+  name             String  @unique @db.VarChar(50)
+  symbol           String  @db.VarChar(10)
+  allowsFractional Boolean @default(false) @map("allows_fractional")
+
+  articlesAsPrincipale     Article[] @relation("ArticleUnitPrincipale")
+  articlesAsSecondaire     Article[] @relation("ArticleUnitSecondaire")
+  articlesAsComplementaire Article[] @relation("ArticleUnitComplementaire")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("units")
+}
+
+// ========================================
+// ATTRIBUTE / ATTRIBUTE VALUE (GLOBAL)
+// ========================================
+
+model Attribute {
+  id   Int    @id @default(autoincrement())
+  name String @unique @db.VarChar(100)
+
+  values            AttributeValue[]
+  variantAttributes VariantAttribute[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("attributes")
+}
+
+model AttributeValue {
+  id          Int    @id @default(autoincrement())
+  attributeId Int    @map("attribute_id")
+  value       String @db.VarChar(100)
+
+  attribute         Attribute          @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+  variantAttributes VariantAttribute[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([attributeId, value])
+  @@index([attributeId])
+  @@map("attribute_values")
+}
+
+// ========================================
+// ARTICLE (GLOBAL)
+// ========================================
+
+model Article {
+  id       Int     @id @default(autoincrement())
+  familyId Int     @map("family_id")
+  barcode  String  @unique @db.VarChar(50)
+  name     String  @db.VarChar(255)
+  image    String? @db.Text
+  visible  Boolean @default(true)
+
+  gereEnStock Boolean @default(true) @map("gere_en_stock")
+
+  unitePrincipaleId     Int  @map("unite_principale_id")
+  uniteSecondaireId     Int? @map("unite_secondaire_id")
+  uniteComplementaireId Int? @map("unite_complementaire_id")
+
+  unitePrincipale     Unit  @relation("ArticleUnitPrincipale", fields: [unitePrincipaleId], references: [id], onDelete: Restrict)
+  uniteSecondaire     Unit? @relation("ArticleUnitSecondaire", fields: [uniteSecondaireId], references: [id], onDelete: Restrict)
+  uniteComplementaire Unit? @relation("ArticleUnitComplementaire", fields: [uniteComplementaireId], references: [id], onDelete: Restrict)
+
+  conversionSecondaire     Decimal? @map("conversion_secondaire") @db.Decimal(10, 4)
+  conversionComplementaire Decimal? @map("conversion_complementaire") @db.Decimal(10, 4)
+
+  prixAchat  Decimal @map("prix_achat") @db.Decimal(10, 2)
+  prixVente1 Decimal @map("prix_vente_1") @db.Decimal(10, 2)
+  prixVente2 Decimal @map("prix_vente_2") @db.Decimal(10, 2)
+  prixVente3 Decimal @map("prix_vente_3") @db.Decimal(10, 2)
+
+  dateExpiration  DateTime? @map("date_expiration") @db.Date
+  dureeExpiration String?   @map("duree_expiration") @db.VarChar(50)
+  remise          Decimal?  @db.Decimal(5, 2)
+
+  family                   Family                     @relation(fields: [familyId], references: [id], onDelete: Restrict)
+  variants                 ArticleVariant[]
+  stockByDepot             StockByDepot[]
+  transactions             StockTransaction[]
+  reservations             StockReservation[]
+  societePricing           SocietePricing[]
+  transferLines            StockTransferLine[]
+  inventoryLines           InventoryLine[]
+  clientDocumentLines      ClientDocumentLine[]
+  fournisseurDocumentLines FournisseurDocumentLine[]
+  packComponents           PackComponent[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([familyId])
+  @@index([barcode])
+  @@index([gereEnStock])
+  @@index([unitePrincipaleId])
+  @@index([visible])
+  @@map("articles")
+}
+
+// ========================================
+// ARTICLE VARIANT (GLOBAL)
+// ========================================
+
+model ArticleVariant {
+  id        Int    @id @default(autoincrement())
+  articleId Int    @map("article_id")
+  barcode   String @unique @db.VarChar(50)
+  name      String @db.VarChar(255)
+
+  article                  Article                    @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  variantAttributes        VariantAttribute[]
+  stockByDepot             StockByDepot[]
+  transactions             StockTransaction[]
+  reservations             StockReservation[]
+  societePricing           SocietePricing[]
+  transferLines            StockTransferLine[]
+  inventoryLines           InventoryLine[]
+  clientDocumentLines      ClientDocumentLine[]
+  fournisseurDocumentLines FournisseurDocumentLine[]
+  packComponents           PackComponent[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([articleId])
+  @@index([barcode])
+  @@map("article_variants")
+}
+
+// ========================================
+// VARIANT ATTRIBUTE (GLOBAL)
+// ========================================
+
+model VariantAttribute {
+  variantId        Int @map("variant_id")
+  attributeId      Int @map("attribute_id")
+  attributeValueId Int @map("attribute_value_id")
+
+  variant        ArticleVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  attribute      Attribute      @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+  attributeValue AttributeValue @relation(fields: [attributeValueId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@id([variantId, attributeId])
+  @@index([attributeId])
+  @@index([attributeValueId])
+  @@map("variant_attributes")
+}
+
+// ========================================
+// SOCIETE PRICING
+// ========================================
+
+model SocietePricing {
+  id        Int  @id @default(autoincrement())
+  societeId Int  @map("societe_id")
+  articleId Int? @map("article_id")
+  variantId Int? @map("variant_id")
+
+  prixAchat  Decimal? @map("prix_achat") @db.Decimal(10, 2)
+  prixVente1 Decimal? @map("prix_vente_1") @db.Decimal(10, 2)
+  prixVente2 Decimal? @map("prix_vente_2") @db.Decimal(10, 2)
+  prixVente3 Decimal? @map("prix_vente_3") @db.Decimal(10, 2)
+  remise     Decimal? @db.Decimal(5, 2)
+  active     Boolean  @default(true)
+
+  societe Societe         @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  article Article?        @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  variant ArticleVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([societeId, articleId])
+  @@unique([societeId, variantId])
+  @@index([societeId])
+  @@index([articleId])
+  @@index([variantId])
+  @@index([active])
+  @@map("societe_pricing")
+}
+
+// ========================================
+// CLIENT (PER SOCIETE)
+// ========================================
+
+model Client {
+  id        Int @id @default(autoincrement())
+  societeId Int @map("societe_id")
+
+  name    String     @db.VarChar(255)
+  type    EntityType @default(PARTICULIER)
+  address String?    @db.Text
+  region  String?    @db.VarChar(100)
+  phone   String?    @db.VarChar(20)
+  email   String?    @db.VarChar(100)
+  website String?    @db.VarChar(255)
+
+  ice String? @db.VarChar(15)
+  if  String? @db.VarChar(20)
+  rc  String? @db.VarChar(20)
+  tp  String? @db.VarChar(20)
+
+  creditLimit     Decimal? @map("credit_limit") @db.Decimal(10, 2)
+  paymentDeadline Int?     @map("payment_deadline")
+  discount        Decimal? @db.Decimal(5, 2)
+  active          Boolean  @default(true)
+  isSystem        Boolean  @default(false) @map("is_system")
+
+  societe    Societe           @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  documents  ClientDocument[]
+  reglements ReglementClient[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([societeId, phone])
+  @@unique([societeId, ice])
+  @@index([societeId])
+  @@index([name])
+  @@index([active])
+  @@index([type])
+  @@map("clients")
+}
+
+// ========================================
+// FOURNISSEUR (PER SOCIETE)
+// ========================================
+
+model Fournisseur {
+  id        Int @id @default(autoincrement())
+  societeId Int @map("societe_id")
+
+  name    String     @db.VarChar(255)
+  type    EntityType @default(SOCIETE)
+  address String?    @db.Text
+  region  String?    @db.VarChar(100)
+  phone   String?    @db.VarChar(20)
+  email   String?    @db.VarChar(100)
+  website String?    @db.VarChar(255)
+
+  ice String? @db.VarChar(15)
+  if  String? @db.VarChar(20)
+  rc  String? @db.VarChar(20)
+  tp  String? @db.VarChar(20)
+
+  paymentDeadline Int?    @map("payment_deadline")
+  bankAccount     String? @map("bank_account") @db.VarChar(50)
+  bankName        String? @map("bank_name") @db.VarChar(100)
+  active          Boolean @default(true)
+
+  societe    Societe               @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  documents  FournisseurDocument[]
+  reglements ReglementFournisseur[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([societeId, phone])
+  @@unique([societeId, ice])
+  @@index([societeId])
+  @@index([name])
+  @@index([active])
+  @@index([type])
+  @@map("fournisseurs")
+}
+
+// ========================================
+// DELIVERY PERSON (PER SOCIETE)
+// ========================================
+
+model Delivery {
+  id        Int  @id @default(autoincrement())
+  societeId Int  @map("societe_id")
+  userId    Int? @unique @map("user_id")
+
+  name       String       @db.VarChar(255)
+  type       DeliveryType @default(EXTERN)
+  entityType EntityType   @default(PARTICULIER) @map("entity_type")
+  address    String?      @db.Text
+  tel        String?      @db.VarChar(20)
+  active     Boolean      @default(true)
+
+  societe       Societe        @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  user          User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  bonLivraisons BonLivraison[]
+  livreurBLs    BonLivraison[] @relation("BLLivreur")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([societeId])
+  @@index([active])
+  @@index([type])
+  @@map("deliveries")
+}
+
+// ========================================
+// BANQUE
+// ========================================
+
+model Banque {
+  id    Int     @id @default(autoincrement())
+  name  String  @db.VarChar(255)
+  RIB   String? @db.VarChar(50)
+  ville String? @db.VarChar(100)
+
+  reglements            ReglementClient[]
+  reglementsFournisseur ReglementFournisseur[]
+  caisses               Caisse[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("banques")
+}
+
+// ========================================
+// AGENCE (PER SOCIETE)
+// ========================================
+
+model Agence {
+  id           Int     @id @default(autoincrement())
+  societeId    Int     @map("societe_id")
+  name         String  @db.VarChar(255)
+  localisation String? @db.Text
+  responsable  String? @db.VarChar(255)
+  active       Boolean @default(true)
+
+  societe       Societe        @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  bonLivraisons BonLivraison[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([societeId])
+  @@index([active])
+  @@map("agences")
+}
+
+// ========================================
+// PACK (Virtual Product Bundle — PER SOCIETE)
+// ========================================
+
+model Pack {
+  id                    Int      @id @default(autoincrement())
+  societeId             Int      @map("societe_id")
+  barcode               String   @unique @db.VarChar(50)
+  name                  String   @db.VarChar(255)
+  coutRevient           Decimal  @map("cout_revient") @db.Decimal(10, 2)
+  tauxMarge             Decimal  @map("taux_marge") @db.Decimal(5, 2)
+  montantVenteArticles  Decimal  @map("montant_vente_articles") @db.Decimal(10, 2)
+  remise                Decimal  @default(0) @db.Decimal(5, 2)
+  prixVentePack         Decimal  @map("prix_vente_pack") @db.Decimal(10, 2)
+  purchasePrice         Decimal  @default(0) @map("purchase_price") @db.Decimal(10, 2)
+  active                Boolean  @default(true)
+
+  societe    Societe         @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  components PackComponent[]
+  packLines    BonLivraisonPackLine[]
+  brcPackLines BonRetourClientPackLine[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([societeId])
+  @@index([barcode])
+  @@index([active])
+  @@map("packs")
+}
+
+model PackComponent {
+  id         Int    @id @default(autoincrement())
+  packId     Int    @map("pack_id")
+  articleId  Int?   @map("article_id")
+  variantId  Int?   @map("variant_id")
+  quantity   Decimal @db.Decimal(10, 3)
+  priceField String  @default("prixVente1") @map("price_field") @db.VarChar(20)
+
+  pack    Pack            @relation(fields: [packId], references: [id], onDelete: Cascade)
+  article Article?        @relation(fields: [articleId], references: [id], onDelete: Restrict)
+  variant ArticleVariant? @relation(fields: [variantId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([packId, articleId])
+  @@unique([packId, variantId])
+  @@index([packId])
+  @@index([articleId])
+  @@index([variantId])
+  @@map("pack_components")
+}
+
+// ========================================
+// BON RETOUR CLIENT PACK LINE
+// ========================================
+
+model BonRetourClientPackLine {
+  id                Int     @id @default(autoincrement())
+  bonRetourClientId Int     @map("bon_retour_client_id")
+  packId            Int     @map("pack_id")
+  quantity          Decimal @db.Decimal(10, 3)
+  prixVente         Decimal @map("prix_vente") @db.Decimal(10, 2)
+
+  bonRetourClient BonRetourClient @relation(fields: [bonRetourClientId], references: [id], onDelete: Cascade)
+  pack            Pack            @relation(fields: [packId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([bonRetourClientId, packId])
+  @@index([bonRetourClientId])
+  @@index([packId])
+  @@map("bon_retour_client_pack_lines")
+}
+
+// ========================================
+// BON LIVRAISON PACK LINE (Pack lines on Advanced BonLivraison)
+// ========================================
+
+model BonLivraisonPackLine {
+  id             Int     @id @default(autoincrement())
+  bonLivraisonId Int     @map("bon_livraison_id")
+  packId         Int     @map("pack_id")
+  quantity       Decimal @db.Decimal(10, 3)
+  prixVente      Decimal @map("prix_vente") @db.Decimal(10, 2)
+
+  bonLivraison BonLivraison @relation(fields: [bonLivraisonId], references: [id], onDelete: Cascade)
+  pack         Pack         @relation(fields: [packId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([bonLivraisonId, packId])
+  @@index([bonLivraisonId])
+  @@index([packId])
+  @@map("bon_livraison_pack_lines")
+}
+
+// ================================================================
+//  DOCUMENT ARCHITECTURE — GENERIC HEADER + SPECIALIZED EXTENSION
+// ================================================================
+//
+//  Pattern: Class Table Inheritance (shared PK)
+//
+//  Header record is created first.
+//  Specialized record is created second, using the SAME id.
+//  Lines always belong to the header for uniform queries.
+//
+//  Client workflow FK chain (child holds FK to parent):
+//    Devis <- Commande <- BonLivraison <- Facture <- Avoir
+//                              ^
+//                        BonRetourClient (parallel path, physical return)
+//                              |
+//                           Avoir (can reference BonRetourClient)
+//
+//  Fournisseur workflow FK chain:
+//    BonReception <- BonRetourFournisseur
+//         ^
+//    AvoirFournisseur (can reference BonRetourFournisseur)
+//
+// ================================================================
+
+// ----------------------------------------
+// CLIENT DOCUMENT — GENERIC HEADER
+// ----------------------------------------
+
+model ClientDocument {
+  id             Int            @id @default(autoincrement())
+  societeId      Int            @map("societe_id")
+  clientId       Int?           @map("client_id")
+  clientName     String?        @map("client_name") @db.VarChar(255)
+  documentNumber String         @map("document_number") @db.VarChar(50)
+  status         DocumentStatus @default(DRAFT)
+
+  totalHT    Decimal @map("total_ht") @db.Decimal(10, 2)
+  totalTVA   Decimal @map("total_tva") @db.Decimal(10, 2)
+  totalTTC   Decimal @map("total_ttc") @db.Decimal(10, 2)
+  discount   Decimal @default(0) @db.Decimal(5, 2)
+  amountPaid Decimal @default(0) @map("amount_paid") @db.Decimal(10, 2)
+  amountDue  Decimal @map("amount_due") @db.Decimal(10, 2)
+
+  notes         String? @db.Text
+  internalNotes String? @map("internal_notes") @db.Text
+  createdBy     Int?    @map("created_by")
+
+  societe Societe @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  client  Client? @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  user    User?   @relation("ClientDocCreatedBy", fields: [createdBy], references: [id], onDelete: SetNull)
+
+  lines ClientDocumentLine[]
+
+  // Specialized extension — exactly ONE will be populated per record
+  devis             Devis?
+  commande          Commande?
+  bonLivraison      BonLivraison?
+  bonRetourClient   BonRetourClient?   // NEW: physical client return
+  facture           Facture?
+  avoir             Avoir?             // financial credit to client
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([societeId, documentNumber])
+  @@index([societeId])
+  @@index([clientId])
+  @@index([status])
+  @@index([createdBy])
+  @@map("client_documents")
+}
+
+// ----------------------------------------
+// CLIENT DOCUMENT LINE
+// ----------------------------------------
+
+model ClientDocumentLine {
+  id         Int @id @default(autoincrement())
+  documentId Int @map("document_id")
+
+  articleId Int? @map("article_id")
+  variantId Int? @map("variant_id")
+
+  lineNumber  Int     @map("line_number")
+  description String  @db.VarChar(255)
+  quantity    Decimal @db.Decimal(10, 3)
+
+  unitPrice  Decimal  @map("unit_price") @db.Decimal(10, 2)
+  remise     Decimal? @map("remise") @db.Decimal(10, 2)     // discount value
+  priceField String?  @map("price_field") @db.VarChar(20)   // prixVente1 | prixVente2 | prixVente3
+
+  totalHT  Decimal? @map("total_ht") @db.Decimal(12, 2)
+  tvaRate  Decimal? @map("tva_rate") @db.Decimal(5, 2)
+  totalTVA Decimal? @map("total_tva") @db.Decimal(12, 2)
+  totalTTC Decimal? @map("total_ttc") @db.Decimal(12, 2)
+
+  document ClientDocument  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  article  Article?        @relation(fields: [articleId], references: [id], onDelete: Restrict)
+  variant  ArticleVariant? @relation(fields: [variantId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([documentId, lineNumber])
+  @@index([documentId])
+  @@index([articleId])
+  @@index([variantId])
+  @@map("client_document_lines")
+}
+
+// ----------------------------------------
+// FOURNISSEUR DOCUMENT — GENERIC HEADER
+// ----------------------------------------
+
+model FournisseurDocument {
+  id             Int            @id @default(autoincrement())
+  societeId      Int            @map("societe_id")
+  fournisseurId  Int            @map("fournisseur_id")
+  documentNumber String         @map("document_number") @db.VarChar(50)
+  status         DocumentStatus @default(DRAFT)
+
+  totalHT    Decimal @map("total_ht") @db.Decimal(10, 2)
+  totalTVA   Decimal @map("total_tva") @db.Decimal(10, 2)
+  totalTTC   Decimal @map("total_ttc") @db.Decimal(10, 2)
+  discount   Decimal @default(0) @db.Decimal(5, 2)
+  amountPaid Decimal @default(0) @map("amount_paid") @db.Decimal(10, 2)
+  amountDue  Decimal @map("amount_due") @db.Decimal(10, 2)
+
+  notes         String? @db.Text
+  internalNotes String? @map("internal_notes") @db.Text
+  createdBy     Int?    @map("created_by")
+
+  societe     Societe     @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  fournisseur Fournisseur @relation(fields: [fournisseurId], references: [id], onDelete: Restrict)
+  user        User?       @relation("FournisseurDocCreatedBy", fields: [createdBy], references: [id], onDelete: SetNull)
+
+  lines FournisseurDocumentLine[]
+
+  // Specialized extension — exactly ONE will be populated per record
+  commandeFournisseur  CommandeFournisseur?   // purchase order (no stock)
+  bonReception         BonReception?
+  bonRetourFournisseur BonRetourFournisseur?  // physical return to supplier
+  avoirFournisseur     AvoirFournisseur?      // NEW: financial credit from supplier
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([societeId, documentNumber])
+  @@index([societeId])
+  @@index([fournisseurId])
+  @@index([status])
+  @@index([createdBy])
+  @@map("fournisseur_documents")
+}
+
+// ----------------------------------------
+// FOURNISSEUR DOCUMENT LINE
+// ----------------------------------------
+
+model FournisseurDocumentLine {
+  id         Int @id @default(autoincrement())
+  documentId Int @map("document_id")
+
+  articleId Int? @map("article_id")
+  variantId Int? @map("variant_id")
+
+  lineNumber  Int     @map("line_number")
+  description String  @db.VarChar(255)
+  quantity    Decimal @db.Decimal(10, 3)
+  unitPrice   Decimal @map("unit_price") @db.Decimal(10, 2)
+
+  // Nullable: BonRetourFournisseur lines may omit financials
+  discount Decimal? @db.Decimal(5, 2)
+  totalHT  Decimal? @map("total_ht") @db.Decimal(10, 2)
+  tvaRate  Decimal? @map("tva_rate") @db.Decimal(5, 2)
+  totalTVA Decimal? @map("total_tva") @db.Decimal(10, 2)
+  totalTTC Decimal? @map("total_ttc") @db.Decimal(10, 2)
+
+  document FournisseurDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  article  Article?            @relation(fields: [articleId], references: [id], onDelete: Restrict)
+  variant  ArticleVariant?     @relation(fields: [variantId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([documentId, lineNumber])
+  @@index([documentId])
+  @@index([articleId])
+  @@index([variantId])
+  @@map("fournisseur_document_lines")
+}
+
+// ================================================================
+//  SPECIALIZED DOCUMENT TABLES
+//  Each uses SAME id as its parent header (shared PK / true 1:1).
+//  Contains ONLY type-specific fields.
+//  Holds workflow FK pointing to its upstream parent.
+// ================================================================
+
+// ----------------------------------------
+// DEVIS (Quote)
+// Workflow: ROOT -> Commande
+// ----------------------------------------
+model Devis {
+  id Int @id
+
+  documentDate  DateTime       @map("document_date") @db.Date
+  validUntil    DateTime?      @map("valid_until") @db.Date
+  paymentMethod PaymentMethod? @map("payment_method")
+  remiseGlobale Decimal?       @map("remise_globale") @db.Decimal(5, 2)
+  conditions    String?        @db.Text
+
+  document  ClientDocument @relation(fields: [id], references: [id], onDelete: Cascade)
+  commandes Commande[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([documentDate])
+  @@index([validUntil])
+  @@map("devis")
+}
+
+// ----------------------------------------
+// COMMANDE (Sales Order)
+// Workflow: Devis -> COMMANDE -> BonLivraison
+// ----------------------------------------
+model Commande {
+  id Int @id
+
+  documentDate        DateTime       @map("document_date") @db.Date
+  dateConfirmation    DateTime?      @map("date_confirmation") @db.Date
+  dateLivraisonPrevue DateTime?      @map("date_livraison_prevue") @db.Date
+  paymentMethod       PaymentMethod? @map("payment_method")
+  conditionsPaiement  String?        @map("conditions_paiement") @db.VarChar(255)
+
+  devisId Int?   @map("devis_id")
+  devis   Devis? @relation(fields: [devisId], references: [id], onDelete: SetNull)
+
+  document      ClientDocument @relation(fields: [id], references: [id], onDelete: Cascade)
+  bonLivraisons BonLivraison[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([documentDate])
+  @@index([devisId])
+  @@map("commandes")
+}
+
+// ----------------------------------------
+// BON LIVRAISON (Delivery Note)
+// Workflow: Commande -> BON_LIVRAISON -> Facture
+// Stock:    OUTBOUND — stock decreases at depotId
+// ----------------------------------------
+model BonLivraison {
+  id Int @id
+
+  documentDate  DateTime       @map("document_date")  @db.DateTime
+  dateLivraison DateTime       @map("date_livraison") @db.DateTime
+  depotId       Int?           @map("depot_id")
+  deliveryId    Int?           @map("delivery_id")
+
+  commandeId Int?      @map("commande_id")
+  commande   Commande? @relation(fields: [commandeId], references: [id], onDelete: SetNull)
+
+  // ── Advanced BonLivraison (workflow-driven) fields ──────────────
+  type            BonLivraisonType   @default(STANDARD)
+  commandStatus   BonLivraisonStatus? @map("command_status")
+
+  agenceId        Int?    @map("agence_id")
+  heureLivraison  String? @map("heure_livraison") @db.VarChar(10)
+  telephone       String? @db.VarChar(20)
+  whatsapp        String? @db.VarChar(20)
+  ville           String? @db.VarChar(100)
+  localisation    String? @db.Text
+  raisonSocial    String? @map("raison_social") @db.VarChar(255)
+  ice             String? @db.VarChar(15)
+  siegeSocial     String? @map("siege_social") @db.VarChar(255)
+  nombreDeColis   Int?    @map("nombre_de_colis")
+  observation     String? @db.Text
+  modeReglement   ModeReglement? @map("mode_reglement")
+
+  commercialId    Int? @map("commercial_id")
+  preparateurId   Int? @map("preparateur_id")
+  livreurId       Int? @map("livreur_id")
+
+  // ── REPORTE (parallel operational condition) ────────────────────
+  // REPORTE is NOT a lifecycle state — it's a temporary postponement.
+  // commandStatus stays unchanged while isReported = true.
+  isReported       Boolean   @default(false) @map("is_reported")
+  reportedAt       DateTime? @map("reported_at")
+  reportedById     Int?      @map("reported_by")
+  reportReason     String?   @map("report_reason") @db.VarChar(500)
+  nextDeliveryDate DateTime? @map("next_delivery_date") @db.Date
+
+  // Suspension toggle — blocks transitionStatus while true
+  isSuspended Boolean @default(false) @map("is_suspended")
+
+  // External colis (parcel) sync — Ameex / future providers
+  colisTrackingNumber String?   @map("colis_tracking_number") @db.VarChar(100)
+  colisProvider       String?   @map("colis_provider")        @db.VarChar(50)
+  colisSync           ColisSync @default(NOT_APPLICABLE)      @map("colis_sync")
+  providerConfigId    Int?      @map("provider_config_id")
+  // ── End advanced fields ────────────────────────────────────────
+
+  document         ClientDocument @relation(fields: [id], references: [id], onDelete: Cascade)
+  depot            Depot?         @relation(fields: [depotId], references: [id], onDelete: SetNull)
+  delivery         Delivery?      @relation(fields: [deliveryId], references: [id], onDelete: SetNull)
+  agence           Agence?        @relation(fields: [agenceId], references: [id], onDelete: SetNull)
+  commercial       User?          @relation("BLCommercial", fields: [commercialId], references: [id], onDelete: SetNull)
+  preparateur      User?          @relation("BLPreparateur", fields: [preparateurId], references: [id], onDelete: SetNull)
+  livreur          Delivery?      @relation("BLLivreur", fields: [livreurId], references: [id], onDelete: SetNull)
+  reportedBy       User?                   @relation("BLReportedBy", fields: [reportedById], references: [id], onDelete: SetNull)
+  providerConfig   DeliveryProviderConfig? @relation("BLProviderConfig", fields: [providerConfigId], references: [id], onDelete: SetNull)
+
+  factures         Facture[]
+  bonRetourClients BonRetourClient[]  // client returns referencing this delivery
+  stockTransactions StockTransaction[]
+  packLines        BonLivraisonPackLine[]
+  statusHistory    BonLivraisonStatusHistory[]
+
+  // Many-to-many link to advances (avances) that pay this BL
+  advances BonLivraisonAdvance[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([documentDate])
+  @@index([commandeId])
+  @@index([depotId])
+  @@index([deliveryId])
+  @@index([type])
+  @@index([commandStatus])
+  @@index([agenceId])
+  @@index([commercialId])
+  @@index([preparateurId])
+  @@index([livreurId])
+  @@index([isReported])
+  @@map("bon_livraisons")
+}
+
+// ----------------------------------------
+// BON LIVRAISON ↔ ADVANCE (Join Table)
+// Tracks which advances partially/fully pay a BonLivraison
+// and how much each advance contributed.
+// ----------------------------------------
+model BonLivraisonAdvance {
+  id              Int @id @default(autoincrement())
+  bonLivraisonId  Int @map("bon_livraison_id")
+  advanceId       Int @map("advance_id")
+  amountApplied   Decimal @map("amount_applied") @db.Decimal(10, 2)
+
+  bonLivraison BonLivraison    @relation(fields: [bonLivraisonId], references: [id], onDelete: Cascade)
+  advance      ReglementClient @relation(fields: [advanceId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([bonLivraisonId, advanceId])
+  @@index([advanceId])
+  @@map("bon_livraison_advances")
+}
+
+// ----------------------------------------
+// AMEEX WEBHOOK LOG
+// Append-only store of every inbound Ameex webhook. The worker
+// reads PENDING rows, processes them, and stamps status.
+// ----------------------------------------
+model AmeexWebhookLog {
+  id           Int              @id @default(autoincrement())
+  trackingCode String           @map("tracking_code") @db.VarChar(100)
+  ameexStatus  String           @map("ameex_status")  @db.VarChar(50)
+  rawPayload   Json             @map("raw_payload")
+  status       WebhookLogStatus @default(PENDING)
+  processedAt  DateTime?        @map("processed_at")
+  error        String?          @db.Text
+  createdAt    DateTime         @default(now()) @map("created_at")
+
+  @@index([trackingCode])
+  @@index([status])
+  @@map("ameex_webhook_logs")
+}
+
+// ----------------------------------------
+// BON LIVRAISON STATUS HISTORY
+// Append-only audit log of every commandStatus transition.
+// `BonLivraison.commandStatus` holds the current state;
+// this table holds the full historical trail for the stepper,
+// audit, and analytics (time-per-stage, delays, performance).
+// ----------------------------------------
+model BonLivraisonStatusHistory {
+  id        Int                @id @default(autoincrement())
+  bonId     Int                @map("bon_id")
+  status    BonLivraisonStatus
+  note      String?            @db.VarChar(500)
+  userId    Int?               @map("user_id")
+  createdAt DateTime           @default(now()) @map("created_at")
+
+  bonLivraison BonLivraison @relation(fields: [bonId], references: [id], onDelete: Cascade)
+  user         User?        @relation("BLStatusHistoryUser", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([bonId, createdAt])
+  @@index([userId])
+  @@index([status])
+  @@map("bon_livraison_status_history")
+}
+
+// ----------------------------------------
+// BON RETOUR CLIENT (Client Return Note) — NEW
+// Workflow: BonLivraison -> BON_RETOUR_CLIENT -> Avoir (optional)
+// Stock:    RETURN_IN — goods come back, stock INCREASES at depotId
+// ----------------------------------------
+model BonRetourClient {
+  id Int @id
+
+  documentDate DateTime  @map("document_date")  @db.DateTime
+  dateRetour   DateTime? @map("date_retour") @db.Date
+  depotId      Int?      @map("depot_id")  // Destination depot — stock comes back here
+  motifRetour  String?   @map("motif_retour") @db.VarChar(500)
+
+  // Upstream — which delivery is being returned
+  // Nullable: a return can exist without linking to a specific BonLivraison
+  bonLivraisonId Int?          @map("bon_livraison_id")
+  bonLivraison   BonLivraison? @relation(fields: [bonLivraisonId], references: [id], onDelete: SetNull)
+
+  document ClientDocument @relation(fields: [id], references: [id], onDelete: Cascade)
+  depot    Depot?         @relation(fields: [depotId], references: [id], onDelete: SetNull)
+
+  // Downstream — credit note(s) issued following this physical return
+  avoirs            Avoir[]
+  stockTransactions StockTransaction[]
+  packLines         BonRetourClientPackLine[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([documentDate])
+  @@index([bonLivraisonId])
+  @@index([depotId])
+  @@map("bon_retour_clients")
+}
+
+// ----------------------------------------
+// FACTURE (Invoice)
+// Workflow: BonLivraison -> FACTURE -> Avoir
+// Financial: triggers Payment records (we receive money)
+// ----------------------------------------
+model Facture {
+  id Int @id
+
+  documentDate       DateTime       @map("document_date") @db.Date
+  dateEcheance       DateTime?      @map("date_echeance") @db.Date
+  paymentMethod      PaymentMethod? @map("payment_method")
+  penalitesRetard    Decimal?       @map("penalites_retard") @db.Decimal(5, 2)
+  conditionsPaiement String?        @map("conditions_paiement") @db.VarChar(255)
+
+  bonLivraisonId Int?          @map("bon_livraison_id")
+  bonLivraison   BonLivraison? @relation(fields: [bonLivraisonId], references: [id], onDelete: SetNull)
+
+  document ClientDocument @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  avoirs   Avoir[]
+  payments Payment[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([documentDate])
+  @@index([dateEcheance])
+  @@index([bonLivraisonId])
+  @@map("factures")
+}
+
+// ----------------------------------------
+// AVOIR (Credit Note — Client side)
+// Workflow: Facture -> AVOIR  (financial trigger)
+//           BonRetourClient -> AVOIR  (physical trigger, optional)
+// Stock:    NO stock impact — use BonRetourClient for that
+// Financial: triggers negative Payment (refund/credit to client)
+//
+// An Avoir can be:
+//   a) Purely financial (price correction, discount) — factureId only
+//   b) Linked to a physical return — bonRetourClientId set
+//   c) Both (the most common case)
+// ----------------------------------------
+model Avoir {
+  id Int @id
+
+  documentDate  DateTime       @map("document_date") @db.Date
+  motif         String?        @db.VarChar(500)
+  paymentMethod PaymentMethod? @map("payment_method")
+
+  // Upstream — the invoice being credited (nullable: avoir can be standalone)
+  factureId Int?     @map("facture_id")
+  facture   Facture? @relation(fields: [factureId], references: [id], onDelete: SetNull)
+
+  // Optional link to the physical return that triggered this credit
+  bonRetourClientId Int?             @map("bon_retour_client_id")
+  bonRetourClient   BonRetourClient? @relation(fields: [bonRetourClientId], references: [id], onDelete: SetNull)
+
+  document ClientDocument @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  payments Payment[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([documentDate])
+  @@index([factureId])
+  @@index([bonRetourClientId])
+  @@map("avoirs")
+}
+
+// ----------------------------------------
+// COMMANDE FOURNISSEUR (Purchase Order)
+// Workflow: ROOT -> BonReception (optional downstream)
+// Stock:    NO stock impact — quantity request only (mirrors sales Commande)
+// ----------------------------------------
+model CommandeFournisseur {
+  id Int @id
+
+  documentDate        DateTime  @map("document_date") @db.Date
+  dateLivraisonPrevue DateTime? @map("date_livraison_prevue") @db.Date
+  conditionsPaiement  String?   @map("conditions_paiement") @db.VarChar(255)
+
+  document FournisseurDocument @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([documentDate])
+  @@map("commande_fournisseurs")
+}
+
+// ----------------------------------------
+// BON RECEPTION (Goods Receipt)
+// Workflow: ROOT -> BonRetourFournisseur
+// Stock:    INBOUND — stock INCREASES at depotId
+// Financial: triggers Payment records (we pay supplier)
+// ----------------------------------------
+model BonReception {
+  id Int @id
+
+  documentDate      DateTime @map("document_date") @db.Date
+  dateReception     DateTime? @map("date_reception")  @db.DateTime
+  depotId           Int?      @map("depot_id")
+  documentReference String    @map("document_reference") @db.VarChar(100)
+
+  document FournisseurDocument @relation(fields: [id], references: [id], onDelete: Cascade)
+  depot    Depot?              @relation(fields: [depotId], references: [id], onDelete: SetNull)
+
+  bonRetourFournisseurs BonRetourFournisseur[]
+  avoirFournisseurs     AvoirFournisseur[]
+  payments              Payment[]
+  stockTransactions     StockTransaction[]
+  advances              BonReceptionAdvance[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([documentDate])
+  @@index([depotId])
+  @@index([documentReference])
+  @@map("bon_receptions")
+}
+
+// ----------------------------------------
+// BON RETOUR FOURNISSEUR (Return to Supplier)
+// Workflow: BonReception -> BON_RETOUR_FOURNISSEUR -> AvoirFournisseur (optional)
+// Stock:    RETURN_OUT — stock DECREASES at depotId (goods leave our depot)
+// ----------------------------------------
+model BonRetourFournisseur {
+  id Int @id
+
+  documentDate DateTime  @map("document_date") @db.Date
+  depotId      Int?      @map("depot_id")  // Source depot — stock leaves here
+  motifRetour  String?   @map("motif_retour") @db.VarChar(500)
+
+  bonReceptionId Int?          @map("bon_reception_id")
+  bonReception   BonReception? @relation(fields: [bonReceptionId], references: [id], onDelete: SetNull)
+
+  document FournisseurDocument @relation(fields: [id], references: [id], onDelete: Cascade)
+  depot    Depot?              @relation(fields: [depotId], references: [id], onDelete: SetNull)
+
+  // Downstream — credit note(s) received from supplier following this return
+  avoirFournisseurs AvoirFournisseur[]
+  stockTransactions StockTransaction[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([documentDate])
+  @@index([bonReceptionId])
+  @@index([depotId])
+  @@map("bon_retour_fournisseurs")
+}
+
+// ----------------------------------------
+// AVOIR FOURNISSEUR (Supplier Credit Note) — NEW
+// Workflow: BonRetourFournisseur -> AVOIR_FOURNISSEUR  (return trigger)
+//           BonReception -> AVOIR_FOURNISSEUR           (direct credit, no return)
+// Stock:    NO stock impact — use BonRetourFournisseur for that
+// Financial: triggers negative Payment (we receive credit/refund from supplier)
+//
+// An AvoirFournisseur can be:
+//   a) Linked to a physical return — bonRetourFournisseurId set
+//   b) Purely financial (price dispute, overcharge) — bonReceptionId only
+//   c) Both
+// ----------------------------------------
+model AvoirFournisseur {
+  id Int @id
+
+  documentDate  DateTime       @map("document_date") @db.Date
+  motif         String?        @db.VarChar(500)
+  paymentMethod PaymentMethod? @map("payment_method")
+
+  // Optional link to the physical return that triggered this credit
+  bonRetourFournisseurId Int?                  @map("bon_retour_fournisseur_id")
+  bonRetourFournisseur   BonRetourFournisseur? @relation(fields: [bonRetourFournisseurId], references: [id], onDelete: SetNull)
+
+  // Optional direct link to the original reception (for non-return credits)
+  bonReceptionId Int?          @map("bon_reception_id")
+  bonReception   BonReception? @relation(fields: [bonReceptionId], references: [id], onDelete: SetNull)
+
+  document FournisseurDocument @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  payments Payment[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([documentDate])
+  @@index([bonRetourFournisseurId])
+  @@index([bonReceptionId])
+  @@map("avoir_fournisseurs")
+}
+
+// ========================================
+// PAYMENT
+// Links only to financial settlement documents.
+// Client:      Facture (received) or Avoir (refunded to client)
+// Fournisseur: BonReception (paid) or AvoirFournisseur (received credit)
+// ========================================
+
+model Payment {
+  id          Int         @id @default(autoincrement())
+  paymentType PaymentType @map("payment_type")
+
+  // Client side
+  factureId Int? @map("facture_id")  // regular invoice payment
+  avoirId   Int? @map("avoir_id")    // refund to client
+
+  // Fournisseur side
+  bonReceptionId       Int? @map("bon_reception_id")        // we pay supplier
+  avoirFournisseurId   Int? @map("avoir_fournisseur_id")    // supplier credits us
+
+  amount        Decimal       @db.Decimal(10, 2)
+  paymentMethod PaymentMethod @map("payment_method")
+  paymentDate   DateTime      @map("payment_date") @db.Date
+  reference     String?       @db.VarChar(100)
+  bankAccount   String?       @map("bank_account") @db.VarChar(50)
+  notes         String?       @db.Text
+
+  facture          Facture?          @relation(fields: [factureId], references: [id], onDelete: Restrict)
+  avoir            Avoir?            @relation(fields: [avoirId], references: [id], onDelete: Restrict)
+  bonReception     BonReception?     @relation(fields: [bonReceptionId], references: [id], onDelete: Restrict)
+  avoirFournisseur AvoirFournisseur? @relation(fields: [avoirFournisseurId], references: [id], onDelete: Restrict)
+
+  createdBy Int?  @map("created_by")
+  user      User? @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([factureId])
+  @@index([avoirId])
+  @@index([bonReceptionId])
+  @@index([avoirFournisseurId])
+  @@index([paymentDate])
+  @@index([paymentType])
+  @@index([createdBy])
+  @@map("payments")
+}
+
+// ========================================
+// STOCK TRANSACTION (Per Depot)
+// ========================================
+
+model StockTransaction {
+  id              Int             @id @default(autoincrement())
+  depotId         Int             @map("depot_id")
+  articleId       Int?            @map("article_id")
+  variantId       Int?            @map("variant_id")
+  transactionType TransactionType @map("transaction_type")
+  quantityChange  Decimal         @map("quantity_change") @db.Decimal(10, 3)
+  quantityAfter   Decimal         @map("quantity_after") @db.Decimal(10, 3)
+  reason          String?         @db.Text
+  referenceId     String?         @map("reference_id") @db.VarChar(100)
+  createdBy       Int?            @map("created_by")
+
+  // Source tracking — exactly one is set per transaction
+  transferId             Int? @map("transfer_id")
+  inventoryId            Int? @map("inventory_id")
+  bonLivraisonId         Int? @map("bon_livraison_id")          // OUTBOUND
+  bonRetourClientId      Int? @map("bon_retour_client_id")      // RETURN_IN
+  bonReceptionId         Int? @map("bon_reception_id")          // INBOUND
+  bonRetourFournisseurId Int? @map("bon_retour_fournisseur_id") // RETURN_OUT
+
+  depot                Depot                 @relation(fields: [depotId], references: [id], onDelete: Restrict)
+  article              Article?              @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  variant              ArticleVariant?       @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  user                 User?                 @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+  transfer             StockTransfer?        @relation(fields: [transferId], references: [id], onDelete: SetNull)
+  inventory            Inventory?            @relation(fields: [inventoryId], references: [id], onDelete: SetNull)
+  bonLivraison         BonLivraison?         @relation(fields: [bonLivraisonId], references: [id], onDelete: SetNull)
+  bonRetourClient      BonRetourClient?      @relation(fields: [bonRetourClientId], references: [id], onDelete: SetNull)
+  bonReception         BonReception?         @relation(fields: [bonReceptionId], references: [id], onDelete: SetNull)
+  bonRetourFournisseur BonRetourFournisseur? @relation(fields: [bonRetourFournisseurId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([depotId])
+  @@index([articleId])
+  @@index([variantId])
+  @@index([transactionType])
+  @@index([createdAt])
+  @@index([createdBy])
+  @@index([referenceId])
+  @@index([transferId])
+  @@index([inventoryId])
+  @@index([bonLivraisonId])
+  @@index([bonRetourClientId])
+  @@index([bonReceptionId])
+  @@index([bonRetourFournisseurId])
+  @@map("stock_transactions")
+}
+
+// ========================================
+// STOCK RESERVATION (Per Depot)
+// ========================================
+
+model StockReservation {
+  id               Int               @id @default(autoincrement())
+  depotId          Int               @map("depot_id")
+  articleId        Int?              @map("article_id")
+  variantId        Int?              @map("variant_id")
+  orderId          String            @map("order_id") @db.VarChar(100)
+  quantityReserved Decimal           @map("quantity_reserved") @db.Decimal(10, 3)
+  status           ReservationStatus @default(PENDING)
+  expiresAt        DateTime?         @map("expires_at")
+
+  depot   Depot           @relation(fields: [depotId], references: [id], onDelete: Restrict)
+  article Article?        @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  variant ArticleVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([depotId])
+  @@index([articleId])
+  @@index([variantId])
+  @@index([orderId])
+  @@index([status])
+  @@index([expiresAt])
+  @@map("stock_reservations")
+}
+
+// ========================================
+// STOCK TRANSFER (Between Depots)
+// ========================================
+
+model StockTransfer {
+  id             Int    @id @default(autoincrement())
+  societeId      Int    @map("societe_id")
+  transferNumber String @map("transfer_number") @db.VarChar(50)
+
+  sourceDepotId      Int @map("source_depot_id")
+  destinationDepotId Int @map("destination_depot_id")
+
+  transferDate DateTime       @map("transfer_date") @db.Date
+  status       TransferStatus @default(PENDING)
+  notes        String?        @db.Text
+
+  createdBy   Int?      @map("created_by")
+  validatedBy Int?      @map("validated_by")
+  validatedAt DateTime? @map("validated_at")
+
+  societe          Societe             @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  sourceDepot      Depot               @relation("SourceDepot", fields: [sourceDepotId], references: [id], onDelete: Restrict)
+  destinationDepot Depot               @relation("DestinationDepot", fields: [destinationDepotId], references: [id], onDelete: Restrict)
+  lines            StockTransferLine[]
+  transactions     StockTransaction[]
+  createdByUser    User?               @relation("TransferCreatedBy", fields: [createdBy], references: [id], onDelete: SetNull)
+  validatedByUser  User?               @relation("TransferValidatedBy", fields: [validatedBy], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([societeId, transferNumber])
+  @@index([societeId])
+  @@index([sourceDepotId])
+  @@index([destinationDepotId])
+  @@index([status])
+  @@index([transferDate])
+  @@index([createdBy])
+  @@map("stock_transfers")
+}
+
+// ========================================
+// STOCK TRANSFER LINE
+// ========================================
+
+model StockTransferLine {
+  id         Int  @id @default(autoincrement())
+  transferId Int  @map("transfer_id")
+  articleId  Int? @map("article_id")
+  variantId  Int? @map("variant_id")
+
+  lineNumber       Int     @map("line_number")
+  quantityReceived Decimal @default(0) @map("quantity_received") @db.Decimal(10, 3)
+
+  transfer StockTransfer   @relation(fields: [transferId], references: [id], onDelete: Cascade)
+  article  Article?        @relation(fields: [articleId], references: [id], onDelete: Restrict)
+  variant  ArticleVariant? @relation(fields: [variantId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([transferId, lineNumber])
+  @@unique([transferId, articleId])
+  @@unique([transferId, variantId])
+  @@index([transferId])
+  @@index([articleId])
+  @@index([variantId])
+  @@map("stock_transfer_lines")
+}
+
+// ========================================
+// INVENTORY (Physical Stock Count)
+// ========================================
+
+model Inventory {
+  id              Int      @id @default(autoincrement())
+  societeId       Int      @map("societe_id")
+  depotId         Int      @map("depot_id")
+  inventoryNumber String   @map("inventory_number") @db.VarChar(50)
+  inventoryDate   DateTime @map("inventory_date") @db.Date
+  notes           String?  @db.Text
+  gap             Decimal  @default(0) @db.Decimal(10, 2)
+
+  createdBy   Int?      @map("created_by")
+  validatedBy Int?      @map("validated_by")
+  validatedAt DateTime? @map("validated_at")
+
+  societe         Societe            @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  depot           Depot              @relation(fields: [depotId], references: [id], onDelete: Restrict)
+  lines           InventoryLine[]
+  transactions    StockTransaction[]
+  createdByUser   User?              @relation("InventoryCreatedBy", fields: [createdBy], references: [id], onDelete: SetNull)
+  validatedByUser User?              @relation("InventoryValidatedBy", fields: [validatedBy], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([societeId, inventoryNumber])
+  @@index([societeId])
+  @@index([depotId])
+  @@index([inventoryDate])
+  @@index([createdBy])
+  @@map("inventories")
+}
+
+// ========================================
+// INVENTORY LINE
+// ========================================
+
+model InventoryLine {
+  id          Int  @id @default(autoincrement())
+  inventoryId Int  @map("inventory_id")
+  articleId   Int? @map("article_id")
+  variantId   Int? @map("variant_id")
+
+  lineNumber          Int     @map("line_number")
+  quantityTheoretical Decimal @map("quantity_theoretical") @db.Decimal(10, 3)
+  quantityCounted     Decimal @map("quantity_counted") @db.Decimal(10, 3)
+  quantityDifference  Decimal @map("quantity_difference") @db.Decimal(10, 3)
+
+  inventory Inventory       @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  article   Article?        @relation(fields: [articleId], references: [id], onDelete: Restrict)
+  variant   ArticleVariant? @relation(fields: [variantId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([inventoryId, lineNumber])
+  @@unique([inventoryId, articleId])
+  @@unique([inventoryId, variantId])
+  @@index([inventoryId])
+  @@index([articleId])
+  @@index([variantId])
+  @@map("inventory_lines")
+}
+
+// ========================================
+// REGLEMENT CLIENT (Client Payment)
+// ========================================
+
+model ReglementClient {
+  id               Int           @id @default(autoincrement())
+  societeId        Int           @map("societe_id")
+  date             DateTime       @db.DateTime
+  clientId         Int           @map("client_id")
+  modeReglement    ModeReglement @map("mode_reglement")
+  documentNumbers  Json?         @map("document_numbers")   // String[] — BonLivraison documentNumbers
+  paymentBreakdown Json?         @map("payment_breakdown")  // {docNumber: amountApplied} for rollback
+  montantRegle     Decimal       @map("montant_regle") @db.Decimal(10, 2)
+  montantBL        Decimal       @default(0) @map("montant_bl") @db.Decimal(10, 2)
+  solde            Decimal       @db.Decimal(10, 2)
+  refDocument      String?       @map("ref_document") @db.VarChar(255)
+  dateEcheance     DateTime?     @map("date_echeance") @db.Date
+  banqueId         Int?          @map("banque_id")
+
+  // Reference to an advance (avance) used in this payment
+  avanceId       Int?     @map("avance_id")
+  avanceConsumed Decimal? @map("avance_consumed") @db.Decimal(10, 2)
+
+  societe Societe @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  client  Client  @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  banque  Banque? @relation(fields: [banqueId], references: [id], onDelete: SetNull)
+
+  avance     ReglementClient?  @relation("AvanceConsumption", fields: [avanceId], references: [id], onDelete: SetNull)
+  consumedBy ReglementClient[] @relation("AvanceConsumption")
+
+  bonLivraisonAdvances BonLivraisonAdvance[]
+  caisseTransactions   CaisseTransaction[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([societeId])
+  @@index([clientId])
+  @@index([date])
+  @@index([banqueId])
+  @@index([avanceId])
+  @@map("reglement_clients")
+}
+
+// ========================================
+// REGLEMENT FOURNISSEUR (Supplier Payment)
+// Mirror of ReglementClient, operating on Fournisseurs and
+// BonReception-backed FournisseurDocuments instead of Clients
+// and BonLivraison-backed ClientDocuments.
+// ========================================
+
+model ReglementFournisseur {
+  id               Int           @id @default(autoincrement())
+  societeId        Int           @map("societe_id")
+  date             DateTime       @db.DateTime
+  fournisseurId    Int           @map("fournisseur_id")
+  modeReglement    ModeReglement @map("mode_reglement")
+  documentNumbers  Json?         @map("document_numbers")   // String[] — BonReception documentNumbers
+  paymentBreakdown Json?         @map("payment_breakdown")  // {docNumber: amountApplied} for rollback
+  montantRegle     Decimal       @map("montant_regle") @db.Decimal(10, 2)
+  montantBR        Decimal       @default(0) @map("montant_br") @db.Decimal(10, 2)
+  solde            Decimal       @db.Decimal(10, 2)
+  refDocument      String?       @map("ref_document") @db.VarChar(255)
+  dateEcheance     DateTime?     @map("date_echeance") @db.Date
+  banqueId         Int?          @map("banque_id")
+
+  // Reference to an advance (avance) used in this payment
+  avanceId       Int?     @map("avance_id")
+  avanceConsumed Decimal? @map("avance_consumed") @db.Decimal(10, 2)
+
+  societe     Societe     @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  fournisseur Fournisseur @relation(fields: [fournisseurId], references: [id], onDelete: Restrict)
+  banque      Banque?     @relation(fields: [banqueId], references: [id], onDelete: SetNull)
+
+  avance     ReglementFournisseur?  @relation("AvanceConsumptionFournisseur", fields: [avanceId], references: [id], onDelete: SetNull)
+  consumedBy ReglementFournisseur[] @relation("AvanceConsumptionFournisseur")
+
+  bonReceptionAdvances BonReceptionAdvance[]
+  caisseTransactions   CaisseTransaction[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([societeId])
+  @@index([fournisseurId])
+  @@index([date])
+  @@index([banqueId])
+  @@index([avanceId])
+  @@map("reglement_fournisseurs")
+}
+
+// ----------------------------------------
+// BON RECEPTION ADVANCE (join table)
+// Mirror of BonLivraisonAdvance — tracks supplier advances
+// (ReglementFournisseur with montantBR = 0) applied to a
+// specific BonReception, enabling precise rollback on removal.
+// ----------------------------------------
+model BonReceptionAdvance {
+  id             Int     @id @default(autoincrement())
+  bonReceptionId Int     @map("bon_reception_id")
+  advanceId      Int     @map("advance_id")
+  amountApplied  Decimal @map("amount_applied") @db.Decimal(10, 2)
+
+  bonReception BonReception         @relation(fields: [bonReceptionId], references: [id], onDelete: Cascade)
+  advance      ReglementFournisseur @relation(fields: [advanceId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([bonReceptionId, advanceId])
+  @@index([advanceId])
+  @@map("bon_reception_advances")
+}
+
+// ========================================
+// GESTION DE CAISSE
+// ========================================
+
+model CaisseLabel {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique @db.VarChar(100)
+  active Boolean @default(true)
+
+  transactions CaisseTransaction[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([active])
+  @@map("caisse_labels")
+}
+
+model Caisse {
+  id             Int        @id @default(autoincrement())
+  userId         Int?       @unique @map("user_id")
+  societeId      Int?       @map("societe_id")
+  banqueId       Int?       @map("banque_id")
+  caisseType     CaisseType @map("caisse_type")
+  name           String     @db.VarChar(255)
+  initialBalance Decimal    @default(0) @map("initial_balance") @db.Decimal(10, 2)
+  currentBalance Decimal    @default(0) @map("current_balance") @db.Decimal(10, 2)
+  active         Boolean    @default(true)
+  createdById    Int?       @map("created_by_id")
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  societe   Societe? @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  banque    Banque?  @relation(fields: [banqueId], references: [id], onDelete: SetNull)
+  createdBy User?    @relation("CaisseCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  transactions           CaisseTransaction[] @relation("OwnerCaisse")
+  referencedTransactions CaisseTransaction[] @relation("ReferenceCaisse")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([societeId, banqueId])
+  @@index([societeId])
+  @@index([banqueId])
+  @@index([caisseType])
+  @@index([active])
+  @@index([createdById])
+  @@map("caisses")
+}
+
+model CaisseTransaction {
+  id                     Int                   @id @default(autoincrement())
+  caisseId               Int                   @map("caisse_id")
+  transactionType        CaisseTransactionType @map("transaction_type")
+  labelId                Int?                  @map("label_id")
+  amount                 Decimal               @db.Decimal(10, 2)
+  oldBalance             Decimal               @map("old_balance") @db.Decimal(10, 2)
+  newBalance             Decimal               @map("new_balance") @db.Decimal(10, 2)
+  note                   String?               @db.Text
+  referenceCaisseId      Int?                  @map("reference_caisse_id")
+  reglementClientId      Int?                  @map("reglement_client_id")
+  reglementFournisseurId Int?                  @map("reglement_fournisseur_id")
+  createdBy              Int?                  @map("created_by")
+  createdAt              DateTime              @default(now()) @map("created_at")
+
+  caisse               Caisse                @relation("OwnerCaisse", fields: [caisseId], references: [id], onDelete: Cascade)
+  label                CaisseLabel?          @relation(fields: [labelId], references: [id], onDelete: SetNull)
+  referenceCaisse      Caisse?               @relation("ReferenceCaisse", fields: [referenceCaisseId], references: [id], onDelete: SetNull)
+  reglementClient      ReglementClient?      @relation(fields: [reglementClientId], references: [id], onDelete: SetNull)
+  reglementFournisseur ReglementFournisseur? @relation(fields: [reglementFournisseurId], references: [id], onDelete: SetNull)
+  creator              User?                 @relation("CaisseTransactionCreatedBy", fields: [createdBy], references: [id], onDelete: SetNull)
+
+  @@index([caisseId])
+  @@index([transactionType])
+  @@index([labelId])
+  @@index([createdAt])
+  @@index([createdBy])
+  @@index([referenceCaisseId])
+  @@index([reglementClientId])
+  @@index([reglementFournisseurId])
+  @@map("caisse_transactions")
+}

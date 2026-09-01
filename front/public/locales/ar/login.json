@@ -1,0 +1,25 @@
+{
+  "title": "تسجيل الدخول",
+  "subtitle": " الدخول إلى حسابك لبدء استخدام SaphirCaisse",
+
+  "email_label": "البريد الإلكتروني",
+  "email_placeholder": "admin@example.com",
+
+  "password_label": "كلمة المرور",
+  "password_placeholder": "••••••••",
+
+  "forgot_password": "نسيت كلمة المرور؟",
+
+  "submit": "تسجيل الدخول",
+  "submitting": "جارٍ تسجيل الدخول...",
+
+  "errors": {
+    "email_required": "البريد الإلكتروني مطلوب",
+    "email_invalid": "عنوان البريد الإلكتروني غير صالح",
+    "password_required": "كلمة المرور مطلوبة",
+    "password_min": "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل",
+    "invalid_credentials": "بيانات الدخول غير صحيحة"
+  },
+
+  "allRightsReserved": "جميع الحقوق محفوظة"
+}

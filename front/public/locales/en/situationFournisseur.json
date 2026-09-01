@@ -1,0 +1,20 @@
+{
+  "page_title": "Supplier status",
+  "page_subtitle": "Unpaid or partially paid goods receipts",
+  "currency": "MAD",
+  "summary_docs": "Outstanding documents",
+  "summary_paid": "Total paid",
+  "summary_reste": "Balance due",
+  "filter_search_placeholder": "Search a goods receipt or supplier…",
+  "all": "All",
+  "filter_fournisseur": "Supplier",
+  "filter_all_fournisseurs": "All suppliers",
+  "filter_start_date": "Start date",
+  "filter_end_date": "End date",
+  "col_document": "GR No.",
+  "col_date": "Date",
+  "col_fournisseur": "Supplier",
+  "col_amount_due": "GR amount",
+  "col_paid": "Paid",
+  "col_reste": "Balance"
+}

@@ -1,0 +1,77 @@
+{
+  "title": "الأعمال",
+  "create_new": "إعداد جديد",
+  "columns": {
+    "id": "المعرف",
+    "name": "الاسم",
+    "provider": "شركة التوصيل",
+    "societe": "الشركة",
+    "status": "الحالة"
+  },
+  "status": {
+    "active": "نشط",
+    "inactive": "غير نشط"
+  },
+  "filters": "الفلاتر",
+  "all": "الكل",
+  "reset": "إعادة تعيين",
+  "filter_livreur": "شركة التوصيل الخارجية",
+  "filter_all_livreurs": "جميع الشركات",
+  "filter_societe": "الشركة",
+  "filter_all_societes": "جميع الشركات",
+  "delete": {
+    "title": "حذف الإعداد",
+    "message": "هل أنت متأكد من حذف هذا الإعداد؟ لا يمكن التراجع عن هذه العملية.",
+    "confirm": "حذف",
+    "cancel": "إلغاء",
+    "success": "تم حذف الإعداد بنجاح",
+    "error": "حدث خطأ أثناء الحذف"
+  },
+  "form": {
+    "entity_name": "إعداد الأعمال",
+    "create_title": "إعداد أعمال جديد",
+    "edit_title": "تعديل: {{name}}",
+    "back_label": "العودة إلى الإعدادات",
+    "sections": {
+      "info": "المعلومات العامة",
+      "credentials": "بيانات اعتماد API",
+      "status": "الحالة"
+    },
+    "fields": {
+      "provider": "شركة التوصيل الخارجية",
+      "provider_placeholder": "اختر شركة توصيل خارجية",
+      "provider_empty": "لا توجد شركة توصيل خارجية متاحة لهذه الشركة",
+      "name": "اسم المتجر",
+      "name_placeholder": "مثال: بوتيك دروة",
+      "societe": "الشركة",
+      "societe_placeholder": "اختر شركة",
+      "societe_locked": "لا يمكن تغيير الشركة بعد الإنشاء.",
+      "api_id": "معرّف API",
+      "api_id_placeholder": "معرّف API لشركة التوصيل",
+      "api_key": "مفتاح API",
+      "api_key_placeholder": "المفتاح السري لـ API لشركة التوصيل",
+      "api_key_placeholder_edit": "اتركه فارغاً للإبقاء على المفتاح الحالي",
+      "credentials_edit_hint": "اترك الحقول فارغة إذا لم تكن تريد تحديث بيانات اعتماد API.",
+      "active_label": "الإعداد نشط",
+      "active_desc": "تفعيل أو تعطيل إعداد الأعمال هذا"
+    },
+    "validation": {
+      "required": "هذا الحقل مطلوب"
+    },
+    "toast": {
+      "create_success": "تم إنشاء الإعداد بنجاح",
+      "create_error": "حدث خطأ أثناء الإنشاء",
+      "update_success": "تم تحديث الإعداد بنجاح",
+      "update_error": "حدث خطأ أثناء التحديث",
+      "no_changes": "لم يتم اكتشاف أي تغييرات",
+      "form_errors": "يرجى تصحيح أخطاء النموذج"
+    },
+    "actions": {
+      "cancel": "إلغاء",
+      "create": "إنشاء",
+      "creating": "جارٍ الإنشاء…",
+      "save": "حفظ",
+      "saving": "جارٍ الحفظ…"
+    }
+  }
+}

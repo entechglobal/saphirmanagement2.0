@@ -1,0 +1,63 @@
+import { PERMISSIONS } from "../../shared/utils/permissions";
+
+export const SALES_DOC_CONFIG = {
+  commande: {
+    key: "commande",
+    apiBase: "/commandes",
+    path: "/bons-commande",
+    title: "Bons de commande",
+    singular: "Bon de commande",
+    createLabel: "Nouveau bon de commande",
+    hidePrices: true,
+    requireClient: false,
+    hideStatus: false,
+    editable: true,
+    permissions: {
+      view: PERMISSIONS.VIEW_COMMANDE,
+      create: PERMISSIONS.CREATE_COMMANDE,
+      update: PERMISSIONS.UPDATE_COMMANDE,
+      delete: PERMISSIONS.DELETE_COMMANDE,
+    },
+  },
+  devis: {
+    key: "devis",
+    apiBase: "/devis",
+    path: "/devis",
+    title: "Devis",
+    singular: "Devis",
+    createLabel: "Nouveau devis",
+    hidePrices: false,
+    requireClient: true,
+    hideStatus: true,
+    editable: true,
+    permissions: {
+      view: PERMISSIONS.VIEW_DEVIS,
+      create: PERMISSIONS.CREATE_DEVIS,
+      update: PERMISSIONS.UPDATE_DEVIS,
+      delete: PERMISSIONS.DELETE_DEVIS,
+    },
+  },
+  facture: {
+    key: "facture",
+    apiBase: "/factures",
+    path: "/factures",
+    title: "Factures",
+    singular: "Facture",
+    createLabel: "Nouvelle facture",
+    hidePrices: false,
+    requireClient: true,
+    hideStatus: false,
+    editable: false,
+    statusToggle: true,
+    statusLabels: {
+      DRAFT: "Brouillon",
+      COMPLETED: "Livré",
+    },
+    permissions: {
+      view: PERMISSIONS.VIEW_FACTURE,
+      create: PERMISSIONS.CREATE_FACTURE,
+      update: PERMISSIONS.UPDATE_FACTURE,
+      delete: PERMISSIONS.DELETE_FACTURE,
+    },
+  },
+};

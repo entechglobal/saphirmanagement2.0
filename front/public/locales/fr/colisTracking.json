@@ -1,0 +1,23 @@
+{
+  "page_title": "Suivi Colis",
+  "col_client": "Client",
+  "col_document": "Document #",
+  "col_colis_code": "Code Colis",
+  "col_delivery_date": "Date de livraison",
+  "col_order_status": "Statut commande",
+  "col_financials": "Financier",
+  "col_agency": "Agence",
+  "scan_label": "Scanner le code-barres du colis",
+  "btn_receiving": "Réception en cours...",
+  "btn_mark_received": "Marquer reçu",
+  "error_update_status": "Échec de la mise à jour du statut du colis.",
+  "success_title": "Colis reçu",
+  "success_colis_code": "Code du colis# :",
+  "success_status": "Statut :",
+  "success_document": "Document :",
+  "success_client": "Client :",
+  "col_total": "Total",
+  "col_paid": "Payé",
+  "search_placeholder": "Rechercher dans la liste...",
+  "colis_copied": "Code copié !"
+}

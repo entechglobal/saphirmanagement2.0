@@ -1,0 +1,57 @@
+{
+  "page_title": "Delivery Planning",
+
+  "status_paye": "Paid",
+  "status_en_attente": "Pending",
+  "status_annule": "Cancelled",
+
+  "mode_VIREMENT": "Wire Transfer",
+  "mode_ESPECES": "Cash",
+  "mode_CHEQUE": "Cheque",
+  "mode_CB": "Credit Card",
+
+  "day_sun": "Su",
+  "day_mon": "Mo",
+  "day_tue": "Tu",
+  "day_wed": "We",
+  "day_thu": "Th",
+  "day_fri": "Fr",
+  "day_sat": "Sa",
+
+  "legend_with_deliveries": "With deliveries",
+  "legend_without": "No delivery",
+  "legend_out_of_range": "Out of range",
+
+  "filter_label": "Filters",
+  "filter_start_date": "Start date",
+  "filter_end_date": "End date",
+  "filter_livreur": "Delivery Person",
+  "filter_all_livreurs": "All delivery persons",
+
+  "stat_bl": "Delivery orders",
+  "stat_colis": "Total parcels",
+  "stat_montant": "Total amount",
+  "stat_jours": "Planned days",
+
+  "detail_document": "Document",
+  "detail_created_by": "Created by",
+  "detail_livreur": "Delivery Person",
+  "detail_telephone": "Phone",
+  "detail_whatsapp": "WhatsApp",
+  "detail_ville": "City",
+  "detail_localisation": "Location",
+  "detail_reglement": "Payment",
+  "detail_montant": "Amount",
+  "detail_notes": "Notes",
+  "detail_reste": "Remaining",
+
+  "badge_reported": "Postponed",
+  "badge_suspended": "Suspended",
+
+  "bl_colis": "{{count}} parcel(s)",
+  "delivery_count": "{{count}} delivery(s)",
+  "no_delivery": "No deliveries",
+  "day_no_delivery": "No deliveries this day",
+  "empty_period": "No deliveries for this period",
+  "back_all_days": "← Show all days"
+}

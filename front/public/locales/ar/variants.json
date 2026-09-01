@@ -1,0 +1,93 @@
+{
+  "article_info": {
+    "title": "معلومات المنتج",
+    "name": "اسم المنتج",
+    "family": "فئة العائلة",
+    "barcode": "باركود / GTIN",
+    "reference": "رقم المرجع",
+    "total": "الإجمالي",
+    "variants_count": "{{count}} أنواع",
+    "no_barcode": "لم يتم تعيين باركود"
+  },
+  "manager": {
+    "title": "الأنواع",
+    "add_button": "إضافة نوع",
+    "finish_button": "إنهاء وحفظ"
+  },
+  "table": {
+    "variant": "النوع",
+    "barcode": "الباركود",
+    "attributes": "المواصفات",
+    "actions": "الإجراءات",
+    "no_barcode": "بدون باركود",
+    "stock": "المخزون"
+  },
+  "form": {
+    "add_title": "إضافة نوع جديد",
+    "edit_basic": "تعديل المعلومات الأساسية",
+    "manage_attr": "إدارة المواصفات",
+    "name_label": "اسم النوع",
+    "barcode_label": "الباركود",
+    "barcode_placeholder": "توليد أو إدخال باركود",
+    "generate": "توليد",
+    "attr_config": "تكوين الخصائص المحددة",
+    "attr_type": "نوع المواصفة",
+    "attr_value": "القيمة",
+    "select_type": "اختر النوع...",
+    "select_value": "اختر القيمة...",
+    "add_another": "إضافة مواصفة أخرى"
+  },
+  "dialog": {
+    "cancel": "إلغاء",
+    "save": "حفظ التغييرات",
+    "saving": "جاري الحفظ...",
+    "delete_title": "حذف النوع",
+    "delete_confirm": "هل أنت متأكد من حذف",
+    "delete_action": "حذف"
+  },
+  "notifications": {
+    "save_success": "تم الحفظ بنجاح",
+    "op_failed": "فشلت العملية",
+    "attr_incomplete": "يرجى استكمال جميع اختيارات المواصفات",
+    "deleted": "تم الحذف",
+    "select_attr_first": "يرجى تحديد مواصفة واحدة على الأقل مع قيمة أو أكثر.",
+    "too_many_variants": "هذا التوليف سينتج {{total}} نوعاً. الحد المسموح {{limit}}. يرجى تقليل الاختيارات.",
+    "variants_created": "تم إنشاء {{count}} نوع بنجاح!",
+    "create_failed": "فشل إنشاء الأنواع",
+    "barcode_required": "الباركود مطلوب"
+  },
+  "builder": {
+    "title_step1": "إنشاء الأنواع",
+    "title_step2": "مراجعة وتأكيد",
+    "desc_step1": "اختر المواصفات وقيمها الممكنة",
+    "desc_step2": "عيّن الباركود، احذف الصفوف غير المرغوبة، ثم احفظ",
+    "step1_label": "اختيار المواصفات",
+    "step2_label": "معاينة وحفظ",
+    "select_attr": "اختر مواصفة...",
+    "n_selected": "{{count}} محدد",
+    "pick_hint": "← اختر مواصفة لرؤية القيم",
+    "will_generate": "سيتم توليد {{count}} نوع",
+    "exceeds_limit": "— يتجاوز الحد البالغ {{limit}}",
+    "add_another_attr": "إضافة مواصفة أخرى",
+    "n_generated": "تم توليد {{count}} نوع",
+    "auto_barcodes": "توليد تلقائي لجميع الباركودات",
+    "barcode_placeholder": "أدخل أو ولّد...",
+    "missing_barcodes": "بعض الأنواع لا تحتوي على باركود. الرجاء إدخالها أو استخدام التوليد التلقائي.",
+    "save_variants": "حفظ {{count}} نوع في قاعدة البيانات",
+    "cancel": "إلغاء",
+    "generate_btn": "توليد الأنواع",
+    "back": "← العودة"
+  },
+  "finish_modal": {
+    "title": "إنهاء بدون مخزون؟",
+    "message": "لم تقم بإضافة أي مخزون للمتغيرات بعد. سيتم حفظ المنتج بدون مخزون متاح. يمكنك إضافته لاحقاً.",
+    "confirm": "إنهاء على أي حال",
+    "cancel": "إلغاء"
+  },
+  "view": {
+    "stock_info": "يُدار المخزون لكل نوع على حدة",
+    "manage_attributes_title": "إدارة مواصفات النوع",
+    "loading_attributes": "جاري تحميل المواصفات…",
+    "barcode_label": "الباركود:"
+  }
+}

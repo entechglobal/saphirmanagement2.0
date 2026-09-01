@@ -1,0 +1,1178 @@
+{
+  "info": {
+    "name": "BonReception API — Full Test Suite",
+    "description": "Complete test suite for the BonReception module. Covers article/variant lines, price-catalog updates (newPrixAchat/newPrixVente1-3), status transitions (DRAFT↔COMPLETED with INBOUND stock movements), updates, and validation error cases.\n\nSet {{frsId}}, {{depotId}}, {{articleId}}, {{variantId}} before running. {{brId}}, {{completedBrId}} and {{lineId}} are captured automatically from create responses.",
+    "_postman_id": "bon-reception-full-v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl",       "value": "http://localhost:3000", "type": "string" },
+    { "key": "token",         "value": "YOUR_JWT_TOKEN",        "type": "string" },
+    { "key": "brId",          "value": "1",                     "type": "string" },
+    { "key": "completedBrId", "value": "1",                     "type": "string" },
+    { "key": "lineId",        "value": "1",                     "type": "string" },
+    { "key": "frsId",         "value": "1",                     "type": "string" },
+    { "key": "depotId",       "value": "1",                     "type": "string" },
+    { "key": "articleId",     "value": "1",                     "type": "string" },
+    { "key": "variantId",     "value": "2",                     "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+
+    {
+      "name": "1 — Helpers",
+      "item": [
+        {
+          "name": "GET Next Document Number",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/next-number",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "next-number"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Format BR-YYYY-NNNNNN', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.data.nextNumber).to.match(/^BR-\\d{4}-\\d{6}$/);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Products Picker (catalog + depot stock)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/products?depotId={{depotId}}&search=&page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "products"],
+              "query": [
+                { "key": "depotId", "value": "{{depotId}}" },
+                { "key": "search",  "value": "" },
+                { "key": "page",    "value": "1" },
+                { "key": "limit",   "value": "20" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has data array', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.data).to.be.an('array');",
+                  "});",
+                  "pm.test('Product shape includes quantityStock', () => {",
+                  "  const d = pm.response.json();",
+                  "  if (d.data.length > 0) {",
+                  "    const p = d.data[0];",
+                  "    pm.expect(p).to.have.all.keys('id','type','articleId','variantId','barcode','name','prixAchat','prixVente1','prixVente2','prixVente3','quantityStock');",
+                  "    pm.expect(p.quantityStock).to.be.a('number');",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Products Picker — search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/products?depotId={{depotId}}&search=a",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "products"],
+              "query": [
+                { "key": "depotId", "value": "{{depotId}}" },
+                { "key": "search",  "value": "a" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Products Picker — missing depotId (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/products?search=a",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "products"],
+              "query": [
+                { "key": "search", "value": "a" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "2 — Create BonReception",
+      "item": [
+        {
+          "name": "Create — article line (DRAFT)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": {{frsId}},\n  \"documentReference\": \"BR-TEST-{{$timestamp}}\",\n  \"note\": \"Reception fournisseur standard\",\n  \"status\": \"DRAFT\",\n  \"lines\": [\n    {\n      \"articleId\": {{articleId}},\n      \"remise\": 0,\n      \"quantity\": 10\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Has id and DRAFT status', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.data.id).to.exist;",
+                  "  pm.expect(d.data.document.status).to.equal('DRAFT');",
+                  "  pm.collectionVariables.set('brId', d.data.id);",
+                  "  pm.collectionVariables.set('lineId', d.data.document.lines[0].id);",
+                  "});",
+                  "pm.test('No stock transactions for DRAFT', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.data.stockTransactions).to.be.an('array').that.is.empty;",
+                  "  pm.expect(d.data.summary.stockMovementApplied).to.equal(false);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create — variant line (DRAFT)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": {{frsId}},\n  \"documentReference\": \"BR-TEST-VAR-{{$timestamp}}\",\n  \"status\": \"DRAFT\",\n  \"lines\": [\n    {\n      \"variantId\": {{variantId}},\n      \"remise\": 0,\n      \"quantity\": 5\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Line has variantId', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.data.document.lines[0].variantId).to.exist;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create — with catalog price updates (newPrixAchat/newPrixVente1-3)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": {{frsId}},\n  \"documentReference\": \"BR-TEST-PRICE-{{$timestamp}}\",\n  \"note\": \"Reception avec mise a jour des prix catalogue\",\n  \"status\": \"DRAFT\",\n  \"lines\": [\n    {\n      \"articleId\": {{articleId}},\n      \"remise\": 0,\n      \"quantity\": 8,\n      \"newPrixAchat\": 45.5,\n      \"newPrixVente1\": 65,\n      \"newPrixVente2\": 70,\n      \"newPrixVente3\": 75\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Line cost uses newPrixAchat', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(parseFloat(d.data.document.lines[0].unitPrice)).to.equal(45.5);",
+                  "});",
+                  "pm.test('Article catalog prices updated immediately', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(parseFloat(d.data.document.lines[0].article.prixAchat)).to.equal(45.5);",
+                  "  pm.expect(parseFloat(d.data.document.lines[0].article.prixVente1)).to.equal(65);",
+                  "  pm.expect(parseFloat(d.data.document.lines[0].article.prixVente2)).to.equal(70);",
+                  "  pm.expect(parseFloat(d.data.document.lines[0].article.prixVente3)).to.equal(75);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create — multiple lines (DRAFT)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": {{frsId}},\n  \"documentReference\": \"BR-TEST-MULTI-{{$timestamp}}\",\n  \"status\": \"DRAFT\",\n  \"lines\": [\n    {\n      \"articleId\": {{articleId}},\n      \"remise\": 0.05,\n      \"quantity\": 4\n    },\n    {\n      \"variantId\": {{variantId}},\n      \"remise\": 0,\n      \"quantity\": 2\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Has 2 lines', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.data.document.lines.length).to.equal(2);",
+                  "});",
+                  "pm.test('TTC invariant HT + TVA = TTC', () => {",
+                  "  const d = pm.response.json();",
+                  "  const ht = parseFloat(d.data.document.totalHT);",
+                  "  const tva = parseFloat(d.data.document.totalTVA);",
+                  "  const ttc = parseFloat(d.data.document.totalTTC);",
+                  "  pm.expect(Math.abs(ht + tva - ttc)).to.be.lessThan(0.01);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create — immediate COMPLETED (INBOUND stock)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": {{frsId}},\n  \"documentReference\": \"BR-TEST-COMPLETED-{{$timestamp}}\",\n  \"note\": \"Reception immediate completee\",\n  \"status\": \"COMPLETED\",\n  \"lines\": [\n    {\n      \"articleId\": {{articleId}},\n      \"remise\": 0,\n      \"quantity\": 6\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Status is COMPLETED', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.data.document.status).to.equal('COMPLETED');",
+                  "  pm.collectionVariables.set('completedBrId', d.data.id);",
+                  "});",
+                  "pm.test('Has INBOUND stock transactions', () => {",
+                  "  const d = pm.response.json();",
+                  "  const inbound = d.data.stockTransactions.filter(t => t.transactionType === 'INBOUND');",
+                  "  pm.expect(inbound.length).to.be.greaterThan(0);",
+                  "  pm.expect(d.data.summary.stockMovementApplied).to.equal(true);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "3 — Read",
+      "item": [
+        {
+          "name": "GET All BonReceptions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"],
+              "query": [
+                { "key": "page",  "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has pagination and data', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d).to.have.property('pagination');",
+                  "  pm.expect(d).to.have.property('data');",
+                  "});",
+                  "pm.test('Item shape matches spec', () => {",
+                  "  const d = pm.response.json();",
+                  "  if (d.data.length > 0) {",
+                  "    const item = d.data[0];",
+                  "    pm.expect(item).to.have.all.keys('id','documentReference','dateReception','frsName','totalHT','totalTVA','totalTTC','status');",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET All — filter by frsId + status DRAFT",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions?frsId={{frsId}}&status=DRAFT",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"],
+              "query": [
+                { "key": "frsId",  "value": "{{frsId}}" },
+                { "key": "status", "value": "DRAFT" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET All — filter by depot + date range",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions?depotId={{depotId}}&startDate=2026-06-01&endDate=2026-06-30",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"],
+              "query": [
+                { "key": "depotId",   "value": "{{depotId}}" },
+                { "key": "startDate", "value": "2026-06-01" },
+                { "key": "endDate",   "value": "2026-06-30" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET All — search by documentReference",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions?search=BR-TEST",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"],
+              "query": [
+                { "key": "search", "value": "BR-TEST" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Results match search term', () => {",
+                  "  const d = pm.response.json();",
+                  "  d.data.forEach(item => {",
+                  "    const matches = item.documentReference.includes('BR-TEST') || item.frsName;",
+                  "    pm.expect(!!matches).to.equal(true);",
+                  "  });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/{{brId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "{{brId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has document lines and depot', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.data.document).to.have.property('lines');",
+                  "  pm.expect(d.data).to.have.property('depot');",
+                  "  pm.expect(d.data).to.have.property('stockTransactions');",
+                  "  pm.expect(d.data).to.have.property('documentReference');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET By ID — not found (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/999999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "999999"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 404', () => pm.response.to.have.status(404));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Print PDF",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/{{brId}}/print",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "{{brId}}", "print"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('200 or 404', () => {",
+                  "  pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "4 — Validate (Status Transitions)",
+      "item": [
+        {
+          "name": "DRAFT → COMPLETED (INBOUND applied)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/{{brId}}/validate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "{{brId}}", "validate"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"targetStatus\": \"COMPLETED\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Transition DRAFT → COMPLETED', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.transition.from).to.equal('DRAFT');",
+                  "  pm.expect(d.transition.to).to.equal('COMPLETED');",
+                  "  pm.expect(d.transition.inboundApplied).to.equal(true);",
+                  "});",
+                  "pm.test('INBOUND transactions created', () => {",
+                  "  const d = pm.response.json();",
+                  "  const inbound = d.data.stockTransactions.filter(t => t.transactionType === 'INBOUND');",
+                  "  pm.expect(inbound.length).to.be.greaterThan(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Same status (no-op 400)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/{{brId}}/validate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "{{brId}}", "validate"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"targetStatus\": \"COMPLETED\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400 (already COMPLETED)', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "COMPLETED → DRAFT (reverses INBOUND)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/{{brId}}/validate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "{{brId}}", "validate"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"targetStatus\": \"DRAFT\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Reverted to DRAFT', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.transition.from).to.equal('COMPLETED');",
+                  "  pm.expect(d.transition.to).to.equal('DRAFT');",
+                  "  pm.expect(d.transition.stockReverted).to.equal(true);",
+                  "});",
+                  "pm.test('INBOUND records cleaned up, ADJUSTMENT created', () => {",
+                  "  const d = pm.response.json();",
+                  "  const inbound = d.data.stockTransactions.filter(t => t.transactionType === 'INBOUND');",
+                  "  const adj = d.data.stockTransactions.filter(t => t.transactionType === 'ADJUSTMENT');",
+                  "  pm.expect(inbound.length).to.equal(0);",
+                  "  pm.expect(adj.length).to.be.greaterThan(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validate non-existent id (404)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/999999/validate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "999999", "validate"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"targetStatus\": \"COMPLETED\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 404', () => pm.response.to.have.status(404));"]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "5 — Update BonReception",
+      "item": [
+        {
+          "name": "Mode 1 — metadata only (no lines)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/{{brId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "{{brId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Note mise a jour\",\n  \"dateReception\": \"2026-06-15\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Mode simple', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.data.summary.updateMode).to.equal('simple');",
+                  "  pm.expect(d.data.summary.linesUpdated).to.equal(false);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mode 2 — update lines (DRAFT only)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/{{brId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "{{brId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lines\": [\n    {\n      \"id\": {{lineId}},\n      \"articleId\": {{articleId}},\n      \"quantity\": 20,\n      \"remise\": 0.1\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Mode full, totals recalculated', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.data.summary.updateMode).to.equal('full');",
+                  "  pm.expect(parseFloat(d.data.document.lines[0].quantity)).to.equal(20);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mode 2 — update depotId (DRAFT only)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/{{brId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "{{brId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"depotId\": {{depotId}}\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update COMPLETED — lines locked (400)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/{{completedBrId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "{{completedBrId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lines\": [\n    {\n      \"articleId\": {{articleId}},\n      \"quantity\": 1,\n      \"remise\": 0\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400 (COMPLETED lock)', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update COMPLETED — metadata still allowed (200)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/{{completedBrId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "{{completedBrId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Note mise a jour sur document complete\",\n  \"dateReception\": \"2026-06-16\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Mode simple', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.data.summary.updateMode).to.equal('simple');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "6 — Delete BonReception",
+      "item": [
+        {
+          "name": "DELETE — DRAFT (success, no stock reversal)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/{{brId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "{{brId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Deleted message', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.message).to.include('deleted');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE — COMPLETED (reverses INBOUND)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/{{completedBrId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "{{completedBrId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('200 or 404 (already deleted)', () => {",
+                  "  pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE — already deleted (404)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions/{{brId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions", "{{brId}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 404', () => pm.response.to.have.status(404));"]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "7 — Validation Errors",
+      "item": [
+        {
+          "name": "Missing documentReference (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": {{frsId}},\n  \"status\": \"DRAFT\",\n  \"lines\": [\n    {\n      \"articleId\": {{articleId}},\n      \"quantity\": 1,\n      \"remise\": 0\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Empty lines array (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": {{frsId}},\n  \"documentReference\": \"BR-ERR-{{$timestamp}}\",\n  \"status\": \"DRAFT\",\n  \"lines\": []\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Line with both articleId and variantId (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": {{frsId}},\n  \"documentReference\": \"BR-ERR-{{$timestamp}}\",\n  \"status\": \"DRAFT\",\n  \"lines\": [\n    {\n      \"articleId\": {{articleId}},\n      \"variantId\": {{variantId}},\n      \"quantity\": 1,\n      \"remise\": 0\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Line with neither articleId nor variantId (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": {{frsId}},\n  \"documentReference\": \"BR-ERR-{{$timestamp}}\",\n  \"status\": \"DRAFT\",\n  \"lines\": [\n    {\n      \"quantity\": 1,\n      \"remise\": 0\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Duplicate product in lines (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": {{frsId}},\n  \"documentReference\": \"BR-ERR-{{$timestamp}}\",\n  \"status\": \"DRAFT\",\n  \"lines\": [\n    {\n      \"articleId\": {{articleId}},\n      \"quantity\": 1,\n      \"remise\": 0\n    },\n    {\n      \"articleId\": {{articleId}},\n      \"quantity\": 2,\n      \"remise\": 0\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Zero quantity (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": {{frsId}},\n  \"documentReference\": \"BR-ERR-{{$timestamp}}\",\n  \"status\": \"DRAFT\",\n  \"lines\": [\n    {\n      \"articleId\": {{articleId}},\n      \"quantity\": 0,\n      \"remise\": 0\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "remise out of range (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": {{frsId}},\n  \"documentReference\": \"BR-ERR-{{$timestamp}}\",\n  \"status\": \"DRAFT\",\n  \"lines\": [\n    {\n      \"articleId\": {{articleId}},\n      \"quantity\": 1,\n      \"remise\": 1.5\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "newPrixAchat <= 0 (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": {{frsId}},\n  \"documentReference\": \"BR-ERR-{{$timestamp}}\",\n  \"status\": \"DRAFT\",\n  \"lines\": [\n    {\n      \"articleId\": {{articleId}},\n      \"quantity\": 1,\n      \"remise\": 0,\n      \"newPrixAchat\": 0\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Fournisseur not found (404)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": 999999,\n  \"documentReference\": \"BR-ERR-{{$timestamp}}\",\n  \"status\": \"DRAFT\",\n  \"lines\": [\n    {\n      \"articleId\": {{articleId}},\n      \"quantity\": 1,\n      \"remise\": 0\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 404', () => pm.response.to.have.status(404));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Depot not found (404)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": 999999,\n  \"frsId\": {{frsId}},\n  \"documentReference\": \"BR-ERR-{{$timestamp}}\",\n  \"status\": \"DRAFT\",\n  \"lines\": [\n    {\n      \"articleId\": {{articleId}},\n      \"quantity\": 1,\n      \"remise\": 0\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 404', () => pm.response.to.have.status(404));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Duplicate documentReference — setup (201 or 409)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": {{frsId}},\n  \"documentReference\": \"BR-DUP-TEST\",\n  \"status\": \"DRAFT\",\n  \"lines\": [\n    {\n      \"articleId\": {{articleId}},\n      \"quantity\": 1,\n      \"remise\": 0\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('201 or 409', () => {",
+                  "  pm.expect([201, 409]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Duplicate documentReference (409)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/bon-receptions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bon-receptions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateReception\": \"2026-06-12\",\n  \"depotId\": {{depotId}},\n  \"frsId\": {{frsId}},\n  \"documentReference\": \"BR-DUP-TEST\",\n  \"status\": \"DRAFT\",\n  \"lines\": [\n    {\n      \"articleId\": {{articleId}},\n      \"quantity\": 1,\n      \"remise\": 0\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 409', () => pm.response.to.have.status(409));"]
+              }
+            }
+          ]
+        }
+      ]
+    }
+
+  ]
+}

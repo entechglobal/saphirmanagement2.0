@@ -1,0 +1,27 @@
+{
+  "page_title": "Gestion des Attributs",
+  "loading": "Chargement des attributs…",
+  "form": {
+    "edit_title": "Modifier l'attribut",
+    "create_title": "Gestion des Attributs",
+    "name_label": "Nom de l'attribut",
+    "name_placeholder": "ex. Couleur",
+    "values_label": "Valeurs de l'attribut",
+    "values_placeholder": "Saisir et appuyer sur Entrée",
+    "cancel": "Annuler",
+    "update": "Mettre à jour",
+    "create": "Créer"
+  },
+  "table": {
+    "title": "Attributs définis",
+    "col_attribute": "Attribut",
+    "col_values": "Valeurs",
+    "col_actions": "Actions",
+    "empty": "Aucun attribut créé."
+  },
+  "toast": {
+    "create_success": "Attribut créé",
+    "update_success": "Attribut mis à jour",
+    "update_error": "Échec de la mise à jour de l'attribut"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "title": "Settings",
+  "subtitle": "Application configuration and administration",
+  "nav_label": "Sections",
+  "tabs": {
+    "prices": "Price Grids",
+    "prices_desc": "Show or hide pricing grids",
+    "documents": "Documents",
+    "documents_desc": "PDF and print themes",
+    "attributes": "Attributes",
+    "attributes_desc": "Manage product attributes",
+    "labels": "Cash Labels",
+    "labels_desc": "Labels shown on the cash register",
+    "permissions": "Permissions & Access",
+    "permissions_desc": "Roles and user rights",
+    "system": "System",
+    "system_desc": "Global platform options"
+  },
+  "price_grid": {
+    "title": "Price Grids",
+    "subtitle": "Choose which grids are visible in the app",
+    "badge_default": "Default",
+    "badge_hidden": "Hidden",
+    "min_one_warning": "At least one grid must remain active"
+  },
+  "doc_header": {
+    "title": "Document templates",
+    "subtitle": "5 header templates for PDFs and printouts",
+    "preview": "Preview",
+    "societe_label": "Company",
+    "themes": {
+      "ledger": "Ledger",
+      "strip": "Strip",
+      "framed": "Framed",
+      "wave": "Wave",
+      "atelier": "Atelier"
+    },
+    "theme_desc": {
+      "ledger": "Company left · meta right · BILL TO bar",
+      "strip": "Amber strip · N° / date / total blocks",
+      "framed": "Teal header + footer · client right",
+      "wave": "Wave header · Bill To / From",
+      "atelier": "Title + logo · columns · orange rule"
+    },
+    "save": "Save",
+    "toast_saved": "Template saved",
+    "toast_error": "Failed to save",
+    "no_societe_title": "No companies",
+    "no_societe_list": "Create a company to customize its documents.",
+    "load_error": "Could not load this company."
+  }
+}

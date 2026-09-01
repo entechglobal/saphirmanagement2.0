@@ -1,0 +1,69 @@
+{
+  "form": {
+    "buttons": {
+      "finish": "Terminer",
+      "skip": "Passer et terminer"
+    }
+  },
+  "article_info": {
+    "title": "Informations de l'article",
+    "name": "Nom",
+    "barcode": "Code-barres",
+    "family": "Famille",
+    "reference": "Référence",
+    "standard": "Standard"
+  },
+  "card": {
+    "stock_levels": "Niveaux de stock",
+    "add": "Ajouter Stock",
+    "col_depot": "Dépôt",
+    "col_qty": "Quantité",
+    "col_alert": "Seuil d'alerte",
+    "col_actions": "Actions",
+    "main_company": "Entreprise principale",
+    "edit_title": "Modifier le stock",
+    "add_title": "Ajouter un nouveau stock",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "close": "Fermer",
+    "stock_management": "Gestion du stock",
+    "delete_stock": "Supprimer le stock",
+    "no_stock_entries": "Aucune entrée de stock",
+    "confirm_deletion": "Confirmer la suppression",
+    "confirm_remove": "Êtes-vous sûr de vouloir supprimer l'entrée de stock pour le dépôt"
+  },
+  "badge": {
+    "no_stock": "Aucun stock",
+    "depot_count": "{{count}} dépôt(s)"
+  },
+  "entries": {
+    "select_depots": "Sélectionner les dépôts",
+    "choose_depots": "Choisir les dépôts",
+    "choose_depot": "Choisir le dépôt",
+    "select_error": "Veuillez sélectionner au moins un dépôt",
+    "apply_all": "Appliquer le même stock à tous les dépôts sélectionnés",
+    "qty_available": "Quantité disponible",
+    "alert_threshold": "Seuil d'alerte",
+    "required": "Requis"
+  },
+  "dialog": {
+    "delete_title": "Supprimer le stock",
+    "delete_confirm": "Voulez-vous supprimer le stock de",
+    "cancel": "Annuler",
+    "delete_action": "Supprimer"
+  },
+  "skip_modal": {
+    "title": "Terminer sans stock ?",
+    "message": "Vous n'avez pas encore ajouté de stock. L'article sera enregistré sans stock disponible. Vous pourrez en ajouter plus tard.",
+    "confirm": "Passer et terminer",
+    "cancel": "Annuler"
+  },
+  "toast": {
+    "fill_error": "Veuillez renseigner correctement tous les détails du stock",
+    "updated": "Stock mis à jour avec succès",
+    "created": "Stock créé avec succès",
+    "operation_failed": "L'opération a échoué",
+    "deleted": "Stock supprimé avec succès",
+    "delete_failed": "Échec de la suppression du stock"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "error404Label": "Erreur 404",
+  "appErrorLabel": "Erreur d'application",
+  "notFoundTitle": "Page introuvable",
+  "genericTitle": "Une erreur est survenue",
+  "notFoundMessage": "La page que vous essayez d'accéder n'existe pas ou a été déplacée.",
+  "genericMessage": "Une erreur inattendue s'est produite lors du traitement de votre requête.",
+  "goToDashboard": "Aller au tableau de bord",
+  "retry": "Réessayer",
+  "goBack": "Retour",
+  "time": "Heure"
+}

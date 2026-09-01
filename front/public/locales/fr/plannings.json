@@ -1,0 +1,57 @@
+{
+  "page_title": "Planning de Livraison",
+
+  "status_paye": "Payé",
+  "status_en_attente": "En attente",
+  "status_annule": "Annulé",
+
+  "mode_VIREMENT": "Virement",
+  "mode_ESPECES": "Espèces",
+  "mode_CHEQUE": "Chèque",
+  "mode_CB": "Carte bancaire",
+
+  "day_sun": "Di",
+  "day_mon": "Lu",
+  "day_tue": "Ma",
+  "day_wed": "Me",
+  "day_thu": "Je",
+  "day_fri": "Ve",
+  "day_sat": "Sa",
+
+  "legend_with_deliveries": "Avec livraisons",
+  "legend_without": "Sans livraison",
+  "legend_out_of_range": "Hors plage",
+
+  "filter_label": "Filtres",
+  "filter_start_date": "Date début",
+  "filter_end_date": "Date fin",
+  "filter_livreur": "Livreur",
+  "filter_all_livreurs": "Tous les livreurs",
+
+  "stat_bl": "Bon de livraisons",
+  "stat_colis": "Total colis",
+  "stat_montant": "Montant total",
+  "stat_jours": "Jours planifiés",
+
+  "detail_document": "Document",
+  "detail_created_by": "Créé par",
+  "detail_livreur": "Livreur",
+  "detail_telephone": "Téléphone",
+  "detail_whatsapp": "WhatsApp",
+  "detail_ville": "Ville",
+  "detail_localisation": "Localisation",
+  "detail_reglement": "Règlement",
+  "detail_montant": "Montant",
+  "detail_notes": "Notes",
+  "detail_reste": "Reste",
+
+  "badge_reported": "Reporté",
+  "badge_suspended": "Suspendu",
+
+  "bl_colis": "{{count}} colis",
+  "delivery_count": "{{count}} livraison(s)",
+  "no_delivery": "Aucune livraison",
+  "day_no_delivery": "Journée sans livraison",
+  "empty_period": "Aucune livraison pour cette période",
+  "back_all_days": "← Afficher tous les jours"
+}

@@ -1,0 +1,77 @@
+{
+  "title": "Business",
+  "create_new": "New Configuration",
+  "columns": {
+    "id": "ID",
+    "name": "Name",
+    "provider": "Delivery Company",
+    "societe": "Company",
+    "status": "Status"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "filters": "Filters",
+  "all": "All",
+  "reset": "Reset",
+  "filter_livreur": "External Delivery Company",
+  "filter_all_livreurs": "All companies",
+  "filter_societe": "Company",
+  "filter_all_societes": "All companies",
+  "delete": {
+    "title": "Delete Configuration",
+    "message": "Are you sure you want to delete this configuration? This action cannot be undone.",
+    "confirm": "Delete",
+    "cancel": "Cancel",
+    "success": "Configuration deleted successfully",
+    "error": "Error deleting configuration"
+  },
+  "form": {
+    "entity_name": "Business Configuration",
+    "create_title": "New Business Configuration",
+    "edit_title": "Edit: {{name}}",
+    "back_label": "Back to Configurations",
+    "sections": {
+      "info": "General Information",
+      "credentials": "API Credentials",
+      "status": "Status"
+    },
+    "fields": {
+      "provider": "External Delivery Company",
+      "provider_placeholder": "Select an external delivery company",
+      "provider_empty": "No external delivery company available for this company",
+      "name": "Store Name",
+      "name_placeholder": "e.g. Boutique deroua",
+      "societe": "Company",
+      "societe_placeholder": "Select a company",
+      "societe_locked": "The company cannot be changed after creation.",
+      "api_id": "API ID",
+      "api_id_placeholder": "Delivery company API identifier",
+      "api_key": "API Key",
+      "api_key_placeholder": "Delivery company secret API key",
+      "api_key_placeholder_edit": "Leave blank to keep unchanged",
+      "credentials_edit_hint": "Leave the fields blank if you do not want to update the API credentials.",
+      "active_label": "Configuration active",
+      "active_desc": "Enable or disable this Business configuration"
+    },
+    "validation": {
+      "required": "This field is required"
+    },
+    "toast": {
+      "create_success": "Configuration created successfully",
+      "create_error": "Error creating configuration",
+      "update_success": "Configuration updated successfully",
+      "update_error": "Error updating configuration",
+      "no_changes": "No changes detected",
+      "form_errors": "Please fix the form errors"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "creating": "Creating…",
+      "save": "Save",
+      "saving": "Saving…"
+    }
+  }
+}

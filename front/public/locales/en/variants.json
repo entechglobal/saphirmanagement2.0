@@ -1,0 +1,93 @@
+{
+  "article_info": {
+    "title": "Article Information",
+    "name": "Article Name",
+    "family": "Family Group",
+    "barcode": "Barcode / GTIN",
+    "reference": "Reference ID",
+    "total": "Total",
+    "variants_count": "{{count}} Variants",
+    "no_barcode": "No Barcode Assigned"
+  },
+  "manager": {
+    "title": "Variants",
+    "add_button": "Add Variant",
+    "finish_button": "Finish and Save"
+  },
+  "table": {
+    "variant": "Variant",
+    "barcode": "Barcode",
+    "attributes": "Attributes",
+    "actions": "Actions",
+    "no_barcode": "No Barcode",
+    "stock": "Stock"
+  },
+  "form": {
+    "add_title": "Add Variant",
+    "edit_basic": "Edit Basic Info",
+    "manage_attr": "Manage Variant Attributes",
+    "name_label": "Variant Name",
+    "barcode_label": "Barcode",
+    "barcode_placeholder": "generate or enter barcode",
+    "generate": "Generate",
+    "attr_config": "Configure specific characteristics",
+    "attr_type": "Attribute Type",
+    "attr_value": "Value",
+    "select_type": "Select Type...",
+    "select_value": "Select Value...",
+    "add_another": "Add another attribute"
+  },
+  "dialog": {
+    "cancel": "Cancel",
+    "save": "Save Changes",
+    "saving": "Saving...",
+    "delete_title": "Delete Variant",
+    "delete_confirm": "Confirm deletion of",
+    "delete_action": "Delete"
+  },
+  "notifications": {
+    "save_success": "Saved successfully",
+    "op_failed": "Operation failed",
+    "attr_incomplete": "Please complete all attribute selections",
+    "deleted": "Deleted",
+    "select_attr_first": "Please select at least one attribute with one or more values.",
+    "too_many_variants": "This combination would generate {{total}} variants. Maximum allowed is {{limit}}. Please reduce your selections.",
+    "variants_created": "{{count}} variant(s) created!",
+    "create_failed": "Failed to create variants",
+    "barcode_required": "Barcode is required"
+  },
+  "builder": {
+    "title_step1": "Build Variants",
+    "title_step2": "Review & Confirm",
+    "desc_step1": "Select attributes and their possible values",
+    "desc_step2": "Set barcodes, remove unwanted rows, then save",
+    "step1_label": "Select Attributes",
+    "step2_label": "Preview & Save",
+    "select_attr": "Select attribute...",
+    "n_selected": "{{count}} selected",
+    "pick_hint": "← Pick an attribute to see values",
+    "will_generate": "This will generate {{count}} variant(s)",
+    "exceeds_limit": "— exceeds limit of {{limit}}",
+    "add_another_attr": "Add another attribute",
+    "n_generated": "{{count}} variant(s) generated",
+    "auto_barcodes": "Auto-generate all barcodes",
+    "barcode_placeholder": "Enter or generate…",
+    "missing_barcodes": "Some variants are missing barcodes. Please fill them in or use auto-generate.",
+    "save_variants": "Save {{count}} variant(s) to database",
+    "cancel": "Cancel",
+    "generate_btn": "Generate Variants",
+    "back": "← Back"
+  },
+  "finish_modal": {
+    "title": "Finish without stock?",
+    "message": "You haven't added any stock to the variants yet. The article will be saved with no available stock. You can add it later.",
+    "confirm": "Finish anyway",
+    "cancel": "Cancel"
+  },
+  "view": {
+    "stock_info": "Stock is managed per variant",
+    "manage_attributes_title": "Manage Variant Attributes",
+    "loading_attributes": "Loading attributes…",
+    "barcode_label": "Barcode:"
+  }
+}

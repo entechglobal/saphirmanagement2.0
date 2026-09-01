@@ -1,0 +1,52 @@
+{
+  "title": "الإعدادات",
+  "subtitle": "تكوين وإدارة التطبيق",
+  "nav_label": "الأقسام",
+  "tabs": {
+    "prices": "شبكات الأسعار",
+    "prices_desc": "إظهار أو إخفاء شبكات التسعير",
+    "documents": "المستندات",
+    "documents_desc": "سمات ملفات PDF والطباعة",
+    "attributes": "الخصائص",
+    "attributes_desc": "إدارة خصائص المنتجات",
+    "labels": "تصنيفات الصندوق",
+    "labels_desc": "التصنيفات المعروضة في الصندوق",
+    "permissions": "الصلاحيات والوصول",
+    "permissions_desc": "الأدوار وحقوق المستخدمين",
+    "system": "النظام",
+    "system_desc": "خيارات المنصة العامة"
+  },
+  "price_grid": {
+    "title": "شبكات الأسعار",
+    "subtitle": "اختر الشبكات الظاهرة في التطبيق",
+    "badge_default": "افتراضي",
+    "badge_hidden": "مخفي",
+    "min_one_warning": "يجب أن تبقى شبكة واحدة على الأقل نشطة"
+  },
+  "doc_header": {
+    "title": "قوالب المستندات",
+    "subtitle": "5 قوالب ترويسة لملفات PDF والطباعة",
+    "preview": "معاينة",
+    "societe_label": "الشركة",
+    "themes": {
+      "ledger": "Ledger",
+      "strip": "Strip",
+      "framed": "Framed",
+      "wave": "Wave",
+      "atelier": "Atelier"
+    },
+    "theme_desc": {
+      "ledger": "شركة يساراً · بيانات يميناً · شريط العميل",
+      "strip": "شريط كهرماني · كتل الرقم / التاريخ",
+      "framed": "شريط علوي وسفلي · العميل يميناً",
+      "wave": "ترويسة متموجة · من / إلى",
+      "atelier": "عنوان + شعار · أعمدة · خط برتقالي"
+    },
+    "save": "حفظ",
+    "toast_saved": "تم حفظ القالب",
+    "toast_error": "فشل الحفظ",
+    "no_societe_title": "لا توجد شركات",
+    "no_societe_list": "أنشئ شركة لتخصيص مستنداتها.",
+    "load_error": "تعذر تحميل هذه الشركة."
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "page_title": "إدارة الحزم",
+  "create_button": "حزمة جديدة",
+  "print_barcode": "الباركود",
+  "columns": {
+    "barcode": "الباركود",
+    "name": "اسم الحزمة",
+    "cost": "تكلفة الإنتاج",
+    "margin": "هامش الربح (%)",
+    "total_articles": "مبلغ المقالات",
+    "discount": "الخصم (%)",
+    "sale_price": "سعر البيع",
+    "purchase_price": "سعر الشراء",
+    "status": "الحالة",
+    "created_at": "تاريخ الإنشاء"
+  },
+  "status": {
+    "active": "نشط",
+    "inactive": "غير نشط"
+  },
+  "delete_modal": {
+    "title": "حذف الحزمة؟",
+    "message": "هل تريد حقًا حذف الحزمة \"{{name}}\"؟ ستبقى المكونات المرتبطة كمنتجات مستقلة.",
+    "confirm": "حذف",
+    "cancel": "إلغاء"
+  },
+  "toast": {
+    "delete_success": "تم حذف الحزمة بنجاح",
+    "delete_error": "خطأ أثناء حذف الحزمة",
+    "barcode_copied": "تم نسخ الباركود!"
+  },
+  "form": {
+    "create_title": "حزمة جديدة",
+    "edit_title": "تعديل الحزمة",
+    "back_label": "العودة إلى الحزم",
+    "entity_name": "الحزم",
+    "sections": {
+      "general": "المعلومات العامة",
+      "components": "مكونات الحزمة",
+      "pricing": "استراتيجية التسعير",
+      "status": "الحالة"
+    },
+    "fields": {
+      "name": "اسم الحزمة",
+      "name_placeholder": "مثال: حزمة المكتب المميزة",
+      "barcode": "الباركود",
+      "barcode_placeholder": "مثال: PACK-2026-001",
+      "generate": "توليد",
+      "societe": "الشركة",
+      "select_societe": "اختر شركة",
+      "margin_rate": "نسبة الهامش (%)",
+      "margin_rate_placeholder": "مثال: 30",
+      "cost_price": "تكلفة الإنتاج (درهم)",
+      "discount": "الخصم (%)",
+      "discount_placeholder": "مثال: 10",
+      "sale_amount": "مبلغ البيع (درهم)",
+      "custom_price": "سعر بيع الحزمة (درهم)",
+      "custom_price_placeholder": "مثال: 712.50",
+      "estimated_price": "سعر البيع المقدر",
+      "active_label": "الحزمة نشطة",
+      "active_desc": "لن تظهر الحزمة غير النشطة في سندات التسليم"
+    },
+    "pricing_modes": {
+      "marge_label": "هامش الربح",
+      "marge_desc": "السعر يُحسب بناءً على التكلفة + هامش الربح",
+      "remise_label": "خصم",
+      "remise_desc": "السعر يُحسب من إجمالي المنتجات مع الخصم",
+      "personnalise_label": "مخصص",
+      "personnalise_desc": "أدخل سعر البيع مباشرةً"
+    },
+    "components_table": {
+      "product": "المنتج",
+      "qty": "الكمية",
+      "buy_price": "سعر الشراء",
+      "sell_price": "سعر البيع",
+      "subtotal": "المجموع الفرعي",
+      "empty": "لم يُضف أي مكوّن",
+      "empty_hint": "انقر على «إضافة منتجات» للبدء",
+      "add_products": "إضافة منتجات"
+    },
+    "actions": {
+      "cancel": "إلغاء",
+      "save": "حفظ التغييرات",
+      "create": "إنشاء الحزمة",
+      "saving": "جارٍ التحديث...",
+      "creating": "جارٍ الإنشاء..."
+    },
+    "validation": {
+      "barcode_required": "الباركود مطلوب",
+      "name_required": "الاسم مطلوب",
+      "societe_required": "الشركة مطلوبة",
+      "components_required": "أضف مكوّنًا واحدًا على الأقل",
+      "qty_required": "الكمية يجب أن تكون > 0",
+      "margin_required": "نسبة الهامش مطلوبة",
+      "must_be_gte_zero": "يجب أن تكون >= 0",
+      "discount_required": "الخصم مطلوب",
+      "price_required": "سعر البيع مطلوب",
+      "must_be_gt_zero": "يجب أن يكون > 0"
+    },
+    "toast": {
+      "form_errors": "يُرجى تصحيح أخطاء النموذج",
+      "component_id_error": "يجب أن يحتوي كل مكوّن إما على معرّف منتج أو معرّف متغيّر",
+      "update_success": "تم تحديث الحزمة بنجاح",
+      "update_error": "خطأ أثناء تحديث الحزمة",
+      "create_success": "تم إنشاء الحزمة بنجاح",
+      "create_error": "خطأ أثناء إنشاء الحزمة",
+      "no_changes": "لم يتم اكتشاف أي تغييرات"
+    }
+  },
+  "picker": {
+    "title": "اختر المنتجات",
+    "available": "منتج متاح",
+    "selected": "محدد",
+    "selected_plural": "محددة",
+    "search_placeholder": "البحث بالاسم أو الباركود...",
+    "col_product": "المنتج",
+    "col_buy_price": "سعر الشراء",
+    "col_sell_price": "سعر البيع",
+    "already_added": "مُضاف مسبقًا",
+    "type_variant": "متغيّر",
+    "type_article": "منتج",
+    "empty": "لا توجد منتجات",
+    "cancel": "إلغاء",
+    "add": "إضافة",
+    "price_field_1": "سعر البيع 1",
+    "price_field_2": "سعر البيع 2",
+    "price_field_3": "سعر البيع 3"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "entity_name": "Dashboard",
+  "page_title": "My Profile",
+  "user_name_placeholder": "User Name",
+  "member_fallback": "Member",
+  "sidebar": {
+    "change_password": "Change Password",
+    "logout": "Logout"
+  },
+  "personal_info": {
+    "section_title": "Personal Information",
+    "edit": "Edit",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "full_name_label": "Full Name",
+    "full_name_placeholder": "e.g. John Doe",
+    "email_label": "Email Address",
+    "email_placeholder": "e.g. john@company.com",
+    "edit_hint": "Click \"Edit\" to update your information."
+  },
+  "account_details": {
+    "section_title": "Account Details",
+    "company_role": "Company Role",
+    "account_status": "Account Status",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "change_password": {
+    "modal_title": "Change Password",
+    "modal_subtitle": "Min. 8 chars · uppercase · lowercase · number",
+    "current_password": "Current Password",
+    "new_password": "New Password",
+    "confirm_password": "Confirm New Password",
+    "update": "Update Password",
+    "updating": "Updating…",
+    "cancel": "Cancel"
+  },
+  "validation": {
+    "name_min": "Full name must be at least 2 characters",
+    "name_max": "Full name must be at most 80 characters",
+    "email_invalid": "Please enter a valid email address",
+    "image_too_large": "Profile image must be smaller than 2 MB",
+    "image_invalid_type": "Only JPG, PNG, or WebP images are allowed",
+    "password_min": "Password must be at least 8 characters",
+    "password_required": "Password is required",
+    "passwords_mismatch": "Passwords do not match",
+    "current_password_required": "Current password is required"
+  },
+  "toast": {
+    "update_success": "Profile updated successfully!",
+    "update_error": "Update failed",
+    "password_success": "Password updated successfully",
+    "password_error": "Password update failed"
+  }
+}

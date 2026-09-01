@@ -1,0 +1,87 @@
+{
+  "page_title": "Delivery Persons",
+  "create_button": "New delivery person",
+  "columns": {
+    "id": "ID",
+    "name": "Name",
+    "type": "Type",
+    "societe": "Company",
+    "phone": "Phone",
+    "bls": "Delivery Notes",
+    "status": "Status",
+    "created_at": "Created At"
+  },
+  "entity_type": {
+    "societe": "Company",
+    "particulier": "Individual"
+  },
+  "tooltip": {
+    "disable": "Disable",
+    "enable": "Enable"
+  },
+  "delete_modal": {
+    "title": "Delete delivery person",
+    "message": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+    "confirm": "Delete",
+    "cancel": "Cancel"
+  },
+  "toggle_modal": {
+    "disable_title": "Disable delivery person",
+    "enable_title": "Enable delivery person",
+    "disable_message": "Do you want to disable \"{{name}}\"? They will no longer be available for delivery notes.",
+    "enable_message": "Do you want to enable \"{{name}}\"?",
+    "disable_confirm": "Disable",
+    "enable_confirm": "Enable",
+    "cancel": "Cancel"
+  },
+  "toast": {
+    "delete_success": "Delivery person deleted successfully",
+    "delete_error": "Failed to delete",
+    "enable_success": "{{name}} enabled",
+    "disable_success": "{{name}} disabled",
+    "toggle_error": "Failed to change status"
+  },
+  "form": {
+    "entity_name": "Delivery Person",
+    "create_title": "New delivery person",
+    "edit_title": "Edit · {{name}}",
+    "back_label": "Back to delivery persons",
+    "sections": {
+      "info": "Delivery person information",
+      "status": "Status"
+    },
+    "fields": {
+      "societe": "Company",
+      "societe_placeholder": "Select a company",
+      "societe_locked": "Company cannot be changed after creation.",
+      "name": "Full name",
+      "name_placeholder": "e.g. Express Delivery",
+      "type": "Type",
+      "phone": "Phone",
+      "phone_placeholder": "e.g. 0612345678",
+      "address": "Address",
+      "address_placeholder": "e.g. 12 Hassan II Street, Casablanca",
+      "active_label": "Active",
+      "active_desc": "The delivery person is available for delivery notes"
+    },
+    "validation": {
+      "required": "Required",
+      "phone_invalid": "Invalid number. Expected format: 0612345678 or +212612345678"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "save": "Save",
+      "create": "Create delivery person",
+      "saving": "Saving…",
+      "creating": "Creating…"
+    },
+    "toast": {
+      "create_success": "Delivery person created successfully!",
+      "create_error": "Failed to create",
+      "update_success": "Delivery person updated!",
+      "update_error": "Failed to update",
+      "no_changes": "No changes detected",
+      "form_errors": "Please fill in required fields and fix errors"
+    }
+  }
+}

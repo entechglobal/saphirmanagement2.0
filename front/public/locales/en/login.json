@@ -1,0 +1,25 @@
+{
+  "title": "Sign in",
+  "subtitle": "Sign in to your account to start using SaphirCaisse",
+
+  "email_label": "Email",
+  "email_placeholder": "admin@example.com",
+
+  "password_label": "Password",
+  "password_placeholder": "••••••••",
+
+  "forgot_password": "Forgot password?",
+
+  "submit": "Sign in",
+  "submitting": "Logging in...",
+
+  "errors": {
+    "email_required": "Email is required",
+    "email_invalid": "Invalid email address",
+    "password_required": "Password is required",
+    "password_min": "Password must be at least 6 characters",
+    "invalid_credentials": "Invalid credentials"
+  },
+
+  "allRightsReserved": "All rights reserved"
+}

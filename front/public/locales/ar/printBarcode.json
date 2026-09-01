@@ -1,0 +1,67 @@
+{
+  "modal": {
+    "title": "طباعة الباركود",
+    "tab_articles": "المنتجات والمتغيرات",
+    "tab_packs": "الباقات",
+    "products_available": "منتج متاح",
+    "packs_available": "باقة متاحة",
+    "selected": "محدد",
+    "search_article": "ابحث عن منتج أو متغير...",
+    "search_pack": "ابحث عن باقة...",
+    "no_results": "لا توجد نتائج",
+    "cancel": "إلغاء",
+    "preview": "معاينة",
+    "page": "صفحة",
+    "col_article": "المنتج / المتغير",
+    "col_type": "النوع",
+    "col_price": "سعر البيع",
+    "col_pack": "الباقة",
+    "col_barcode": "الباركود",
+    "type_article": "منتج",
+    "type_variant": "متغير"
+  },
+  "config": {
+    "selected_article": "المنتج المحدد",
+    "purchase_price": "ثمن الشراء",
+    "sale_price": "ثمن البيع",
+    "label_type": "نوع التسمية",
+    "label_types": {
+      "avecPrix": "مع السعر",
+      "sansPrix": "بدون سعر",
+      "parametre": "معامل",
+      "intitule": "عنوان"
+    },
+    "price_grid": "شبكة الأسعار",
+    "label_size": "حجم التسمية",
+    "quantity_mode": "وضع الكمية",
+    "qty_custom": "مخصص",
+    "qty_available": "المتاح",
+    "quantity": "الكمية",
+    "quantity_per_pack": "الكمية لكل باقة",
+    "no_depot": "لا يوجد مستودع",
+    "parameters": "المعاملات",
+    "prefix": "بادئة",
+    "suffix": "لاحقة",
+    "param_placeholder": "مثال: 9999"
+  },
+  "preview": {
+    "title": "معاينة التسميات",
+    "subtitle_labels": "تسمية",
+    "subtitle_items": "منتج",
+    "total": "المجموع",
+    "size": "الحجم",
+    "col_type": "النوع",
+    "col_size": "الحجم",
+    "col_qty": "الكمية",
+    "col_price_grid": "الشبكة",
+    "back": "رجوع",
+    "print": "طباعة",
+    "popup_blocked": "يرجى السماح بالنوافذ المنبثقة للطباعة"
+  },
+  "toast": {
+    "generate_error": "خطأ أثناء إنشاء التسميات",
+    "select_pack": "اختر باقة واحدة على الأقل",
+    "select_article": "اختر منتجاً واحداً على الأقل",
+    "select_depot": "اختر مستودعاً واحداً على الأقل"
+  }
+}

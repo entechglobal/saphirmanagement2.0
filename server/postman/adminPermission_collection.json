@@ -1,0 +1,602 @@
+{
+  "info": {
+    "name": "AdminPermission API — Full Test Suite",
+    "description": "Complete test suite for the AdminPermission module (super-admin only). Covers the permission catalog, role-level management (get by role/roleId/userId, unassigned, assign, remove) and user-level management (list, detail, unassigned, assign extra, remove extra), plus validation errors.\n\nSet {{roleId}}, {{userId}} and {{roleName}} before running. {{permissionId}} is captured automatically from the create-permission request.",
+    "_postman_id": "admin-permission-full-v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl",      "value": "http://localhost:3000", "type": "string" },
+    { "key": "token",        "value": "YOUR_SUPERADMIN_JWT",   "type": "string" },
+    { "key": "roleId",       "value": "3",                     "type": "string" },
+    { "key": "roleName",     "value": "Gerant",                "type": "string" },
+    { "key": "userId",       "value": "1",                     "type": "string" },
+    { "key": "permissionId", "value": "1",                     "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+
+    {
+      "name": "1 — Permission Catalog",
+      "item": [
+        {
+          "name": "GET All Permissions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/permissions?keyword=&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "permissions"],
+              "query": [
+                { "key": "keyword", "value": "" },
+                { "key": "page",    "value": "1" },
+                { "key": "limit",   "value": "10" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has data array + pagination', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.data).to.be.an('array');",
+                  "  pm.expect(d).to.have.property('pagination');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST Create Permission",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "permissions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"test.permission.{{$timestamp}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Returns created permission', () => {",
+                  "  const d = pm.response.json().data;",
+                  "  pm.expect(d.id).to.exist;",
+                  "  pm.collectionVariables.set('permissionId', d.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "2 — Role Permissions",
+      "item": [
+        {
+          "name": "GET Role Permissions — all managed roles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/roles/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "roles", "permissions"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array of roles', () => {",
+                  "  pm.expect(pm.response.json().data).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Role Permissions — by role name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/roles/permissions?role={{roleName}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "roles", "permissions"],
+              "query": [
+                { "key": "role", "value": "{{roleName}}" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Single role with permissions', () => {",
+                  "  const d = pm.response.json().data;",
+                  "  pm.expect(d).to.have.property('roleName');",
+                  "  pm.expect(d.permissions).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Role Permissions — by roleId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/roles/permissions?roleId={{roleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "roles", "permissions"],
+              "query": [
+                { "key": "roleId", "value": "{{roleId}}" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Role Permissions — by userId (inspect user's role)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/roles/permissions?userId={{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "roles", "permissions"],
+              "query": [
+                { "key": "userId", "value": "{{userId}}" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Unassigned Permissions for Role",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/roles/{{roleId}}/permissions/unassigned?keyword=&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "roles", "{{roleId}}", "permissions", "unassigned"],
+              "query": [
+                { "key": "keyword", "value": "" },
+                { "key": "page",    "value": "1" },
+                { "key": "limit",   "value": "10" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has data array + pagination', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.data).to.be.an('array');",
+                  "  pm.expect(d).to.have.property('pagination');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST Assign Permissions to Role",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/roles/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "roles", "permissions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roleId\": {{roleId}},\n  \"permissionIds\": [{{permissionId}}]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Reports assigned/skipped counts', () => {",
+                  "  const d = pm.response.json().data;",
+                  "  pm.expect(d).to.have.property('assignedCount');",
+                  "  pm.expect(d).to.have.property('skippedCount');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE Remove Permissions from Role",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/roles/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "roles", "permissions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roleId\": {{roleId}},\n  \"permissionIds\": [{{permissionId}}]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Reports removed count', () => {",
+                  "  pm.expect(pm.response.json().data).to.have.property('removedCount');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "3 — User Permissions",
+      "item": [
+        {
+          "name": "GET Users Permissions (list, search by name)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/permissions?keyword=&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users", "permissions"],
+              "query": [
+                { "key": "keyword", "value": "" },
+                { "key": "page",    "value": "1" },
+                { "key": "limit",   "value": "10" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Each user has role + effective permissions', () => {",
+                  "  const d = pm.response.json().data;",
+                  "  pm.expect(d).to.be.an('array');",
+                  "  if (d.length > 0) {",
+                  "    pm.expect(d[0]).to.have.property('role');",
+                  "    pm.expect(d[0]).to.have.property('rolePermissions');",
+                  "    pm.expect(d[0]).to.have.property('extraPermissions');",
+                  "    pm.expect(d[0]).to.have.property('effectivePermissions');",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET User Permission Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/{{userId}}/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users", "{{userId}}", "permissions"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('200 or 404', () => {",
+                  "  pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "  pm.test('Has effectivePermissions', () => {",
+                  "    pm.expect(pm.response.json().data).to.have.property('effectivePermissions');",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Unassigned Permissions for User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/{{userId}}/permissions/unassigned?keyword=&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users", "{{userId}}", "permissions", "unassigned"],
+              "query": [
+                { "key": "keyword", "value": "" },
+                { "key": "page",    "value": "1" },
+                { "key": "limit",   "value": "10" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('200 or 404', () => {",
+                  "  pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST Assign Extra Permissions to User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users", "permissions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"permissionIds\": [{{permissionId}}]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('200 or 404', () => {",
+                  "  pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "  pm.test('Reports assigned count', () => {",
+                  "    pm.expect(pm.response.json().data).to.have.property('assignedCount');",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DELETE Remove Permissions from User",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users", "permissions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"permissionIds\": [{{permissionId}}]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('200 or 400 (not directly assigned)', () => {",
+                  "  pm.expect([200, 400]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "4 — Validation Errors",
+      "item": [
+        {
+          "name": "Create permission — missing name (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "permissions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get role permissions — invalid role name (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/roles/permissions?role=NotARole",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "roles", "permissions"],
+              "query": [
+                { "key": "role", "value": "NotARole" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Assign to role — empty permissionIds (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/roles/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "roles", "permissions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roleId\": {{roleId}},\n  \"permissionIds\": []\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Assign to non-existent role (404)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/roles/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "roles", "permissions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roleId\": 999999,\n  \"permissionIds\": [{{permissionId}}]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 404', () => pm.response.to.have.status(404));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Remove permission not assigned to role (400)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/roles/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "roles", "permissions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roleId\": {{roleId}},\n  \"permissionIds\": [999999]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400 or 404', () => { pm.expect([400, 404]).to.include(pm.response.code); });"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Assign extra to non-existent user (404)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "users", "permissions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 999999,\n  \"permissionIds\": [{{permissionId}}]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 404', () => pm.response.to.have.status(404));"]
+              }
+            }
+          ]
+        }
+      ]
+    }
+
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "title": "Supplier Management",
+  "create_new": "New Supplier",
+  "import_simple": "Import",
+  "export_simple": "Export",
+  "export_csv": "Export CSV",
+  "export_xlsx": "Export XLSX",
+  "columns": {
+    "id": "ID",
+    "name": "Company Name",
+    "type": "Type",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "region": "Region / City",
+    "website": "Website",
+    "ice": "ICE",
+    "if": "IF",
+    "rc": "RC",
+    "tp": "TP",
+    "paymentDeadline": "Payment (Days)",
+    "days": "days",
+    "bank": "Bank",
+    "bankAccount": "Bank Account (RIB)",
+    "status": "Status",
+    "societe": "Company"
+  },
+  "types": {
+    "particulier": "Individual",
+    "societe": "Company"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "import": {
+    "title": "Import Suppliers",
+    "societe_label": "Company",
+    "cancel": "Cancel",
+    "submit": "Import",
+    "importing": "Importing...",
+    "success": "Import successful",
+    "error": "Import failed"
+  },
+  "export": {
+    "csv_error": "CSV export failed",
+    "xlsx_error": "XLSX export failed"
+  },
+  "delete": {
+    "title": "Delete Supplier?",
+    "message": "Are you sure? This action cannot be undone.",
+    "confirm": "Delete",
+    "cancel": "Cancel",
+    "success": "Supplier deleted successfully",
+    "error": "Deletion failed"
+  },
+  "form": {
+    "entity_name": "Suppliers",
+    "create_title": "New Supplier",
+    "edit_title": "Edit Supplier",
+    "back": "Back",
+    "loading": "Loading supplier...",
+    "processing": "Processing...",
+    "update_btn": "Update",
+    "create_btn": "Create Supplier",
+    "success_create": "Supplier created successfully",
+    "success_update": "Supplier updated",
+    "active_account": "Active Account",
+    "active_description": "Allow transactions with this supplier",
+    "sections": {
+      "identification": "Identification & Contact",
+      "fiscal": "Tax Information",
+      "banking": "Banking Information",
+      "settings": "Settings",
+      "status": "Account Status"
+    },
+    "placeholders": {
+      "name": "Enter company name",
+      "address": "e.g., 123 Street, London",
+      "region": "Enter region or city",
+      "ice": "15 digits",
+      "rib": "24 digits"
+    },
+    "errors": {
+      "select_company": "Please select a company"
+    }
+  }
+}

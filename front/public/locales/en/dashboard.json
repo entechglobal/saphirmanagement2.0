@@ -1,0 +1,148 @@
+{
+  "greeting": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening",
+    "default_user": "User",
+    "subtitle": "Real-time overview of your activity"
+  },
+  "loading": "Loading…",
+  "stats": {
+    "total_entries": "Total stock entries",
+    "out_of_stock": "Out of stock",
+    "low_stock": "Low stock alerts",
+    "active_clients": "Active clients",
+    "fournisseurs": "Suppliers",
+    "income": "Income (MAD)"
+  },
+  "depots": {
+    "title": "Depots",
+    "active_count": "{{count}} active depots"
+  },
+  "recent_articles": {
+    "title": "Recent Articles",
+    "total_count": "{{count}}+ articles in total",
+    "col_article": "Article",
+    "col_family": "Family",
+    "col_buy_price": "Buy price",
+    "col_sell_price": "Sell price",
+    "col_stock": "Stock",
+    "managed": "Managed",
+    "not_managed": "Unmanaged"
+  },
+  "top_clients": {
+    "title": "Top Clients",
+    "subtitle": "{{active}} active out of {{total}} clients",
+    "orders": "{{count}} order(s)"
+  },
+  "top_fournisseurs": {
+    "title": "Top Suppliers",
+    "subtitle": "{{active}} active — {{total}} MAD paid",
+    "orders": "{{count}} order(s)"
+  },
+  "top_stocked": {
+    "title": "Most Stocked Articles",
+    "subtitle": "{{count}} units available in total"
+  },
+  "depot_chart": {
+    "title": "Stock by Depot",
+    "subtitle": "Number of articles stocked per depot",
+    "articles": "Articles",
+    "reservations": "Reservations",
+    "no_data": "No depots match this filter"
+  },
+  "stock_overview": {
+    "title": "Stock Overview",
+    "subtitle": "Available, reserved and in-transit quantities",
+    "available": "Available",
+    "reserved": "Reserved",
+    "in_transit": "In Transit",
+    "no_data": "No stock data"
+  },
+  "category_chart": {
+    "title": "Categories",
+    "subtitle": "Product category distribution"
+  },
+
+  "stat_confirme": "Confirmed",
+  "stat_prepare": "Prepared",
+  "stat_collecte": "Collected",
+  "stat_en_route": "In Transit",
+  "stat_livre": "Delivered",
+
+  "status_label_CONFIRME": "Confirmed",
+  "status_label_PREPARE": "Prepared",
+  "status_label_COLLECTE": "Collected",
+  "status_label_EN_ROUTE": "In Transit",
+  "status_label_LIVRE": "Delivered",
+  "status_label_PAYE": "Paid",
+  "status_label_ANNULE": "Cancelled",
+
+  "filter_confirme": "Confirmed",
+  "filter_prepare": "Prepared",
+  "filter_collecte": "Collected",
+  "filter_en_route": "In Transit",
+  "filter_livre": "Delivered",
+
+  "view_cards": "Cards",
+  "view_list": "List",
+  "view_cards_title": "Card view",
+  "view_list_title": "List view",
+
+  "entity_name": "Orders",
+  "back_label": "Back",
+  "page_title": "Orders by status",
+
+  "filters_label": "Filters — {{total}} result{{s}}",
+  "filter_status": "Status",
+  "filter_livreur": "Delivery Person",
+  "filter_all_livreurs": "All delivery persons",
+
+  "table_ref": "Reference",
+  "table_client": "Client",
+  "table_ville": "City",
+  "table_livreur": "Delivery Person",
+  "table_contact": "Contact",
+  "table_delivery_date": "Delivery Date",
+  "table_amount": "Amount",
+  "table_status": "Status",
+
+  "toast_status_updated": "Status updated",
+  "toast_status_error": "Error updating status",
+  "toast_report_success": "Delivery postponed successfully",
+  "toast_report_error": "Error postponing delivery",
+
+  "no_commands": "No orders",
+  "no_commands_status": "No orders with status « {{label}} »",
+
+  "bl_ref": "Reference",
+  "bl_status": "Status",
+  "bl_reported_at": "Postponed to",
+  "bl_client": "Client",
+  "bl_created_by": "Created by",
+  "bl_telephone": "Phone",
+  "bl_whatsapp": "WhatsApp",
+  "bl_city": "City / Destination",
+  "bl_livreur": "Delivery Person",
+  "bl_doc_date": "Document Date",
+  "bl_delivery_date": "Delivery Date",
+  "bl_total_due": "Total Due",
+  "bl_paid": "Paid",
+  "bl_reste": "Remaining",
+  "bl_products": "Products ({{count}})",
+  "bl_report_btn": "Postpone",
+  "bl_details_btn": "DETAILS",
+  "bl_reste_row": "Remaining: {{amount}} MAD",
+  "bl_city_unknown": "Unknown",
+  "bl_livreur_unassigned": "Unassigned",
+  "bl_colis": "{{count}} parcel(s)",
+
+  "report_title": "Postpone delivery",
+  "report_subtitle": "Schedule a new delivery date",
+  "report_reason": "Reason",
+  "report_reason_placeholder": "E.g. Client unavailable, difficult access…",
+  "report_next_date": "Next delivery date *",
+  "report_cancel": "Cancel",
+  "report_sending": "Sending...",
+  "report_confirm": "Confirm postponement"
+}

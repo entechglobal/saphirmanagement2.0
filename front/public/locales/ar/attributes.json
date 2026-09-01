@@ -1,0 +1,27 @@
+{
+  "page_title": "إدارة الخصائص",
+  "loading": "جارٍ تحميل الخصائص…",
+  "form": {
+    "edit_title": "تعديل الخاصية",
+    "create_title": "إدارة الخصائص",
+    "name_label": "اسم الخاصية",
+    "name_placeholder": "مثال: اللون",
+    "values_label": "قيم الخاصية",
+    "values_placeholder": "اكتب واضغط Enter",
+    "cancel": "إلغاء",
+    "update": "تحديث",
+    "create": "إنشاء"
+  },
+  "table": {
+    "title": "الخصائص المعرّفة",
+    "col_attribute": "الخاصية",
+    "col_values": "القيم",
+    "col_actions": "الإجراءات",
+    "empty": "لم يتم إنشاء أي خصائص بعد."
+  },
+  "toast": {
+    "create_success": "تم إنشاء الخاصية",
+    "update_success": "تم تحديث الخاصية",
+    "update_error": "فشل تحديث الخاصية"
+  }
+}

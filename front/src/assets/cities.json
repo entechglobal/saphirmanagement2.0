@@ -1,0 +1,5264 @@
+{
+    "cities": {
+        "1": {
+            "ref": null,
+            "name": "Marrakech",
+            "lat": "31.62660931739485",
+            "lng": "-7.994771150297412",
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "35",
+            "r_fees": "0.00"
+        },
+        "2": {
+            "ref": null,
+            "name": "Meknes",
+            "lat": "33.89352",
+            "lng": "-5.54727",
+            "zone": "35",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "3": {
+            "ref": null,
+            "name": "Mhaya",
+            "lat": "33.89717",
+            "lng": "-5.36864",
+            "zone": "35",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "4": {
+            "ref": null,
+            "name": "Ain Taoujdate",
+            "lat": "33.89556",
+            "lng": "-5.26278",
+            "zone": "35",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "5": {
+            "ref": null,
+            "name": "Sabaa Aiyoun",
+            "lat": "33.84722",
+            "lng": "-5.35833",
+            "zone": "35",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "6": {
+            "ref": null,
+            "name": "Boufakrane",
+            "lat": "33.86958",
+            "lng": "-5.45041",
+            "zone": "35",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "7": {
+            "ref": null,
+            "name": "El Hajeb",
+            "lat": "33.68953",
+            "lng": "-5.36623",
+            "zone": "35",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "8": {
+            "ref": null,
+            "name": "Bouderbala",
+            "lat": "33.85",
+            "lng": "-5.31667",
+            "zone": "35",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "10": {
+            "ref": null,
+            "name": "Boujdour",
+            "lat": "26.13333",
+            "lng": "-14.5",
+            "zone": "38",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "11": {
+            "ref": null,
+            "name": "Tetouan",
+            "lat": "35.57845",
+            "lng": "-5.36837",
+            "zone": "2",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "12": {
+            "ref": null,
+            "name": "Martil",
+            "lat": "35.61667",
+            "lng": "-5.275",
+            "zone": "2",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "13": {
+            "ref": null,
+            "name": "M Diq",
+            "lat": "35.68438",
+            "lng": "-5.32447",
+            "zone": "2",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "14": {
+            "ref": null,
+            "name": "Fnideq",
+            "lat": "35.84952",
+            "lng": "-5.35867",
+            "zone": "2",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "15": {
+            "ref": null,
+            "name": "Errachidia",
+            "lat": "31.93139",
+            "lng": "-4.42389",
+            "zone": "3",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "16": {
+            "ref": null,
+            "name": "Oujda",
+            "lat": "34.682",
+            "lng": "-1.90029",
+            "zone": "4",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "17": {
+            "ref": null,
+            "name": "Nador",
+            "lat": "35.16667",
+            "lng": "-2.93333",
+            "zone": "5",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "18": {
+            "ref": null,
+            "name": "Selouane",
+            "lat": "35.03333",
+            "lng": "-2.91667",
+            "zone": "5",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "20": {
+            "ref": null,
+            "name": "Al Aaroui",
+            "lat": "35.01667",
+            "lng": "-3.83333",
+            "zone": "5",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "21": {
+            "ref": null,
+            "name": "Zaio",
+            "lat": "34.93119",
+            "lng": "-2.73702",
+            "zone": "5",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "22": {
+            "ref": null,
+            "name": "Driouch",
+            "lat": "34.96123",
+            "lng": "-3.74288",
+            "zone": "60",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "23": {
+            "ref": null,
+            "name": "Khouribga",
+            "lat": "32.88108",
+            "lng": "-6.90662",
+            "zone": "6",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "24": {
+            "ref": null,
+            "name": "Oued Zem",
+            "lat": "32.86362",
+            "lng": "-6.57347",
+            "zone": "6",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "25": {
+            "ref": null,
+            "name": "Boulanouar",
+            "lat": "32.85",
+            "lng": "-6.83333",
+            "zone": "6",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "26": {
+            "ref": null,
+            "name": "Boujniba",
+            "lat": "32.96667",
+            "lng": "-6.78333",
+            "zone": "6",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "27": {
+            "ref": null,
+            "name": "Bir Mezoui",
+            "lat": "32.96667",
+            "lng": "-6.76667",
+            "zone": "6",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "28": {
+            "ref": null,
+            "name": "Khemisset",
+            "lat": "33.82417",
+            "lng": "-6.06627",
+            "zone": "7",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "29": {
+            "ref": null,
+            "name": "Tiflet",
+            "lat": "33.89292",
+            "lng": "-6.3064",
+            "zone": "7",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "30": {
+            "ref": null,
+            "name": "Mohammedia",
+            "lat": "33.68551",
+            "lng": "-7.38298",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "31": {
+            "ref": null,
+            "name": "Ain Harrouda",
+            "lat": "33.61583",
+            "lng": "-7.43861",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "32": {
+            "ref": null,
+            "name": "Dakhla",
+            "lat": "23.68477",
+            "lng": "-15.95618",
+            "zone": "9",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "33": {
+            "ref": null,
+            "name": "Kenitra",
+            "lat": "34.26113",
+            "lng": "-6.5802",
+            "zone": "11",
+            "relaunch_zone": "1",
+            "d_fees": "35",
+            "r_fees": "0.00"
+        },
+        "34": {
+            "ref": null,
+            "name": "Sidi Taibi",
+            "lat": "34.20293",
+            "lng": "-6.68664",
+            "zone": "61",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "35": {
+            "ref": null,
+            "name": "Sidi Yahya El Gharb",
+            "lat": "34.29927",
+            "lng": "-6.30998",
+            "zone": "11",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "37": {
+            "ref": null,
+            "name": "Mechra Bel Ksiri",
+            "lat": "34.57385",
+            "lng": "-5.95362",
+            "zone": "11",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "38": {
+            "ref": null,
+            "name": "Sidi Sliman (reg kacem)",
+            "lat": "34.26891",
+            "lng": "-5.92422",
+            "zone": "55",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "39": {
+            "ref": null,
+            "name": "Sidi Kacem",
+            "lat": "34.23706",
+            "lng": "-5.70812",
+            "zone": "55",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "40": {
+            "ref": null,
+            "name": "Mehdya",
+            "lat": "34.26111",
+            "lng": "-6.66728",
+            "zone": "11",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "41": {
+            "ref": null,
+            "name": "Tan Tan",
+            "lat": "28.43857",
+            "lng": "-11.10443",
+            "zone": "12",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "42": {
+            "ref": null,
+            "name": "Guelmim",
+            "lat": "28.98298",
+            "lng": "-10.06185",
+            "zone": "39",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "43": {
+            "ref": null,
+            "name": "Bouizakarne",
+            "lat": "29.18404",
+            "lng": "-9.83872",
+            "zone": "39",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "46": {
+            "ref": null,
+            "name": " Atlas Saghir ifrane",
+            "lat": "29.0289",
+            "lng": "-9.6417",
+            "zone": "39",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "47": {
+            "ref": null,
+            "name": "Timoulay",
+            "lat": "29.02055",
+            "lng": "-9.64369",
+            "zone": "39",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "48": {
+            "ref": null,
+            "name": "Sidi Ifni",
+            "lat": "29.37965",
+            "lng": "-10.17735",
+            "zone": "39",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "49": {
+            "ref": null,
+            "name": "Rabat",
+            "lat": "34.00859475675264",
+            "lng": "-6.853996217250825",
+            "zone": "14",
+            "relaunch_zone": "1",
+            "d_fees": "35",
+            "r_fees": "0.00"
+        },
+        "50": {
+            "ref": null,
+            "name": "Sale",
+            "lat": "34.0366",
+            "lng": "-6.81455",
+            "zone": "61",
+            "relaunch_zone": "1",
+            "d_fees": "35",
+            "r_fees": "0.00"
+        },
+        "51": {
+            "ref": null,
+            "name": "Sale Al Jadida-سلا",
+            "lat": "34.02748",
+            "lng": "-6.79765",
+            "zone": "61",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "52": {
+            "ref": null,
+            "name": "Temara",
+            "lat": "33.9273",
+            "lng": "-6.90657",
+            "zone": "14",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "53": {
+            "ref": null,
+            "name": "Tamesna",
+            "lat": "33.81639",
+            "lng": "-6.885",
+            "zone": "14",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "54": {
+            "ref": null,
+            "name": "Skhirat",
+            "lat": "33.85221",
+            "lng": "-7.03281",
+            "zone": "14",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "55": {
+            "ref": null,
+            "name": "Ouarzazat",
+            "lat": "30.91952",
+            "lng": "-6.91747",
+            "zone": "15",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "56": {
+            "ref": null,
+            "name": "Ait Zineb",
+            "lat": "30.9",
+            "lng": "-6.86667",
+            "zone": "15",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "57": {
+            "ref": null,
+            "name": "Tabounte",
+            "lat": "30.91083",
+            "lng": "-6.92452",
+            "zone": "15",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "58": {
+            "ref": null,
+            "name": "Tajda",
+            "lat": "30.90833",
+            "lng": "-6.97139",
+            "zone": "15",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "59": {
+            "ref": null,
+            "name": "Timdline",
+            "lat": "30.86667",
+            "lng": "-6.85",
+            "zone": "15",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "60": {
+            "ref": null,
+            "name": "Tifoultoute",
+            "lat": "30.91667",
+            "lng": "-6.98333",
+            "zone": "15",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "61": {
+            "ref": null,
+            "name": "Ifran",
+            "lat": "33.53387",
+            "lng": "-5.11147",
+            "zone": "35",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "62": {
+            "ref": null,
+            "name": "Azrou(reg meknes)",
+            "lat": "33.43661",
+            "lng": "-5.2214",
+            "zone": "35",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "63": {
+            "ref": null,
+            "name": "Agadir",
+            "lat": "30.427738432389337",
+            "lng": "-9.59239097312093",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "35",
+            "r_fees": "0.00"
+        },
+        "64": {
+            "ref": null,
+            "name": "Inzegane",
+            "lat": "30.3519",
+            "lng": "-9.5368",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "65": {
+            "ref": null,
+            "name": "Dcheira",
+            "lat": "30.35707",
+            "lng": "-9.54323",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "66": {
+            "ref": null,
+            "name": "Ait Meloul",
+            "lat": "30.325",
+            "lng": "-9.4972",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "67": {
+            "ref": null,
+            "name": "Sidi Bibi - Agadir",
+            "lat": "30.21093",
+            "lng": "-9.51256",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "68": {
+            "ref": null,
+            "name": "Taghazoute",
+            "lat": "30.54528",
+            "lng": "-9.70889",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "69": {
+            "ref": null,
+            "name": "Fes",
+            "lat": "34.03313",
+            "lng": "-5.00028",
+            "zone": "18",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "70": {
+            "ref": null,
+            "name": "Ain Bida",
+            "lat": "34.05",
+            "lng": "-5.03333",
+            "zone": "18",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "71": {
+            "ref": null,
+            "name": "Oulad Ettayeb",
+            "lat": "34.05",
+            "lng": "-4.98333",
+            "zone": "18",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "72": {
+            "ref": null,
+            "name": "Ain Allah",
+            "lat": "34.06667",
+            "lng": "-5.01667",
+            "zone": "18",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "73": {
+            "ref": null,
+            "name": "Sidi Harazem",
+            "lat": "34.01667",
+            "lng": "-4.88333",
+            "zone": "18",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "74": {
+            "ref": null,
+            "name": "Essmara",
+            "lat": "26.73841",
+            "lng": "-11.6702",
+            "zone": "19",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "75": {
+            "ref": null,
+            "name": "Berrchid",
+            "lat": "33.2655",
+            "lng": "-7.58734",
+            "zone": "50",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "76": {
+            "ref": null,
+            "name": "Settat",
+            "lat": "33.00103",
+            "lng": "-7.61646",
+            "zone": "20",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "77": {
+            "ref": null,
+            "name": "Deroua",
+            "lat": "33.43",
+            "lng": "-7.67",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "78": {
+            "ref": null,
+            "name": "Nouaceur",
+            "lat": "33.44605",
+            "lng": "-7.58073",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "79": {
+            "ref": null,
+            "name": "Had Soualem",
+            "lat": "33.4398",
+            "lng": "-7.85814",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "80": {
+            "ref": null,
+            "name": "Al Hoceima",
+            "lat": "35.25167",
+            "lng": "-3.93723",
+            "zone": "21",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "81": {
+            "ref": null,
+            "name": "Ajdir (Région Hociema)",
+            "lat": "35.25306",
+            "lng": "-3.95667",
+            "zone": "21",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "82": {
+            "ref": null,
+            "name": "Boukidaren",
+            "lat": "35.145",
+            "lng": "-4.03444",
+            "zone": "21",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "83": {
+            "ref": null,
+            "name": "Ait Kamra",
+            "lat": "35.16075",
+            "lng": "-3.92036",
+            "zone": "21",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "84": {
+            "ref": null,
+            "name": "Imzouren",
+            "lat": "35.15588",
+            "lng": "-3.84992",
+            "zone": "21",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "85": {
+            "ref": null,
+            "name": "Youssoufia",
+            "lat": "32.24627",
+            "lng": "-8.52977",
+            "zone": "22",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "86": {
+            "ref": null,
+            "name": "Essaouira",
+            "lat": "31.50849",
+            "lng": "-9.7595",
+            "zone": "23",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "87": {
+            "ref": null,
+            "name": "Ounagha",
+            "lat": "31.58089",
+            "lng": "-9.44212",
+            "zone": "23",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "88": {
+            "ref": null,
+            "name": "Taftecht",
+            "lat": "31.57402",
+            "lng": "-9.40282",
+            "zone": "23",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "89": {
+            "ref": null,
+            "name": "Had Draa",
+            "lat": "31.45744",
+            "lng": "-9.51501",
+            "zone": "23",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "90": {
+            "ref": null,
+            "name": "Mejji",
+            "lat": "31.4575",
+            "lng": "-9.25706",
+            "zone": "23",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "91": {
+            "ref": null,
+            "name": "Talmest",
+            "lat": "31.65003",
+            "lng": "-9.36111",
+            "zone": "23",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "92": {
+            "ref": null,
+            "name": "Akermoud",
+            "lat": "31.72861",
+            "lng": "-9.57917",
+            "zone": "23",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "93": {
+            "ref": null,
+            "name": "Zaouiet Bouzarktoune",
+            "lat": "31.58417",
+            "lng": "-9.64667",
+            "zone": "23",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "94": {
+            "ref": null,
+            "name": "Ghazoua",
+            "lat": "31.45472",
+            "lng": "-9.71944",
+            "zone": "23",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "95": {
+            "ref": null,
+            "name": "Smimou",
+            "lat": "31.26888",
+            "lng": "-9.55694",
+            "zone": "23",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "96": {
+            "ref": null,
+            "name": "Tamanar",
+            "lat": "31.27833",
+            "lng": "-9.75972",
+            "zone": "23",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "97": {
+            "ref": null,
+            "name": "Sidi Kaouki",
+            "lat": "31.35132717114765",
+            "lng": "-9.794358184272038",
+            "zone": "23",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "98": {
+            "ref": null,
+            "name": "Tanger",
+            "lat": "35.76943613634254",
+            "lng": "-5.826739668846131",
+            "zone": "24",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "99": {
+            "ref": null,
+            "name": "Mrirt",
+            "lat": "33.15849",
+            "lng": "-5.52544",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "100": {
+            "ref": null,
+            "name": "Khenifra",
+            "lat": "32.93403",
+            "lng": "-5.66162",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "101": {
+            "ref": null,
+            "name": "Ben Guerir",
+            "lat": "32.23553",
+            "lng": "-7.95394",
+            "zone": "52",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "102": {
+            "ref": null,
+            "name": "Taroudannt",
+            "lat": "30.46809",
+            "lng": "-8.87696",
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "103": {
+            "ref": null,
+            "name": "Oulad Teima",
+            "lat": "30.39421",
+            "lng": "-9.20979",
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "104": {
+            "ref": null,
+            "name": "Ait Laaza",
+            "lat": "30.51722",
+            "lng": "-9.15167",
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "105": {
+            "ref": null,
+            "name": "Aoulouz",
+            "lat": "30.65139",
+            "lng": "-8.41694",
+            "zone": "27",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "107": {
+            "ref": null,
+            "name": "Taliouine",
+            "lat": "30.53333",
+            "lng": "-7.91667",
+            "zone": "27",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "108": {
+            "ref": null,
+            "name": "Sebt El Guerdane",
+            "lat": "30.42544",
+            "lng": "-9.17508",
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "109": {
+            "ref": null,
+            "name": "Berkane",
+            "lat": "34.9226",
+            "lng": "-2.30672",
+            "zone": "28",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "110": {
+            "ref": null,
+            "name": "Saidia",
+            "lat": "35.08833",
+            "lng": "-2.21944",
+            "zone": "4",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "111": {
+            "ref": null,
+            "name": "Ras El Ma (REG NADOR) ",
+            "lat": "35.07734",
+            "lng": "-2.42457",
+            "zone": "4",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "112": {
+            "ref": null,
+            "name": "Bni Drar",
+            "lat": "34.83167",
+            "lng": "-1.91667",
+            "zone": "4",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "113": {
+            "ref": null,
+            "name": "Ahfir",
+            "lat": "34.95278",
+            "lng": "-2.10667",
+            "zone": "4",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "114": {
+            "ref": null,
+            "name": "Aklim",
+            "lat": "34.94056",
+            "lng": "-2.45472",
+            "zone": "28",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "115": {
+            "ref": null,
+            "name": "Zeghanghane",
+            "lat": "35.11922",
+            "lng": "-2.92745",
+            "zone": "5",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "116": {
+            "ref": null,
+            "name": "Farkhana",
+            "lat": "35.1675",
+            "lng": "-2.92389",
+            "zone": "5",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "117": {
+            "ref": null,
+            "name": "Taza",
+            "lat": "34.22",
+            "lng": "-4.01",
+            "zone": "29",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "118": {
+            "ref": null,
+            "name": "Guercif",
+            "lat": "34.22445",
+            "lng": "-3.34933",
+            "zone": "29",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "119": {
+            "ref": null,
+            "name": "Tiznit",
+            "lat": "29.69619",
+            "lng": "-9.73162",
+            "zone": "30",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "120": {
+            "ref": null,
+            "name": "Safi",
+            "lat": "32.29939",
+            "lng": "-9.23718",
+            "zone": "31",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "121": {
+            "ref": null,
+            "name": "Had Hrara",
+            "lat": "32.25067",
+            "lng": "-9.20456",
+            "zone": "31",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "122": {
+            "ref": null,
+            "name": "Sebt Gzoula",
+            "lat": "32.35222",
+            "lng": "-9.15222",
+            "zone": "31",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "125": {
+            "ref": null,
+            "name": "Larache",
+            "lat": "35.19591",
+            "lng": "-6.15572",
+            "zone": "57",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "126": {
+            "ref": null,
+            "name": "Ksar El Kebir",
+            "lat": "35.00236",
+            "lng": "-5.90531",
+            "zone": "57",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "127": {
+            "ref": null,
+            "name": "Chefchaouen",
+            "lat": "35.16878",
+            "lng": "-5.2636",
+            "zone": "33",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "128": {
+            "ref": null,
+            "name": "Sidi Bernoussi",
+            "lat": "33.58333",
+            "lng": "-7.5",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "129": {
+            "ref": null,
+            "name": "Casablanca",
+            "lat": "33.58230514493681",
+            "lng": "-7.6045721769332895",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "35",
+            "r_fees": "0.00"
+        },
+        "130": {
+            "ref": null,
+            "name": "Sidi Messaoud",
+            "lat": "33.55",
+            "lng": "-7.73333",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "131": {
+            "ref": null,
+            "name": "Bouskoura",
+            "lat": "33.44947",
+            "lng": "-7.65462",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "132": {
+            "ref": null,
+            "name": "Dar Bouaza",
+            "lat": "33.5418",
+            "lng": "-7.7972",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "133": {
+            "ref": null,
+            "name": "Mediouna",
+            "lat": "33.44965",
+            "lng": "-7.52495",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "134": {
+            "ref": null,
+            "name": "Tit Melil",
+            "lat": "33.48139",
+            "lng": "-7.53889",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "135": {
+            "ref": null,
+            "name": "El Kelaa Des Sraghna",
+            "lat": "32.05911",
+            "lng": "-7.40884",
+            "zone": "51",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "136": {
+            "ref": null,
+            "name": "El Jadida",
+            "lat": "33.25366",
+            "lng": "-8.51028",
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "138": {
+            "ref": null,
+            "name": "Sidi Bouzid",
+            "lat": "33.26839",
+            "lng": "-8.53199",
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "140": {
+            "ref": null,
+            "name": "Oualidia",
+            "lat": "32.73834",
+            "lng": "-9.01663",
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "141": {
+            "ref": null,
+            "name": "Sidi Bennour",
+            "lat": "32.64889",
+            "lng": "-8.42917",
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "142": {
+            "ref": null,
+            "name": "Beni Ansar",
+            "lat": "35.2136",
+            "lng": "-2.9277",
+            "zone": "5",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "143": {
+            "ref": null,
+            "name": "Izemmouren",
+            "lat": "35.1144",
+            "lng": "-3.8376",
+            "zone": "21",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "144": {
+            "ref": null,
+            "name": "Laayoune",
+            "lat": "27.16224",
+            "lng": "-13.20315",
+            "zone": "13",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "145": {
+            "ref": null,
+            "name": "El Marsa",
+            "lat": "27.15962",
+            "lng": "-13.12907",
+            "zone": "13",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "146": {
+            "ref": null,
+            "name": "Beni Mellal",
+            "lat": "32.33727",
+            "lng": "-6.34983",
+            "zone": "40",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "147": {
+            "ref": null,
+            "name": "Fquih Ben Salah",
+            "lat": "32.5026",
+            "lng": "-6.68949",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "148": {
+            "ref": null,
+            "name": "Sebt Oulad Nemma",
+            "lat": "32.40528",
+            "lng": "-6.76778",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "149": {
+            "ref": null,
+            "name": "Afourer",
+            "lat": "32.1917",
+            "lng": "-6.50972",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "150": {
+            "ref": null,
+            "name": "Ouled Yaiche",
+            "lat": "32.26727",
+            "lng": "-6.463",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "151": {
+            "ref": null,
+            "name": "El Ksiba",
+            "lat": "32.57294",
+            "lng": "-6.01596",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "152": {
+            "ref": null,
+            "name": "Ain Aouda",
+            "lat": "33.7804",
+            "lng": "-6.83947",
+            "zone": "14",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "153": {
+            "ref": null,
+            "name": "Tamansourt",
+            "lat": "31.65722",
+            "lng": "-8.09917",
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "154": {
+            "ref": null,
+            "name": "Benslimane ( reg mohamedia)",
+            "lat": "33.61556",
+            "lng": "-7.10972",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "156": {
+            "ref": null,
+            "name": "Kasbah Tadla",
+            "lat": "32.59828",
+            "lng": "-6.26844",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "157": {
+            "ref": null,
+            "name": "Chemaia",
+            "lat": "32.28769",
+            "lng": "-8.66993",
+            "zone": "31",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "160": {
+            "ref": null,
+            "name": "Ourika",
+            "lat": "31.26361",
+            "lng": "-7.70167",
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "161": {
+            "ref": null,
+            "name": "Tahannaout",
+            "lat": "31.36193",
+            "lng": "-7.91693",
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "162": {
+            "ref": null,
+            "name": "Ait Ourir",
+            "lat": "31.54472",
+            "lng": "-7.70917",
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "164": {
+            "ref": null,
+            "name": "Oudaya",
+            "lat": "31.76172",
+            "lng": "-7.50111",
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "165": {
+            "ref": null,
+            "name": "Chichaoua",
+            "lat": "31.53311",
+            "lng": "-8.76391",
+            "zone": "58",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "166": {
+            "ref": null,
+            "name": "Assilah",
+            "lat": "35.46526",
+            "lng": "-6.03422",
+            "zone": "57",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "167": {
+            "ref": null,
+            "name": "Bouznika",
+            "lat": "33.78311",
+            "lng": "-7.17358",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "168": {
+            "ref": null,
+            "name": "Sefrou",
+            "lat": "33.82958",
+            "lng": "-4.83769",
+            "zone": "18",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "169": {
+            "ref": null,
+            "name": "Taourirt",
+            "lat": "34.40795",
+            "lng": "-2.8949",
+            "zone": "28",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "170": {
+            "ref": null,
+            "name": "Chouiter",
+            "lat": "31.52694",
+            "lng": "-7.55972",
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "171": {
+            "ref": null,
+            "name": "Sidi Allal el Bahraoui",
+            "lat": "33.93389",
+            "lng": "-6.75639",
+            "zone": "7",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "172": {
+            "ref": null,
+            "name": "Romani",
+            "lat": "33.58528",
+            "lng": "-6.03472",
+            "zone": "7",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "173": {
+            "ref": null,
+            "name": "Oulmas",
+            "lat": "34.05694",
+            "lng": "-6.0725",
+            "zone": "7",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "174": {
+            "ref": null,
+            "name": "Ouazzane",
+            "lat": "34.79356",
+            "lng": "-5.56982",
+            "zone": "45",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "175": {
+            "ref": null,
+            "name": "Ain Dorij",
+            "lat": "34.4625",
+            "lng": "-5.29028",
+            "zone": "45",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "177": {
+            "ref": null,
+            "name": "Sidi Redouane",
+            "lat": "34.64472",
+            "lng": "-5.39194",
+            "zone": "45",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "179": {
+            "ref": null,
+            "name": "Moqrisset",
+            "lat": "34.66583",
+            "lng": "-5.25667",
+            "zone": "45",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "180": {
+            "ref": null,
+            "name": "Zoumi",
+            "lat": "34.67583",
+            "lng": "-5.09917",
+            "zone": "45",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "181": {
+            "ref": null,
+            "name": "Harhoura",
+            "lat": "33.92722",
+            "lng": "-6.905",
+            "zone": "14",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "182": {
+            "ref": null,
+            "name": "Laattaouia",
+            "lat": "31.59444",
+            "lng": "-7.61639",
+            "zone": "1",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "183": {
+            "ref": null,
+            "name": "Rissani",
+            "lat": "31.2855",
+            "lng": "-4.26621",
+            "zone": "3",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "184": {
+            "ref": null,
+            "name": "Arfoud",
+            "lat": "31.43427",
+            "lng": "-4.23584",
+            "zone": "3",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "185": {
+            "ref": null,
+            "name": "Merzouga",
+            "lat": "31.10184",
+            "lng": "-4.01202",
+            "zone": "3",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "186": {
+            "ref": null,
+            "name": "Taddart - TAZA -",
+            "lat": "34.21334",
+            "lng": "-3.96469",
+            "zone": "29",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "187": {
+            "ref": null,
+            "name": "Bni Bouayach",
+            "lat": "35.06144",
+            "lng": "-3.87086",
+            "zone": "21",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "188": {
+            "ref": null,
+            "name": "Azilal",
+            "lat": "31.96361",
+            "lng": "-6.5677",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "189": {
+            "ref": null,
+            "name": "Ouaouizeght",
+            "lat": "31.95333",
+            "lng": "-6.55",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "190": {
+            "ref": null,
+            "name": "Bejaad",
+            "lat": "32.77167",
+            "lng": "-6.40111",
+            "zone": "6",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "191": {
+            "ref": null,
+            "name": "Tinghir",
+            "lat": "31.51503",
+            "lng": "-5.53216",
+            "zone": "15",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "192": {
+            "ref": null,
+            "name": "Boumalne Dades",
+            "lat": "31.365",
+            "lng": "-5.97333",
+            "zone": "15",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "193": {
+            "ref": null,
+            "name": "Kalaat MGouna",
+            "lat": "31.40111",
+            "lng": "-6.13333",
+            "zone": "15",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "194": {
+            "ref": null,
+            "name": "Alnif",
+            "lat": "31.10311",
+            "lng": "-5.10111",
+            "zone": "48",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "195": {
+            "ref": null,
+            "name": "Bou Adel",
+            "lat": "34.43417",
+            "lng": "-4.10556",
+            "zone": "29",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "196": {
+            "ref": null,
+            "name": "Zrizer",
+            "lat": "34.34722",
+            "lng": "-4.25472",
+            "zone": "47",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "199": {
+            "ref": null,
+            "name": "Ain Aicha",
+            "lat": "34.51917",
+            "lng": "-4.6725",
+            "zone": "47",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "200": {
+            "ref": null,
+            "name": "Taounate",
+            "lat": "34.53611",
+            "lng": "-4.64083",
+            "zone": "47",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "201": {
+            "ref": null,
+            "name": "Awrir",
+            "lat": "30.47194",
+            "lng": "-9.62472",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "202": {
+            "ref": null,
+            "name": "Ait amira",
+            "lat": "30.3275",
+            "lng": "-9.42472",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "203": {
+            "ref": null,
+            "name": "Belfaa",
+            "lat": "30.14139",
+            "lng": "-9.55361",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "204": {
+            "ref": null,
+            "name": "Anza",
+            "lat": "30.48222",
+            "lng": "-9.65194",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "205": {
+            "ref": null,
+            "name": "DERDARA",
+            "lat": "35.09083",
+            "lng": "-5.27111",
+            "zone": "33",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "206": {
+            "ref": null,
+            "name": "Bab Taza",
+            "lat": "35.14861",
+            "lng": "-5.15694",
+            "zone": "33",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "207": {
+            "ref": null,
+            "name": "AKCHOUR",
+            "lat": "35.17833",
+            "lng": "-5.19444",
+            "zone": "33",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "208": {
+            "ref": null,
+            "name": "Bab berred",
+            "lat": "35.22167",
+            "lng": "-5.04694",
+            "zone": "33",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "209": {
+            "ref": null,
+            "name": "El Jebeha",
+            "lat": "35.1875",
+            "lng": "-4.66694",
+            "zone": "2",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "210": {
+            "ref": null,
+            "name": "Midelt",
+            "lat": "32.67716",
+            "lng": "-4.74567",
+            "zone": "49",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "211": {
+            "ref": null,
+            "name": "Jerada",
+            "lat": "34.31121",
+            "lng": "-2.17464",
+            "zone": "4",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "212": {
+            "ref": null,
+            "name": "Bouarfa",
+            "lat": "32.53222",
+            "lng": "-1.96141",
+            "zone": "4",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "213": {
+            "ref": null,
+            "name": "Laayoun Cherqia",
+            "lat": "32.83333",
+            "lng": "-6.31667",
+            "zone": "4",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "214": {
+            "ref": null,
+            "name": "Zagora",
+            "lat": "30.33297",
+            "lng": "-5.83866",
+            "zone": "48",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "215": {
+            "ref": null,
+            "name": "Tamegroute",
+            "lat": "30.23856",
+            "lng": "-5.61934",
+            "zone": "48",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "216": {
+            "ref": null,
+            "name": "Tagomite",
+            "lat": "30.17917",
+            "lng": "-5.73389",
+            "zone": "15",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "217": {
+            "ref": null,
+            "name": "Mhamid Lghezlane",
+            "lat": "29.82171",
+            "lng": "-5.72064",
+            "zone": "48",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "218": {
+            "ref": null,
+            "name": "Agdz",
+            "lat": "30.68286",
+            "lng": "-6.43938",
+            "zone": "48",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "219": {
+            "ref": null,
+            "name": "Nkob",
+            "lat": "30.88014",
+            "lng": "-5.87306",
+            "zone": "48",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "220": {
+            "ref": null,
+            "name": "Tazzarine",
+            "lat": "30.79056",
+            "lng": "-5.56778",
+            "zone": "48",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "221": {
+            "ref": null,
+            "name": "Taghbalte",
+            "lat": "30.82861",
+            "lng": "-5.59694",
+            "zone": "48",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "222": {
+            "ref": null,
+            "name": "Errich",
+            "lat": "32.63333",
+            "lng": "-4.75",
+            "zone": "3",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "223": {
+            "ref": null,
+            "name": "Missour",
+            "lat": "33.04666",
+            "lng": "-3.98145",
+            "zone": "3",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "224": {
+            "ref": null,
+            "name": "Boumia",
+            "lat": "32.78972",
+            "lng": "-4.89278",
+            "zone": "49",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "225": {
+            "ref": null,
+            "name": "Tinjdad",
+            "lat": "31.50833",
+            "lng": "-5.94222",
+            "zone": "3",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "226": {
+            "ref": null,
+            "name": "Gulmima - errachidia",
+            "lat": "31.70457",
+            "lng": "-4.96732",
+            "zone": "3",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "227": {
+            "ref": null,
+            "name": "Sidi Bouknadel",
+            "lat": "34.05",
+            "lng": "-6.75",
+            "zone": "61",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "228": {
+            "ref": null,
+            "name": "Imintanoute",
+            "lat": "31.27511",
+            "lng": "-8.93268",
+            "zone": "58",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "229": {
+            "ref": null,
+            "name": "Demnate",
+            "lat": "31.73378",
+            "lng": "-7.02171",
+            "zone": "1",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "230": {
+            "ref": null,
+            "name": "Ouad Laou",
+            "lat": "35.45139",
+            "lng": "-5.06806",
+            "zone": "2",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "231": {
+            "ref": null,
+            "name": "Cabo Negro",
+            "lat": "35.67645",
+            "lng": "-5.30431",
+            "zone": "2",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "232": {
+            "ref": null,
+            "name": "Khmiss Zemamera",
+            "lat": "34.5258",
+            "lng": "-5.6072",
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "234": {
+            "ref": null,
+            "name": "Sidi Smail",
+            "lat": "32.91778",
+            "lng": "-8.50861",
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "235": {
+            "ref": null,
+            "name": "Oulad Fraj",
+            "lat": "33.16778",
+            "lng": "-8.7",
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "236": {
+            "ref": null,
+            "name": "Mellalyène",
+            "lat": "35.66208",
+            "lng": "-5.33816",
+            "zone": "2",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "237": {
+            "ref": null,
+            "name": "Sidi Rehal-casa",
+            "lat": "35.65639",
+            "lng": "-5.35389",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "238": {
+            "ref": null,
+            "name": "Assa",
+            "lat": "28.62022",
+            "lng": "-9.41856",
+            "zone": "39",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "239": {
+            "ref": null,
+            "name": "Assa",
+            "lat": "28.62022",
+            "lng": "-9.41856",
+            "zone": "39",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "240": {
+            "ref": null,
+            "name": "Rehamna",
+            "lat": "32.346",
+            "lng": "-7.9339",
+            "zone": "52",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "241": {
+            "ref": null,
+            "name": "Lakhssas",
+            "lat": "29.03599",
+            "lng": "-9.63028",
+            "zone": "30",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "242": {
+            "ref": null,
+            "name": "Aoufous",
+            "lat": "31.83333",
+            "lng": "-4.25",
+            "zone": "3",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "243": {
+            "ref": null,
+            "name": "Boudnib",
+            "lat": "32.02361",
+            "lng": "-4.14528",
+            "zone": "3",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "244": {
+            "ref": null,
+            "name": "Ben Ahmed - Settat -",
+            "lat": "33.2314",
+            "lng": "-7.12354",
+            "zone": "20",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "245": {
+            "ref": null,
+            "name": "Sidi Bou Othmane",
+            "lat": "31.86939",
+            "lng": "-7.95791",
+            "zone": "52",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "246": {
+            "ref": null,
+            "name": "Asni",
+            "lat": "31.285",
+            "lng": "-7.97139",
+            "zone": "1",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "247": {
+            "ref": null,
+            "name": "Souk Elarbaa Du Gharb",
+            "lat": "34.68644",
+            "lng": "-6.00365",
+            "zone": "11",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "248": {
+            "ref": null,
+            "name": "Ajdir (Région Taza)",
+            "lat": "34.21667",
+            "lng": "-4.01667",
+            "zone": "29",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "250": {
+            "ref": null,
+            "name": "Amzmiz",
+            "lat": "31.21861",
+            "lng": "-8.21278",
+            "zone": "1",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "251": {
+            "ref": null,
+            "name": "Drarga",
+            "lat": "30.35222",
+            "lng": "-9.50472",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "253": {
+            "ref": null,
+            "name": "Anza - Taddart ",
+            "lat": "30.45104143350694",
+            "lng": "-9.651832580566408",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "254": {
+            "ref": null,
+            "name": "Zayda",
+            "lat": "32.98333",
+            "lng": "-5.33333",
+            "zone": "49",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "255": {
+            "ref": null,
+            "name": "Outat El Haj",
+            "lat": "34.05",
+            "lng": "-3.35",
+            "zone": "3",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "256": {
+            "ref": null,
+            "name": "Tahla",
+            "lat": "34.05",
+            "lng": "-4.08333",
+            "zone": "29",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "257": {
+            "ref": null,
+            "name": "Oued Amlil",
+            "lat": "34.1",
+            "lng": "-4.16667",
+            "zone": "29",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "258": {
+            "ref": null,
+            "name": "Imouzzer Kandar",
+            "lat": "33.69805",
+            "lng": "-5.10166",
+            "zone": "47",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "260": {
+            "ref": null,
+            "name": "Biogra",
+            "lat": "30.214426740444146",
+            "lng": "-9.368934631347658",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "261": {
+            "ref": null,
+            "name": "Terfaya",
+            "lat": "27.93043",
+            "lng": "-12.90661",
+            "zone": "13",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "262": {
+            "ref": null,
+            "name": "Tazenakht",
+            "lat": "30.57297",
+            "lng": "-7.19868",
+            "zone": "15",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "263": {
+            "ref": null,
+            "name": "Figuig",
+            "lat": "32.10622",
+            "lng": "-1.2277",
+            "zone": "4",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "264": {
+            "ref": null,
+            "name": "Tendrara",
+            "lat": "33.15528",
+            "lng": "-3.5925",
+            "zone": "4",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "266": {
+            "ref": null,
+            "name": "Beni Tajjite",
+            "lat": "32.10222",
+            "lng": "-3.69722",
+            "zone": "4",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "267": {
+            "ref": null,
+            "name": "Bouanane",
+            "lat": "31.7",
+            "lng": "-3.53333",
+            "zone": "4",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "268": {
+            "ref": null,
+            "name": "Tata",
+            "lat": "29.74538",
+            "lng": "-7.97517",
+            "zone": "56",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "270": {
+            "ref": null,
+            "name": "Mzoudia",
+            "lat": "31.43361",
+            "lng": "-7.94417",
+            "zone": "58",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "271": {
+            "ref": null,
+            "name": "Ksar Sghir",
+            "lat": "35.85567",
+            "lng": "-5.58515",
+            "zone": "24",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "272": {
+            "ref": null,
+            "name": "Tamelelt",
+            "lat": "30.41694",
+            "lng": "-8.18194",
+            "zone": "51",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "273": {
+            "ref": null,
+            "name": "El Gara",
+            "lat": "33.28333",
+            "lng": "-7.6",
+            "zone": "50",
+            "relaunch_zone": "0",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "274": {
+            "ref": null,
+            "name": "Mirleft",
+            "lat": "29.64972",
+            "lng": "-10.03778",
+            "zone": "30",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "275": {
+            "ref": null,
+            "name": "lqliaa",
+            "lat": "30.35897",
+            "lng": "-9.48643",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "276": {
+            "ref": null,
+            "name": "oulad berhil",
+            "lat": "30.64083",
+            "lng": "-8.58917",
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "277": {
+            "ref": null,
+            "name": "zaida",
+            "lat": "32.93333",
+            "lng": "-5.36667",
+            "zone": "49",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "279": {
+            "ref": null,
+            "name": "targuist",
+            "lat": "34.9361",
+            "lng": "-4.3177",
+            "zone": "21",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "280": {
+            "ref": null,
+            "name": "issaguen",
+            "lat": "34.957",
+            "lng": "-4.3204",
+            "zone": "21",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "281": {
+            "ref": null,
+            "name": "tala youssef",
+            "lat": "35.1683",
+            "lng": "-4.1155",
+            "zone": "21",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "282": {
+            "ref": null,
+            "name": "Jaadar",
+            "lat": "35.0748",
+            "lng": "-2.927",
+            "zone": "5",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "283": {
+            "ref": null,
+            "name": "Midar",
+            "lat": "34.95492",
+            "lng": "-3.61278",
+            "zone": "60",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "284": {
+            "ref": null,
+            "name": "Ben Taieb",
+            "lat": "34.9865",
+            "lng": "-3.5469",
+            "zone": "60",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "285": {
+            "ref": null,
+            "name": "Kassita",
+            "lat": "34.95111",
+            "lng": "-3.61444",
+            "zone": "60",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "286": {
+            "ref": null,
+            "name": "Tafersit",
+            "lat": "34.92858",
+            "lng": "-3.59772",
+            "zone": "60",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "287": {
+            "ref": null,
+            "name": "Dar El Kebdani",
+            "lat": "35.0026",
+            "lng": "-3.4441",
+            "zone": "60",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "288": {
+            "ref": null,
+            "name": "Oulad Settout",
+            "lat": "34.9744",
+            "lng": "-2.9275",
+            "zone": "5",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "289": {
+            "ref": null,
+            "name": "Bouarg",
+            "lat": "35.0401",
+            "lng": "-2.934",
+            "zone": "5",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "290": {
+            "ref": null,
+            "name": "Arekmane",
+            "lat": "35.0669",
+            "lng": "-2.873",
+            "zone": "5",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "291": {
+            "ref": null,
+            "name": "Krona",
+            "lat": "35.0955",
+            "lng": "-2.8887",
+            "zone": "60",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "292": {
+            "ref": null,
+            "name": "Boudinar",
+            "lat": "35.1",
+            "lng": "-3.53333",
+            "zone": "60",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "293": {
+            "ref": null,
+            "name": "Tamsamane",
+            "lat": "35.1112",
+            "lng": "-3.5601",
+            "zone": "60",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "294": {
+            "ref": null,
+            "name": "Annual",
+            "lat": "35.06667",
+            "lng": "-3.16667",
+            "zone": "4",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "296": {
+            "ref": null,
+            "name": "BENI CHIKER",
+            "lat": "35.1219",
+            "lng": "-2.9167",
+            "zone": "5",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "297": {
+            "ref": null,
+            "name": "Mariouari",
+            "lat": "35.0886",
+            "lng": "-3.3028",
+            "zone": "5",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "298": {
+            "ref": null,
+            "name": "Tiztoutine",
+            "lat": "35.0556",
+            "lng": "-3.0247",
+            "zone": "5",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "299": {
+            "ref": null,
+            "name": "Tamaris",
+            "lat": "33.523",
+            "lng": "-7.7863",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "300": {
+            "ref": null,
+            "name": "Karia Be Mohammed",
+            "lat": "33.53333",
+            "lng": "-7.88333",
+            "zone": "47",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "301": {
+            "ref": null,
+            "name": "Taddart - Charaf - AGADIR",
+            "lat": "30.4342005720563",
+            "lng": "-9.584434032440187",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "35",
+            "r_fees": "0.00"
+        },
+        "302": {
+            "ref": null,
+            "name": "Ben Ahmed - CHEFCHAOUEN -",
+            "lat": "35.0939",
+            "lng": "-5.2769",
+            "zone": "33",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "303": {
+            "ref": null,
+            "name": "Tnine Chtouka (el jadida)",
+            "lat": "33.2227",
+            "lng": "-8.5097",
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "304": {
+            "ref": null,
+            "name": "AIN CHGAG",
+            "lat": "33.99139",
+            "lng": "-5.01361",
+            "zone": "18",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "305": {
+            "ref": null,
+            "name": "Tafraoute",
+            "lat": "29.71611",
+            "lng": "-8.97472",
+            "zone": "30",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "306": {
+            "ref": null,
+            "name": "Houara-oulad teima",
+            "lat": "30.3623",
+            "lng": "-9.5448",
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "307": {
+            "ref": null,
+            "name": "ERRAHMA VILLE\t",
+            "lat": "30.47083",
+            "lng": "-9.65194",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "308": {
+            "ref": null,
+            "name": "azrou ait melloul",
+            "lat": "30.315",
+            "lng": "-9.49667",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "309": {
+            "ref": null,
+            "name": "Ben Yakhlef",
+            "lat": "33.61",
+            "lng": "-7.465",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "310": {
+            "ref": null,
+            "name": "El Mansouria",
+            "lat": "33.72778",
+            "lng": "-7.40694",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "312": {
+            "ref": null,
+            "name": "cap beddouza",
+            "lat": "32.54139",
+            "lng": "-9.11667",
+            "zone": "31",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "313": {
+            "ref": null,
+            "name": "Jemâa-Shaim",
+            "lat": "32.41833",
+            "lng": "-8.88861",
+            "zone": "31",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "314": {
+            "ref": null,
+            "name": "El Borouj",
+            "lat": "32.62778",
+            "lng": "-7.88139",
+            "zone": "20",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "315": {
+            "ref": null,
+            "name": "oulad said settat",
+            "lat": "32.86667",
+            "lng": "-8.4",
+            "zone": "20",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "316": {
+            "ref": null,
+            "name": "sidi hajjaj (settat)",
+            "lat": "33.26194",
+            "lng": "-7.52611",
+            "zone": "20",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "317": {
+            "ref": null,
+            "name": "Ras El Ain (settat)",
+            "lat": "32.88278",
+            "lng": "-7.31556",
+            "zone": "20",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "318": {
+            "ref": null,
+            "name": "Guisser (settat)",
+            "lat": "32.73889",
+            "lng": "-7.28306",
+            "zone": "20",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "320": {
+            "ref": null,
+            "name": "Lakhyayeta",
+            "lat": "33.75",
+            "lng": "-7.1",
+            "zone": "34",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "321": {
+            "ref": null,
+            "name": "Nzalat Laadam",
+            "lat": "31.86667",
+            "lng": "-7.61667",
+            "zone": "52",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "322": {
+            "ref": null,
+            "name": "Oulad Zidoh",
+            "lat": "31.93333",
+            "lng": "-8.43333",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "323": {
+            "ref": null,
+            "name": "souiria Guedima (REG SAFI)",
+            "lat": "32.1",
+            "lng": "-9.45",
+            "zone": "31",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "324": {
+            "ref": null,
+            "name": "Jorf El Melha",
+            "lat": "34.495",
+            "lng": "-6.00417",
+            "zone": "55",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "325": {
+            "ref": null,
+            "name": "Ain Beida",
+            "lat": "34.07",
+            "lng": "-5.01667",
+            "zone": "45",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "326": {
+            "ref": null,
+            "name": "Mokrisset",
+            "lat": "34.7",
+            "lng": "-5.25",
+            "zone": "45",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "327": {
+            "ref": null,
+            "name": "Oulad Ayad",
+            "lat": "32.2",
+            "lng": "-6.35",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "329": {
+            "ref": null,
+            "name": "AIN ATIQ",
+            "lat": "33.85",
+            "lng": "-6.89",
+            "zone": "14",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "330": {
+            "ref": null,
+            "name": "Moulay Bousselham",
+            "lat": "34.875",
+            "lng": "-6.29972",
+            "zone": "57",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "331": {
+            "ref": null,
+            "name": "Khenichet",
+            "lat": "34.81639",
+            "lng": "-6.16167",
+            "zone": "55",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "332": {
+            "ref": null,
+            "name": "Zoumi-Ouazzane",
+            "lat": "34.67583",
+            "lng": "-5.09917",
+            "zone": "45",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "333": {
+            "ref": null,
+            "name": "Teroual - Ouazzane",
+            "lat": "34.68222",
+            "lng": "-5.16333",
+            "zone": "45",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "334": {
+            "ref": null,
+            "name": "Ain Dfali-Ouazzane",
+            "lat": "34.67833",
+            "lng": "-5.295",
+            "zone": "45",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "335": {
+            "ref": null,
+            "name": "Masmouda - Ouazzane",
+            "lat": "34.56972",
+            "lng": "-5.5675",
+            "zone": "45",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "336": {
+            "ref": null,
+            "name": "Stehat-Chefchaouen",
+            "lat": "35.27583",
+            "lng": "-5.19333",
+            "zone": "2",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "337": {
+            "ref": null,
+            "name": "Temsia-agadir",
+            "lat": "30.2825",
+            "lng": "-9.49083",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "338": {
+            "ref": null,
+            "name": "Tamraght",
+            "lat": "30.54528",
+            "lng": "-9.70889",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "339": {
+            "ref": null,
+            "name": "Had bouhssoussen",
+            "lat": "31.7511",
+            "lng": "-7.3912",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "340": {
+            "ref": null,
+            "name": "Moulay bouazza khenifra\t",
+            "lat": "32.36239",
+            "lng": "-6.51704",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "341": {
+            "ref": null,
+            "name": "Tagzert",
+            "lat": "32.21565",
+            "lng": "-6.22189",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "342": {
+            "ref": null,
+            "name": "Oulad M barek-Beni Mellal",
+            "lat": "32.32",
+            "lng": "-6.35",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "343": {
+            "ref": null,
+            "name": "Tanougha-Beni Mellal",
+            "lat": "32.25922",
+            "lng": "-6.40956",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "344": {
+            "ref": null,
+            "name": "Foum Oudi",
+            "lat": "32.11833",
+            "lng": "-6.38972",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "345": {
+            "ref": null,
+            "name": "Ikhourbane",
+            "lat": "32.33426",
+            "lng": "-6.34424",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "346": {
+            "ref": null,
+            "name": "Zag-VILLE",
+            "lat": "30.33522",
+            "lng": "-5.83599",
+            "zone": "39",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "347": {
+            "ref": null,
+            "name": "El Ouatia",
+            "lat": "28.49778",
+            "lng": "-11.32472",
+            "zone": "12",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "348": {
+            "ref": null,
+            "name": "Port of Tan-Tan",
+            "lat": "28.45822",
+            "lng": "-11.10272",
+            "zone": "39",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "349": {
+            "ref": null,
+            "name": "oulad oujih",
+            "lat": "33.58389",
+            "lng": "-7.61667",
+            "zone": "11",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "350": {
+            "ref": null,
+            "name": "Lalla Mimouna",
+            "lat": "34.6637",
+            "lng": "-6.3137",
+            "zone": "57",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "351": {
+            "ref": null,
+            "name": "Dlalha",
+            "lat": "34.1765",
+            "lng": "-5.8145",
+            "zone": "57",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "352": {
+            "ref": null,
+            "name": "Mers El Kheir",
+            "lat": "33.858",
+            "lng": "-6.8323",
+            "zone": "14",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "353": {
+            "ref": null,
+            "name": "Sidi Yahya Zaer",
+            "lat": "33.8319",
+            "lng": "-6.8117",
+            "zone": "14",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "354": {
+            "ref": null,
+            "name": "Skhour Rehamna",
+            "lat": "32.584",
+            "lng": "-7.8627",
+            "zone": "52",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "355": {
+            "ref": null,
+            "name": "Amizmiz",
+            "lat": "31.21861",
+            "lng": "-8.21278",
+            "zone": "1",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "356": {
+            "ref": null,
+            "name": "El Hanchane",
+            "lat": "32.04667",
+            "lng": "-8.67639",
+            "zone": "23",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "357": {
+            "ref": null,
+            "name": "Akka-tata",
+            "lat": "29.3861",
+            "lng": "-8.0519",
+            "zone": "56",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "358": {
+            "ref": null,
+            "name": "Tagmout-tata",
+            "lat": "29.48611",
+            "lng": "-8.15194",
+            "zone": "56",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "359": {
+            "ref": null,
+            "name": "Issafen-tata\t",
+            "lat": "29.58333",
+            "lng": "-8.25",
+            "zone": "56",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "360": {
+            "ref": null,
+            "name": "Fam El Hisn-tata",
+            "lat": "29.5556",
+            "lng": "-7.9744",
+            "zone": "56",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "362": {
+            "ref": null,
+            "name": "MASSA",
+            "lat": "30.07917",
+            "lng": "-9.65194",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "363": {
+            "ref": null,
+            "name": "Kariat Arkman‎-Nador",
+            "lat": "35.12639",
+            "lng": "-2.94611",
+            "zone": "5",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "364": {
+            "ref": null,
+            "name": "Had Hrara-SAFI",
+            "lat": "32.20778",
+            "lng": "-9.20611",
+            "zone": "31",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "365": {
+            "ref": null,
+            "name": "Sidi Zouine\t",
+            "lat": "31.62111",
+            "lng": "-8.20389",
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "366": {
+            "ref": null,
+            "name": "Skoura-Ouarzazate",
+            "lat": "31.04778",
+            "lng": "-6.56056",
+            "zone": "15",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "367": {
+            "ref": null,
+            "name": "Bni hdifa - Region Al hoceima",
+            "lat": "34.9696",
+            "lng": "-4.3174",
+            "zone": "21",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "368": {
+            "ref": null,
+            "name": "Bab Marzouka-Taza",
+            "lat": "34.21667",
+            "lng": "-4.01667",
+            "zone": "29",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "369": {
+            "ref": null,
+            "name": "Aknoul-taza",
+            "lat": "34.64111",
+            "lng": "-4.02222",
+            "zone": "29",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "370": {
+            "ref": null,
+            "name": "Hattane-Khouribga",
+            "lat": "32.87111",
+            "lng": "-6.79639",
+            "zone": "6",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "371": {
+            "ref": null,
+            "name": "sidi allal tazi",
+            "lat": "34.3943",
+            "lng": "-6.5206",
+            "zone": "11",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "372": {
+            "ref": null,
+            "name": "Tiddas",
+            "lat": "33.64611",
+            "lng": "-6.18222",
+            "zone": "7",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "373": {
+            "ref": null,
+            "name": "Ain Johra",
+            "lat": "33.96667",
+            "lng": "-6.4",
+            "zone": "7",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "374": {
+            "ref": null,
+            "name": "Maâziz",
+            "lat": "33.87667",
+            "lng": "-6.36472",
+            "zone": "7",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "376": {
+            "ref": null,
+            "name": "Tīdās-Khemisset",
+            "lat": "33.65028",
+            "lng": "-6.19889",
+            "zone": "7",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "377": {
+            "ref": null,
+            "name": "Laouamra- ksar el kebir",
+            "lat": "35.01111",
+            "lng": "-6.31472",
+            "zone": "57",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "378": {
+            "ref": null,
+            "name": "Khemis Sahel",
+            "lat": "34.8263",
+            "lng": "-6.15572",
+            "zone": "57",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "379": {
+            "ref": null,
+            "name": "Krimda",
+            "lat": "33.6166",
+            "lng": "-7.5299",
+            "zone": "57",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "380": {
+            "ref": null,
+            "name": "Sidi Aissa-Beni-Mellal",
+            "lat": "32.4817",
+            "lng": "-6.34983",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "381": {
+            "ref": null,
+            "name": "Ouled Moussa-Beni Mellal",
+            "lat": "32.5181",
+            "lng": "-6.68949",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "382": {
+            "ref": null,
+            "name": "Oulad Said-Beni Mellal",
+            "lat": "32.4817",
+            "lng": "-6.68949",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "383": {
+            "ref": null,
+            "name": "ighram laalam-beni mellal",
+            "lat": "32.4917",
+            "lng": "-6.34983",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "384": {
+            "ref": null,
+            "name": "Tanougha-Beni Mellal",
+            "lat": "32.25922",
+            "lng": "-6.40956",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "385": {
+            "ref": null,
+            "name": "Zaouiat Cheikh",
+            "lat": "32.6434",
+            "lng": "-5.921",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "386": {
+            "ref": null,
+            "name": "Ait Ali",
+            "lat": "33.7836",
+            "lng": "-5.5462",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "387": {
+            "ref": null,
+            "name": "Lehri-KHENIFRA",
+            "lat": "32.69167",
+            "lng": "-5.43333",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "388": {
+            "ref": null,
+            "name": "El Kebab-KHENIFRA\t",
+            "lat": "32.54194",
+            "lng": "-6.07889",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "389": {
+            "ref": null,
+            "name": "El Borj-KHENIFRA",
+            "lat": "32.78",
+            "lng": "-5.45",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "391": {
+            "ref": null,
+            "name": "Ouaoumana\t",
+            "lat": "32.54194",
+            "lng": "-5.55",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "392": {
+            "ref": null,
+            "name": "Ait ishaq",
+            "lat": "32.875",
+            "lng": "-5.75",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "393": {
+            "ref": null,
+            "name": "Ait ishaK",
+            "lat": "32.875",
+            "lng": "-5.75",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "394": {
+            "ref": null,
+            "name": "Tighassaline ville",
+            "lat": "32.865",
+            "lng": "-6.28333",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "395": {
+            "ref": null,
+            "name": "Aguelmous",
+            "lat": "32.87222",
+            "lng": "-5.75528",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "397": {
+            "ref": null,
+            "name": "Bounouar",
+            "lat": "33.2506",
+            "lng": "-8.5229",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "398": {
+            "ref": null,
+            "name": "HATTANE",
+            "lat": "33.26167",
+            "lng": "-7.53111",
+            "zone": "6",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "399": {
+            "ref": null,
+            "name": "Boujniba",
+            "lat": "32.97892",
+            "lng": "-6.76542",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "400": {
+            "ref": null,
+            "name": "Ouaouizeght",
+            "lat": "31.95333",
+            "lng": "-6.55",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "401": {
+            "ref": null,
+            "name": "Adouz",
+            "lat": "34.08333",
+            "lng": "-3.7",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "402": {
+            "ref": null,
+            "name": "Foum El Anceur",
+            "lat": "32.27667",
+            "lng": "-5.80639",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "403": {
+            "ref": null,
+            "name": "FERYATA",
+            "lat": "34.5864",
+            "lng": "-3.9336",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "404": {
+            "ref": null,
+            "name": "Foum Zaouia",
+            "lat": "32.42667",
+            "lng": "-5.58694",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "405": {
+            "ref": null,
+            "name": "Tanougha-Beni Mellal\t",
+            "lat": "32.25922",
+            "lng": "-6.40956",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "406": {
+            "ref": null,
+            "name": "Al kamoun-ksba tadla",
+            "lat": "33.3155",
+            "lng": "-7.4147",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "407": {
+            "ref": null,
+            "name": "Jerf El Melha",
+            "lat": "34.495",
+            "lng": "-6.00417",
+            "zone": "55",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "408": {
+            "ref": null,
+            "name": "Zemamra",
+            "lat": "32.6185",
+            "lng": "-8.205",
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "410": {
+            "ref": null,
+            "name": "Sidi Smail",
+            "lat": "32.91778",
+            "lng": "-8.50861",
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "411": {
+            "ref": null,
+            "name": "Azemmour",
+            "lat": "33.28925",
+            "lng": "-8.34242",
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "412": {
+            "ref": null,
+            "name": "Bir Jdid",
+            "lat": "33.37688719690513",
+            "lng": "-7.997016906738282",
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "413": {
+            "ref": null,
+            "name": "El Jorf Lasfar ",
+            "lat": "33.07889",
+            "lng": "-8.63444",
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "414": {
+            "ref": null,
+            "name": "Moulay Abdallah Amghar",
+            "lat": "33.215",
+            "lng": "-8.4945",
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "415": {
+            "ref": null,
+            "name": "El Aouamra",
+            "lat": "34.83306",
+            "lng": "-6.04778",
+            "zone": "57",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "416": {
+            "ref": null,
+            "name": "Laarache",
+            "lat": "35.19591",
+            "lng": "-6.15572",
+            "zone": "57",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "417": {
+            "ref": null,
+            "name": "Oulad Bourahma",
+            "lat": "34.87472",
+            "lng": "-6.29417",
+            "zone": "11",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "418": {
+            "ref": null,
+            "name": "Zone Franche (kenitra)",
+            "lat": "34.26439",
+            "lng": "-6.58463",
+            "zone": "11",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "420": {
+            "ref": null,
+            "name": "Ghafsai",
+            "lat": "34.55694",
+            "lng": "-4.92361",
+            "zone": "47",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "421": {
+            "ref": null,
+            "name": "sidi aadi",
+            "lat": "31.4236",
+            "lng": "-8.2053",
+            "zone": "35",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "422": {
+            "ref": null,
+            "name": "Mejjat-chichaoua",
+            "lat": "31.6653",
+            "lng": "-8.7664",
+            "zone": "58",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "423": {
+            "ref": null,
+            "name": "Ain Tekki",
+            "lat": "32.9633",
+            "lng": "-7.4356",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "426": {
+            "ref": null,
+            "name": "OULAD ABBOU-settat",
+            "lat": "33.303",
+            "lng": "-7.486",
+            "zone": "20",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "428": {
+            "ref": null,
+            "name": "AIN LEUH",
+            "lat": "33.34389",
+            "lng": "-5.30361",
+            "zone": "35",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "429": {
+            "ref": null,
+            "name": "Souihla",
+            "lat": "31.5893",
+            "lng": "-8.0222",
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "430": {
+            "ref": null,
+            "name": "El Haj Kaddour",
+            "lat": "34.1153",
+            "lng": "-5.1553",
+            "zone": "35",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "431": {
+            "ref": null,
+            "name": "Boulemane",
+            "lat": "33.3637",
+            "lng": "-4.7251",
+            "zone": "47",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "432": {
+            "ref": null,
+            "name": "Tin Mansour\t",
+            "lat": "30.56667",
+            "lng": "-5.36667",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "433": {
+            "ref": null,
+            "name": "Arba Aounate",
+            "lat": "33.0153",
+            "lng": "-8.6892",
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "434": {
+            "ref": null,
+            "name": "AIN BNI MATHAR",
+            "lat": "34.014",
+            "lng": "-2.022",
+            "zone": "4",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "435": {
+            "ref": null,
+            "name": "Tikiouine",
+            "lat": "30.35707",
+            "lng": "-9.54323",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "437": {
+            "ref": null,
+            "name": "Chellalat Mohammedia",
+            "lat": "33.6062",
+            "lng": "-7.4596",
+            "zone": "34",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "438": {
+            "ref": null,
+            "name": "Zouada",
+            "lat": "34.184",
+            "lng": "-6.1877",
+            "zone": "57",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "439": {
+            "ref": null,
+            "name": "Arbaoua",
+            "lat": "34.68222",
+            "lng": "-6.20889",
+            "zone": "57",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "440": {
+            "ref": null,
+            "name": "Sidi el Aidi",
+            "lat": "33.4833",
+            "lng": "-7.5975",
+            "zone": "20",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "443": {
+            "ref": null,
+            "name": "DAR GUEDDARI",
+            "lat": "34.44444",
+            "lng": "-5.765",
+            "zone": "11",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "445": {
+            "ref": null,
+            "name": "Tagadirt-Agadir",
+            "lat": "30.41639",
+            "lng": "-9.54806",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "446": {
+            "ref": null,
+            "name": "Tadouaret-Agadir",
+            "lat": "30.40222",
+            "lng": "-9.55111",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "447": {
+            "ref": null,
+            "name": "Leqliaa - Taddart",
+            "lat": "30.24919377665801",
+            "lng": "-9.469914436340334",
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "448": {
+            "ref": null,
+            "name": "ain mediouna - taounate\t",
+            "lat": "",
+            "lng": "",
+            "zone": "47",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "449": {
+            "ref": null,
+            "name": "ain aicha - taounate",
+            "lat": "",
+            "lng": "",
+            "zone": "47",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "450": {
+            "ref": null,
+            "name": "zrizer - taounate\t",
+            "lat": "",
+            "lng": "",
+            "zone": "47",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "451": {
+            "ref": null,
+            "name": "Ain Sbit",
+            "lat": "",
+            "lng": "",
+            "zone": "7",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "452": {
+            "ref": null,
+            "name": "MERCHOUCH",
+            "lat": "",
+            "lng": "",
+            "zone": "7",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "453": {
+            "ref": null,
+            "name": "TANANTE-AZILAL",
+            "lat": "",
+            "lng": "",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "454": {
+            "ref": null,
+            "name": "Birkouate",
+            "lat": "",
+            "lng": "",
+            "zone": "23",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "455": {
+            "ref": null,
+            "name": "Moulay Yaâcoub\t",
+            "lat": "",
+            "lng": "",
+            "zone": "47",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "456": {
+            "ref": null,
+            "name": "sidi boujida",
+            "lat": "",
+            "lng": "",
+            "zone": "18",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "457": {
+            "ref": null,
+            "name": "Oulad Tayeb",
+            "lat": "",
+            "lng": "",
+            "zone": "18",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "458": {
+            "ref": null,
+            "name": "Ain Chkef",
+            "lat": "",
+            "lng": "",
+            "zone": "18",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "459": {
+            "ref": null,
+            "name": "Ouled Khlifa",
+            "lat": "",
+            "lng": "",
+            "zone": "18",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "460": {
+            "ref": null,
+            "name": "LOUDAYA",
+            "lat": "",
+            "lng": "",
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "461": {
+            "ref": null,
+            "name": "Tassoultante",
+            "lat": "",
+            "lng": "",
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "463": {
+            "ref": null,
+            "name": "Tameslouht",
+            "lat": "",
+            "lng": "",
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "464": {
+            "ref": null,
+            "name": "Sidi Moussa-OURIKA",
+            "lat": "",
+            "lng": "",
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "465": {
+            "ref": null,
+            "name": "Gueznaia - Tanger",
+            "lat": "",
+            "lng": "",
+            "zone": "24",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "466": {
+            "ref": null,
+            "name": "TANGER-bougdour",
+            "lat": "",
+            "lng": "",
+            "zone": "24",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "467": {
+            "ref": null,
+            "name": "AIN DALIA-tanger",
+            "lat": "",
+            "lng": "",
+            "zone": "24",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "468": {
+            "ref": null,
+            "name": "Chraka - Tanger",
+            "lat": "",
+            "lng": "",
+            "zone": "24",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "469": {
+            "ref": null,
+            "name": "TANGER-chaouia",
+            "lat": "",
+            "lng": "",
+            "zone": "24",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "471": {
+            "ref": null,
+            "name": "tamchat",
+            "lat": "",
+            "lng": "",
+            "zone": "40",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "472": {
+            "ref": null,
+            "name": "TAGANTE",
+            "lat": "29.1283828",
+            "lng": "-9.7799066",
+            "zone": "39",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "473": {
+            "ref": null,
+            "name": "Moulay Idriss Zerhoun",
+            "lat": "",
+            "lng": "",
+            "zone": "35",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "476": {
+            "ref": null,
+            "name": "BOUYAFAR",
+            "lat": "",
+            "lng": "",
+            "zone": "5",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "477": {
+            "ref": null,
+            "name": "Sidi Bousberr",
+            "lat": "",
+            "lng": "",
+            "zone": "45",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "478": {
+            "ref": null,
+            "name": "LAMJAARA-ouazzane",
+            "lat": "",
+            "lng": "",
+            "zone": "45",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "480": {
+            "ref": null,
+            "name": "BRIKCHA-ouazzane",
+            "lat": "",
+            "lng": "",
+            "zone": "45",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "481": {
+            "ref": null,
+            "name": "Beni Quolla-ouazzane",
+            "lat": "",
+            "lng": "",
+            "zone": "45",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "482": {
+            "ref": null,
+            "name": "Mzefroune-ouazzane",
+            "lat": "",
+            "lng": "",
+            "zone": "45",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "484": {
+            "ref": null,
+            "name": "Sidi Elmoukhtar - Chichaoua",
+            "lat": "31.579131818965852",
+            "lng": "-9.019921773330438",
+            "zone": "58",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "485": {
+            "ref": null,
+            "name": "Ouled El Ghadbane",
+            "lat": null,
+            "lng": null,
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "487": {
+            "ref": null,
+            "name": "Had kourt",
+            "lat": null,
+            "lng": null,
+            "zone": "45",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "488": {
+            "ref": null,
+            "name": "Madagh-berkan",
+            "lat": null,
+            "lng": null,
+            "zone": "28",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "489": {
+            "ref": null,
+            "name": "Laatamna",
+            "lat": null,
+            "lng": null,
+            "zone": "28",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "490": {
+            "ref": null,
+            "name": "Sebt ben sassi",
+            "lat": null,
+            "lng": null,
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "491": {
+            "ref": null,
+            "name": "AIT BAHA",
+            "lat": null,
+            "lng": null,
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "493": {
+            "ref": null,
+            "name": "Ribate El Kheir-sefrou",
+            "lat": null,
+            "lng": null,
+            "zone": "18",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "494": {
+            "ref": null,
+            "name": "El Menzale-sefrou",
+            "lat": null,
+            "lng": null,
+            "zone": "18",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "495": {
+            "ref": null,
+            "name": "Tizi Ouasli",
+            "lat": null,
+            "lng": null,
+            "zone": "29",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "496": {
+            "ref": null,
+            "name": "MSOUN taza",
+            "lat": null,
+            "lng": null,
+            "zone": "29",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "499": {
+            "ref": null,
+            "name": "Akhfennir",
+            "lat": null,
+            "lng": null,
+            "zone": "12",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "500": {
+            "ref": null,
+            "name": "Gfifat-oulad teima",
+            "lat": null,
+            "lng": null,
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "501": {
+            "ref": null,
+            "name": "Oulad Dahou-HOUARA",
+            "lat": null,
+            "lng": null,
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "502": {
+            "ref": null,
+            "name": "TIMAHDITE-AZROU",
+            "lat": null,
+            "lng": null,
+            "zone": "35",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "503": {
+            "ref": null,
+            "name": "AGOURAY",
+            "lat": null,
+            "lng": null,
+            "zone": "35",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "504": {
+            "ref": null,
+            "name": "SIDI AADI",
+            "lat": null,
+            "lng": null,
+            "zone": "35",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "505": {
+            "ref": null,
+            "name": "Lalla Takerkoust",
+            "lat": null,
+            "lng": null,
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "506": {
+            "ref": null,
+            "name": "Oulad yahya-Marrakech",
+            "lat": null,
+            "lng": null,
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "507": {
+            "ref": null,
+            "name": "Chrifia-Marrakech",
+            "lat": null,
+            "lng": null,
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "508": {
+            "ref": null,
+            "name": "Sidi Abdellah Ghiat",
+            "lat": null,
+            "lng": null,
+            "zone": "1",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "509": {
+            "ref": null,
+            "name": "Ait Ben Haddou",
+            "lat": null,
+            "lng": null,
+            "zone": "15",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "510": {
+            "ref": null,
+            "name": "TALSINNT",
+            "lat": null,
+            "lng": null,
+            "zone": "4",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "511": {
+            "ref": null,
+            "name": "Aouama-Tanger",
+            "lat": null,
+            "lng": null,
+            "zone": "24",
+            "relaunch_zone": "1",
+            "d_fees": "40",
+            "r_fees": "0.00"
+        },
+        "512": {
+            "ref": null,
+            "name": "Ras El Ain Rehamena- Tamelelt",
+            "lat": null,
+            "lng": null,
+            "zone": "51",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "513": {
+            "ref": null,
+            "name": "Tlauh - Tamelelt",
+            "lat": null,
+            "lng": null,
+            "zone": "51",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "514": {
+            "ref": null,
+            "name": "EL AIOUN SIDI MELLOUK",
+            "lat": null,
+            "lng": null,
+            "zone": "4",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "515": {
+            "ref": null,
+            "name": "Bir Tam Tam\t",
+            "lat": "null",
+            "lng": "null",
+            "zone": "18",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "516": {
+            "ref": null,
+            "name": "Ras Tabouda\t",
+            "lat": null,
+            "lng": null,
+            "zone": "18",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "517": {
+            "ref": null,
+            "name": "Zaouia Bougrine",
+            "lat": null,
+            "lng": null,
+            "zone": "18",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "518": {
+            "ref": null,
+            "name": "El houmer-taroudant\t",
+            "lat": null,
+            "lng": null,
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "519": {
+            "ref": null,
+            "name": "Oulad Terna",
+            "lat": null,
+            "lng": null,
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "520": {
+            "ref": null,
+            "name": "Ouled Abbou-TAROUDANT",
+            "lat": null,
+            "lng": null,
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "521": {
+            "ref": null,
+            "name": "Oulad Aissa-TAROUDANT",
+            "lat": null,
+            "lng": null,
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "522": {
+            "ref": null,
+            "name": "Tazemmourt-taroudant",
+            "lat": null,
+            "lng": null,
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "523": {
+            "ref": null,
+            "name": "tamaloukt-taroudant\t",
+            "lat": null,
+            "lng": null,
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "524": {
+            "ref": null,
+            "name": "nouail-taroudant\t",
+            "lat": null,
+            "lng": null,
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "525": {
+            "ref": null,
+            "name": "oulad mhela-taroudant\t",
+            "lat": null,
+            "lng": null,
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "526": {
+            "ref": null,
+            "name": "El boura-taroudant\t",
+            "lat": null,
+            "lng": null,
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "527": {
+            "ref": null,
+            "name": "Oulad brahim-taroudant\t",
+            "lat": null,
+            "lng": null,
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "528": {
+            "ref": null,
+            "name": "Sidi moussa lhamri-TAROUDANT\t",
+            "lat": null,
+            "lng": null,
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "529": {
+            "ref": null,
+            "name": "Ahmar laglalcha-taroudant\t",
+            "lat": null,
+            "lng": null,
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "530": {
+            "ref": null,
+            "name": "IGHREM-TATA",
+            "lat": null,
+            "lng": null,
+            "zone": "56",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "531": {
+            "ref": null,
+            "name": "ASJENN-ouazzane",
+            "lat": null,
+            "lng": null,
+            "zone": "45",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "532": {
+            "ref": null,
+            "name": "TAFOUGHALT",
+            "lat": null,
+            "lng": null,
+            "zone": "4",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "533": {
+            "ref": null,
+            "name": "AIN SFA-OUJDA",
+            "lat": null,
+            "lng": null,
+            "zone": "4",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "534": {
+            "ref": null,
+            "name": "Bouhouda-taounat",
+            "lat": null,
+            "lng": null,
+            "zone": "47",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "535": {
+            "ref": null,
+            "name": "Tahar Souk-taounat",
+            "lat": null,
+            "lng": null,
+            "zone": "47",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "536": {
+            "ref": null,
+            "name": "bouaadl-taounat",
+            "lat": null,
+            "lng": null,
+            "zone": "47",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "537": {
+            "ref": null,
+            "name": "Ouled azem-taounat",
+            "lat": null,
+            "lng": null,
+            "zone": "47",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "538": {
+            "ref": null,
+            "name": "Tazouda-taounat",
+            "lat": null,
+            "lng": null,
+            "zone": "47",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "539": {
+            "ref": null,
+            "name": "Timezgana-taounat",
+            "lat": null,
+            "lng": null,
+            "zone": "47",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "540": {
+            "ref": null,
+            "name": "Imouzzer Marmoucha",
+            "lat": null,
+            "lng": null,
+            "zone": "47",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "541": {
+            "ref": null,
+            "name": "MEZRAOUA-taounat",
+            "lat": null,
+            "lng": null,
+            "zone": "47",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "542": {
+            "ref": null,
+            "name": "Ait Yaazem-meknes",
+            "lat": null,
+            "lng": null,
+            "zone": "35",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "544": {
+            "ref": null,
+            "name": "Ourtzagh-taounat",
+            "lat": null,
+            "lng": null,
+            "zone": "47",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "545": {
+            "ref": null,
+            "name": "Kasbat ayir-oualidia",
+            "lat": null,
+            "lng": null,
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "546": {
+            "ref": null,
+            "name": "Amerzgane",
+            "lat": null,
+            "lng": null,
+            "zone": "15",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "547": {
+            "ref": null,
+            "name": " Imini-Ouarzazate",
+            "lat": null,
+            "lng": null,
+            "zone": "15",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "550": {
+            "ref": null,
+            "name": "LAMHIRIZ-dakhla",
+            "lat": null,
+            "lng": null,
+            "zone": "9",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "552": {
+            "ref": null,
+            "name": "AIN SMEN-FES",
+            "lat": null,
+            "lng": null,
+            "zone": "18",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "553": {
+            "ref": null,
+            "name": "Idouirane-Imintanuot ",
+            "lat": null,
+            "lng": null,
+            "zone": "58",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "554": {
+            "ref": null,
+            "name": "Tamait Izder-agadir",
+            "lat": null,
+            "lng": null,
+            "zone": "17",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "555": {
+            "ref": null,
+            "name": "Tinzouline-zagora",
+            "lat": null,
+            "lng": null,
+            "zone": "48",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "557": {
+            "ref": null,
+            "name": "BEN ZOLI",
+            "lat": null,
+            "lng": null,
+            "zone": "48",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "558": {
+            "ref": null,
+            "name": "Tagounite",
+            "lat": null,
+            "lng": null,
+            "zone": "48",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "559": {
+            "ref": null,
+            "name": "Ain el Mediour- taroudant",
+            "lat": null,
+            "lng": null,
+            "zone": "27",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "560": {
+            "ref": null,
+            "name": "Ouled Mssaad",
+            "lat": null,
+            "lng": null,
+            "zone": "48",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "561": {
+            "ref": null,
+            "name": "Oulad Othmane",
+            "lat": null,
+            "lng": null,
+            "zone": "48",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "562": {
+            "ref": null,
+            "name": "Oulad Yahya Lagraire",
+            "lat": null,
+            "lng": null,
+            "zone": "48",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "563": {
+            "ref": null,
+            "name": "Tinnegza",
+            "lat": "null",
+            "lng": "null",
+            "zone": "48",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "564": {
+            "ref": null,
+            "name": "Ouled Moqaddem",
+            "lat": null,
+            "lng": null,
+            "zone": "48",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "565": {
+            "ref": null,
+            "name": "Aït Attab",
+            "lat": null,
+            "lng": null,
+            "zone": "40",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "566": {
+            "ref": null,
+            "name": "Oulad Aissa- el jadida",
+            "lat": null,
+            "lng": null,
+            "zone": "37",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "567": {
+            "ref": null,
+            "name": "BRADIA",
+            "lat": null,
+            "lng": null,
+            "zone": "40",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "568": {
+            "ref": null,
+            "name": "Souk El Had Des Bradia",
+            "lat": null,
+            "lng": null,
+            "zone": "40",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "570": {
+            "ref": null,
+            "name": "Ouzoud",
+            "lat": null,
+            "lng": null,
+            "zone": "40",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "571": {
+            "ref": null,
+            "name": "HOUARA-Tanger",
+            "lat": null,
+            "lng": null,
+            "zone": "24",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "572": {
+            "ref": null,
+            "name": "MEHARZA-Tanger",
+            "lat": null,
+            "lng": null,
+            "zone": "24",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "573": {
+            "ref": null,
+            "name": "EL MNBAR-Tanger",
+            "lat": null,
+            "lng": null,
+            "zone": "24",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "574": {
+            "ref": null,
+            "name": "AIN BELLOUT-Tanger",
+            "lat": null,
+            "lng": null,
+            "zone": "24",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "575": {
+            "ref": null,
+            "name": "Agouim",
+            "lat": null,
+            "lng": null,
+            "zone": "15",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "576": {
+            "ref": null,
+            "name": "Ighrem N Ougdal ",
+            "lat": "null",
+            "lng": "null",
+            "zone": "15",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "577": {
+            "ref": null,
+            "name": "Tarmigt ",
+            "lat": null,
+            "lng": null,
+            "zone": "15",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "578": {
+            "ref": null,
+            "name": "Ain jiri",
+            "lat": "",
+            "lng": "",
+            "zone": "35",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "579": {
+            "ref": null,
+            "name": " Tlata Loulad Fini",
+            "lat": "32.99516932341054",
+            "lng": "-7.1247420101404",
+            "zone": "20",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "580": {
+            "ref": null,
+            "name": "Tnine Beni Meskine",
+            "lat": "32.644184712568986",
+            "lng": "-7.388564078388499",
+            "zone": "20",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "581": {
+            "ref": null,
+            "name": "Aghbalou N serdan",
+            "lat": "32.68797683440991",
+            "lng": "-5.304529319182182",
+            "zone": "49",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "582": {
+            "ref": null,
+            "name": "Itzer-zaida",
+            "lat": "32.869821950595885",
+            "lng": "-5.049716526860809",
+            "zone": "49",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "583": {
+            "ref": null,
+            "name": "Zoualeth Dkhissa",
+            "lat": "33.9373089",
+            "lng": "-5.4666399",
+            "zone": "35",
+            "relaunch_zone": "1",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        },
+        "584": {
+            "ref": null,
+            "name": "Ras El Ma Fes",
+            "lat": "33.9712149",
+            "lng": "-5.0939752",
+            "zone": "18",
+            "relaunch_zone": "0",
+            "d_fees": "45",
+            "r_fees": "0.00"
+        }
+    }
+}

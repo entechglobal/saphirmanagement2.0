@@ -1,0 +1,23 @@
+{
+  "page_title": "تتبع الطرود",
+  "col_client": "العميل",
+  "col_document": "رقم الوثيقة",
+  "col_colis_code": "رمز الطرد",
+  "col_delivery_date": "تاريخ التسليم",
+  "col_order_status": "حالة الطلب",
+  "col_financials": "المالية",
+  "col_agency": "الوكالة",
+  "scan_label": "مسح باركود الطرد",
+  "btn_receiving": "جارٍ الاستلام...",
+  "btn_mark_received": "تحديد كمستلم",
+  "error_update_status": "فشل تحديث حالة الطرد.",
+  "success_title": "تم استلام الطرد",
+  "success_colis_code": "رمز الطرد#:",
+  "success_status": "الحالة:",
+  "success_document": "المستند:",
+  "success_client": "العميل:",
+  "col_total": "الإجمالي",
+  "col_paid": "مدفوع",
+  "search_placeholder": "بحث في قائمة التتبع",
+  "colis_copied": "تم نسخ الرمز!"
+}

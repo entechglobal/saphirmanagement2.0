@@ -1,0 +1,56 @@
+{
+  "title": "Gestion des banques",
+  "create_new": "Nouvelle banque",
+  "export_simple": "Exporter",
+  "export_csv": "Exporter CSV",
+  "export_xlsx": "Exporter XLSX",
+  "columns": {
+    "id": "ID",
+    "name": "Nom de la banque",
+    "rib": "RIB",
+    "city": "Ville",
+    "createdAt": "Créé le",
+    "updatedAt": "Modifié le"
+  },
+  "delete": {
+    "title": "Supprimer la banque",
+    "message": "Voulez-vous supprimer cette banque ?",
+    "confirm": "Supprimer",
+    "cancel": "Annuler",
+    "success": "Banque supprimée avec succès",
+    "error": "Échec de la suppression"
+  },
+  "form": {
+    "entity_name": "Banque",
+    "create_title": "Nouvelle banque",
+    "edit_title_prefix": "Modifier · ",
+    "back_label": "Retour aux banques",
+    "section_info": "Informations bancaires",
+    "fields": {
+      "name": "Nom de la banque",
+      "name_placeholder": "ex. CIH Bank",
+      "ville": "Ville",
+      "ville_placeholder": "ex. Casablanca",
+      "rib": "RIB",
+      "rib_placeholder": "ex. 011 810 0000123456789012 33"
+    },
+    "validation": {
+      "required": "Requis",
+      "fill_required": "Veuillez remplir les champs obligatoires"
+    },
+    "toast": {
+      "no_changes": "Aucune modification détectée",
+      "update_success": "Banque mise à jour avec succès !",
+      "update_error": "Échec de la mise à jour",
+      "create_success": "Banque créée avec succès !",
+      "create_error": "Échec de la création"
+    },
+    "actions": {
+      "cancel": "Annuler",
+      "saving": "Enregistrement…",
+      "creating": "Création…",
+      "save": "Enregistrer",
+      "create": "Créer la banque"
+    }
+  }
+}

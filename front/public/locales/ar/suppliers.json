@@ -1,0 +1,88 @@
+{
+  "title": "تسيير الموردين",
+  "create_new": "مورد جديد",
+  "import_simple": "استيراد",
+  "export_simple": "تصدير",
+  "export_csv": "تصدير CSV",
+  "export_xlsx": "تصدير XLSX",
+  "columns": {
+    "id": "المعرف",
+    "name": "الاسم التجاري",
+    "type": "النوع",
+    "phone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "address": "العنوان",
+    "region": "الجهة / المدينة",
+    "website": "الموقع الإلكتروني",
+    "ice": "ICE",
+    "if": "IF",
+    "rc": "RC",
+    "tp": "TP",
+    "paymentDeadline": "أجل الأداء (أيام)",
+    "days": "يوم",
+    "bank": "البنك",
+    "bankAccount": "الحساب البنكي (RIB)",
+    "status": "الحالة",
+    "societe": "الشركة"
+  },
+  "types": {
+    "particulier": "شخصي",
+    "societe": "شركة"
+  },
+  "status": {
+    "active": "نشط",
+    "inactive": "غير نشط"
+  },
+  "import": {
+    "title": "استيراد الموردين",
+    "societe_label": "الشركة",
+    "cancel": "إلغاء",
+    "submit": "استيراد",
+    "importing": "جاري الاستيراد...",
+    "success": "تم الاستيراد بنجاح",
+    "error": "فشل الاستيراد"
+  },
+  "export": {
+    "csv_error": "فشل تصدير CSV",
+    "xlsx_error": "فشل تصدير XLSX"
+  },
+  "delete": {
+    "title": "حذف المورد؟",
+    "message": "هل أنت متأكد؟ لا يمكن التراجع عن هذا الإجراء.",
+    "confirm": "حذف",
+    "cancel": "إلغاء",
+    "success": "تم حذف المورد بنجاح",
+    "error": "فشل الحذف"
+  },
+  "form": {
+    "entity_name": "الموردين",
+    "create_title": "مورد جديد",
+    "edit_title": "تعديل مورد",
+    "back": "رجوع",
+    "loading": "جاري تحميل بيانات المورد...",
+    "processing": "جاري المعالجة...",
+    "update_btn": "تحديث",
+    "create_btn": "إنشاء مورد",
+    "success_create": "تم إنشاء المورد بنجاح",
+    "success_update": "تم تحديث بيانات المورد",
+    "active_account": "حساب نشط",
+    "active_description": "السماح بالمعاملات مع هذا المورد",
+    "sections": {
+      "identification": "الهوية والاتصال",
+      "fiscal": "المعلومات الضريبية",
+      "banking": "المعلومات البنكية",
+      "settings": "الإعدادات",
+      "status": "حالة الحساب"
+    },
+    "placeholders": {
+      "name": "أدخل الاسم التجاري",
+      "address": "مثال: شارع 123، الدار البيضاء",
+      "region": "أدخل الجهة أو المدينة",
+      "ice": "15 رقماً",
+      "rib": "24 رقماً"
+    },
+    "errors": {
+      "select_company": "يرجى اختيار الشركة"
+    }
+  }
+}

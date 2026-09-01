@@ -1,0 +1,12 @@
+{
+  "error404Label": "Error 404",
+  "appErrorLabel": "Application Error",
+  "notFoundTitle": "Page not found",
+  "genericTitle": "Something went wrong",
+  "notFoundMessage": "The page you are trying to access doesn't exist or has been moved.",
+  "genericMessage": "An unexpected error occurred while processing your request.",
+  "goToDashboard": "Go to dashboard",
+  "retry": "Retry",
+  "goBack": "Go back",
+  "time": "Time"
+}

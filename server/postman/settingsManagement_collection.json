@@ -1,0 +1,515 @@
+{
+  "info": {
+    "name": "SettingsManagement API — Full Test Suite",
+    "description": "Test suite for the SettingsManagement module (system settings). Covers reading settings + impact analysis, change history, allowNegativeStock updates (with confirmation flow), system hour-range updates, bulk updates, and validation errors.\n\nAll routes require a valid auth token (the docblocks say Super Admin only, but the routes enforce only `auth`).\n\n⚠️ Bulk note: the /bulk validator checks top-level allowNegativeStock/systemStartHour/systemEndHour while the controller reads req.body.settings — so the bulk request sends BOTH (flat fields to pass validation + a nested `settings` object for the controller).",
+    "_postman_id": "settings-management-full-v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000", "type": "string" },
+    { "key": "token",   "value": "YOUR_JWT_TOKEN",        "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+
+    {
+      "name": "1 — Read",
+      "item": [
+        {
+          "name": "GET Current Settings (with impact analysis)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has settings, statistics, impacts', () => {",
+                  "  const d = pm.response.json().data;",
+                  "  pm.expect(d).to.have.property('settings');",
+                  "  pm.expect(d).to.have.property('statistics');",
+                  "  pm.expect(d).to.have.property('impacts');",
+                  "});",
+                  "pm.test('Settings expose the three fields', () => {",
+                  "  const s = pm.response.json().data.settings;",
+                  "  pm.expect(s).to.have.all.keys('allowNegativeStock','systemStartHour','systemEndHour');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Settings History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/history?limit=50&page=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "history"],
+              "query": [
+                { "key": "limit", "value": "50" },
+                { "key": "page",  "value": "1" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has data array + pagination', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.data).to.be.an('array');",
+                  "  pm.expect(d).to.have.property('pagination');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET Settings History — filter by settingName",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/history?settingName=allowNegativeStock&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "history"],
+              "query": [
+                { "key": "settingName", "value": "allowNegativeStock" },
+                { "key": "limit",       "value": "20" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('All rows match settingName when present', () => {",
+                  "  const rows = pm.response.json().data;",
+                  "  rows.forEach(r => pm.expect(r.settingName).to.equal('allowNegativeStock'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "2 — Allow Negative Stock",
+      "item": [
+        {
+          "name": "Enable (allowNegativeStock = true)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/allow-negative-stock",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "allow-negative-stock"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"allowNegativeStock\": true,\n  \"reason\": \"Allow overselling during promo\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Enabling has no confirmation gate', () => {",
+                  "  const b = pm.response.json();",
+                  "  pm.expect(b.success).to.equal(true);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Disable (allowNegativeStock = false)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/allow-negative-stock",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "allow-negative-stock"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"allowNegativeStock\": false,\n  \"reason\": \"Re-enable strict stock validation\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Either applied or needs confirmation', () => {",
+                  "  const b = pm.response.json();",
+                  "  if (b.success === false) {",
+                  "    pm.expect(b.requiresConfirmation).to.equal(true);",
+                  "    pm.expect(b.data.validation).to.have.property('warnings');",
+                  "  } else {",
+                  "    pm.expect(b.success).to.equal(true);",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Disable — forced (forceUpdate = true)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/allow-negative-stock",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "allow-negative-stock"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"allowNegativeStock\": false,\n  \"reason\": \"Confirmed despite negative stock\",\n  \"forceUpdate\": true\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Forced update succeeds', () => {",
+                  "  pm.expect(pm.response.json().success).to.equal(true);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "3 — System Hour Range",
+      "item": [
+        {
+          "name": "Business hours (08:00 → 18:00)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/hour-range",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "hour-range"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"systemStartHour\": 8,\n  \"systemEndHour\": 18,\n  \"reason\": \"Standard business hours\",\n  \"forceUpdate\": true\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Applied or needs confirmation', () => {",
+                  "  const b = pm.response.json();",
+                  "  pm.expect([true, false]).to.include(b.success);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "24/7 (12 → 12, same hour)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/hour-range",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "hour-range"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"systemStartHour\": 12,\n  \"systemEndHour\": 12,\n  \"reason\": \"Enable 24/7 operation\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "No restrictions (null → null)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/hour-range",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "hour-range"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"systemStartHour\": null,\n  \"systemEndHour\": null,\n  \"reason\": \"Remove hour restrictions\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "4 — Bulk Update",
+      "item": [
+        {
+          "name": "Bulk update (flat fields + settings object)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/bulk",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "bulk"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"allowNegativeStock\": true,\n  \"systemStartHour\": 8,\n  \"systemEndHour\": 20,\n  \"settings\": {\n    \"allowNegativeStock\": true,\n    \"systemStartHour\": 8,\n    \"systemEndHour\": 20\n  },\n  \"reason\": \"Bulk configuration update\",\n  \"forceUpdate\": true\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Has results for both settings', () => {",
+                  "  const b = pm.response.json();",
+                  "  if (b.success) {",
+                  "    pm.expect(b.data.results).to.have.property('allowNegativeStock');",
+                  "    pm.expect(b.data.results).to.have.property('hourRange');",
+                  "  } else {",
+                  "    pm.expect(b.requiresConfirmation).to.equal(true);",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "5 — Validation Errors",
+      "item": [
+        {
+          "name": "Allow negative stock — missing field (400)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/allow-negative-stock",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "allow-negative-stock"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"no value provided\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Allow negative stock — non-boolean (400)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/allow-negative-stock",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "allow-negative-stock"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"allowNegativeStock\": \"maybe\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Hour range — only one bound provided (400)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/hour-range",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "hour-range"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"systemStartHour\": 8\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Hour range — out of range (25) (400)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/hour-range",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "hour-range"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"systemStartHour\": 25,\n  \"systemEndHour\": 18\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Bulk — no setting fields (400)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/bulk",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "bulk"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"nothing to change\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "History — invalid settingName (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/history?settingName=notReal",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "history"],
+              "query": [
+                { "key": "settingName", "value": "notReal" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "History — limit too high (400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/history?limit=500",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "settings", "history"],
+              "query": [
+                { "key": "limit", "value": "500" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"]
+              }
+            }
+          ]
+        }
+      ]
+    }
+
+  ]
+}

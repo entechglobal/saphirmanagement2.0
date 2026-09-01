@@ -1,0 +1,67 @@
+{
+  "modal": {
+    "title": "Impression Code-barres",
+    "tab_articles": "Articles & Variants",
+    "tab_packs": "Packs",
+    "products_available": "produits disponibles",
+    "packs_available": "packs disponibles",
+    "selected": "sélectionné(s)",
+    "search_article": "Rechercher un article ou variant...",
+    "search_pack": "Rechercher un pack...",
+    "no_results": "Aucun résultat",
+    "cancel": "Annuler",
+    "preview": "Aperçu",
+    "page": "Page",
+    "col_article": "Article / Variant",
+    "col_type": "Type",
+    "col_price": "Prix vente",
+    "col_pack": "Pack",
+    "col_barcode": "Code-barres",
+    "type_article": "Article",
+    "type_variant": "Variante"
+  },
+  "config": {
+    "selected_article": "Article sélectionné",
+    "purchase_price": "Prix achat",
+    "sale_price": "Prix vente",
+    "label_type": "Type d'étiquette",
+    "label_types": {
+      "avecPrix": "Avec Prix",
+      "sansPrix": "Sans Prix",
+      "parametre": "Paramètre",
+      "intitule": "Intitulé"
+    },
+    "price_grid": "Grille de prix",
+    "label_size": "Taille étiquette",
+    "quantity_mode": "Mode de quantité",
+    "qty_custom": "Personnalisée",
+    "qty_available": "Disponible",
+    "quantity": "Quantité",
+    "quantity_per_pack": "Quantité par pack",
+    "no_depot": "Aucun dépôt trouvé",
+    "parameters": "Paramètres",
+    "prefix": "Préfixe",
+    "suffix": "Suffixe",
+    "param_placeholder": "ex: 9999"
+  },
+  "preview": {
+    "title": "Aperçu des étiquettes",
+    "subtitle_labels": "étiquettes",
+    "subtitle_items": "article(s)",
+    "total": "Total",
+    "size": "Taille",
+    "col_type": "Type",
+    "col_size": "Taille",
+    "col_qty": "Quantité",
+    "col_price_grid": "Grille",
+    "back": "Retour",
+    "print": "Imprimer",
+    "popup_blocked": "Autorisez les pop-ups pour imprimer"
+  },
+  "toast": {
+    "generate_error": "Erreur lors de la génération des étiquettes",
+    "select_pack": "Sélectionnez au moins un pack",
+    "select_article": "Sélectionnez au moins un article",
+    "select_depot": "Sélectionnez au moins un dépôt"
+  }
+}

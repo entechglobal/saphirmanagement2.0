@@ -1,0 +1,133 @@
+{
+  "title": "Clients",
+  "page_title": "Client Management",
+  "currency": "MAD",
+  "import_simple": "Import",
+  "export_simple": "Export",
+  "create_new": "Create New",
+  "export_csv": "Export CSV",
+  "export_xlsx": "Export XLSX",
+  "breadcrumb": {
+    "list": "Clients",
+    "edit": "Edit Client",
+    "create": "New Client",
+    "details": "Client Details"
+  },
+  "header": {
+    "back": "Back to Clients",
+    "client_id": "Client ID",
+    "loading": "Loading client...",
+    "edit": "Edit Client",
+    "error": "Failed to load client details"
+  },
+  "sections": {
+    "identification": "Identification Details",
+    "fiscal": "Legal & Fiscal Information",
+    "financial": "Credit & Settings",
+    "status": "Account Status",
+    "affiliation": "Affiliated Company",
+    "operational": "Operational Status",
+    "system": "System Metadata"
+  },
+  "fields": {
+    "name": {
+      "label": "Full Name / Company Name",
+      "placeholder": "Enter name"
+    },
+    "phone": { "label": "Phone", "placeholder": "+212 6XX XX XX XX" },
+    "societe": { "label": "Company", "placeholder": "Select a company" },
+    "type": { "label": "Client Type", "placeholder": "Select type" },
+    "email": { "label": "Email", "placeholder": "contact@client.com" },
+    "address": {
+      "label": "Headquarters Address",
+      "placeholder": "e.g., Client-CASA-01"
+    },
+    "region": {
+      "label": "Region / City",
+      "placeholder": "Enter region or city"
+    },
+    "website": { "label": "Website", "placeholder": "https://example.com" },
+    "ice": { "label": "ICE", "placeholder": "15-digit common identifier" },
+    "if": { "label": "Fiscal ID (IF)", "placeholder": "Fiscal Identifier" },
+    "rc": { "label": "Trade Register (RC)", "placeholder": "Trade Register" },
+    "tp": {
+      "label": "Professional Tax (TP)",
+      "placeholder": "Professional Tax"
+    },
+    "creditLimit": { "label": "Credit Limit (DH)" },
+    "paymentDeadline": {
+      "label": "Payment Deadline (Days)",
+      "placeholder": "e.g., 30"
+    },
+    "discount": { "label": "Default Discount (%)" },
+    "active": {
+      "label": "Active Account",
+      "description": "Allow transactions for this client"
+    },
+    "structure": "Affiliated Structure",
+    "reference": "Internal Reference",
+    "view_societe": "View company profile",
+    "account_status": "Account Status",
+    "suspended": "Suspended",
+    "created_at": "Created On",
+    "updated_at": "Last Updated",
+    "days": "Days"
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "submit_create": "Create Client",
+    "submit_update": "Update Client",
+    "processing": "Processing..."
+  },
+  "messages": {
+    "create_success": "Client created successfully",
+    "update_success": "Client updated successfully",
+    "societe_required": "Please select a company (Société)"
+  },
+  "columns": {
+    "id": "ID",
+    "name": "Name",
+    "type": "Type",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "region": "Region",
+    "website": "Website",
+    "ice": "ICE",
+    "if": "IF",
+    "rc": "RC",
+    "tp": "TP",
+    "creditLimit": "Credit Limit",
+    "status": "Status",
+    "societe": "Company"
+  },
+  "types": {
+    "particulier": "Individual",
+    "societe": "Company"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "import": {
+    "title": "Import Clients",
+    "societe_label": "Company",
+    "cancel": "Cancel",
+    "submit": "Import",
+    "importing": "Importing...",
+    "success": "Import successful",
+    "error": "Import failed"
+  },
+  "delete": {
+    "title": "Delete Client?",
+    "message": "Are you sure? This action cannot be undone.",
+    "confirm": "Delete",
+    "cancel": "Cancel",
+    "success": "Client deleted successfully",
+    "error": "Failed to delete client"
+  },
+  "export": {
+    "csv_error": "CSV export failed",
+    "xlsx_error": "XLSX export failed"
+  }
+}
