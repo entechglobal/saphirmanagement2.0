@@ -34,6 +34,9 @@
     "theme_toggle": "Changer le thème",
     "fullscreen": "Plein écran"
   },
+  "wallet": {
+    "tooltip": "Solde de votre wallet"
+  },
   "palette": {
     "placeholder": "Rechercher une page ou action...",
     "no_results": "Aucun résultat pour",

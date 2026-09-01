@@ -44,6 +44,7 @@ import factureRoutes from "../api/routes/factureRoutes.js";
 import commandeFournisseurRoutes from "../api/routes/commandeFournisseurRoutes.js";
 import bonRetourFournisseurRoutes from "../api/routes/bonRetourFournisseurRoutes.js";
 import situationRoutes from "../api/routes/situationRoutes.js";
+import dashboardRoutes from "../api/routes/dashboardRoutes.js";
 
 export default function expressLoader(app) {
   app.use(express.json());
@@ -92,6 +93,7 @@ export default function expressLoader(app) {
   app.use("/api/labels", labelRoutes);
   app.use("/api/caisse", caisseRoutes);
   app.use("/api/caisse-labels", caisseLabelRoutes);
+  app.use("/api/dashboard", dashboardRoutes);
 
   //global Error Handler
   app.use(globalError);

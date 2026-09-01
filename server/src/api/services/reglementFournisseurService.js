@@ -363,6 +363,7 @@ export const create = async (data, societeId, user = null) => {
         modeReglement,
         banqueId,
         caisseId,
+        userId: user?.id,
       });
       if (sourceWallet) {
         await debitWallet(tx, {

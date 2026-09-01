@@ -71,7 +71,7 @@ router.post(
 
 router.post(
   "/transfer",
-  hasPermission("create_caisse_depot"),
+  hasPermission("view_caisse"),
   createTransferValidator,
   validatorMiddleware,
   caisseController.createTransfer

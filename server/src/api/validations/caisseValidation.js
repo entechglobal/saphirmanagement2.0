@@ -156,8 +156,8 @@ export const getTransactionsValidator = [
     .withMessage("ID caisse invalide"),
   query("direction")
     .optional()
-    .isIn(["in", "out"])
-    .withMessage('direction doit être "in" ou "out"'),
+    .isIn(["in", "out", "transfer"])
+    .withMessage('direction doit être "in", "out" ou "transfer"'),
   query("dateFrom")
     .optional()
     .isISO8601()
@@ -179,8 +179,8 @@ export const getTransactionsValidator = [
 export const getAllTransactionsValidator = [
   query("direction")
     .optional()
-    .isIn(["in", "out"])
-    .withMessage('direction doit être "in" ou "out"'),
+    .isIn(["in", "out", "transfer"])
+    .withMessage('direction doit être "in", "out" ou "transfer"'),
   query("dateFrom")
     .optional()
     .isISO8601()

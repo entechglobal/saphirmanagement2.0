@@ -19,11 +19,13 @@ export const useCaisses = ({ pageIndex = 0, pageSize = 20, keyword, societeId } 
   });
 };
 
-export const useMyCaisse = () => {
+export const useMyCaisse = ({ enabled = true } = {}) => {
   return useQuery({
     queryKey: caisseKeys.myCaisse,
     queryFn: caisseApi.getMyCaisse,
-    staleTime: Infinity,
+    enabled,
+    staleTime: 30 * 1000,
+    retry: false,
   });
 };
 
@@ -55,6 +57,7 @@ export const useCreateCaisse = () => {
     mutationFn: caisseApi.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: caisseKeys.all });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.myCaisse });
       queryClient.invalidateQueries({ queryKey: caisseKeys.allTransactions });
       queryClient.refetchQueries({ queryKey: caisseKeys.all, type: "active" });
       queryClient.refetchQueries({ queryKey: caisseKeys.allTransactions, type: "active" });
@@ -69,6 +72,7 @@ export const useUpdateCaisse = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: caisseKeys.all });
       queryClient.invalidateQueries({ queryKey: caisseKeys.one(variables.id) });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.myCaisse });
       queryClient.refetchQueries({ queryKey: caisseKeys.all, type: "active" });
     },
   });
@@ -80,6 +84,7 @@ export const useDeleteCaisse = () => {
     mutationFn: caisseApi.remove,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: caisseKeys.all });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.myCaisse });
       queryClient.refetchQueries({ queryKey: caisseKeys.all, type: "active" });
     },
   });
@@ -105,7 +110,7 @@ export const useTransferableCaisses = ({ societeId, search, excludeCaisseId, ena
         societeId: societeId || undefined,
         search: search || undefined,
         excludeCaisseId: excludeCaisseId || undefined,
-        limit: 200,
+        limit: 500,
       }),
     enabled,
     keepPreviousData: true,
@@ -118,6 +123,7 @@ export const useCreateRetrait = () => {
     mutationFn: caisseApi.createRetrait,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: caisseKeys.all });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.myCaisse });
       queryClient.invalidateQueries({ queryKey: caisseKeys.allTransactions });
     },
   });
@@ -129,6 +135,7 @@ export const useCreateDepot = () => {
     mutationFn: caisseApi.createDepot,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: caisseKeys.all });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.myCaisse });
       queryClient.invalidateQueries({ queryKey: caisseKeys.allTransactions });
     },
   });
@@ -140,6 +147,7 @@ export const useCreateTransfer = () => {
     mutationFn: caisseApi.createTransfer,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: caisseKeys.all });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.myCaisse });
       queryClient.invalidateQueries({ queryKey: caisseKeys.allTransactions });
       queryClient.invalidateQueries({ queryKey: ["transferable-caisses"] });
     },

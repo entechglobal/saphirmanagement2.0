@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { reglementFournisseurApi, rfFournisseursApi, rfBanquesApi } from "../api/reglementFournisseur.api.js";
 import { openPdfPreview } from "../../../shared/utils/pdfPreviewStore";
+import { caisseKeys } from "../../caisse/hooks/useCaisse";
 
 export const rfKeys = {
   all: ["reglements-fournisseur"],
@@ -41,6 +42,9 @@ export const useCreateReglementFournisseur = () => {
       reglementFournisseurApi.create({ societeId, payload }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: rfKeys.all });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.myCaisse });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.all });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.allTransactions });
     },
   });
 };
@@ -51,6 +55,9 @@ export const useDeleteReglementFournisseur = () => {
     mutationFn: ({ id }) => reglementFournisseurApi.remove({ id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: rfKeys.all });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.myCaisse });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.all });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.allTransactions });
     },
   });
 };

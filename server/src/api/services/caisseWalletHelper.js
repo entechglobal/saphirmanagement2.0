@@ -1,7 +1,8 @@
 import ApiError from "../utils/apiError.js";
 
 const BANK_MODES = ["CARTE_BANCAIRE", "VIREMENT", "CHEQUE", "EFFET"];
-const CASH_MODES = ["ESPECE"];
+const CASH_MODES = ["ESPECE", "ESPECES"];
+const PERSONAL_CAISSE_TYPES = ["USER", "SOCIETE", "CENTRAL"];
 
 const CAISSE_INCLUDE = {
   user: {
@@ -18,11 +19,48 @@ const CAISSE_INCLUDE = {
 
 export { CAISSE_INCLUDE };
 
+async function resolveUserWallet(tx, { societeId, userId }) {
+  if (!userId) {
+    throw new ApiError(
+      "Impossible de traiter des espèces sans utilisateur connecté.",
+      400,
+    );
+  }
+
+  const userWallet = await tx.caisse.findUnique({
+    where: { userId: parseInt(userId) },
+  });
+
+  if (!userWallet || !userWallet.active) {
+    throw new ApiError(
+      "Vous n'avez pas de wallet actif. Créez votre wallet pour enregistrer les espèces.",
+      400,
+    );
+  }
+
+  if (!PERSONAL_CAISSE_TYPES.includes(userWallet.caisseType)) {
+    throw new ApiError(
+      "Le wallet associé à votre compte ne peut pas enregistrer des espèces.",
+      400,
+    );
+  }
+
+  if (societeId && userWallet.societeId && userWallet.societeId !== societeId) {
+    throw new ApiError(
+      "Le wallet utilisateur n'appartient pas à cette société.",
+      403,
+    );
+  }
+
+  return userWallet;
+}
+
 export async function resolveWalletForIncome(tx, {
   societeId,
   modeReglement,
   banqueId,
   caisseId,
+  userId,
 }) {
   if (caisseId) {
     const caisse = await tx.caisse.findFirst({
@@ -39,17 +77,7 @@ export async function resolveWalletForIncome(tx, {
   }
 
   if (CASH_MODES.includes(modeReglement)) {
-    const coffre = await tx.caisse.findFirst({
-      where: { societeId, caisseType: "COFFRE", active: true },
-      orderBy: { createdAt: "asc" },
-    });
-    if (!coffre) {
-      throw new ApiError(
-        "Aucun coffre-fort actif. Créez un wallet Coffre Fort pour encaisser les espèces.",
-        400,
-      );
-    }
-    return coffre;
+    return resolveUserWallet(tx, { societeId, userId });
   }
 
   if (BANK_MODES.includes(modeReglement)) {
@@ -92,8 +120,15 @@ export async function resolveWalletForExpense(tx, {
   modeReglement,
   banqueId,
   caisseId,
+  userId,
 }) {
-  return resolveWalletForIncome(tx, { societeId, modeReglement, banqueId, caisseId });
+  return resolveWalletForIncome(tx, {
+    societeId,
+    modeReglement,
+    banqueId,
+    caisseId,
+    userId,
+  });
 }
 
 export async function creditWallet(tx, {
@@ -209,5 +244,6 @@ export async function reverseExpense(tx, reglementFournisseurId) {
   }
 }
 
-export const INCOME_TYPES = ["TRANSFER_IN", "INITIAL_BALANCE", "INCOME"];
-export const OUTFLOW_TYPES = ["CHARGE", "TRANSFER_OUT", "EXPENSE"];
+export const INCOME_TYPES = ["INITIAL_BALANCE", "INCOME"];
+export const OUTFLOW_TYPES = ["CHARGE", "EXPENSE"];
+export const TRANSFER_TYPES = ["TRANSFER_IN", "TRANSFER_OUT"];

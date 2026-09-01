@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { reglementClientApi, rcClientsApi, banquesApi } from "../api/reglementClient.api.js";
 import { openPdfPreview } from "../../../shared/utils/pdfPreviewStore";
+import { caisseKeys } from "../../caisse/hooks/useCaisse";
 
 /* ─────── Query Keys ─────── */
 export const rcKeys = {
@@ -43,6 +44,9 @@ export const useCreateReglementClient = () => {
       reglementClientApi.create({ societeId, payload }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: rcKeys.all });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.myCaisse });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.all });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.allTransactions });
     },
   });
 };
@@ -53,6 +57,9 @@ export const useDeleteReglementClient = () => {
     mutationFn: ({ id}) => reglementClientApi.remove({ id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: rcKeys.all });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.myCaisse });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.all });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.allTransactions });
     },
   });
 };

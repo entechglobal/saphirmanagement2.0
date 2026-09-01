@@ -54,6 +54,7 @@
   "stat_final_balance": "Solde Final",
   "stat_total_in": "Total Encaissements",
   "stat_total_out": "Total Décaissements",
+  "stat_total_transfer": "Total Transferts",
 
   "filter_type": "Type",
   "filter_user": "Utilisateur",
@@ -69,8 +70,10 @@
 
   "type_encaissement": "Encaissements",
   "type_decaissement": "Décaissements",
+  "type_transfert": "Transferts",
   "type_label_encaissement": "Encaissement",
   "type_label_decaissement": "Décaissement",
+  "type_label_transfert": "Transfert",
 
   "col_date_op": "Date Opération",
   "col_time": "Heure",
@@ -94,7 +97,8 @@
   "libelle_expense": "Décaissement (règlement)",
 
   "modal_transfer_title": "Transfert entre wallets",
-  "modal_transfer_subtitle": "Déplacer des fonds d'un wallet vers un autre",
+  "modal_transfer_subtitle": "Déplacer des fonds entre tous les types de wallets",
+  "modal_transfer_subtitle_own": "Transférer depuis votre wallet vers un autre compte",
   "modal_create_bank_wallet_title": "Créer un Wallet Banque",
   "modal_create_bank_wallet_subtitle": "Lier un compte bancaire de la société",
   "modal_create_coffre_wallet_title": "Créer un Coffre Fort",
@@ -149,6 +153,8 @@
   "field_active": "Actif",
 
   "placeholder_select_societe": "Sélectionner une société",
+  "placeholder_all_societes": "Toutes les sociétés",
+  "filter_all_societes": "Toutes les sociétés",
   "placeholder_select_user": "Sélectionner un utilisateur",
   "placeholder_select_caisse": "Sélectionner une caisse",
   "placeholder_select_libelle": "Sélectionner un libellé",

@@ -6,7 +6,7 @@ import { ArrowLeftRight } from "lucide-react";
 import { BaseModal } from "../../../shared/components/BaseModal";
 import { Input } from "../../../shared/components/Input";
 import { SelectDropDown } from "../../../shared/components/SelectDropDown";
-import { useCreateTransfer, useTransferableCaisses } from "../hooks/useCaisse";
+import { useCreateTransfer, useTransferableCaisses, useMyCaisse } from "../hooks/useCaisse";
 import { useSocietes } from "../../societes/hooks/useSocietes";
 import { useAuth } from "../../auth/hooks/useAuth";
 
@@ -30,7 +30,10 @@ export const WalletTransferModal = ({ isOpen, onClose }) => {
 
   const [selectedSocieteId, setSelectedSocieteId] = useState(null);
 
-  const { data: societesData } = useSocietes({ pageIndex: 0, pageSize: 200, keyword: "", enabled: isOpen });
+  const { data: myCaisseData } = useMyCaisse({ enabled: isOpen && !isSuperAdmin });
+  const myCaisse = myCaisseData?.data;
+
+  const { data: societesData } = useSocietes({ pageIndex: 0, pageSize: 200, keyword: "", enabled: isOpen && isSuperAdmin });
   const societes = societesData?.data ?? [];
 
   const {
@@ -48,40 +51,52 @@ export const WalletTransferModal = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isOpen) {
-      reset({ sourceCaisseId: "", destinationCaisseId: "", amount: "", note: "" });
+      reset({
+        sourceCaisseId: !isSuperAdmin && myCaisse?.id ? String(myCaisse.id) : "",
+        destinationCaisseId: "",
+        amount: "",
+        note: "",
+      });
       setSelectedSocieteId(null);
     }
-  }, [isOpen, reset]);
+  }, [isOpen, reset, isSuperAdmin, myCaisse?.id]);
 
   const sourceCaisseId = watch("sourceCaisseId");
+  const effectiveSourceId = isSuperAdmin ? sourceCaisseId : myCaisse?.id;
 
   const { data: allCaissesData } = useTransferableCaisses({
     societeId: isSuperAdmin ? selectedSocieteId : undefined,
-    enabled: isOpen,
+    enabled: isOpen && isSuperAdmin,
   });
 
   const { data: destCaissesData } = useTransferableCaisses({
     societeId: isSuperAdmin ? selectedSocieteId : undefined,
-    excludeCaisseId: sourceCaisseId || undefined,
-    enabled: isOpen && !!sourceCaisseId,
+    excludeCaisseId: effectiveSourceId || undefined,
+    enabled: isOpen && !!effectiveSourceId,
   });
 
   const allCaisses = allCaissesData?.data ?? [];
   const destCaisses = destCaissesData?.data ?? [];
 
-  const selectedSource = useMemo(
-    () => allCaisses.find((c) => String(c.id) === String(sourceCaisseId)),
-    [allCaisses, sourceCaisseId]
-  );
+  const selectedSource = useMemo(() => {
+    if (!isSuperAdmin) return myCaisse || null;
+    return allCaisses.find((c) => String(c.id) === String(sourceCaisseId)) || null;
+  }, [isSuperAdmin, myCaisse, allCaisses, sourceCaisseId]);
 
   useEffect(() => {
     setValue("destinationCaisseId", "");
-  }, [sourceCaisseId, setValue]);
+  }, [sourceCaisseId, selectedSocieteId, setValue]);
 
   const onSubmit = (values) => {
+    const sourceId = isSuperAdmin ? Number(values.sourceCaisseId) : Number(myCaisse?.id);
+    if (!sourceId) {
+      toast.error(t("err_source_caisse_required"));
+      return;
+    }
+
     transferMutation.mutate(
       {
-        sourceCaisseId: Number(values.sourceCaisseId),
+        sourceCaisseId: sourceId,
         destinationCaisseId: Number(values.destinationCaisseId),
         amount: Number(values.amount),
         note: values.note || undefined,
@@ -125,7 +140,7 @@ export const WalletTransferModal = ({ isOpen, onClose }) => {
       onClose={onClose}
       disableClose={transferMutation.isPending}
       title={t("modal_transfer_title")}
-      subtitle={t("modal_transfer_subtitle")}
+      subtitle={isSuperAdmin ? t("modal_transfer_subtitle") : t("modal_transfer_subtitle_own")}
       icon={<ArrowLeftRight size={18} className="text-violet-500" />}
       iconBg="bg-violet-50 dark:bg-violet-900/20"
       maxWidth="max-w-md"
@@ -134,7 +149,7 @@ export const WalletTransferModal = ({ isOpen, onClose }) => {
           <button type="button" onClick={onClose} disabled={transferMutation.isPending} className="px-5 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 transition disabled:opacity-50">
             {t("btn_cancel")}
           </button>
-          <button type="submit" form="wallet-transfer-form" disabled={transferMutation.isPending} className="px-6 py-2 text-sm font-bold rounded-xl text-white bg-violet-500 shadow-lg shadow-violet-500/20 transition-all hover:brightness-110 active:scale-95 disabled:opacity-50">
+          <button type="submit" form="wallet-transfer-form" disabled={transferMutation.isPending || (!isSuperAdmin && !myCaisse)} className="px-6 py-2 text-sm font-bold rounded-xl text-white bg-violet-500 shadow-lg shadow-violet-500/20 transition-all hover:brightness-110 active:scale-95 disabled:opacity-50">
             {transferMutation.isPending ? t("btn_processing") : t("btn_confirm_transfer")}
           </button>
         </div>
@@ -147,29 +162,45 @@ export const WalletTransferModal = ({ isOpen, onClose }) => {
             value={selectedSocieteId ?? ""}
             onChange={(e) => setSelectedSocieteId(e.target.value || null)}
             options={societeOptions}
-            required
-            placeholder={t("placeholder_select_societe")}
+            placeholder={t("placeholder_all_societes")}
             emptyMessage={t("no_societe_available")}
           />
         )}
 
-        <Controller
-          control={control}
-          name="sourceCaisseId"
-          rules={{ required: t("err_source_caisse_required") }}
-          render={({ field }) => (
-            <SelectDropDown
-              label={t("field_source_caisse")}
-              {...field}
-              options={sourceOptions}
-              error={errors.sourceCaisseId?.message}
-              required
-              placeholder={t("placeholder_select_caisse")}
-              emptyMessage={t("no_caisse_available")}
-              disabled={isSuperAdmin && !selectedSocieteId}
-            />
-          )}
-        />
+        {isSuperAdmin ? (
+          <Controller
+            control={control}
+            name="sourceCaisseId"
+            rules={{ required: t("err_source_caisse_required") }}
+            render={({ field }) => (
+              <SelectDropDown
+                label={t("field_source_caisse")}
+                {...field}
+                options={sourceOptions}
+                error={errors.sourceCaisseId?.message}
+                required
+                placeholder={t("placeholder_select_caisse")}
+                emptyMessage={t("no_caisse_available")}
+              />
+            )}
+          />
+        ) : (
+          <div>
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 ml-1">
+              {t("field_source_caisse")}
+            </label>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/60">
+              <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                {myCaisse ? walletLabel(myCaisse) : t("no_caisse_available")}
+              </p>
+              {myCaisse && (
+                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                  {walletSubLabel(myCaisse)}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
 
         {selectedSource && (
           <div className="flex justify-between items-center px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
@@ -191,7 +222,7 @@ export const WalletTransferModal = ({ isOpen, onClose }) => {
               required
               placeholder={t("placeholder_select_caisse")}
               emptyMessage={t("no_caisse_available")}
-              disabled={!sourceCaisseId}
+              disabled={!effectiveSourceId}
             />
           )}
         />

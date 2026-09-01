@@ -265,13 +265,18 @@ export const getPermissionLabel = (name) =>
 export const isAuthenticated = (status, accessToken) =>
   status === "authenticated" && !!accessToken;
 
-export const isSuperAdmin = (user) => user?.isSuperAdmin || false;
+const SUPER_ADMIN_ROLES = new Set(["Super_Admin", "SUPERADMIN"]);
+
+export const isSuperAdmin = (user) =>
+  !!user?.isSuperAdmin ||
+  SUPER_ADMIN_ROLES.has(user?.role) ||
+  SUPER_ADMIN_ROLES.has(user?.roleName);
 
 export const getPermissions = (user) => user?.permissions || [];
 
 export const hasPermission = (user, permission) => {
   if (!user) return false;
-  if (user.isSuperAdmin) return true;
+  if (isSuperAdmin(user)) return true;
   if (user.permissions?.includes("*")) return true;
   return user.permissions?.includes(permission) || false;
 };

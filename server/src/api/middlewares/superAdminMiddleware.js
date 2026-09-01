@@ -20,6 +20,11 @@ import prisma from "../../loaders/prisma.js";
  * Super Admin Only
  * Blocks access for non-super-admin users
  */
+const SUPER_ADMIN_ROLES = new Set(["Super_Admin", "SUPERADMIN"]);
+
+const isSuperAdminUser = (user) =>
+  !!user?.isSuperAdmin || SUPER_ADMIN_ROLES.has(user?.roleName);
+
 export const superAdminOnly = (req, res, next) => {
   try {
     const user = req.user;
@@ -28,7 +33,7 @@ export const superAdminOnly = (req, res, next) => {
       throw new ApiError("User not authenticated", 401);
     }
 
-    if (!user.isSuperAdmin) {
+    if (!isSuperAdminUser(user)) {
       throw new ApiError(
         "Access denied. This action requires super admin privileges.",
         403,
@@ -55,7 +60,7 @@ export const adminOnly = async (req, res, next) => {
     }
 
     // Super admin always allowed
-    if (user.isSuperAdmin) {
+    if (isSuperAdminUser(user)) {
       return next();
     }
 

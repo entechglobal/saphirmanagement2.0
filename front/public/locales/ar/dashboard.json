@@ -1,4 +1,69 @@
 {
+  "home_title": "لوحة التحكم",
+  "period": {
+    "label": "الفترة",
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "this_week": "هذا الأسبوع",
+    "last_week": "الأسبوع الماضي",
+    "this_month": "هذا الشهر",
+    "last_month": "الشهر الماضي",
+    "this_year": "هذه السنة",
+    "custom": "مخصص"
+  },
+  "date_from": "من",
+  "date_to": "إلى",
+  "summary": {
+    "income": "المداخيل",
+    "expense": "المصاريف",
+    "net": "الرصيد الصافي"
+  },
+  "clients_section": {
+    "title": "مداخيل العملاء",
+    "collected": "المحصّل",
+    "payments": "الدفعات",
+    "partners": "العملاء",
+    "average": "المتوسط",
+    "by_partner": "حسب العميل",
+    "over_time": "التطور",
+    "by_mode": "حسب طريقة الدفع",
+    "no_data": "لا توجد مداخيل في هذه الفترة"
+  },
+  "fournisseurs_section": {
+    "title": "مدفوعات الموردين",
+    "collected": "المدفوع",
+    "payments": "الدفعات",
+    "partners": "الموردون",
+    "average": "المتوسط",
+    "by_partner": "حسب المورد",
+    "over_time": "التطور",
+    "by_mode": "حسب طريقة الدفع",
+    "no_data": "لا توجد مدفوعات في هذه الفترة"
+  },
+  "wallets_panel": {
+    "title": "المحافظ",
+    "central": "المشرف العام",
+    "central_hint": "الخزنة المركزية",
+    "societe": "الشركات",
+    "users": "المستخدمون",
+    "banks": "البنوك",
+    "coffres": "الخزنة",
+    "cash": "نقداً",
+    "total": "المجموع",
+    "empty": "لا توجد محافظ",
+    "search": "بحث…",
+    "error": "تعذّر تحميل المحافظ"
+  },
+  "modes": {
+    "ESPECE": "نقداً",
+    "CARTE_BANCAIRE": "بطاقة بنكية",
+    "CHEQUE": "شيك",
+    "EFFET": "كمبيالة",
+    "CARTE_FIDELITE": "بطاقة ولاء",
+    "BON_ACHAT": "قسيمة شراء",
+    "REMISE": "خصم",
+    "VIREMENT": "تحويل"
+  },
   "greeting": {
     "morning": "صباح الخير",
     "afternoon": "مساء الخير",

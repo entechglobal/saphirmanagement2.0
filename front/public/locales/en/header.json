@@ -34,6 +34,9 @@
     "theme_toggle": "Toggle Theme",
     "fullscreen": "Fullscreen"
   },
+  "wallet": {
+    "tooltip": "Your wallet balance"
+  },
   "palette": {
     "placeholder": "Search for a page or action...",
     "no_results": "No results for",

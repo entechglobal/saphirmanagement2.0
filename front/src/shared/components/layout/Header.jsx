@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { BiUserCircle, BiLogOutCircle } from "react-icons/bi";
-import { Maximize2, Minimize2, Search } from "lucide-react";
+import { Maximize2, Minimize2, Search, Wallet } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   UserCircleIcon,
@@ -14,6 +14,7 @@ import { useAuth, useLogout } from "@/features/auth";
 import { PERMISSIONS, hasAnyPermission } from "@/shared/utils/permissions";
 import { useSocieteMe } from "../../../features/societes/hooks/useSociete";
 import { useCurrentUser } from "../../../features/users/hooks/useUsers";
+import { useMyCaisse } from "../../../features/caisse/hooks/useCaisse";
 import { ConfirmationModal } from "../ConfirmationModal";
 import { PreferencesModal } from "./PreferencesModal";
 import { Logo } from "../Logo";
@@ -342,6 +343,20 @@ export const Header = () => {
   });
   const societe = societeResponse?.data;
 
+  const { data: myCaisseResponse } = useMyCaisse({ enabled: !!user });
+  const myWallet = myCaisseResponse?.data;
+  const walletBalance = myWallet ? Number(myWallet.currentBalance ?? 0) : null;
+  const canOpenCaisse = hasAnyPermission(user, [PERMISSIONS.VIEW_CAISSE]);
+  const formattedWalletBalance =
+    walletBalance == null
+      ? null
+      : walletBalance.toLocaleString("fr-MA", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+  const walletClassName =
+    "flex h-9 max-w-[160px] items-center gap-1.5 rounded-lg border border-emerald-200/80 bg-emerald-50 px-2.5 text-emerald-700 dark:border-emerald-800/70 dark:bg-emerald-950/40 dark:text-emerald-300 sm:max-w-none";
+
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showPreferencesModal, setShowPreferencesModal] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -424,6 +439,31 @@ export const Header = () => {
 
         {/* Actions */}
         <div className="flex flex-shrink-0 items-center justify-self-end gap-1.5 sm:gap-2">
+          {formattedWalletBalance != null && (
+            <Tooltip label={t("wallet.tooltip")}>
+              {canOpenCaisse ? (
+                <Link
+                  to="/caisse"
+                  className={`${walletClassName} transition-colors hover:bg-emerald-100 dark:hover:bg-emerald-900/40`}
+                >
+                  <Wallet className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2.25} />
+                  <span className="truncate text-[12.5px] font-semibold tabular-nums">
+                    {formattedWalletBalance}
+                    <span className="ms-1 hidden font-medium opacity-80 sm:inline">MAD</span>
+                  </span>
+                </Link>
+              ) : (
+                <div className={walletClassName}>
+                  <Wallet className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2.25} />
+                  <span className="truncate text-[12.5px] font-semibold tabular-nums">
+                    {formattedWalletBalance}
+                    <span className="ms-1 hidden font-medium opacity-80 sm:inline">MAD</span>
+                  </span>
+                </div>
+              )}
+            </Tooltip>
+          )}
+
           <Tooltip label={isFullscreen ? t("fullscreen_exit", "Quitter plein écran") : t("fullscreen", "Plein écran")}>
             <motion.button
               whileHover={!shouldReduce ? { scale: 1.05 } : {}}

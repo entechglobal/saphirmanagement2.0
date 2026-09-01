@@ -23,6 +23,7 @@
   "stat_final_balance": "Final Balance",
   "stat_total_in": "Total Receipts",
   "stat_total_out": "Total Disbursements",
+  "stat_total_transfer": "Total Transfers",
 
   "filter_type": "Type",
   "filter_user": "User",
@@ -38,8 +39,10 @@
 
   "type_encaissement": "Receipts",
   "type_decaissement": "Disbursements",
+  "type_transfert": "Transfers",
   "type_label_encaissement": "Receipt",
   "type_label_decaissement": "Disbursement",
+  "type_label_transfert": "Transfer",
 
   "col_date_op": "Date",
   "col_time": "Time",
@@ -62,7 +65,8 @@
   "libelle_income": "Income (payment)",
   "libelle_expense": "Expense (payment)",
   "modal_transfer_title": "Transfer between wallets",
-  "modal_transfer_subtitle": "Move funds from one wallet to another",
+  "modal_transfer_subtitle": "Move funds between any wallet types",
+  "modal_transfer_subtitle_own": "Transfer from your wallet to another account",
   "modal_create_bank_wallet_title": "Create Bank Wallet",
   "modal_create_bank_wallet_subtitle": "Link a company bank account",
   "modal_create_coffre_wallet_title": "Create Safe (Coffre)",
@@ -123,6 +127,8 @@
   "field_active": "Active",
 
   "placeholder_select_societe": "Select a company",
+  "placeholder_all_societes": "All companies",
+  "filter_all_societes": "All companies",
   "placeholder_select_user": "Select a user",
   "placeholder_select_caisse": "Select a cash register",
   "placeholder_select_libelle": "Select a label",

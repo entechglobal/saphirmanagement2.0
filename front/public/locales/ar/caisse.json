@@ -23,6 +23,7 @@
   "stat_final_balance": "الرصيد النهائي",
   "stat_total_in": "إجمالي التحصيلات",
   "stat_total_out": "إجمالي المصاريف",
+  "stat_total_transfer": "إجمالي التحويلات",
 
   "filter_type": "النوع",
   "filter_user": "المستخدم",
@@ -38,8 +39,10 @@
 
   "type_encaissement": "تحصيلات",
   "type_decaissement": "مصاريف",
+  "type_transfert": "تحويلات",
   "type_label_encaissement": "تحصيل",
   "type_label_decaissement": "مصروف",
+  "type_label_transfert": "تحويل",
 
   "col_date_op": "تاريخ العملية",
   "col_time": "الوقت",
@@ -62,7 +65,8 @@
   "libelle_income": "تحصيل (سداد)",
   "libelle_expense": "صرف (سداد)",
   "modal_transfer_title": "تحويل بين المحافظ",
-  "modal_transfer_subtitle": "نقل الأموال من محفظة إلى أخرى",
+  "modal_transfer_subtitle": "نقل الأموال بين جميع أنواع المحافظ",
+  "modal_transfer_subtitle_own": "حوّل من محفظتك إلى أي حساب آخر",
   "modal_create_bank_wallet_title": "إنشاء محفظة بنك",
   "modal_create_bank_wallet_subtitle": "ربط حساب بنكي للشركة",
   "modal_create_coffre_wallet_title": "إنشاء خزنة",
@@ -123,6 +127,8 @@
   "field_active": "نشط",
 
   "placeholder_select_societe": "اختر شركة",
+  "placeholder_all_societes": "كل الشركات",
+  "filter_all_societes": "كل الشركات",
   "placeholder_select_user": "اختر مستخدماً",
   "placeholder_select_caisse": "اختر صندوقاً",
   "placeholder_select_libelle": "اختر تصنيفاً",

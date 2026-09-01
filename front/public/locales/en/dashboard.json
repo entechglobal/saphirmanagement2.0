@@ -1,4 +1,69 @@
 {
+  "home_title": "Dashboard",
+  "period": {
+    "label": "Period",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "this_week": "This week",
+    "last_week": "Last week",
+    "this_month": "This month",
+    "last_month": "Last month",
+    "this_year": "This year",
+    "custom": "Custom"
+  },
+  "date_from": "From",
+  "date_to": "To",
+  "summary": {
+    "income": "Income",
+    "expense": "Expenses",
+    "net": "Net balance"
+  },
+  "clients_section": {
+    "title": "Client income",
+    "collected": "Collected",
+    "payments": "Payments",
+    "partners": "Clients",
+    "average": "Average",
+    "by_partner": "By client",
+    "over_time": "Trend",
+    "by_mode": "By payment method",
+    "no_data": "No income in this period"
+  },
+  "fournisseurs_section": {
+    "title": "Supplier payments",
+    "collected": "Paid",
+    "payments": "Payments",
+    "partners": "Suppliers",
+    "average": "Average",
+    "by_partner": "By supplier",
+    "over_time": "Trend",
+    "by_mode": "By payment method",
+    "no_data": "No payments in this period"
+  },
+  "wallets_panel": {
+    "title": "Wallets",
+    "central": "Super Admin",
+    "central_hint": "Central wallet",
+    "societe": "Companies",
+    "users": "Users",
+    "banks": "Banks",
+    "coffres": "Safe",
+    "cash": "Cash",
+    "total": "Total",
+    "empty": "No wallets",
+    "search": "Search…",
+    "error": "Could not load wallets"
+  },
+  "modes": {
+    "ESPECE": "Cash",
+    "CARTE_BANCAIRE": "Bank card",
+    "CHEQUE": "Cheque",
+    "EFFET": "Promissory note",
+    "CARTE_FIDELITE": "Loyalty card",
+    "BON_ACHAT": "Voucher",
+    "REMISE": "Discount",
+    "VIREMENT": "Transfer"
+  },
   "greeting": {
     "morning": "Good morning",
     "afternoon": "Good afternoon",

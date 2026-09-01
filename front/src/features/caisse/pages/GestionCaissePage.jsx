@@ -18,6 +18,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { useAuth } from "../../auth/hooks/useAuth";
+import { isSuperAdmin as checkSuperAdmin } from "@/shared/utils/permissions";
 import { useOperatingHours } from "@/shared/hooks/useOperatingHours";
 import { useAllCaisseTransactions, useMyCaisse } from "../hooks/useCaisse";
 import { useUsers, useUsersBySociete } from "../../users/hooks/useUsers";
@@ -29,18 +30,20 @@ import { CreateMyCaisseModal } from "../components/CreateMyCaisseModal";
 import { ChargeModal } from "../components/ChargeModal";
 import { TransferModal } from "../components/TransferModal";
 import { WalletTransferModal } from "../components/WalletTransferModal";
+import { WalletsSidebar } from "@/features/dashboard/components/WalletsSidebar";
 import { STATIC_ROLES } from "../../settings/permissions/api/permissions.api";
 import { Button } from "@headlessui/react";
 
 const formatMAD = (val) =>
   Number(val ?? 0).toLocaleString("fr-MA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-const ENCAISSEMENT_TYPES = ["INITIAL_BALANCE", "TRANSFER_IN", "INCOME"];
+const ENCAISSEMENT_TYPES = ["INITIAL_BALANCE", "INCOME"];
+const TRANSFER_TYPES = ["TRANSFER_IN", "TRANSFER_OUT"];
 
 export const GestionCaissePage = () => {
   const { t } = useTranslation("caisse");
   const { user } = useAuth();
-  const isSuperAdmin = !!user?.isSuperAdmin;
+  const isSuperAdmin = checkSuperAdmin(user);
   const isSocieteAdmin = user?.role === "Societe_Admin";
   const isAdmin = isSuperAdmin || isSocieteAdmin;
   // Filter state (option objects for FiltersBar, primitives for API)
@@ -132,6 +135,7 @@ export const GestionCaissePage = () => {
   const typeOptions = useMemo(() => [
     { value: "in", label: t("type_encaissement") },
     { value: "out", label: t("type_decaissement") },
+    { value: "transfer", label: t("type_transfert") },
   ], [t]);
 
   // Role filter options (Super Admin = roleId 1, not in STATIC_ROLES)
@@ -228,16 +232,22 @@ export const GestionCaissePage = () => {
       header: t("col_type"),
       size: 140,
       Cell: ({ cell }) => {
-        const isEnc = ENCAISSEMENT_TYPES.includes(cell.getValue());
+        const type = cell.getValue();
+        const isTransfer = TRANSFER_TYPES.includes(type);
+        const isEnc = ENCAISSEMENT_TYPES.includes(type);
+        const cls = isTransfer
+          ? "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-900/20 dark:text-violet-300 dark:border-violet-800"
+          : isEnc
+            ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-300 dark:border-emerald-800"
+            : "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800";
+        const label = isTransfer
+          ? t("type_label_transfert")
+          : isEnc
+            ? t("type_label_encaissement")
+            : t("type_label_decaissement");
         return (
-          <span
-            className={`px-2.5 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-wide ${
-              isEnc
-                ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-300 dark:border-emerald-800"
-                : "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800"
-            }`}
-          >
-            {isEnc ? t("type_label_encaissement") : t("type_label_decaissement")}
+          <span className={`px-2.5 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-wide ${cls}`}>
+            {label}
           </span>
         );
       },
@@ -329,14 +339,16 @@ export const GestionCaissePage = () => {
               cls={SECONDARY_BTN}
               onClick={() => setShowCharge(true)}
             />
+            {(isSuperAdmin || hasMyCaisse) && (
+              <ActionBtn
+                label={t("btn_transfer")}
+                icon={<ArrowLeftRight className="w-4 h-4 text-violet-500" />}
+                cls={SECONDARY_BTN}
+                onClick={() => setShowWalletTransfer(true)}
+              />
+            )}
             {isAdmin && (
               <>
-                <ActionBtn
-                  label={t("btn_transfer")}
-                  icon={<ArrowLeftRight className="w-4 h-4 text-violet-500" />}
-                  cls={SECONDARY_BTN}
-                  onClick={() => setShowWalletTransfer(true)}
-                />
                 <ActionBtn
                   label={t("btn_retrait")}
                   icon={<ArrowDownCircle className="w-4 h-4 text-amber-500" />}
@@ -381,7 +393,9 @@ export const GestionCaissePage = () => {
         )}
 
         {/* ── Stats cards ──────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
+        <div className={`flex flex-col gap-5 ${isSuperAdmin ? "lg:flex-row lg:items-start" : ""}`}>
+          <div className="min-w-0 flex-1 space-y-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           <StatCard
             label={t("stat_final_balance")}
             value={`${formatMAD(summary?.soldeFinal)} MAD`}
@@ -390,26 +404,30 @@ export const GestionCaissePage = () => {
             bg="bg-emerald-50 dark:bg-emerald-900/20"
             loading={isLoading}
           />
-          {userFilter && (
-            <>
-              <StatCard
-                label={t("stat_total_in")}
-                value={`${formatMAD(summary?.totalEncaissements)} MAD`}
-                icon={<TrendingUp className="w-5 h-5" />}
-                color="text-[#B12B89] dark:text-blue-400"
-                bg="bg-blue-50 dark:bg-blue-900/20"
-                loading={isLoading}
-              />
-              <StatCard
-                label={t("stat_total_out")}
-                value={`${formatMAD(summary?.totalDecaissements)} MAD`}
-                icon={<TrendingDown className="w-5 h-5" />}
-                color="text-red-500"
-                bg="bg-red-50 dark:bg-red-900/20"
-                loading={isLoading}
-              />
-            </>
-          )}
+          <StatCard
+            label={t("stat_total_in")}
+            value={`${formatMAD(summary?.totalEncaissements)} MAD`}
+            icon={<TrendingUp className="w-5 h-5" />}
+            color="text-[#B12B89] dark:text-blue-400"
+            bg="bg-blue-50 dark:bg-blue-900/20"
+            loading={isLoading}
+          />
+          <StatCard
+            label={t("stat_total_out")}
+            value={`${formatMAD(summary?.totalDecaissements)} MAD`}
+            icon={<TrendingDown className="w-5 h-5" />}
+            color="text-red-500"
+            bg="bg-red-50 dark:bg-red-900/20"
+            loading={isLoading}
+          />
+          <StatCard
+            label={t("stat_total_transfer")}
+            value={`${formatMAD(summary?.totalTransfers)} MAD`}
+            icon={<ArrowLeftRight className="w-5 h-5" />}
+            color="text-violet-600 dark:text-violet-400"
+            bg="bg-violet-50 dark:bg-violet-900/20"
+            loading={isLoading}
+          />
         </div>
 
         {/* ── Filters (FiltersBar — same pattern as ReglementFournisseur) ── */}
@@ -435,6 +453,10 @@ export const GestionCaissePage = () => {
           tableId="gestion-caisse-transactions"
           enableRowActions={false}
         />
+          </div>
+
+          {isSuperAdmin && <WalletsSidebar />}
+        </div>
       </div>
 
       {/* ── Modals ───────────────────────────────────────────────── */}

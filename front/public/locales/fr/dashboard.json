@@ -1,4 +1,69 @@
 {
+  "home_title": "Tableau de bord",
+  "period": {
+    "label": "Période",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "this_week": "Cette semaine",
+    "last_week": "Semaine dernière",
+    "this_month": "Ce mois",
+    "last_month": "Mois dernier",
+    "this_year": "Cette année",
+    "custom": "Personnalisé"
+  },
+  "date_from": "Du",
+  "date_to": "Au",
+  "summary": {
+    "income": "Encaissements",
+    "expense": "Décaissements",
+    "net": "Solde net"
+  },
+  "clients_section": {
+    "title": "Encaissements clients",
+    "collected": "Encaissé",
+    "payments": "Règlements",
+    "partners": "Clients",
+    "average": "Moyenne",
+    "by_partner": "Par client",
+    "over_time": "Évolution",
+    "by_mode": "Par mode de paiement",
+    "no_data": "Aucun encaissement sur cette période"
+  },
+  "fournisseurs_section": {
+    "title": "Paiements fournisseurs",
+    "collected": "Payé",
+    "payments": "Règlements",
+    "partners": "Fournisseurs",
+    "average": "Moyenne",
+    "by_partner": "Par fournisseur",
+    "over_time": "Évolution",
+    "by_mode": "Par mode de paiement",
+    "no_data": "Aucun paiement sur cette période"
+  },
+  "wallets_panel": {
+    "title": "Wallets",
+    "central": "Super Admin",
+    "central_hint": "Caisse centrale",
+    "societe": "Sociétés",
+    "users": "Utilisateurs",
+    "banks": "Banques",
+    "coffres": "Coffre-fort",
+    "cash": "Espèces",
+    "total": "Total",
+    "empty": "Aucun wallet",
+    "search": "Rechercher…",
+    "error": "Impossible de charger les wallets"
+  },
+  "modes": {
+    "ESPECE": "Espèces",
+    "CARTE_BANCAIRE": "Carte bancaire",
+    "CHEQUE": "Chèque",
+    "EFFET": "Effet",
+    "CARTE_FIDELITE": "Carte fidélité",
+    "BON_ACHAT": "Bon d'achat",
+    "REMISE": "Remise",
+    "VIREMENT": "Virement"
+  },
   "greeting": {
     "morning": "Bonjour",
     "afternoon": "Bon après-midi",

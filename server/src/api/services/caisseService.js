@@ -4,6 +4,7 @@ import {
   CAISSE_INCLUDE,
   INCOME_TYPES,
   OUTFLOW_TYPES,
+  TRANSFER_TYPES,
 } from "./caisseWalletHelper.js";
 
 // -----------------------------------------------
@@ -283,12 +284,10 @@ export const createMyCaisse = async (data, currentUser) => {
 };
 
 export const getMyCaisse = async (currentUser) => {
-  const caisse = await prisma.caisse.findUnique({
+  return prisma.caisse.findUnique({
     where: { userId: currentUser.id },
     include: CAISSE_INCLUDE,
   });
-  if (!caisse) throw new ApiError("Vous n'avez pas de caisse", 404);
-  return caisse;
 };
 
 export const getById = async (id, currentUser) => {
@@ -410,15 +409,14 @@ export const getTransferableCaisses = async (query, currentUser) => {
   const { societeId, search, page = 1, limit = 100, excludeCaisseId } = query;
   const skip = (parseInt(page) - 1) * parseInt(limit);
 
-  if (!isAdminLevel(currentUser)) {
-    throw new ApiError("Accès refusé", 403);
-  }
-
   let where = { active: true };
 
   if (currentUser.isSuperAdmin) {
     if (societeId) where.societeId = parseInt(societeId);
   } else {
+    if (!currentUser.societeId) {
+      throw new ApiError("Aucune société associée à votre compte", 400);
+    }
     where.societeId = currentUser.societeId;
   }
 
@@ -427,10 +425,15 @@ export const getTransferableCaisses = async (query, currentUser) => {
   }
 
   if (search) {
-    where.OR = [
-      { name: { contains: search } },
-      { user: { name: { contains: search } } },
-      { banque: { name: { contains: search } } },
+    where.AND = [
+      ...(where.AND || []),
+      {
+        OR: [
+          { name: { contains: search } },
+          { user: { name: { contains: search } } },
+          { banque: { name: { contains: search } } },
+        ],
+      },
     ];
   }
 
@@ -611,26 +614,42 @@ export const createDepot = async (data, currentUser) => {
 export const createTransfer = async (data, currentUser) => {
   const { sourceCaisseId, destinationCaisseId, amount, note } = data;
 
-  if (!isAdminLevel(currentUser)) {
-    throw new ApiError("Vous n'avez pas la permission d'effectuer un transfert", 403);
-  }
-
   const [sourceCaisse, destinationCaisse] = await Promise.all([
-    getById(sourceCaisseId, currentUser),
-    getById(destinationCaisseId, currentUser),
+    prisma.caisse.findUnique({
+      where: { id: parseInt(sourceCaisseId) },
+      include: CAISSE_INCLUDE,
+    }),
+    prisma.caisse.findUnique({
+      where: { id: parseInt(destinationCaisseId) },
+      include: CAISSE_INCLUDE,
+    }),
   ]);
 
+  if (!sourceCaisse) throw new ApiError("Caisse source introuvable", 404);
+  if (!destinationCaisse) throw new ApiError("Caisse destination introuvable", 404);
   if (!sourceCaisse.active) throw new ApiError("La caisse source est désactivée", 400);
   if (!destinationCaisse.active) throw new ApiError("La caisse destination est désactivée", 400);
   if (sourceCaisse.id === destinationCaisse.id) {
     throw new ApiError("La source et la destination ne peuvent pas être identiques", 400);
   }
 
-  if (isSocieteAdmin(currentUser)) {
-    if (sourceCaisse.societeId !== currentUser.societeId) {
-      throw new ApiError("Transfert interdit hors de votre société", 403);
+  if (!currentUser.isSuperAdmin) {
+    const ownCaisse = await prisma.caisse.findUnique({
+      where: { userId: currentUser.id },
+    });
+    if (!ownCaisse) {
+      throw new ApiError("Vous n'avez pas de wallet configuré", 400);
     }
-    if (destinationCaisse.societeId !== currentUser.societeId) {
+    if (sourceCaisse.id !== ownCaisse.id) {
+      throw new ApiError(
+        "Vous ne pouvez transférer que depuis votre propre wallet",
+        403,
+      );
+    }
+    if (
+      !destinationCaisse.societeId ||
+      destinationCaisse.societeId !== currentUser.societeId
+    ) {
       throw new ApiError("Transfert interdit hors de votre société", 403);
     }
   }
@@ -652,6 +671,7 @@ export const getTransactions = async (caisseId, query, currentUser) => {
   let typeFilter;
   if (direction === "in") typeFilter = { in: INCOME_TYPES };
   if (direction === "out") typeFilter = { in: OUTFLOW_TYPES };
+  if (direction === "transfer") typeFilter = { in: TRANSFER_TYPES };
 
   const where = {
     caisseId: caisse.id,
@@ -736,6 +756,7 @@ export const getAllTransactions = async (query, currentUser) => {
   let typeFilter;
   if (direction === "in") typeFilter = { in: INCOME_TYPES };
   if (direction === "out") typeFilter = { in: OUTFLOW_TYPES };
+  if (direction === "transfer") typeFilter = { in: TRANSFER_TYPES };
 
   const where = {
     caisseId: { in: caisseIds },
@@ -743,7 +764,7 @@ export const getAllTransactions = async (query, currentUser) => {
     ...buildDateFilter(dateFrom, dateTo),
   };
 
-  const [transactions, total, encaissements, decaissements, soldeFinalData] = await Promise.all([
+  const [transactions, total, encaissements, decaissements, transferIn, transferOut, soldeFinalData] = await Promise.all([
     prisma.caisseTransaction.findMany({
       where,
       skip,
@@ -785,6 +806,22 @@ export const getAllTransactions = async (query, currentUser) => {
       },
       _sum: { amount: true },
     }),
+    prisma.caisseTransaction.aggregate({
+      where: {
+        caisseId: { in: caisseIds },
+        transactionType: "TRANSFER_IN",
+        ...buildDateFilter(dateFrom, dateTo),
+      },
+      _sum: { amount: true },
+    }),
+    prisma.caisseTransaction.aggregate({
+      where: {
+        caisseId: { in: caisseIds },
+        transactionType: "TRANSFER_OUT",
+        ...buildDateFilter(dateFrom, dateTo),
+      },
+      _sum: { amount: true },
+    }),
     prisma.caisse.aggregate({
       where: caisseWhere,
       _sum: { currentBalance: true },
@@ -797,6 +834,9 @@ export const getAllTransactions = async (query, currentUser) => {
       soldeFinal: parseFloat(soldeFinalData._sum.currentBalance || 0),
       totalEncaissements: parseFloat(encaissements._sum.amount || 0),
       totalDecaissements: Math.abs(parseFloat(decaissements._sum.amount || 0)),
+      totalTransfers:
+        parseFloat(transferIn._sum.amount || 0) +
+        Math.abs(parseFloat(transferOut._sum.amount || 0)),
     },
     pagination: {
       total,
@@ -818,7 +858,7 @@ export const getDashboard = async (caisseId, query, currentUser) => {
   const dateFilter = buildDateFilter(dateFrom, dateTo);
   const baseWhere = { caisseId: caisse.id, ...dateFilter };
 
-  const [entrees, sorties] = await Promise.all([
+  const [entrees, sorties, transferIn, transferOut] = await Promise.all([
     prisma.caisseTransaction.aggregate({
       where: {
         ...baseWhere,
@@ -833,6 +873,20 @@ export const getDashboard = async (caisseId, query, currentUser) => {
       },
       _sum: { amount: true },
     }),
+    prisma.caisseTransaction.aggregate({
+      where: {
+        ...baseWhere,
+        transactionType: "TRANSFER_IN",
+      },
+      _sum: { amount: true },
+    }),
+    prisma.caisseTransaction.aggregate({
+      where: {
+        ...baseWhere,
+        transactionType: "TRANSFER_OUT",
+      },
+      _sum: { amount: true },
+    }),
   ]);
 
   return {
@@ -841,6 +895,9 @@ export const getDashboard = async (caisseId, query, currentUser) => {
       currentBalance: parseFloat(caisse.currentBalance),
       totalEntrees: parseFloat(entrees._sum.amount || 0),
       totalSorties: Math.abs(parseFloat(sorties._sum.amount || 0)),
+      totalTransfers:
+        parseFloat(transferIn._sum.amount || 0) +
+        Math.abs(parseFloat(transferOut._sum.amount || 0)),
     },
   };
 };
