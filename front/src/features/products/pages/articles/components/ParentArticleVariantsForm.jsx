@@ -17,6 +17,8 @@ import { FormDatePicker } from "../../../../../shared/FormDatePicker";
 import { SectionLoader } from "../../../../../shared/components/loadersCollections/SectionLoader";
 import { FormCard } from "../../../../../shared/components/FormCard";
 import { FormActions } from "../../../../../shared/components/FormActions";
+import { SelectWithQuickAdd } from "../../../components/SelectWithQuickAdd";
+import { QuickCreateFamilyModal } from "../../../components/QuickCreateFamilyModal";
 const BRAND_COLOR = "#C86AAC";
 
 export const ParentArticleForm = ({
@@ -42,6 +44,7 @@ export const ParentArticleForm = ({
   const units = unitsData?.data ?? [];
 
   const isEditMode = mode === "edit" && id;
+  const [showFamilyModal, setShowFamilyModal] = useState(false);
 
   const [formData, setFormData] = useState({
     barcode: "",
@@ -56,6 +59,7 @@ export const ParentArticleForm = ({
     prixVente1: "",
     prixVente2: "",
     prixVente3: "",
+    commission: "",
     gereEnStock: true,
     visible: true,
     image: null,
@@ -189,6 +193,7 @@ export const ParentArticleForm = ({
     );
 
   return (
+    <>
     <div>
 
 
@@ -252,8 +257,7 @@ export const ParentArticleForm = ({
                   </div>
                 </div>
 
-                {/* Family */}
-                <Select
+                <SelectWithQuickAdd
                   label={t("form.fields.family")}
                   name="familyId"
                   value={formData.familyId}
@@ -261,7 +265,9 @@ export const ParentArticleForm = ({
                   error={errors.familyId}
                   options={familyOptions}
                   required
-                  title={t("form.placeholders.select")}
+                  placeholder={t("form.placeholders.select")}
+                  onAdd={() => setShowFamilyModal(true)}
+                  addLabel={t("form.buttons.add_family")}
                 />
 
                 {/* Main Unit */}
@@ -372,7 +378,7 @@ export const ParentArticleForm = ({
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 pt-5 border-t border-slate-100 dark:border-slate-800">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 pt-5 border-t border-slate-100 dark:border-[#2e2e2e]">
                 <Input
                   label={t("form.fields.sale_price_2")}
                   type="number"
@@ -387,6 +393,14 @@ export const ParentArticleForm = ({
                   name="prixVente3"
                   placeholder={t("form.fields.sale_price_3")}
                   value={formData.prixVente3}
+                  onChange={handleInputChange}
+                />
+                <Input
+                  label={t("form.fields.commission")}
+                  type="number"
+                  name="commission"
+                  placeholder={t("form.fields.commission")}
+                  value={formData.commission}
                   onChange={handleInputChange}
                 />
               </div>
@@ -444,6 +458,18 @@ export const ParentArticleForm = ({
         </form>
       </div>
     </div>
+
+    <QuickCreateFamilyModal
+      isOpen={showFamilyModal}
+      onClose={() => setShowFamilyModal(false)}
+      onCreated={(id) => {
+        if (id) {
+          setFormData((prev) => ({ ...prev, familyId: String(id) }));
+          setErrors((prev) => ({ ...prev, familyId: null }));
+        }
+      }}
+    />
+    </>
   );
 };
 
@@ -461,7 +487,7 @@ const StatusSettings = ({ formData, handleInputChange, t }) => (
         checked={formData.gereEnStock}
         onChange={handleInputChange}
       />
-      <hr className="border-slate-100 dark:border-slate-800" />
+      <hr className="border-slate-100 dark:border-[#2e2e2e]" />
       <Toggle
         label={t("form.fields.visible")}
         description={t("form.fields.visible_desc")}
@@ -489,7 +515,7 @@ const Toggle = ({ label, description, name, checked, onChange }) => (
         onChange={onChange}
         className="sr-only peer"
       />
-      <div className="w-11 h-6 bg-slate-200 dark:bg-slate-800 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C86AAC] shadow-inner"></div>
+      <div className="w-11 h-6 bg-slate-200 dark:bg-[#222222] rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C86AAC] shadow-inner"></div>
     </div>
   </label>
 );

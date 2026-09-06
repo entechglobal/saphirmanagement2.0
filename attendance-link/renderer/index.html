@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:;"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="./app-icon.svg" />
+    <title>Saphir Attendance Link</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="page-login" class="page">
+      <div class="auth-shell">
+        <div class="auth-card">
+          <img src="./logo.svg" alt="Saphir" class="brand-logo" />
+          <h1>Attendance Link</h1>
+          <p class="lead">
+            Connexion réservée au Super Administrateur et à l’Administrateur de société.
+          </p>
+          <form id="login-form">
+            <label>URL de l’API
+              <input id="api-url" type="url" placeholder="http://localhost:3000/api" required />
+            </label>
+            <label>Email
+              <input id="email" type="email" autocomplete="username" required />
+            </label>
+            <label>Mot de passe
+              <input id="password" type="password" autocomplete="current-password" required />
+            </label>
+            <p id="login-error" class="form-error hidden"></p>
+            <button id="btn-login" class="btn-primary" type="submit">Se connecter</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="page-device" class="page hidden">
+      <header class="app-header">
+        <div class="brand">
+          <img src="./logo.svg" alt="Saphir" class="header-logo" />
+          <span>Attendance Link</span>
+        </div>
+        <div class="header-meta">
+          <div>
+            <strong id="device-user-name"></strong>
+            <span id="device-user-role"></span>
+          </div>
+          <button id="btn-logout-device" class="btn-ghost" type="button">Déconnexion</button>
+        </div>
+      </header>
+      <div class="stage">
+        <div class="connect-card">
+          <p class="kicker">Étape 2</p>
+          <h2>Connexion au terminal ZKTeco</h2>
+          <p class="lead">Renseignez l’adresse IP et le port du pointeuse (4370 par défaut).</p>
+          <label>Adresse IP
+            <input id="device-ip" type="text" placeholder="192.168.1.201" />
+          </label>
+          <label>Port
+            <input id="device-port" type="number" value="4370" />
+          </label>
+          <p id="device-error" class="form-error hidden"></p>
+          <button id="btn-connect" class="btn-primary" type="button">Connecter le terminal</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="page-workspace" class="page hidden">
+      <header class="app-header">
+        <div class="brand">
+          <img src="./logo.svg" alt="Saphir" class="header-logo" />
+          <span>Attendance Link</span>
+        </div>
+        <div class="header-status">
+          <span id="ws-device-pill" class="status-pill">Terminal</span>
+          <span id="ws-cloud-pill" class="status-pill ok">SaphirCaisse</span>
+        </div>
+        <div class="header-meta">
+          <div>
+            <strong id="ws-user-name"></strong>
+            <span id="ws-user-role"></span>
+          </div>
+          <button id="btn-change-device" class="btn-ghost" type="button">Changer de terminal</button>
+          <button id="btn-logout-ws" class="btn-ghost" type="button">Déconnexion</button>
+        </div>
+      </header>
+
+      <nav class="tabs">
+        <button class="tab active" data-tab="users" type="button">Utilisateurs</button>
+        <button class="tab" data-tab="attendance" type="button">Pointages</button>
+      </nav>
+
+      <section id="tab-users" class="workspace">
+        <div class="toolbar">
+          <div>
+            <h2>Utilisateurs SaphirCaisse</h2>
+            <p>Ajoutez un utilisateur sur le terminal par son ID, puis enrôlez l’empreinte ou la carte.</p>
+          </div>
+          <div class="toolbar-actions">
+            <input id="user-search" type="search" placeholder="Rechercher un utilisateur…" />
+            <button id="btn-refresh-users" class="btn-secondary" type="button">Actualiser</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Rôle</th>
+                <th>Sur le terminal</th>
+                <th>Carte</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-body">
+              <tr><td colspan="6" class="empty">Chargement…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="tab-attendance" class="workspace hidden">
+        <div class="toolbar">
+          <div>
+            <h2>Pointages du terminal</h2>
+            <p>Les pointages déjà importés dans SaphirCaisse sont ignorés automatiquement.</p>
+          </div>
+          <div class="toolbar-actions">
+            <button id="btn-preview" class="btn-secondary" type="button">Prévisualiser</button>
+            <button id="btn-import" class="btn-primary" type="button">Importer vers SaphirCaisse</button>
+          </div>
+        </div>
+        <div id="import-result" class="result hidden"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID appareil</th>
+                <th>Date / heure</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody id="logs-body">
+              <tr><td colspan="3" class="empty">Aucun pointage chargé.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <dialog id="card-dialog">
+      <form method="dialog" id="card-form">
+        <h3>Attribuer une carte</h3>
+        <p id="card-user" class="muted"></p>
+        <label>Numéro de carte
+          <input id="card-number" type="text" placeholder="12345678 ou 0x1A2B3C" required />
+        </label>
+        <menu>
+          <button value="cancel" class="btn-ghost" type="submit">Annuler</button>
+          <button id="card-save" class="btn-primary" value="save" type="submit">Enregistrer</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <dialog id="enroll-dialog">
+      <form method="dialog" id="enroll-form">
+        <h3>Enrôler une empreinte</h3>
+        <p id="enroll-user" class="muted"></p>
+        <label>Doigt (0 à 9)
+          <select id="finger-index">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+        </label>
+        <p id="enroll-status" class="muted"></p>
+        <menu>
+          <button value="cancel" class="btn-ghost" type="submit">Fermer</button>
+          <button id="enroll-start" class="btn-primary" value="start" type="submit">Démarrer</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

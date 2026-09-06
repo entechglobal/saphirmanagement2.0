@@ -89,7 +89,7 @@ export const PreferencesModal = ({ isOpen, onClose }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
-            className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-b-2xl bg-white/75 backdrop-blur-[6px] dark:bg-gray-900/75"
+            className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-b-2xl bg-white/75 backdrop-blur-[6px] dark:bg-[#1c1c1c]/75"
           >
             <motion.div
               initial={{ scale: 0.85, opacity: 0 }}
@@ -141,7 +141,7 @@ export const PreferencesModal = ({ isOpen, onClose }) => {
                   className={`flex items-center gap-3 rounded-xl border px-3 py-3 text-left transition-colors disabled:cursor-not-allowed ${
                     isActive
                       ? "border-[#B12B89] bg-blue-50 ring-1 ring-[#B12B89]/20 dark:bg-blue-900/20"
-                      : "border-gray-200 bg-white hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-gray-600"
+                      : "border-gray-200 bg-white hover:border-gray-300 dark:border-[#2e2e2e] dark:bg-[#1c1c1c] dark:hover:border-[#3a3a3a]"
                   }`}
                 >
                   <img src={lang.image} alt={lang.name} className="h-6 w-6 rounded-full object-cover" />
@@ -173,7 +173,7 @@ export const PreferencesModal = ({ isOpen, onClose }) => {
               className={`flex items-center gap-3 rounded-xl border px-3 py-3 transition-colors disabled:cursor-not-allowed ${
                 !isDark
                   ? "border-[#B12B89] bg-blue-50 ring-1 ring-[#B12B89]/20 dark:bg-blue-900/20"
-                  : "border-gray-200 bg-white hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-gray-600"
+                  : "border-gray-200 bg-white hover:border-gray-300 dark:border-[#2e2e2e] dark:bg-[#1c1c1c] dark:hover:border-[#3a3a3a]"
               }`}
             >
               <SunIcon className="h-5 w-5 text-yellow-500" />
@@ -194,7 +194,7 @@ export const PreferencesModal = ({ isOpen, onClose }) => {
               className={`flex items-center gap-3 rounded-xl border px-3 py-3 transition-colors disabled:cursor-not-allowed ${
                 isDark
                   ? "border-[#B12B89] bg-blue-50 ring-1 ring-[#B12B89]/20 dark:bg-blue-900/20"
-                  : "border-gray-200 bg-white hover:border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-gray-600"
+                  : "border-gray-200 bg-white hover:border-gray-300 dark:border-[#2e2e2e] dark:bg-[#1c1c1c] dark:hover:border-[#3a3a3a]"
               }`}
             >
               <MoonIcon className="h-5 w-5 text-slate-500 dark:text-slate-300" />

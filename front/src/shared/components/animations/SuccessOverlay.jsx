@@ -6,7 +6,7 @@ const BRAND = "#B12B89";
 
 export const SuccessOverlay = ({ onClose }) => (
   <div className="fixed inset-0 modal-backdrop flex items-center justify-center z-50 p-4">
-    <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col items-center px-12 py-14 max-w-sm w-full">
+    <div className="bg-white dark:bg-[#1c1c1c] rounded-[2.5rem] border border-slate-200 dark:border-[#2e2e2e] shadow-2xl flex flex-col items-center px-12 py-14 max-w-sm w-full">
       <Lottie
         animationData={successAnimationData}
         loop={false}

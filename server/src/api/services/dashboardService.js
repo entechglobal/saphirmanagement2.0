@@ -212,7 +212,38 @@ export const getOverview = async (query, societeId) => {
   };
 };
 
+async function ensureCentralWallet() {
+  const existing = await prisma.caisse.findFirst({
+    where: { caisseType: "CENTRAL" },
+  });
+  if (existing) return existing;
+
+  const superAdmin = await prisma.user.findFirst({
+    where: { isSuperAdmin: true },
+    select: { id: true },
+  });
+  if (!superAdmin) return null;
+
+  const alreadyLinked = await prisma.caisse.findUnique({
+    where: { userId: superAdmin.id },
+  });
+  if (alreadyLinked) return alreadyLinked;
+
+  return prisma.caisse.create({
+    data: {
+      userId: superAdmin.id,
+      caisseType: "CENTRAL",
+      name: "Caisse Centrale",
+      initialBalance: 0,
+      currentBalance: 0,
+      active: true,
+    },
+  });
+}
+
 export const getWalletsOverview = async () => {
+  await ensureCentralWallet();
+
   const caisses = await prisma.caisse.findMany({
     where: { caisseType: { in: WALLET_TYPES } },
     include: CAISSE_INCLUDE,

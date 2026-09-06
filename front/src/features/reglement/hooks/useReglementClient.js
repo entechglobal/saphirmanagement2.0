@@ -47,6 +47,7 @@ export const useCreateReglementClient = () => {
       queryClient.invalidateQueries({ queryKey: caisseKeys.myCaisse });
       queryClient.invalidateQueries({ queryKey: caisseKeys.all });
       queryClient.invalidateQueries({ queryKey: caisseKeys.allTransactions });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-wallets"] });
     },
   });
 };

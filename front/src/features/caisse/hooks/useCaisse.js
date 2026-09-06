@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { caisseApi } from "../api/caisse.api";
+import { notificationKeys } from "../../../shared/hooks/useNotifications";
 
 export const caisseKeys = {
   all: ["caisses"],
@@ -8,6 +9,15 @@ export const caisseKeys = {
   transactions: (id) => ["caisse-transactions", id],
   allTransactions: ["all-caisse-transactions"],
   dashboard: (id) => ["caisse-dashboard", id],
+};
+
+const invalidateCaisseQueries = (queryClient, extraKeys = []) => {
+  queryClient.invalidateQueries({ queryKey: caisseKeys.all });
+  queryClient.invalidateQueries({ queryKey: caisseKeys.myCaisse });
+  queryClient.invalidateQueries({ queryKey: caisseKeys.allTransactions });
+  queryClient.invalidateQueries({ queryKey: ["caisse-transactions"] });
+  queryClient.invalidateQueries({ queryKey: ["caisse-dashboard"] });
+  extraKeys.forEach((key) => queryClient.invalidateQueries({ queryKey: key }));
 };
 
 export const useCaisses = ({ pageIndex = 0, pageSize = 20, keyword, societeId } = {}) => {
@@ -150,6 +160,35 @@ export const useCreateTransfer = () => {
       queryClient.invalidateQueries({ queryKey: caisseKeys.myCaisse });
       queryClient.invalidateQueries({ queryKey: caisseKeys.allTransactions });
       queryClient.invalidateQueries({ queryKey: ["transferable-caisses"] });
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
+    },
+  });
+};
+
+export const useAcceptTransferRequest = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: caisseApi.acceptTransferRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: caisseKeys.all });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.myCaisse });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.allTransactions });
+      queryClient.invalidateQueries({ queryKey: ["transferable-caisses"] });
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
+    },
+  });
+};
+
+export const useDeclineTransferRequest = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: caisseApi.declineTransferRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: caisseKeys.all });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.myCaisse });
+      queryClient.invalidateQueries({ queryKey: caisseKeys.allTransactions });
+      queryClient.invalidateQueries({ queryKey: ["transferable-caisses"] });
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
     },
   });
 };

@@ -11,6 +11,7 @@ export const clientSchema = personLikeSchema
   .extend({
     type: z.enum(["PARTICULIER", "SOCIETE"]).default("PARTICULIER"),
     address: optionalString,
+    city: optionalString,
     region: optionalString,
     website: optionalString,
     ice: fiscalIce,

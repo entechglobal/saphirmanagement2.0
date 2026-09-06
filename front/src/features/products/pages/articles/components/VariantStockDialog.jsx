@@ -25,7 +25,7 @@ export const VariantStockBadge = ({ variantId, onClick }) => {
     <button
       onClick={onClick}
       className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border transition-all group
-        border-slate-200 dark:border-slate-700
+        border-slate-200 dark:border-[#2e2e2e]
         hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20"
       title="Manage stock"
     >
@@ -159,7 +159,7 @@ export const VariantStockDialog = ({ variant, onClose, showActions = true }) => 
     view === "form" ? (
       <button
         onClick={closeForm}
-        className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+        className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-lg transition-colors"
       >
         <ChevronDown size={18} className="rotate-90" />
       </button>
@@ -169,7 +169,7 @@ export const VariantStockDialog = ({ variant, onClose, showActions = true }) => 
     view === "list" ? (
       <button
         onClick={onClose}
-        className="w-full py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+        className="w-full py-2.5 border border-slate-200 dark:border-[#2e2e2e] rounded-xl font-semibold text-sm hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors"
       >
         {t("card.close")}
       </button>
@@ -177,7 +177,7 @@ export const VariantStockDialog = ({ variant, onClose, showActions = true }) => 
       <div className="flex gap-3">
         <button
           onClick={closeForm}
-          className="flex-1 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          className="flex-1 py-2.5 border border-slate-200 dark:border-[#2e2e2e] rounded-xl font-semibold hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors"
         >
           {t("card.cancel")}
         </button>
@@ -197,7 +197,7 @@ export const VariantStockDialog = ({ variant, onClose, showActions = true }) => 
       <div className="flex gap-3">
         <button
           onClick={closeDelete}
-          className="flex-1 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          className="flex-1 py-2.5 border border-slate-200 dark:border-[#2e2e2e] rounded-xl font-semibold hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors"
         >
           {t("card.cancel")}
         </button>
@@ -252,9 +252,9 @@ export const VariantStockDialog = ({ variant, onClose, showActions = true }) => 
               <p className="text-sm">{t("card.no_stock_entries")}</p>
             </div>
           ) : (
-            <div className="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-xl">
+            <div className="overflow-x-auto border border-slate-200 dark:border-[#2e2e2e] rounded-xl">
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 dark:bg-slate-800/50">
+                <thead className="bg-slate-50 dark:bg-[#222222]/50">
                   <tr className="text-left text-slate-500 uppercase text-[10px] tracking-wider">
                     <th className="px-4 py-3">{t("card.col_depot")}</th>
                     <th className="px-4 py-3 text-center">{t("card.col_qty")}</th>
@@ -264,11 +264,11 @@ export const VariantStockDialog = ({ variant, onClose, showActions = true }) => 
                     )}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
                   {stocksData.data.map((stock) => (
                     <tr
                       key={stock.id}
-                      className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition"
+                      className="hover:bg-slate-50/50 dark:hover:bg-[#222222]/30 transition"
                     >
                       <td className="px-4 py-3 min-w-[220px]">
                         <div className="flex items-center gap-3">
@@ -280,13 +280,13 @@ export const VariantStockDialog = ({ variant, onClose, showActions = true }) => 
                                   (stock.depot.societe?.raisonSocial || "S")
                               }
                               alt={stock.depot.societe?.raisonSocial}
-                              className="w-10 h-10 object-cover rounded-lg border border-slate-200 dark:border-slate-700 bg-white"
+                              className="w-10 h-10 object-cover rounded-lg border border-slate-200 dark:border-[#2e2e2e] bg-white"
                               onError={(e) =>
                                 (e.currentTarget.src =
                                   "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=")
                               }
                             />
-                            <div className="absolute -bottom-1 -right-1 bg-white dark:bg-slate-900 rounded-full p-1 shadow-sm border border-slate-100 dark:border-slate-800">
+                            <div className="absolute -bottom-1 -right-1 bg-white dark:bg-[#1c1c1c] rounded-full p-1 shadow-sm border border-slate-100 dark:border-[#2e2e2e]">
                               <Warehouse size={10} className="text-blue-500" />
                             </div>
                           </div>

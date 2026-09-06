@@ -17,6 +17,7 @@ import { useCurrentUser } from "../../../features/users/hooks/useUsers";
 import { useMyCaisse } from "../../../features/caisse/hooks/useCaisse";
 import { ConfirmationModal } from "../ConfirmationModal";
 import { PreferencesModal } from "./PreferencesModal";
+import { NotificationDropdown } from "../notification-dropdown";
 import { Logo } from "../Logo";
 
 import {
@@ -55,8 +56,8 @@ const Tooltip = ({ label, children }) => (
   <div className="relative group/tooltip">
     {children}
     <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 z-[999] pointer-events-none opacity-0 group-hover/tooltip:opacity-100 transition-all duration-200 scale-90 group-hover/tooltip:scale-100 origin-top">
-      <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-b-gray-900 dark:border-b-slate-700" />
-      <div className="bg-gray-900 dark:bg-slate-700 text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg shadow-xl whitespace-nowrap ring-1 ring-white/10">
+      <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-[5px] border-transparent border-b-gray-900 dark:border-b-[#1c1c1c]" />
+      <div className="bg-gray-900 dark:bg-[#1c1c1c] text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg shadow-xl whitespace-nowrap ring-1 ring-white/10 dark:ring-[#2e2e2e]">
         {label}
       </div>
     </div>
@@ -126,6 +127,7 @@ const CommandPalette = ({ isOpen, onClose, isSuperAdmin, roleName, user }) => {
       // Compte
       ...(!isSuperAdmin ? [{ label: tSidebar("myCompany"), path: "/societes/me", icon: Building, category: cat("account") }] : []),
       { label: tHeader("profile.my_profile"),                  path: "/profile",                      icon: UserCircleIcon,        category: cat("account") },
+      { label: tHeader("wallet.my_wallet"),                    path: "/my-wallet",                    icon: Wallet,                category: cat("account") },
     ];
 
     return allItems.filter((item) => canSee(item.permission));
@@ -211,9 +213,9 @@ const CommandPalette = ({ isOpen, onClose, isSuperAdmin, roleName, user }) => {
               exit="exit"
               className="w-full max-w-lg pointer-events-auto"
             >
-              <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl ring-1 ring-gray-200/80 dark:ring-gray-700/80 overflow-hidden">
+              <div className="bg-white dark:bg-[#1c1c1c] rounded-2xl shadow-2xl ring-1 ring-gray-200/80 dark:ring-[#2e2e2e] overflow-hidden">
                 {/* Search input */}
-                <div className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-100 dark:border-gray-800">
+                <div className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-100 dark:border-[#2e2e2e]">
                   <Search className="w-4.5 h-4.5 text-gray-400 flex-shrink-0" style={{ width: 18, height: 18 }} />
                   <input
                     ref={inputRef}
@@ -224,7 +226,7 @@ const CommandPalette = ({ isOpen, onClose, isSuperAdmin, roleName, user }) => {
                     onKeyDown={handleKeyDown}
                     className="flex-1 bg-transparent text-[14px] text-gray-900 dark:text-white placeholder-gray-400 outline-none"
                   />
-                  <kbd className="hidden sm:flex items-center px-1.5 py-0.5 text-[10px] font-semibold text-gray-400 bg-gray-100 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 tracking-wide">
+                  <kbd className="hidden sm:flex items-center px-1.5 py-0.5 text-[10px] font-semibold text-gray-400 bg-gray-100 dark:bg-[#222] rounded border border-gray-200 dark:border-[#2e2e2e] tracking-wide">
                     {tHeader("palette.escape_key")}
                   </kbd>
                 </div>
@@ -236,7 +238,7 @@ const CommandPalette = ({ isOpen, onClose, isSuperAdmin, roleName, user }) => {
                     max-h-[360px] overflow-y-auto py-1.5
                     [&::-webkit-scrollbar]:w-1
                     [&::-webkit-scrollbar-thumb]:bg-gray-200
-                    dark:[&::-webkit-scrollbar-thumb]:bg-gray-700
+                    dark:[&::-webkit-scrollbar-thumb]:bg-[#3a3a3a]
                     [&::-webkit-scrollbar-thumb]:rounded-full
                   "
                 >
@@ -262,14 +264,14 @@ const CommandPalette = ({ isOpen, onClose, isSuperAdmin, roleName, user }) => {
                             ${
                               isSelected
                                 ? "bg-[#B12B89] text-white"
-                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#222]"
                             }
                           `}
                           style={{ width: "calc(100% - 12px)" }}
                         >
                           <div
                             className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                              isSelected ? "bg-white/20" : "bg-gray-100 dark:bg-gray-800"
+                              isSelected ? "bg-white/20" : "bg-gray-100 dark:bg-[#222]"
                             }`}
                           >
                             <Icon
@@ -296,7 +298,7 @@ const CommandPalette = ({ isOpen, onClose, isSuperAdmin, roleName, user }) => {
                 </div>
 
                 {/* Footer hints */}
-                <div className="px-4 py-2 border-t border-gray-100 dark:border-gray-800 flex items-center gap-5 text-[11px] text-gray-400">
+                <div className="px-4 py-2 border-t border-gray-100 dark:border-[#2e2e2e] flex items-center gap-5 text-[11px] text-gray-400">
                   <span>
                     <kbd className="font-bold text-gray-500">↑↓</kbd> {tHeader("palette.hint_navigate")}
                   </span>
@@ -345,8 +347,9 @@ export const Header = () => {
 
   const { data: myCaisseResponse } = useMyCaisse({ enabled: !!user });
   const myWallet = myCaisseResponse?.data;
-  const walletBalance = myWallet ? Number(myWallet.currentBalance ?? 0) : null;
-  const canOpenCaisse = hasAnyPermission(user, [PERMISSIONS.VIEW_CAISSE]);
+  const walletBalance = myWallet
+    ? Number(myWallet.currentBalance ?? 0)
+    : null;
   const formattedWalletBalance =
     walletBalance == null
       ? null
@@ -415,7 +418,7 @@ export const Header = () => {
 
   return (
     <>
-      <header className="relative z-40 grid h-16 w-full flex-shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-gray-200/80 bg-white/95 px-3 backdrop-blur-md dark:border-gray-800/80 dark:bg-gray-900/90 lg:px-5">
+      <header className="relative z-40 grid h-16 w-full flex-shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-3 border-b border-gray-200/80 bg-white px-3 dark:border-[#2e2e2e] dark:bg-[#161616] lg:px-5">
 
         {/* Logo */}
         <Link to="/" className="-mt-1 flex flex-shrink-0 items-center justify-self-start self-center">
@@ -428,7 +431,7 @@ export const Header = () => {
             whileHover={!shouldReduce ? { scale: 1.01 } : {}}
             whileTap={!shouldReduce ? { scale: 0.98 } : {}}
             onClick={() => setIsCommandOpen(true)}
-            className="flex w-full items-center gap-2.5 rounded-lg border border-gray-200/90 bg-gray-50/80 px-3.5 py-2 text-sm text-gray-400 shadow-[0_1px_2px_rgba(16,24,40,0.04)] transition-all duration-150 hover:border-gray-300 hover:bg-white dark:border-gray-700/80 dark:bg-gray-800/50 dark:text-gray-500 dark:hover:border-gray-600 dark:hover:bg-gray-800"
+            className="flex w-full items-center gap-2.5 rounded-lg border border-gray-200/90 bg-gray-50/80 px-3.5 py-2 text-sm text-gray-400 shadow-[0_1px_2px_rgba(16,24,40,0.04)] transition-all duration-150 hover:border-gray-300 hover:bg-white dark:border-[#2e2e2e] dark:bg-[#1c1c1c] dark:text-gray-500 dark:hover:border-[#3a3a3a] dark:hover:bg-[#222]"
           >
             <Search className="h-4 w-4 flex-shrink-0 text-gray-400" strokeWidth={2} />
             <span className="truncate text-[13px] text-gray-500 dark:text-gray-400">
@@ -441,61 +444,20 @@ export const Header = () => {
         <div className="flex flex-shrink-0 items-center justify-self-end gap-1.5 sm:gap-2">
           {formattedWalletBalance != null && (
             <Tooltip label={t("wallet.tooltip")}>
-              {canOpenCaisse ? (
-                <Link
-                  to="/caisse"
-                  className={`${walletClassName} transition-colors hover:bg-emerald-100 dark:hover:bg-emerald-900/40`}
-                >
-                  <Wallet className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2.25} />
-                  <span className="truncate text-[12.5px] font-semibold tabular-nums">
-                    {formattedWalletBalance}
-                    <span className="ms-1 hidden font-medium opacity-80 sm:inline">MAD</span>
-                  </span>
-                </Link>
-              ) : (
-                <div className={walletClassName}>
-                  <Wallet className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2.25} />
-                  <span className="truncate text-[12.5px] font-semibold tabular-nums">
-                    {formattedWalletBalance}
-                    <span className="ms-1 hidden font-medium opacity-80 sm:inline">MAD</span>
-                  </span>
-                </div>
-              )}
+              <Link
+                to="/my-wallet"
+                className={`${walletClassName} transition-colors hover:bg-emerald-100 dark:hover:bg-emerald-900/40`}
+              >
+                <Wallet className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2.25} />
+                <span className="truncate text-[12.5px] font-semibold tabular-nums">
+                  {formattedWalletBalance}
+                  <span className="ms-1 hidden font-medium opacity-80 sm:inline">MAD</span>
+                </span>
+              </Link>
             </Tooltip>
           )}
 
-          <Tooltip label={isFullscreen ? t("fullscreen_exit", "Quitter plein écran") : t("fullscreen", "Plein écran")}>
-            <motion.button
-              whileHover={!shouldReduce ? { scale: 1.05 } : {}}
-              whileTap={!shouldReduce ? { scale: 0.95 } : {}}
-              onClick={toggleFullscreen}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                {isFullscreen ? (
-                  <motion.span
-                    key="minimize"
-                    initial={{ scale: 0.6, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.6, opacity: 0 }}
-                    transition={{ duration: 0.15 }}
-                  >
-                    <Minimize2 className="h-4 w-4" />
-                  </motion.span>
-                ) : (
-                  <motion.span
-                    key="maximize"
-                    initial={{ scale: 0.6, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.6, opacity: 0 }}
-                    transition={{ duration: 0.15 }}
-                  >
-                    <Maximize2 className="h-4 w-4" />
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </motion.button>
-          </Tooltip>
+          <NotificationDropdown />
 
           <div className="relative" ref={profileRef}>
             <motion.button
@@ -509,13 +471,13 @@ export const Header = () => {
                 sm:gap-2.5 sm:pe-2
                 ${
                   showProfileMenu
-                    ? "bg-gray-100 dark:bg-gray-800"
-                    : "hover:bg-gray-50 dark:hover:bg-gray-800/60"
+                    ? "bg-gray-100 dark:bg-white/10"
+                    : "hover:bg-gray-50 dark:hover:bg-white/5"
                 }
               `}
             >
               <div className="relative flex-shrink-0">
-                <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-slate-100 ring-1 ring-gray-200/80 dark:bg-slate-800 dark:ring-gray-700 sm:h-9 sm:w-9">
+                <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-slate-100 ring-1 ring-gray-200/80 dark:bg-[#1c1c1c] dark:ring-[#2e2e2e] sm:h-9 sm:w-9">
                   {activeUser?.profile ? (
                     <img
                       src={activeUser.profile}
@@ -526,7 +488,7 @@ export const Header = () => {
                     <UserCircleIcon className="h-5 w-5 text-slate-400 sm:h-6 sm:w-6" />
                   )}
                 </div>
-                <span className="absolute bottom-0 end-0 h-2 w-2 rounded-full border-2 border-white bg-emerald-500 dark:border-gray-900" />
+                <span className="absolute bottom-0 end-0 h-2 w-2 rounded-full border-2 border-white bg-emerald-500 dark:border-[#161616]" />
               </div>
 
               <div className={`hidden min-w-0 text-start sm:block ${isRTL ? "" : ""}`}>
@@ -559,15 +521,15 @@ export const Header = () => {
                   className={`
                     absolute top-[calc(100%+6px)] z-50 w-72 overflow-hidden rounded-xl
                     border border-gray-200/80 bg-white shadow-xl shadow-gray-200/40
-                    dark:border-gray-700/80 dark:bg-gray-900 dark:shadow-black/40
+                    dark:border-[#2e2e2e] dark:bg-[#1c1c1c] dark:shadow-black/40
                     ${isRTL ? "left-0" : "right-0"}
                   `}
                 >
                   {/* User card */}
-                  <div className="border-b border-gray-100 px-4 py-4 dark:border-gray-800">
+                  <div className="border-b border-gray-100 px-4 py-4 dark:border-[#2e2e2e]">
                     <div className="flex items-center gap-3">
                       <div className="relative flex-shrink-0">
-                        <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-slate-100 ring-1 ring-gray-200 dark:bg-slate-800 dark:ring-gray-700">
+                        <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-slate-100 ring-1 ring-gray-200 dark:bg-[#222] dark:ring-[#2e2e2e]">
                           {activeUser?.profile ? (
                             <img
                               src={activeUser.profile}
@@ -578,7 +540,7 @@ export const Header = () => {
                             <UserCircleIcon className="h-7 w-7 text-slate-400" />
                           )}
                         </div>
-                        <span className="absolute bottom-0 end-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500 dark:border-gray-900" />
+                        <span className="absolute bottom-0 end-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-emerald-500 dark:border-[#1c1c1c]" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-semibold text-slate-900 dark:text-white">
@@ -589,7 +551,7 @@ export const Header = () => {
                             {activeUser.email}
                           </p>
                         )}
-                        <span className="mt-1.5 inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                        <span className="mt-1.5 inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-[#222] dark:text-slate-300">
                           {displayRole}
                         </span>
                       </div>
@@ -613,7 +575,7 @@ export const Header = () => {
                         navigate("/profile");
                         setShowProfileMenu(false);
                       }}
-                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium text-slate-700 transition-colors hover:bg-gray-50 dark:text-slate-200 dark:hover:bg-gray-800"
+                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium text-slate-700 transition-colors hover:bg-gray-50 dark:text-slate-200 dark:hover:bg-white/5"
                     >
                       <BiUserCircle className="h-[18px] w-[18px] text-slate-400" />
                       {t("profile.my_profile")}
@@ -625,13 +587,31 @@ export const Header = () => {
                         setShowPreferencesModal(true);
                         setShowProfileMenu(false);
                       }}
-                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium text-slate-700 transition-colors hover:bg-gray-50 dark:text-slate-200 dark:hover:bg-gray-800"
+                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium text-slate-700 transition-colors hover:bg-gray-50 dark:text-slate-200 dark:hover:bg-white/5"
                     >
                       <Cog6ToothIcon className="h-[18px] w-[18px] text-slate-400" />
                       {t("preferences.title")}
                     </button>
 
-                    <div className="my-1 h-px bg-gray-100 dark:bg-gray-800" />
+                    <button
+                      role="menuitem"
+                      onClick={() => {
+                        toggleFullscreen();
+                        setShowProfileMenu(false);
+                      }}
+                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium text-slate-700 transition-colors hover:bg-gray-50 dark:text-slate-200 dark:hover:bg-white/5"
+                    >
+                      {isFullscreen ? (
+                        <Minimize2 className="h-[18px] w-[18px] text-slate-400" />
+                      ) : (
+                        <Maximize2 className="h-[18px] w-[18px] text-slate-400" />
+                      )}
+                      {isFullscreen
+                        ? t("fullscreen_exit", "Quitter plein écran")
+                        : t("fullscreen", "Plein écran")}
+                    </button>
+
+                    <div className="my-1 h-px bg-gray-100 dark:bg-[#2e2e2e]" />
 
                     <button
                       role="menuitem"

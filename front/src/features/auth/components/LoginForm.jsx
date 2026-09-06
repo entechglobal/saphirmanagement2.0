@@ -67,7 +67,7 @@ export const LoginForm = ({ bgImage = "/login.jpg" }) => {
       </div>
 
       {/* Right — login form */}
-      <div className="relative flex w-full lg:w-1/2 min-h-screen items-center justify-center bg-white dark:bg-gray-900 px-6 py-10">
+      <div className="relative flex w-full lg:w-1/2 min-h-screen items-center justify-center bg-white dark:bg-[#161616] px-6 py-10">
         <ToogleControls />
 
         <div className="w-full max-w-[400px]">
@@ -87,7 +87,7 @@ export const LoginForm = ({ bgImage = "/login.jpg" }) => {
                 type="email"
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); setFormErrors((prev) => ({ ...prev, email: null })); }}
-                className={`w-full px-4 h-[46px] text-sm rounded-xl border outline-none transition-all duration-200 leading-none bg-slate-50 dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium disabled:opacity-60 disabled:cursor-not-allowed ${formErrors.email ? "border-red-500 ring-4 ring-red-500/5" : "border-slate-200 dark:border-slate-700 focus:border-[#B12B89] focus:ring-4 focus:ring-[#B12B89]/40 group-hover:border-slate-300 dark:group-hover:border-slate-600"}`}
+                className={`w-full px-4 h-[46px] text-sm rounded-xl border outline-none transition-all duration-200 leading-none bg-slate-50 dark:bg-[#222222]/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium disabled:opacity-60 disabled:cursor-not-allowed ${formErrors.email ? "border-red-500 ring-4 ring-red-500/5" : "border-slate-200 dark:border-[#2e2e2e] focus:border-[#B12B89] focus:ring-4 focus:ring-[#B12B89]/40 group-hover:border-slate-300 dark:group-hover:border-[#3a3a3a]"}`}
                 placeholder={t("email_placeholder")}
                 disabled={isPending}
               />
@@ -104,7 +104,7 @@ export const LoginForm = ({ bgImage = "/login.jpg" }) => {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => { setPassword(e.target.value); setFormErrors((prev) => ({ ...prev, password: null })); }}
-                  className={`w-full px-4 pr-10 h-[46px] text-sm rounded-xl border outline-none transition-all duration-200 leading-none bg-slate-50 dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium disabled:opacity-60 disabled:cursor-not-allowed ${formErrors.password ? "border-red-500 ring-4 ring-red-500/5" : "border-slate-200 dark:border-slate-700 focus:border-[#B12B89] focus:ring-4 focus:ring-[#B12B89]/40 group-hover:border-slate-300 dark:group-hover:border-slate-600"}`}
+                  className={`w-full px-4 pr-10 h-[46px] text-sm rounded-xl border outline-none transition-all duration-200 leading-none bg-slate-50 dark:bg-[#222222]/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium disabled:opacity-60 disabled:cursor-not-allowed ${formErrors.password ? "border-red-500 ring-4 ring-red-500/5" : "border-slate-200 dark:border-[#2e2e2e] focus:border-[#B12B89] focus:ring-4 focus:ring-[#B12B89]/40 group-hover:border-slate-300 dark:group-hover:border-[#3a3a3a]"}`}
                   placeholder={t("password_placeholder")}
                   disabled={isPending}
                 />

@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import {
   commandsApi,
   livreurApi,
@@ -24,13 +24,27 @@ export const commandKeys = {
 };
 
 export const livreurKeys = { all: ["livreurs"] };
-export const commandClientKeys = { all: (k, s) => ["command-clients", k, s] };
+export const commandClientKeys = {
+  all: (k, s, limit) => ["command-clients", k, s, limit],
+};
 export const agenciesKeys = { all: ["agencies"] };
 export const commercialsKeys = { all: ["commercials"] };
 export const advBlKeys = { all: ["advanced-bon-livraisons"] };
 export const workflowCountsKey = ["advanced-bon-livraisons", "workflow-counts"];
+export const workflowCountsKeys = {
+  all: ["advanced-bon-livraisons", "workflow-counts"],
+  filtered: (filters) => ["advanced-bon-livraisons", "workflow-counts", filters],
+};
 export const blsByStatusKeys = {
   list: (filters) => ["bls-by-status", filters],
+};
+export const commercialStatsKeys = {
+  all: ["commercial-stats"],
+  filtered: (filters) => ["commercial-stats", filters],
+};
+export const topCommercialsKeys = {
+  all: ["top-commercials"],
+  filtered: (filters) => ["top-commercials", filters],
 };
 export const advBlPickerKeys = {
   products: (depotId, search, priceField, page) => [
@@ -114,6 +128,8 @@ export const useUpdateCommand = () => {
       qc.invalidateQueries({ queryKey: commandKeys.all });
       qc.invalidateQueries({ queryKey: commandKeys.one(id) });
       qc.invalidateQueries({ queryKey: commandKeys.details(id) });
+      qc.invalidateQueries({ queryKey: ["my-caisse"] });
+      qc.invalidateQueries({ queryKey: ["dashboard-wallets"] });
     },
   });
 };
@@ -142,6 +158,9 @@ export const useUpdateCommandStatus = () => {
       qc.invalidateQueries({ queryKey: commandKeys.one(commandId) });
       qc.invalidateQueries({ queryKey: commandKeys.details(commandId) });
       qc.invalidateQueries({ queryKey: workflowCountsKey });
+      qc.invalidateQueries({ queryKey: ["planning-livraison"] });
+      qc.invalidateQueries({ queryKey: ["my-caisse"] });
+      qc.invalidateQueries({ queryKey: ["dashboard-wallets"] });
     },
   });
 };
@@ -207,10 +226,16 @@ export const useCommercials = () =>
     queryFn: () => commercialsApi.getAll({ limit: 1000 }),
   });
 
-export const useCommandClients = ({ keyword = "", societeId } = {}) =>
+export const useCommandClients = ({
+  keyword = "",
+  societeId,
+  limit = 100,
+  enabled = true,
+} = {}) =>
   useQuery({
-    queryKey: commandClientKeys.all(keyword, societeId),
-    queryFn: () => commandClientsApi.getAll({ keyword, societeId, limit: 100 }),
+    queryKey: commandClientKeys.all(keyword, societeId, limit),
+    queryFn: () => commandClientsApi.getAll({ keyword, societeId, limit }),
+    enabled,
   });
 
 /* =========================================================
@@ -224,6 +249,12 @@ export const useCreateAdvancedBonLivraison = () => {
       qc.invalidateQueries({ queryKey: advBlKeys.all });
       qc.invalidateQueries({ queryKey: commandKeys.all });
       qc.invalidateQueries({ queryKey: workflowCountsKey });
+      qc.invalidateQueries({ queryKey: commercialStatsKeys.all });
+      qc.invalidateQueries({ queryKey: topCommercialsKeys.all });
+      qc.invalidateQueries({ queryKey: ["command-clients"] });
+      qc.invalidateQueries({ queryKey: ["clients"] });
+      qc.invalidateQueries({ queryKey: ["my-caisse"] });
+      qc.invalidateQueries({ queryKey: ["dashboard-wallets"] });
     },
   });
 };
@@ -333,12 +364,15 @@ export const useCommandDetails = (id, options = {}) =>
     ...options,
   });
 
-export const useWorkflowCounts = () =>
-  useQuery({
-    queryKey: ["advanced-bon-livraisons", "workflow-counts"],
-    queryFn: () => commandsApi.getWorkflowCounts(),
+export const useWorkflowCounts = (filters = {}) => {
+  const { dateFrom, dateTo } = filters;
+  return useQuery({
+    queryKey: workflowCountsKeys.filtered({ dateFrom, dateTo }),
+    queryFn: () => commandsApi.getWorkflowCounts({ dateFrom, dateTo }),
+    placeholderData: keepPreviousData,
+    staleTime: 30_000,
   });
-
+};
 export const useBLsByStatus = (filters = {}) => {
   const { status, livreurId, page = 1, limit = 20 } = filters;
   return useQuery({
@@ -346,5 +380,27 @@ export const useBLsByStatus = (filters = {}) => {
     queryFn: () =>
       commandsApi.getBLsByStatus({ status, livreurId, page, limit }),
     enabled: !!status,
+  });
+};
+
+export const useCommercialStats = (filters = {}) => {
+  const { dateFrom, dateTo, commercialId } = filters;
+  return useQuery({
+    queryKey: commercialStatsKeys.filtered({ dateFrom, dateTo, commercialId }),
+    queryFn: () =>
+      commandsApi.getCommercialStats({ dateFrom, dateTo, commercialId }),
+    placeholderData: keepPreviousData,
+    staleTime: 30_000,
+  });
+};
+
+export const useTopCommercials = (filters = {}) => {
+  const { dateFrom, dateTo, limit = 5 } = filters;
+  return useQuery({
+    queryKey: topCommercialsKeys.filtered({ dateFrom, dateTo, limit }),
+    queryFn: () =>
+      commandsApi.getTopCommercials({ dateFrom, dateTo, limit }),
+    placeholderData: keepPreviousData,
+    staleTime: 30_000,
   });
 };

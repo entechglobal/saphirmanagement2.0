@@ -135,6 +135,65 @@
   "stat_en_route": "في الطريق",
   "stat_livre": "تم التسليم",
 
+  "saphir_home": {
+    "badge": "إدارة سفير",
+    "subtitle": "متابعة الطلبات المعينة وتخطيط التسليم",
+    "all_orders": "كل الطلبات",
+    "new_order": "طلب جديد"
+  },
+  "saphir_stats": {
+    "total_period": "الطلبات في الفترة",
+    "in_pipeline": "قيد المعالجة",
+    "empty": "لا توجد طلبات لهذه الفترة",
+    "a_preparer": "للتحضير",
+    "a_collecter": "للاستلام",
+    "en_route": "تم الاستلام",
+    "a_livrer": "للتسليم",
+    "a_payer": "للتحصيل",
+    "hint_preparer": "طلبات مؤكدة في الانتظار",
+    "hint_collecter": "جاهزة للمُوَصِّل",
+    "hint_en_route": "تم أخذها",
+    "hint_livrer": "قيد التسليم",
+    "hint_payer": "تم التسليم، الدفع معلّق"
+  },
+  "saphir_planning": {
+    "title": "التخطيط",
+    "see_all": "عرض الكل",
+    "today": "اليوم",
+    "tomorrow": "غداً",
+    "empty_today": "لا توجد توصيلات اليوم",
+    "empty_tomorrow": "لا توجد توصيلات غداً",
+    "tomorrow_summary": "{{count}} طلب غداً",
+    "cities": "المدن",
+    "unassigned": "غير معيّن",
+    "orders_count": "{{count}} طلب",
+    "more": "+{{count}} أخرى"
+  },
+  "saphir_top_commercials": {
+    "title": "أفضل التجاريين",
+    "subtitle": "الطلبات والعمولات",
+    "see_all": "عرض الكل",
+    "orders": "الطلبات",
+    "commission": "العمولة",
+    "order_count": "{{count}} طلب",
+    "empty": "لا يوجد تجاريون في هذه الفترة",
+    "error": "تعذر تحميل الترتيب"
+  },
+  "saphir_commercial_stats": {
+    "badge": "العمولات",
+    "title": "إحصائيات التجاريين",
+    "subtitle": "الطلبات المنشأة والعمولات المستحقة لكل تجاري",
+    "kpi_commercials": "التجاريون",
+    "kpi_orders": "الطلبات",
+    "kpi_ca": "رقم المعاملات",
+    "kpi_commission": "إجمالي العمولة",
+    "commission": "العمولة",
+    "orders_label": "{{count}} طلب",
+    "no_orders": "لا توجد طلبات",
+    "empty": "لا توجد بيانات لهذه الفترة",
+    "error": "تعذر تحميل الإحصائيات"
+  },
+
   "status_label_CONFIRME": "مؤكد",
   "status_label_PREPARE": "مُحضَّر",
   "status_label_COLLECTE": "محصَّل",

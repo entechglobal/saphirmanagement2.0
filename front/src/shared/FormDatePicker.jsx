@@ -100,15 +100,15 @@ export const FormDatePicker = ({
         ? "border-red-400 ring-2 ring-red-500/15"
         : open
             ? "border-[#B12B89] ring-2 ring-[#B12B89]/15"
-            : "border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600";
+            : "border-slate-300 dark:border-[#2e2e2e] hover:border-slate-400 dark:hover:border-[#3a3a3a]";
 
     const popover = open && createPortal(
         <div
             ref={popoverRef}
             style={popoverStyle}
             className="
-                bg-white dark:bg-slate-800
-                border border-slate-200 dark:border-slate-700
+                bg-white dark:bg-[#222222]
+                border border-slate-200 dark:border-[#2e2e2e]
                 rounded-xl shadow-xl shadow-black/10
                 p-3 min-w-[280px]
             "
@@ -118,7 +118,7 @@ export const FormDatePicker = ({
                 <button
                     type="button"
                     onClick={prevMonth}
-                    className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-colors"
+                    className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#2e2e2e] text-slate-500 dark:text-slate-400 transition-colors"
                 >
                     <ChevronLeft size={16} />
                 </button>
@@ -128,7 +128,7 @@ export const FormDatePicker = ({
                 <button
                     type="button"
                     onClick={nextMonth}
-                    className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-colors"
+                    className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#2e2e2e] text-slate-500 dark:text-slate-400 transition-colors"
                 >
                     <ChevronRight size={16} />
                 </button>
@@ -164,7 +164,7 @@ export const FormDatePicker = ({
                                     ? 'bg-[#B12B89] text-white shadow-sm'
                                     : isToday
                                         ? 'bg-blue-50 dark:bg-blue-900/30 text-[#B12B89] dark:text-blue-400 font-bold'
-                                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#2e2e2e]'
                                 }
                             `}
                         >
@@ -176,7 +176,7 @@ export const FormDatePicker = ({
 
             {/* Clear button */}
             {value && (
-                <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
+                <div className="mt-3 pt-3 border-t border-slate-100 dark:border-[#2e2e2e]">
                     <button
                         type="button"
                         onClick={() => {
@@ -208,7 +208,7 @@ export const FormDatePicker = ({
                 className={`
                     w-full px-3 text-sm rounded-md border transition-colors duration-150 outline-none
                     h-10 leading-none
-                    bg-white dark:bg-slate-800/60
+                    bg-white dark:bg-[#222222]/60
                     flex items-center justify-between gap-2 cursor-pointer select-none
                     ${disabled ? 'opacity-60 cursor-not-allowed' : ''}
                     ${stateStyles}

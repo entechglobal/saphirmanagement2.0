@@ -1,14 +1,19 @@
 {
   "page_title": "Client status",
-  "page_subtitle": "Unpaid or partially paid delivery notes",
+  "page_subtitle": "All delivery notes, paid and unpaid",
   "currency": "MAD",
-  "summary_docs": "Outstanding documents",
+  "summary_docs": "Documents",
   "summary_paid": "Total paid",
   "summary_reste": "Balance due",
   "filter_search_placeholder": "Search a delivery note or client…",
   "all": "All",
   "filter_client": "Client",
   "filter_all_clients": "All clients",
+  "filter_payment": "Payment",
+  "filter_paid": "Paid",
+  "filter_unpaid": "Unpaid",
+  "status_paid": "Paid",
+  "status_unpaid": "Unpaid",
   "filter_start_date": "Start date",
   "filter_end_date": "End date",
   "col_document": "BL No.",
@@ -16,5 +21,6 @@
   "col_client": "Client",
   "col_amount_due": "BL amount",
   "col_paid": "Paid",
-  "col_reste": "Balance"
+  "col_reste": "Balance",
+  "col_status": "Status"
 }

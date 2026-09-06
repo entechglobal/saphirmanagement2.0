@@ -11,11 +11,11 @@ const MENU_PROPS = {
       borderRadius: "8px",
       boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
       border: "1px solid",
-      borderColor: (theme) => theme.palette.mode === "dark" ? "#334155" : "#e2e8f0",
+      borderColor: (theme) => theme.palette.mode === "dark" ? "#2e2e2e" : "#e2e8f0",
       "&::-webkit-scrollbar": { width: "4px" },
       "&::-webkit-scrollbar-track": { background: "transparent", margin: "6px 0" },
       "&::-webkit-scrollbar-thumb": {
-        backgroundColor: (theme) => theme.palette.mode === "dark" ? "#475569" : "#cbd5e1",
+        backgroundColor: (theme) => theme.palette.mode === "dark" ? "#3a3a3a" : "#cbd5e1",
         borderRadius: "10px",
       },
     },
@@ -30,13 +30,13 @@ const TEXT_FIELD_SX = {
     fontSize: "0.875rem",
     height: "40px",
     backgroundColor: (theme) =>
-      theme.palette.mode === "dark" ? "rgba(30, 41, 59, 0.6)" : "white",
+      theme.palette.mode === "dark" ? "rgba(34, 34, 34, 0.6)" : "white",
     transition: "border-color 0.15s, box-shadow 0.15s",
     "& fieldset": {
-      borderColor: (theme) => theme.palette.mode === "dark" ? "#334155" : "#cbd5e1",
+      borderColor: (theme) => theme.palette.mode === "dark" ? "#2e2e2e" : "#cbd5e1",
     },
     "&:hover fieldset": {
-      borderColor: (theme) => theme.palette.mode === "dark" ? "#475569" : "#94a3b8",
+      borderColor: (theme) => theme.palette.mode === "dark" ? "#3a3a3a" : "#94a3b8",
     },
     "&.Mui-focused fieldset": {
       borderWidth: "1px",
@@ -52,7 +52,7 @@ const TEXT_FIELD_SX = {
   },
   "& .MuiSelect-select": {
     padding: "9px 14px",
-    color: (theme) => theme.palette.mode === "dark" ? "#f1f5f9" : "#0f172a",
+    color: (theme) => theme.palette.mode === "dark" ? "#f5f5f5" : "#0f172a",
   },
   "& .MuiFormHelperText-root": {
     fontSize: "12px",
@@ -156,11 +156,11 @@ export const SelectDropDown = React.memo(React.forwardRef(({
                   <img
                     src={option.img}
                     alt=""
-                    className="w-9 h-9 rounded-md object-cover border border-slate-200 dark:border-slate-700 flex-shrink-0 bg-white"
+                    className="w-9 h-9 rounded-md object-cover border border-slate-200 dark:border-[#2e2e2e] flex-shrink-0 bg-white"
                     onError={(e) => (e.currentTarget.src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=")}
                   />
                   {option.icon && (
-                    <div className="absolute -bottom-1 -right-1 bg-white dark:bg-slate-900 rounded-full p-1 shadow-sm border border-slate-100 dark:border-slate-800">
+                    <div className="absolute -bottom-1 -right-1 bg-white dark:bg-[#1c1c1c] rounded-full p-1 shadow-sm border border-slate-100 dark:border-[#2e2e2e]">
                       {option.icon}
                     </div>
                   )}

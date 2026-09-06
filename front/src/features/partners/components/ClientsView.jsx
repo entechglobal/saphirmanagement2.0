@@ -35,7 +35,7 @@ export const ClientsView = () => {
   }
 
   return (
-    <div className="min-h-screen pb-24 font-sans antialiased text-slate-900">
+    <div className="min-h-screen pb-24 font-sans antialiased text-slate-900 dark:text-slate-100">
 
 
       <FormPageHeader
@@ -60,8 +60,9 @@ export const ClientsView = () => {
             <Info label={t("fields.email.label")} value={client.email} icon={<Mail className="w-4 h-4" />} />
             <Info label={t("fields.phone.label")} value={client.phone} icon={<Phone className="w-4 h-4" />} />
 
-            <div className="pt-4 mt-2 border-t border-slate-100 dark:border-slate-800">
+            <div className="pt-4 mt-2 border-t border-slate-100 dark:border-[#2e2e2e]">
               <Info label={t("fields.address.label")} value={client.address} icon={<MapPin className="w-4 h-4" />} />
+              <Info label={t("fields.city.label")} value={client.city} icon={<MapPin className="w-4 h-4" />} />
               <Info label={t("fields.region.label")} value={client.region} />
               <Info label={t("fields.website.label")} value={client.website} icon={<Globe className="w-4 h-4" />} color="text-blue-500" />
             </div>
@@ -87,7 +88,7 @@ export const ClientsView = () => {
 
           {user.isSuperAdmin && client.societe && (
             <Card title={t("sections.affiliation")}>
-              <div className="flex items-center gap-4 mb-4 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-4 mb-4 p-3 bg-slate-50 dark:bg-[#222222]/50 rounded-2xl border border-slate-100 dark:border-[#2e2e2e]">
                 <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                   <Landmark className="w-6 h-6 text-[#B12B89]" />
                 </div>
@@ -99,7 +100,7 @@ export const ClientsView = () => {
               <div className="space-y-3 px-1">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-slate-500 font-medium">{t("fields.reference")}</span>
-                  <span className="font-mono bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded-md text-slate-600 dark:text-slate-400">
+                  <span className="font-mono bg-white dark:bg-[#111111] border border-slate-200 dark:border-[#2e2e2e] px-2 py-1 rounded-md text-slate-600 dark:text-slate-400">
                     ID-{client.societe.id.toString().padStart(4, '0')}
                   </span>
                 </div>
@@ -137,8 +138,8 @@ export const ClientsView = () => {
 /* ---------- SUB-COMPONENTS ---------- */
 
 const Card = ({ title, children }) => (
-  <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-    <div className="px-6 py-4 border-b border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+  <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm overflow-hidden">
+    <div className="px-6 py-4 border-b border-slate-50 dark:border-[#2e2e2e] bg-slate-50/50 dark:bg-[#222222]/30">
       <h3 className="font-bold text-[11px] uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">{title}</h3>
     </div>
     <div className="p-6 space-y-3">{children}</div>
@@ -146,12 +147,12 @@ const Card = ({ title, children }) => (
 );
 
 const Info = ({ label, value, suffix = "", color = "text-slate-900 dark:text-slate-100", isCode = false, isBold = false, isNumber = false, icon = null }) => (
-  <div className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-800/50 last:border-0">
+  <div className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-[#2e2e2e]/50 last:border-0">
     <div className="flex items-center gap-2">
       {icon && <span className="text-slate-400">{icon}</span>}
       <span className="text-sm text-slate-500">{label}</span>
     </div>
-    <span className={`text-sm ${color} ${isCode ? "font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs" : ""} ${isBold ? "font-bold" : "font-semibold"} ${isNumber ? "font-mono" : ""}`}>
+    <span className={`text-sm ${color} ${isCode ? "font-mono bg-slate-100 dark:bg-[#222222] px-1.5 py-0.5 rounded text-xs" : ""} ${isBold ? "font-bold" : "font-semibold"} ${isNumber ? "font-mono" : ""}`}>
       {value ?? "—"} {value && suffix}
     </span>
   </div>

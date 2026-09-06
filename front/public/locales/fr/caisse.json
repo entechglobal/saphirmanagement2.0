@@ -4,7 +4,6 @@
   "labels_page_title": "Libellés de Dépense",
   "caisses_page_title": "Gestion des Wallets",
   "caisses_page_subtitle": "Utilisateurs, banques et coffre-fort",
-
   "modal_edit_caisse_title": "Modifier la Caisse",
   "field_caisse_name": "Nom de la caisse",
   "placeholder_caisse_name": "Ex: Caisse Centrale",
@@ -28,7 +27,6 @@
   "col_societe": "Société",
   "col_current_balance": "Solde actuel",
   "global_access": "Accès global",
-
   "btn_create_caisse": "Créer Caisse",
   "btn_create_user_wallet": "Wallet Utilisateur",
   "btn_create_bank_wallet": "Wallet Banque",
@@ -50,12 +48,10 @@
   "btn_new_label": "Nouveau label",
   "btn_confirm_retrait": "Confirmer le retrait",
   "btn_confirm_depot": "Confirmer le dépôt",
-
   "stat_final_balance": "Solde Final",
   "stat_total_in": "Total Encaissements",
   "stat_total_out": "Total Décaissements",
   "stat_total_transfer": "Total Transferts",
-
   "filter_type": "Type",
   "filter_user": "Utilisateur",
   "filter_role": "Rôle",
@@ -67,26 +63,22 @@
   "filters": "Filtres",
   "reset": "Réinitialiser",
   "all": "Tous",
-
   "type_encaissement": "Encaissements",
   "type_decaissement": "Décaissements",
   "type_transfert": "Transferts",
   "type_label_encaissement": "Encaissement",
   "type_label_decaissement": "Décaissement",
   "type_label_transfert": "Transfert",
-
   "col_date_op": "Date Opération",
   "col_time": "Heure",
   "col_type": "Type",
   "col_libelle": "Libellé",
   "col_amount": "Montant",
-  "col_user": "Utilisateur",
   "col_balance": "Solde",
   "col_observation": "Observation",
   "col_name": "Nom",
   "col_status": "Statut",
   "col_created_at": "Créé le",
-
   "libelle_initial": "Solde initial",
   "libelle_charge": "Charge",
   "libelle_transfer_in": "Virement de {{name}}",
@@ -95,7 +87,6 @@
   "libelle_transfer_out_noname": "Virement sortant",
   "libelle_income": "Encaissement (règlement)",
   "libelle_expense": "Décaissement (règlement)",
-
   "modal_transfer_title": "Transfert entre wallets",
   "modal_transfer_subtitle": "Déplacer des fonds entre tous les types de wallets",
   "modal_transfer_subtitle_own": "Transférer depuis votre wallet vers un autre compte",
@@ -114,9 +105,10 @@
   "err_banque_required": "Banque requise",
   "err_coffre_name_required": "Nom du coffre requis",
   "success_transfer": "Transfert effectué avec succès",
+  "success_transfer_pending": "Transfert envoyé. En attente d'acceptation du destinataire.",
+  "success_transfer_pending_admin": "Transfert envoyé. En attente de validation du super administrateur.",
   "success_bank_wallet_created": "Wallet banque créé avec succès",
   "success_coffre_wallet_created": "Coffre fort créé avec succès",
-
   "modal_create_caisse_title": "Créer une Caisse",
   "modal_create_caisse_subtitle": "La caisse est automatiquement configurée selon le rôle",
   "modal_charge_title": "Créer une Charge",
@@ -128,7 +120,6 @@
   "modal_label_create_title": "Nouveau label",
   "modal_label_edit_title": "Modifier le label",
   "modal_label_subtitle": "Catégorie de dépense",
-
   "name_preview_label": "Nom généré automatiquement",
   "modal_create_my_caisse_title": "Créer ma Caisse",
   "modal_create_my_caisse_subtitle": "Votre caisse sera configurée automatiquement selon votre rôle",
@@ -138,7 +129,6 @@
   "success_my_caisse_created": "Votre caisse a été créée avec succès",
   "err_create_my_caisse": "Erreur lors de la création de votre caisse",
   "available_balance": "Solde disponible",
-
   "field_societe": "Société",
   "field_user": "Utilisateur",
   "field_initial_balance": "Solde initial (MAD)",
@@ -151,7 +141,6 @@
   "field_dest_caisse": "Caisse destination",
   "field_label_name": "Nom du label",
   "field_active": "Actif",
-
   "placeholder_select_societe": "Sélectionner une société",
   "placeholder_all_societes": "Toutes les sociétés",
   "filter_all_societes": "Toutes les sociétés",
@@ -162,7 +151,6 @@
   "placeholder_amount": "0.00",
   "placeholder_note": "Motif du transfert...",
   "placeholder_label_name": "Ex: Carburant",
-
   "err_societe_required": "Société requise",
   "err_user_required": "Utilisateur requis",
   "err_caisse_required": "Caisse requise",
@@ -172,15 +160,12 @@
   "err_source_caisse_required": "Caisse source requise",
   "err_dest_caisse_required": "Caisse destination requise",
   "err_label_name_required": "Le nom est requis",
-
   "no_societe_available": "Aucune société disponible",
   "no_caisse_available": "Aucune caisse disponible",
   "no_user_available": "Aucun utilisateur disponible",
   "no_label_available": "Aucun libellé actif",
-
   "status_active": "Actif",
   "status_inactive": "Inactif",
-
   "success_caisse_created": "Caisse créée avec succès",
   "success_charge_created": "Charge enregistrée",
   "success_retrait": "Retrait effectué avec succès",
@@ -188,15 +173,19 @@
   "success_label_created": "Label créé",
   "success_label_updated": "Label mis à jour",
   "success_label_deleted": "Label supprimé",
-
   "err_create_caisse": "Erreur lors de la création de la caisse",
   "err_create_charge": "Erreur lors de l'enregistrement de la charge",
   "err_transfer": "Erreur lors du transfert",
   "err_label_create": "Erreur de création",
   "err_label_update": "Erreur de mise à jour",
   "err_label_delete": "Erreur de suppression",
-
   "delete_label_title": "Supprimer le label",
   "delete_label_message": "Supprimer \"{{name}}\" ? Il ne sera plus disponible dans les charges.",
-  "delete_label_confirm": "Supprimer"
+  "delete_label_confirm": "Supprimer",
+  "wallet_group_users": "Utilisateurs",
+  "wallet_group_societe": "Société",
+  "wallet_group_central": "Caisse centrale",
+  "wallet_group_banks": "Banques",
+  "wallet_group_coffres": "Coffres",
+  "err_amount_exceeds_available": "Solde disponible insuffisant ({{amount}} MAD)"
 }

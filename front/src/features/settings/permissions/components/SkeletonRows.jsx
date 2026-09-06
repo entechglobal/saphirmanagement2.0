@@ -6,7 +6,7 @@ const SkeletonRows = ({ cols }) =>
     <tr key={i} className="animate-pulse">
       {Array.from({ length: cols }).map((_, j) => (
         <td key={j} className="px-6 py-4">
-          <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-24" />
+          <div className="h-4 bg-slate-100 dark:bg-[#222222] rounded w-24" />
         </td>
       ))}
     </tr>

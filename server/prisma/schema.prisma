@@ -208,6 +208,11 @@ enum CaisseType {
   COFFRE
 }
 
+enum DeliveryShiftStatus {
+  OPEN
+  CLOSED
+}
+
 enum CaisseTransactionType {
   INITIAL_BALANCE
   CHARGE
@@ -215,6 +220,18 @@ enum CaisseTransactionType {
   TRANSFER_OUT
   INCOME
   EXPENSE
+}
+
+enum CaisseTransferStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+enum NotificationType {
+  WALLET_TRANSFER_REQUEST
+  WALLET_TRANSFER_ACCEPTED
+  WALLET_TRANSFER_DECLINED
 }
 
 // ========================================
@@ -258,6 +275,8 @@ model Societe {
   packs                Pack[]
   deliveryProviderConfigs DeliveryProviderConfig[]
   caisses                 Caisse[]
+  deliveryShifts          DeliveryShift[]
+  attendanceRecords       AttendanceRecord[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -423,10 +442,17 @@ model User {
   // Linked Delivery (operational identity) for INTERN livreur users
   delivery Delivery?
 
+  // Delivery shifts (livreur work sessions)
+  deliveryShifts DeliveryShift[]
+
   // Caisse (cash register)
   caisse             Caisse?
   caissesCreated     Caisse[]            @relation("CaisseCreatedBy")
   caisseTransactions CaisseTransaction[] @relation("CaisseTransactionCreatedBy")
+  notifications               Notification[]
+  createdTransferRequests     CaisseTransferRequest[] @relation("TransferRequestCreatedBy")
+  respondedTransferRequests   CaisseTransferRequest[] @relation("TransferRequestRespondedBy")
+  attendanceRecords           AttendanceRecord[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -625,6 +651,7 @@ model Article {
   prixVente1 Decimal @map("prix_vente_1") @db.Decimal(10, 2)
   prixVente2 Decimal @map("prix_vente_2") @db.Decimal(10, 2)
   prixVente3 Decimal @map("prix_vente_3") @db.Decimal(10, 2)
+  commission Decimal @default(0) @db.Decimal(10, 2)
 
   dateExpiration  DateTime? @map("date_expiration") @db.Date
   dureeExpiration String?   @map("duree_expiration") @db.VarChar(50)
@@ -748,6 +775,7 @@ model Client {
   name    String     @db.VarChar(255)
   type    EntityType @default(PARTICULIER)
   address String?    @db.Text
+  city    String?    @db.VarChar(100)
   region  String?    @db.VarChar(100)
   phone   String?    @db.VarChar(20)
   email   String?    @db.VarChar(100)
@@ -842,6 +870,7 @@ model Delivery {
   user          User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
   bonLivraisons BonLivraison[]
   livreurBLs    BonLivraison[] @relation("BLLivreur")
+  shifts        DeliveryShift[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -865,6 +894,7 @@ model Banque {
   reglements            ReglementClient[]
   reglementsFournisseur ReglementFournisseur[]
   caisses               Caisse[]
+  bonLivraisons         BonLivraison[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -910,6 +940,7 @@ model Pack {
   remise                Decimal  @default(0) @db.Decimal(5, 2)
   prixVentePack         Decimal  @map("prix_vente_pack") @db.Decimal(10, 2)
   purchasePrice         Decimal  @default(0) @map("purchase_price") @db.Decimal(10, 2)
+  commission            Decimal  @default(0) @db.Decimal(10, 2)
   active                Boolean  @default(true)
 
   societe    Societe         @relation(fields: [societeId], references: [id], onDelete: Cascade)
@@ -980,6 +1011,7 @@ model BonLivraisonPackLine {
   packId         Int     @map("pack_id")
   quantity       Decimal @db.Decimal(10, 3)
   prixVente      Decimal @map("prix_vente") @db.Decimal(10, 2)
+  commission     Decimal @default(0) @db.Decimal(10, 2)
 
   bonLivraison BonLivraison @relation(fields: [bonLivraisonId], references: [id], onDelete: Cascade)
   pack         Pack         @relation(fields: [packId], references: [id], onDelete: Restrict)
@@ -1082,6 +1114,7 @@ model ClientDocumentLine {
   unitPrice  Decimal  @map("unit_price") @db.Decimal(10, 2)
   remise     Decimal? @map("remise") @db.Decimal(10, 2)     // discount value
   priceField String?  @map("price_field") @db.VarChar(20)   // prixVente1 | prixVente2 | prixVente3
+  commission Decimal  @default(0) @db.Decimal(10, 2)        // per-unit commercial commission snapshot
 
   totalHT  Decimal? @map("total_ht") @db.Decimal(12, 2)
   tvaRate  Decimal? @map("tva_rate") @db.Decimal(5, 2)
@@ -1268,16 +1301,19 @@ model BonLivraison {
   whatsapp        String? @db.VarChar(20)
   ville           String? @db.VarChar(100)
   localisation    String? @db.Text
+  withFacture     Boolean @default(false) @map("with_facture")
   raisonSocial    String? @map("raison_social") @db.VarChar(255)
   ice             String? @db.VarChar(15)
   siegeSocial     String? @map("siege_social") @db.VarChar(255)
   nombreDeColis   Int?    @map("nombre_de_colis")
   observation     String? @db.Text
   modeReglement   ModeReglement? @map("mode_reglement")
+  banqueId        Int?           @map("banque_id")
 
   commercialId    Int? @map("commercial_id")
   preparateurId   Int? @map("preparateur_id")
   livreurId       Int? @map("livreur_id")
+  totalCommission Decimal @default(0) @map("total_commission") @db.Decimal(12, 2)
 
   // ── REPORTE (parallel operational condition) ────────────────────
   // REPORTE is NOT a lifecycle state — it's a temporary postponement.
@@ -1307,12 +1343,14 @@ model BonLivraison {
   livreur          Delivery?      @relation("BLLivreur", fields: [livreurId], references: [id], onDelete: SetNull)
   reportedBy       User?                   @relation("BLReportedBy", fields: [reportedById], references: [id], onDelete: SetNull)
   providerConfig   DeliveryProviderConfig? @relation("BLProviderConfig", fields: [providerConfigId], references: [id], onDelete: SetNull)
+  banque           Banque?                 @relation(fields: [banqueId], references: [id], onDelete: SetNull)
 
   factures         Facture[]
   bonRetourClients BonRetourClient[]  // client returns referencing this delivery
   stockTransactions StockTransaction[]
   packLines        BonLivraisonPackLine[]
   statusHistory    BonLivraisonStatusHistory[]
+  shiftOrders      DeliveryShiftOrder[]
 
   // Many-to-many link to advances (avances) that pay this BL
   advances BonLivraisonAdvance[]
@@ -1331,6 +1369,7 @@ model BonLivraison {
   @@index([preparateurId])
   @@index([livreurId])
   @@index([isReported])
+  @@index([banqueId])
   @@map("bon_livraisons")
 }
 
@@ -2045,6 +2084,9 @@ model Caisse {
 
   transactions           CaisseTransaction[] @relation("OwnerCaisse")
   referencedTransactions CaisseTransaction[] @relation("ReferenceCaisse")
+  outgoingTransferRequests CaisseTransferRequest[] @relation("TransferRequestSource")
+  incomingTransferRequests CaisseTransferRequest[] @relation("TransferRequestDest")
+  shiftRemittances       DeliveryShift[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -2089,4 +2131,138 @@ model CaisseTransaction {
   @@index([reglementClientId])
   @@index([reglementFournisseurId])
   @@map("caisse_transactions")
+}
+
+model CaisseTransferRequest {
+  id                  Int                  @id @default(autoincrement())
+  sourceCaisseId      Int                  @map("source_caisse_id")
+  destinationCaisseId Int                  @map("destination_caisse_id")
+  amount              Decimal              @db.Decimal(10, 2)
+  note                String?              @db.Text
+  status              CaisseTransferStatus @default(PENDING)
+  requiresSuperAdmin  Boolean              @default(false) @map("requires_super_admin")
+  createdById         Int                  @map("created_by_id")
+  respondedById       Int?                 @map("responded_by_id")
+  respondedAt         DateTime?            @map("responded_at")
+
+  sourceCaisse      Caisse @relation("TransferRequestSource", fields: [sourceCaisseId], references: [id], onDelete: Cascade)
+  destinationCaisse Caisse @relation("TransferRequestDest", fields: [destinationCaisseId], references: [id], onDelete: Cascade)
+  createdBy         User   @relation("TransferRequestCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+  respondedBy       User?  @relation("TransferRequestRespondedBy", fields: [respondedById], references: [id], onDelete: SetNull)
+  notifications     Notification[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([sourceCaisseId])
+  @@index([destinationCaisseId])
+  @@index([createdById])
+  @@index([requiresSuperAdmin])
+  @@map("caisse_transfer_requests")
+}
+
+// ========================================
+// DELIVERY SHIFTS (Livreur work sessions)
+// ========================================
+
+model DeliveryShift {
+  id                     Int                 @id @default(autoincrement())
+  societeId              Int                 @map("societe_id")
+  userId                 Int                 @map("user_id")
+  deliveryId             Int?                @map("delivery_id")
+  status                 DeliveryShiftStatus @default(OPEN)
+  startedAt              DateTime            @default(now()) @map("started_at")
+  closedAt               DateTime?           @map("closed_at")
+  openingBalance         Decimal             @default(0) @map("opening_balance") @db.Decimal(10, 2)
+  closingBalance         Decimal?            @map("closing_balance") @db.Decimal(10, 2)
+  totalCollected         Decimal             @default(0) @map("total_collected") @db.Decimal(10, 2)
+  totalOrders            Int                 @default(0) @map("total_orders")
+  deliveredCount         Int                 @default(0) @map("delivered_count")
+  paidCount              Int                 @default(0) @map("paid_count")
+  remittedAmount         Decimal?            @map("remitted_amount") @db.Decimal(10, 2)
+  remittanceNote         String?             @map("remittance_note") @db.Text
+  remittanceCaisseId     Int?                @map("remittance_caisse_id")
+  transferRequestId      Int?                @map("transfer_request_id")
+  remittanceCompletedAt  DateTime?           @map("remittance_completed_at")
+
+  societe          Societe               @relation(fields: [societeId], references: [id], onDelete: Cascade)
+  user             User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  delivery         Delivery?             @relation(fields: [deliveryId], references: [id], onDelete: SetNull)
+  remittanceCaisse Caisse?               @relation(fields: [remittanceCaisseId], references: [id], onDelete: SetNull)
+  orders           DeliveryShiftOrder[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([societeId])
+  @@index([userId])
+  @@index([deliveryId])
+  @@index([status])
+  @@index([startedAt])
+  @@index([remittanceCaisseId])
+  @@map("delivery_shifts")
+}
+
+model DeliveryShiftOrder {
+  id             Int                @id @default(autoincrement())
+  shiftId        Int                @map("shift_id")
+  bonLivraisonId Int                @map("bon_livraison_id")
+  linkedStatus   BonLivraisonStatus @map("linked_status")
+  amount         Decimal            @default(0) @db.Decimal(10, 2)
+  linkedAt       DateTime           @default(now()) @map("linked_at")
+
+  shift        DeliveryShift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+  bonLivraison BonLivraison  @relation(fields: [bonLivraisonId], references: [id], onDelete: Cascade)
+
+  @@unique([shiftId, bonLivraisonId])
+  @@index([bonLivraisonId])
+  @@index([linkedAt])
+  @@map("delivery_shift_orders")
+}
+
+model Notification {
+  id                Int              @id @default(autoincrement())
+  userId            Int              @map("user_id")
+  type              NotificationType
+  payload           Json?
+  read              Boolean          @default(false)
+  transferRequestId Int?             @map("transfer_request_id")
+
+  user            User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transferRequest CaisseTransferRequest? @relation(fields: [transferRequestId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
+  @@index([transferRequestId])
+  @@map("notifications")
+}
+
+// ========================================
+// ATTENDANCE (ZKTeco punch logs imported via attendance-link)
+// ========================================
+
+model AttendanceRecord {
+  id           Int      @id @default(autoincrement())
+  societeId    Int      @map("societe_id")
+  userId       Int      @map("user_id")
+  deviceUserId String   @map("device_user_id") @db.VarChar(50)
+  deviceUid    Int?     @map("device_uid")
+  punchTime    DateTime @map("punch_time")
+  punchType    Int      @default(0) @map("punch_type")
+  verifyMode   Int?     @map("verify_mode")
+  deviceIp     String   @default("") @map("device_ip") @db.VarChar(64)
+  deviceSn     String?  @map("device_sn") @db.VarChar(64)
+  importedAt   DateTime @default(now()) @map("imported_at")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  societe Societe @relation(fields: [societeId], references: [id], onDelete: Cascade)
+
+  @@unique([societeId, deviceIp, deviceUserId, punchTime], name: "attendance_dedup")
+  @@index([societeId, punchTime])
+  @@index([userId, punchTime])
+  @@index([importedAt])
+  @@map("attendance_records")
 }

@@ -62,7 +62,7 @@ const EditableCell = ({ value, onActivate, onCommit, min = 0, max, step = 1, wid
       type="number" min={min} max={max} step={step}
       value={editing ? raw : value}
       onFocus={handleFocus} onBlur={handleBlur} onChange={handleChange}
-      className={`${width} px-2 py-1.5 border rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition-all dark:text-slate-100 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 ${className}`}
+      className={`${width} px-2 py-1.5 border rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition-all dark:text-slate-100 bg-white dark:bg-[#222222] border-slate-200 dark:border-[#2e2e2e] ${className}`}
     />
   );
 };
@@ -73,7 +73,7 @@ const PVConfirmModal = ({ isOpen, onNo, onYes, t }) => {
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center modal-backdrop p-4">
       <div
-        className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-slate-800 p-6"
+        className="bg-white dark:bg-[#1c1c1c] rounded-2xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-[#2e2e2e] p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 mb-2">
@@ -85,7 +85,7 @@ const PVConfirmModal = ({ isOpen, onNo, onYes, t }) => {
         <div className="flex gap-3">
           <button
             onClick={onNo}
-            className="flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+            className="flex-1 py-3 rounded-xl border border-slate-200 dark:border-[#2e2e2e] text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#222222] transition"
           >
             {t("pv_confirm.no")}
           </button>
@@ -151,7 +151,7 @@ const PVBulkUpdateModal = ({ isOpen, products, onConfirm, onCancel, t }) => {
       step={1}
       value={value}
       onChange={(e) => updateRow(key, field, e.target.value)}
-      className="w-24 px-2 py-1.5 border rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition dark:text-slate-100 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
+      className="w-24 px-2 py-1.5 border rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition dark:text-slate-100 bg-white dark:bg-[#222222] border-slate-200 dark:border-[#2e2e2e]"
     />
   );
 
@@ -161,40 +161,40 @@ const PVBulkUpdateModal = ({ isOpen, products, onConfirm, onCancel, t }) => {
       onClick={onCancel}
     >
       <div
-        className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-5xl border border-slate-200 dark:border-slate-800 overflow-hidden"
+        className="bg-white dark:bg-[#1c1c1c] rounded-2xl shadow-2xl w-full max-w-5xl border border-slate-200 dark:border-[#2e2e2e] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-[#2e2e2e]">
           <div>
             <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">{t("pv_bulk.title")}</h3>
             <p className="text-[10px] text-slate-400 mt-0.5">{t("pv_bulk.description")}</p>
           </div>
-          <button onClick={onCancel} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">
+          <button onClick={onCancel} className="p-1.5 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-lg transition">
             <X className="w-4 h-4 text-slate-400" />
           </button>
         </div>
         <div className="overflow-auto max-h-[60vh]">
           <table className="w-full">
-            <thead className="sticky top-0 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-[10px] uppercase tracking-wider text-slate-500">
+            <thead className="sticky top-0 bg-slate-50 dark:bg-[#222222] border-b border-slate-200 dark:border-[#2e2e2e] text-[10px] uppercase tracking-wider text-slate-500">
               <tr>
                 <th className="px-4 py-3 text-left font-semibold">{t("article")}</th>
                 <th className="px-3 py-3 text-center font-semibold" colSpan={2}>{t("pv_bulk.pv1")}</th>
-                <th className="px-3 py-3 text-center font-semibold border-l border-slate-200 dark:border-slate-700" colSpan={2}>{t("pv_bulk.pv2")}</th>
-                <th className="px-3 py-3 text-center font-semibold border-l border-slate-200 dark:border-slate-700" colSpan={2}>{t("pv_bulk.pv3")}</th>
+                <th className="px-3 py-3 text-center font-semibold border-l border-slate-200 dark:border-[#2e2e2e]" colSpan={2}>{t("pv_bulk.pv2")}</th>
+                <th className="px-3 py-3 text-center font-semibold border-l border-slate-200 dark:border-[#2e2e2e]" colSpan={2}>{t("pv_bulk.pv3")}</th>
               </tr>
               <tr className="text-[9px] text-slate-400">
                 <th className="px-4 pb-2" />
                 <th className="px-3 pb-2 text-center font-medium">{t("pv_bulk.current")}</th>
                 <th className="px-3 pb-2 text-center font-medium text-blue-500">{t("pv_bulk.new")}</th>
-                <th className="px-3 pb-2 text-center font-medium border-l border-slate-100 dark:border-slate-800">{t("pv_bulk.current")}</th>
+                <th className="px-3 pb-2 text-center font-medium border-l border-slate-100 dark:border-[#2e2e2e]">{t("pv_bulk.current")}</th>
                 <th className="px-3 pb-2 text-center font-medium text-blue-500">{t("pv_bulk.new")}</th>
-                <th className="px-3 pb-2 text-center font-medium border-l border-slate-100 dark:border-slate-800">{t("pv_bulk.current")}</th>
+                <th className="px-3 pb-2 text-center font-medium border-l border-slate-100 dark:border-[#2e2e2e]">{t("pv_bulk.current")}</th>
                 <th className="px-3 pb-2 text-center font-medium text-blue-500">{t("pv_bulk.new")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
               {rows.map((row) => (
-                <tr key={row.key} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                <tr key={row.key} className="hover:bg-slate-50 dark:hover:bg-[#222222]/40 transition-colors">
                   <td className="px-4 py-3 min-w-[160px]">
                     <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 truncate max-w-[150px]">{row.name}</p>
                     <p className="text-[10px] font-mono text-slate-400 mt-0.5">
@@ -203,17 +203,17 @@ const PVBulkUpdateModal = ({ isOpen, products, onConfirm, onCancel, t }) => {
                   </td>
                   <td className="px-3 py-3 text-center"><span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{fmt(row.pv1)}</span></td>
                   <td className="px-3 py-3 text-center">{pvInput(row.key, "newPv1", row.newPv1)}</td>
-                  <td className="px-3 py-3 text-center border-l border-slate-100 dark:border-slate-800"><span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{fmt(row.pv2)}</span></td>
+                  <td className="px-3 py-3 text-center border-l border-slate-100 dark:border-[#2e2e2e]"><span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{fmt(row.pv2)}</span></td>
                   <td className="px-3 py-3 text-center">{pvInput(row.key, "newPv2", row.newPv2)}</td>
-                  <td className="px-3 py-3 text-center border-l border-slate-100 dark:border-slate-800"><span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{fmt(row.pv3)}</span></td>
+                  <td className="px-3 py-3 text-center border-l border-slate-100 dark:border-[#2e2e2e]"><span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{fmt(row.pv3)}</span></td>
                   <td className="px-3 py-3 text-center">{pvInput(row.key, "newPv3", row.newPv3)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
-          <button onClick={onCancel} className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+        <div className="px-6 py-4 border-t border-slate-100 dark:border-[#2e2e2e] flex justify-end gap-3">
+          <button onClick={onCancel} className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-[#2e2e2e] text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#222222] transition">
             {t("pv_bulk.cancel")}
           </button>
           <button onClick={handleConfirm} className="px-5 py-2.5 rounded-xl bg-[#B12B89] hover:bg-[#B05596] text-white text-sm font-bold transition shadow-lg shadow-[#B12B89]/30 dark:shadow-none">
@@ -581,7 +581,7 @@ export const BonReceptionEditForm = () => {
         </FormCard>
 
         <div className="overflow-x-auto">
-          <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+          <div className="px-6 py-5 border-b border-slate-100 dark:border-[#2e2e2e] flex flex-wrap items-center justify-between gap-4">
             <div>
               <h3 className="font-bold text-slate-800 dark:text-slate-100">{t("articles_section")}</h3>
               <p className="text-[10px] text-slate-400 mt-0.5">
@@ -601,7 +601,7 @@ export const BonReceptionEditForm = () => {
           <div className="overflow-x-auto">
             <table className="w-full table-auto">
               <thead>
-                <tr className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50">
+                <tr className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/50">
                   <th className="px-6 py-3.5 text-left font-semibold">{t("article")}</th>
                   <th className="px-5 py-3.5 text-left font-semibold hidden md:table-cell">{t("type")}</th>
                   <th className="px-5 py-3.5 text-center font-semibold">{t("new_purchase_price")}</th>
@@ -611,7 +611,7 @@ export const BonReceptionEditForm = () => {
                   {isDraft && <th className="px-6 py-3.5 text-right font-semibold"></th>}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
                 {selectedProducts.length === 0 ? (
                   <tr>
                     <td colSpan={isDraft ? 7 : 6} className="px-6 py-16 text-center">
@@ -635,7 +635,7 @@ export const BonReceptionEditForm = () => {
                         {/* Article */}
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800">
+                            <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-[#222222]">
                               <Package className="w-4 h-4 text-slate-500" />
                             </div>
                             <div>
@@ -740,7 +740,7 @@ export const BonReceptionEditForm = () => {
               </tbody>
               {touchedProducts.length > 0 && (
                 <tfoot>
-                  <tr className="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/40">
+                  <tr className="border-t-2 border-slate-200 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/40">
                     <td colSpan={isDraft ? 5 : 4} className="px-6 py-4 text-right text-xs font-bold uppercase text-slate-500 tracking-wider">
                       {t("total_ttc")}
                     </td>

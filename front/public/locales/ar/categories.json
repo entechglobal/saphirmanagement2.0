@@ -27,6 +27,10 @@
   "category_image": "صورة الفئة",
   "visibility_description": "إظهار الفئة في نقطة البيع",
   "save_category": "حفظ الفئة",
+  "quick_add": "إضافة",
+  "quick_create_title": "فئة جديدة",
+  "quick_create_subtitle": "إنشاء فئة وتحديدها",
+  "quick_created": "تم إنشاء الفئة",
   "saving": "جاري الحفظ...",
   "upload_image": "تحميل الصورة",
   "validation": {

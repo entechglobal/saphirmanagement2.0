@@ -66,7 +66,7 @@ const AttributeSelector = ({ allAttributes, rows, onChange }) => {
         return (
           <div
             key={row.id}
-            className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 p-4 space-y-3"
+            className="rounded-2xl border border-slate-200 dark:border-[#2e2e2e] bg-slate-50 dark:bg-[#222222]/40 p-4 space-y-3"
           >
             <div className="flex items-center gap-3">
               <span className="w-6 h-6 rounded-full bg-[#B12B89] text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">
@@ -100,7 +100,7 @@ const AttributeSelector = ({ allAttributes, rows, onChange }) => {
                       className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all select-none ${
                         selected
                           ? "bg-[#B12B89] text-white border-[#B12B89] shadow-sm shadow-blue-300/40"
-                          : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:border-blue-400"
+                          : "bg-white dark:bg-[#222222] text-slate-600 dark:text-slate-300 border-slate-300 dark:border-[#3a3a3a] hover:border-blue-400"
                       }`}
                     >
                       {selected && <span className="mr-1">✓</span>}
@@ -169,26 +169,26 @@ const VariantsPreviewTable = ({ variants, onChange, onSubmit, loading }) => {
         </p>
         <button
           onClick={generateAll}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-[#2e2e2e] text-xs font-semibold hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors"
         >
           <Shuffle size={13} /> {t("builder.auto_barcodes")}
         </button>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div className="rounded-2xl border border-slate-200 dark:border-[#2e2e2e] overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 dark:bg-slate-800/50">
+          <thead className="bg-slate-50 dark:bg-[#222222]/50">
             <tr className="text-left text-[10px] uppercase tracking-wider text-slate-400">
               <th className="px-4 py-3">{t("table.variant")}</th>
               <th className="px-4 py-3">{t("table.barcode")}</th>
               <th className="px-4 py-3 text-right w-20"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+          <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
             {variants.map((v) => (
               <tr
                 key={v.id}
-                className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
+                className="hover:bg-slate-50/50 dark:hover:bg-[#222222]/30 transition-colors"
               >
                 <td className="px-4 py-3">
                   <div className="flex flex-wrap gap-1.5">
@@ -210,7 +210,7 @@ const VariantsPreviewTable = ({ variants, onChange, onSubmit, loading }) => {
                       placeholder={t("builder.barcode_placeholder")}
                       className={`w-44 rounded-lg border px-2.5 py-1.5 text-xs font-mono outline-none focus:ring-2 focus:ring-[#B12B89] transition-colors ${
                         v.barcode?.trim()
-                          ? "border-slate-300 dark:border-slate-600 dark:bg-slate-900"
+                          ? "border-slate-300 dark:border-[#3a3a3a] dark:bg-[#1c1c1c]"
                           : "border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/20"
                       }`}
                     />
@@ -331,7 +331,7 @@ export const VariantBuilderModal = ({
                 ? "bg-[#B12B89] text-white"
                 : s < step
                 ? "bg-green-500 text-white"
-                : "bg-slate-100 dark:bg-slate-800 text-slate-400"
+                : "bg-slate-100 dark:bg-[#222222] text-slate-400"
             }`}
           >
             {s < step ? "✓" : s}
@@ -354,7 +354,7 @@ export const VariantBuilderModal = ({
       <div className="flex gap-3">
         <button
           onClick={onClose}
-          className="flex-1 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          className="flex-1 py-2.5 border border-slate-200 dark:border-[#2e2e2e] rounded-xl font-semibold text-sm hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors"
         >
           {t("builder.cancel")}
         </button>
@@ -370,7 +370,7 @@ export const VariantBuilderModal = ({
     ) : (
       <button
         onClick={() => setStep(1)}
-        className="py-2.5 px-5 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+        className="py-2.5 px-5 border border-slate-200 dark:border-[#2e2e2e] rounded-xl font-semibold text-sm hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors"
       >
         {t("builder.back")}
       </button>

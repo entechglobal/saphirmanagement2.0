@@ -2,7 +2,6 @@
   "page_title": "إدارة الصندوق",
   "page_subtitle": "المعاملات والأرصدة في الوقت الفعلي",
   "labels_page_title": "تصنيفات المصاريف",
-
   "btn_create_caisse": "إنشاء صندوق",
   "btn_create_charge": "إنشاء مصروف",
   "btn_retrait": "سحب",
@@ -19,12 +18,10 @@
   "btn_new_label": "تصنيف جديد",
   "btn_confirm_retrait": "تأكيد السحب",
   "btn_confirm_depot": "تأكيد الإيداع",
-
   "stat_final_balance": "الرصيد النهائي",
   "stat_total_in": "إجمالي التحصيلات",
   "stat_total_out": "إجمالي المصاريف",
   "stat_total_transfer": "إجمالي التحويلات",
-
   "filter_type": "النوع",
   "filter_user": "المستخدم",
   "filter_role": "الدور",
@@ -36,14 +33,12 @@
   "filters": "الفلاتر",
   "reset": "إعادة تعيين",
   "all": "الكل",
-
   "type_encaissement": "تحصيلات",
   "type_decaissement": "مصاريف",
   "type_transfert": "تحويلات",
   "type_label_encaissement": "تحصيل",
   "type_label_decaissement": "مصروف",
   "type_label_transfert": "تحويل",
-
   "col_date_op": "تاريخ العملية",
   "col_time": "الوقت",
   "col_type": "النوع",
@@ -55,7 +50,6 @@
   "col_name": "الاسم",
   "col_status": "الحالة",
   "col_created_at": "تاريخ الإنشاء",
-
   "libelle_initial": "الرصيد الافتتاحي",
   "libelle_charge": "مصروف",
   "libelle_transfer_in": "تحويل من {{name}}",
@@ -82,6 +76,8 @@
   "err_banque_required": "البنك مطلوب",
   "err_coffre_name_required": "اسم الخزنة مطلوب",
   "success_transfer": "تم التحويل بنجاح",
+  "success_transfer_pending": "تم إرسال التحويل. في انتظار قبول المستلم.",
+  "success_transfer_pending_admin": "تم إرسال التحويل. في انتظار موافقة المشرف العام.",
   "success_bank_wallet_created": "تم إنشاء محفظة البنك",
   "success_coffre_wallet_created": "تم إنشاء الخزنة",
   "btn_create_user_wallet": "محفظة مستخدم",
@@ -90,7 +86,6 @@
   "btn_transfer": "تحويل",
   "btn_confirm_transfer": "تأكيد التحويل",
   "caisses_page_subtitle": "المستخدمون والبنوك والخزنة",
-
   "modal_create_caisse_title": "إنشاء صندوق",
   "modal_create_caisse_subtitle": "يتم تكوينه تلقائياً حسب دور المستخدم",
   "modal_charge_title": "إنشاء مصروف",
@@ -102,7 +97,6 @@
   "modal_label_create_title": "تصنيف جديد",
   "modal_label_edit_title": "تعديل التصنيف",
   "modal_label_subtitle": "فئة المصاريف",
-
   "name_preview_label": "الاسم المُنشأ تلقائياً",
   "modal_create_my_caisse_title": "إنشاء محفظتي",
   "modal_create_my_caisse_subtitle": "سيتم تهيئة محفظتك تلقائياً بناءً على دورك",
@@ -112,7 +106,6 @@
   "success_my_caisse_created": "تم إنشاء محفظتك بنجاح",
   "err_create_my_caisse": "خطأ في إنشاء محفظتك",
   "available_balance": "الرصيد المتاح",
-
   "field_societe": "الشركة",
   "field_user": "المستخدم",
   "field_initial_balance": "الرصيد الافتتاحي (MAD)",
@@ -125,7 +118,6 @@
   "field_dest_caisse": "الصندوق الوجهة",
   "field_label_name": "اسم التصنيف",
   "field_active": "نشط",
-
   "placeholder_select_societe": "اختر شركة",
   "placeholder_all_societes": "كل الشركات",
   "filter_all_societes": "كل الشركات",
@@ -136,7 +128,6 @@
   "placeholder_amount": "0.00",
   "placeholder_note": "سبب التحويل...",
   "placeholder_label_name": "مثال: وقود",
-
   "err_societe_required": "الشركة مطلوبة",
   "err_user_required": "المستخدم مطلوب",
   "err_caisse_required": "الصندوق مطلوب",
@@ -146,15 +137,12 @@
   "err_source_caisse_required": "الصندوق المصدر مطلوب",
   "err_dest_caisse_required": "الصندوق الوجهة مطلوب",
   "err_label_name_required": "الاسم مطلوب",
-
   "no_societe_available": "لا توجد شركات متاحة",
   "no_caisse_available": "لا يوجد صندوق متاح",
   "no_user_available": "لا يوجد مستخدمون",
   "no_label_available": "لا توجد تصنيفات نشطة",
-
   "status_active": "نشط",
   "status_inactive": "غير نشط",
-
   "success_caisse_created": "تم إنشاء الصندوق بنجاح",
   "success_charge_created": "تم تسجيل المصروف",
   "success_retrait": "تم السحب بنجاح",
@@ -162,18 +150,15 @@
   "success_label_created": "تم إنشاء التصنيف",
   "success_label_updated": "تم تحديث التصنيف",
   "success_label_deleted": "تم حذف التصنيف",
-
   "err_create_caisse": "خطأ في إنشاء الصندوق",
   "err_create_charge": "خطأ في تسجيل المصروف",
   "err_transfer": "خطأ في التحويل",
   "err_label_create": "خطأ في الإنشاء",
   "err_label_update": "خطأ في التحديث",
   "err_label_delete": "خطأ في الحذف",
-
   "delete_label_title": "حذف التصنيف",
   "delete_label_message": "حذف \"{{name}}\"؟ لن يكون متاحاً في المصاريف.",
   "delete_label_confirm": "حذف",
-
   "caisses_page_title": "إدارة المحافظ",
   "modal_edit_caisse_title": "تعديل الصندوق",
   "field_caisse_name": "اسم الصندوق",
@@ -196,5 +181,11 @@
   "col_caisse_name": "الصندوق",
   "col_societe": "الشركة",
   "col_current_balance": "الرصيد الحالي",
-  "global_access": "وصول عام"
+  "global_access": "وصول عام",
+  "wallet_group_users": "المستخدمون",
+  "wallet_group_societe": "الشركة",
+  "wallet_group_central": "الصندوق المركزي",
+  "wallet_group_banks": "البنوك",
+  "wallet_group_coffres": "الخزائن",
+  "err_amount_exceeds_available": "الرصيد المتاح غير كافٍ ({{amount}} درهم)"
 }

@@ -38,7 +38,7 @@ export const RepositoryView = () => {
     };
 
     return (
-        <div className="min-h-screen pb-24 font-sans antialiased text-slate-900">
+        <div className="min-h-screen pb-24 font-sans antialiased text-slate-900 dark:text-slate-100">
             {/* HEADER SECTION */}
             <FormPageHeader
                 entityName={t("form.entity_name")}
@@ -58,7 +58,7 @@ export const RepositoryView = () => {
                     </Card>
 
                     <Card title={t("view.location_contact")}>
-                        <div className="flex gap-4 mb-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                        <div className="flex gap-4 mb-4 p-4 bg-slate-50 dark:bg-[#222222]/50 rounded-2xl border border-slate-100 dark:border-[#2e2e2e]">
                             <MapPin className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
                             <div className="space-y-1">
                                 <p className="text-sm text-slate-900 dark:text-slate-100 font-bold leading-none">
@@ -94,7 +94,7 @@ export const RepositoryView = () => {
                                     className="w-12 h-12 rounded-xl object-contain border border-slate-100 bg-white"
                                 />
                             ) : (
-                                <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                                <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-[#222222] flex items-center justify-center">
                                     <Building className="w-6 h-6 text-slate-400" />
                                 </div>
                             )}
@@ -153,8 +153,8 @@ export const RepositoryView = () => {
 /* ---------- REUSABLE UI COMPONENTS (Shared Logic) ---------- */
 
 const Card = ({ title, children }) => (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+    <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-50 dark:border-[#2e2e2e] bg-slate-50/50 dark:bg-[#222222]/30">
             <h3 className="font-bold text-[11px] uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
                 {title}
             </h3>
@@ -164,10 +164,10 @@ const Card = ({ title, children }) => (
 );
 
 const Info = ({ label, value, suffix = "", color = "text-slate-900 dark:text-slate-100", isCode = false, isBold = false, isNumber = false }) => (
-    <div className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-800/50 last:border-0">
+    <div className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-[#2e2e2e]/50 last:border-0">
         <span className="text-sm text-slate-500">{label}</span>
         <span className={`text-sm ${color} 
-            ${isCode ? "font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs" : ""} 
+            ${isCode ? "font-mono bg-slate-100 dark:bg-[#222222] px-1.5 py-0.5 rounded text-xs" : ""} 
             ${isBold ? "font-bold" : "font-semibold"}
             ${isNumber ? "font-mono" : ""}
         `}>
@@ -181,7 +181,7 @@ const StatusBadge = ({ label, value, yes, no }) => (
         <span className="text-sm text-slate-500">{label}</span>
         <span className={`px-3 py-1 rounded-full text-[11px] font-bold border uppercase tracking-tight ${value
                 ? "bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400"
-                : "bg-slate-50 border-slate-200 text-slate-500 dark:bg-slate-800 dark:border-slate-700"
+                : "bg-slate-50 border-slate-200 text-slate-500 dark:bg-[#222222] dark:border-[#2e2e2e]"
             }`}>
             {value ? yes : no}
         </span>

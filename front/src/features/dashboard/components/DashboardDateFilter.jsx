@@ -88,7 +88,7 @@ export const DashboardDateFilter = ({ from, to, onChange }) => {
   };
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-800 sm:p-4">
+    <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-[#2e2e2e] dark:bg-[#222222] sm:p-4">
    
       <div className="flex flex-wrap items-center gap-1.5">
         {DATE_PRESETS.map((preset) => {
@@ -101,7 +101,7 @@ export const DashboardDateFilter = ({ from, to, onChange }) => {
               className={`h-8 rounded-lg px-3 text-[12px] font-semibold transition-all ${
                 active
                   ? "bg-[#B12B89] text-white shadow-sm"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-[#2e2e2e] dark:text-slate-300 dark:hover:bg-[#3a3a3a]"
               }`}
             >
               {t(`period.${preset.id}`)}
@@ -114,7 +114,7 @@ export const DashboardDateFilter = ({ from, to, onChange }) => {
           className={`h-8 rounded-lg px-3 text-[12px] font-semibold transition-all ${
             activePreset === "custom"
               ? "bg-[#B12B89] text-white shadow-sm"
-              : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600"
+              : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-[#2e2e2e] dark:text-slate-300 dark:hover:bg-[#3a3a3a]"
           }`}
         >
           {t("period.custom")}

@@ -1,7 +1,12 @@
 import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 import globalError from "../api/middlewares/errorMiddleware.js";
 import qs from "qs";
 import cookieParser from "cookie-parser";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const frontendDistPath = path.resolve(__dirname, "../../../front/dist");
 
 //routes
 import userRoutes from "../api/routes/userRoutes.js";
@@ -45,6 +50,9 @@ import commandeFournisseurRoutes from "../api/routes/commandeFournisseurRoutes.j
 import bonRetourFournisseurRoutes from "../api/routes/bonRetourFournisseurRoutes.js";
 import situationRoutes from "../api/routes/situationRoutes.js";
 import dashboardRoutes from "../api/routes/dashboardRoutes.js";
+import notificationRoutes from "../api/routes/notificationRoutes.js";
+import deliveryShiftRoutes from "../api/routes/deliveryShiftRoutes.js";
+import attendanceRoutes from "../api/routes/attendanceRoutes.js";
 
 export default function expressLoader(app) {
   app.use(express.json());
@@ -94,6 +102,19 @@ export default function expressLoader(app) {
   app.use("/api/caisse", caisseRoutes);
   app.use("/api/caisse-labels", caisseLabelRoutes);
   app.use("/api/dashboard", dashboardRoutes);
+  app.use("/api/notifications", notificationRoutes);
+  app.use("/api/delivery-shifts", deliveryShiftRoutes);
+  app.use("/api/attendance", attendanceRoutes);
+
+  if (process.env.NODE_ENV === "production") {
+    app.use(express.static(frontendDistPath, { index: false }));
+    app.get(/^(?!\/api|\/uploads).*/, (req, res, next) => {
+      if (req.method !== "GET" && req.method !== "HEAD") return next();
+      res.sendFile(path.join(frontendDistPath, "index.html"), (err) => {
+        if (err) next(err);
+      });
+    });
+  }
 
   //global Error Handler
   app.use(globalError);

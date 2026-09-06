@@ -61,10 +61,10 @@ const Checkbox = ({ checked, indeterminate = false, onChange, disabled = false }
     }}
     disabled={disabled}
     className={`flex-shrink-0 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${disabled
-      ? "bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 cursor-not-allowed opacity-40"
+      ? "bg-slate-100 dark:bg-[#2e2e2e] border-slate-200 dark:border-[#3a3a3a] cursor-not-allowed opacity-40"
       : checked || indeterminate
         ? "bg-[#C86AAC] border-[#C86AAC]"
-        : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 hover:border-[#C86AAC]"
+        : "bg-white dark:bg-[#222222] border-slate-300 dark:border-[#3a3a3a] hover:border-[#C86AAC]"
       }`}
   >
     {!disabled && indeterminate && !checked ? (
@@ -149,9 +149,9 @@ const ProductPickerModal = ({
 
   return (
     <div className="fixed inset-0 modal-backdrop flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 max-w-2xl w-full max-h-[88vh] overflow-hidden flex flex-col shadow-2xl">
+      <div className="bg-white dark:bg-[#1c1c1c] rounded-lg border border-slate-200 dark:border-[#2e2e2e] max-w-2xl w-full max-h-[88vh] overflow-hidden flex flex-col shadow-2xl">
         {/* Header */}
-        <div className="px-8 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <div className="px-8 py-5 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between">
           <div>
             <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
               {t("picker.title")}
@@ -167,14 +167,14 @@ const ProductPickerModal = ({
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition"
+            className="p-2 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-xl transition"
           >
             <X className="w-5 h-5 text-slate-500" />
           </button>
         </div>
 
         {/* Filters */}
-        <div className="px-8 py-4 border-b border-slate-100 dark:border-slate-800 space-y-3">
+        <div className="px-8 py-4 border-b border-slate-100 dark:border-[#2e2e2e] space-y-3">
           <div className="relative">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
@@ -182,7 +182,7 @@ const ProductPickerModal = ({
               placeholder={t("picker.search_placeholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 h-[42px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-[#C86AAC] outline-none transition text-sm dark:text-slate-100"
+              className="w-full pl-10 pr-4 h-[42px] bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-xl focus:ring-2 focus:ring-[#C86AAC] outline-none transition text-sm dark:text-slate-100"
               autoFocus
             />
           </div>
@@ -202,7 +202,7 @@ const ProductPickerModal = ({
           ) : products.length > 0 ? (
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50">
+                <tr className="border-b border-slate-100 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/50">
                   <th className="px-6 py-3 w-12">
                     <Checkbox
                       checked={allChecked}
@@ -221,7 +221,7 @@ const ProductPickerModal = ({
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-50 dark:divide-[#2e2e2e]">
                 {products.map((product) => {
                   const disabled = isDisabled(product);
                   const pend = isPending(product);
@@ -230,10 +230,10 @@ const ProductPickerModal = ({
                       key={itemKey(product)}
                       onClick={() => handleToggle(product)}
                       className={`transition-colors ${disabled
-                        ? "opacity-40 cursor-not-allowed bg-slate-50/50 dark:bg-slate-800/20"
+                        ? "opacity-40 cursor-not-allowed bg-slate-50/50 dark:bg-[#222222]/20"
                         : pend
                           ? "bg-[#C86AAC]/10 dark:bg-[#C86AAC]/10 cursor-pointer"
-                          : "hover:bg-slate-50 dark:hover:bg-slate-800/30 cursor-pointer"
+                          : "hover:bg-slate-50 dark:hover:bg-[#222222]/30 cursor-pointer"
                         }`}
                     >
                       <td className="px-6 py-3.5">
@@ -252,7 +252,7 @@ const ProductPickerModal = ({
                         >
                           {product.name}
                           {disabled && (
-                            <span className="ml-2 text-[9px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">
+                            <span className="ml-2 text-[9px] font-bold text-slate-400 bg-slate-100 dark:bg-[#2e2e2e] px-1.5 py-0.5 rounded">
                               {t("picker.already_added")}
                             </span>
                           )}
@@ -295,13 +295,13 @@ const ProductPickerModal = ({
         </div>
 
         {/* Footer */}
-        <div className="px-8 py-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <div className="px-8 py-4 border-t border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between">
           {pagination.totalPages > 1 ? (
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setPage((p) => p - 1)}
                 disabled={page === 1}
-                className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40 transition"
+                className="p-2 rounded-xl border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] disabled:opacity-40 transition"
               >
                 <ChevronLeft className="w-4 h-4 text-slate-600" />
               </button>
@@ -311,7 +311,7 @@ const ProductPickerModal = ({
               <button
                 onClick={() => setPage((p) => p + 1)}
                 disabled={page === pagination.totalPages}
-                className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40 transition"
+                className="p-2 rounded-xl border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] disabled:opacity-40 transition"
               >
                 <ChevronRight className="w-4 h-4 text-slate-600" />
               </button>
@@ -322,7 +322,7 @@ const ProductPickerModal = ({
           <div className="flex items-center gap-3">
             <button
               onClick={onClose}
-              className="px-4 py-2 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition font-semibold text-sm"
+              className="px-4 py-2 border border-slate-200 dark:border-[#2e2e2e] text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-[#222222] transition font-semibold text-sm"
             >
               {t("picker.cancel")}
             </button>
@@ -393,6 +393,7 @@ export const PackForm = ({ id, initialValues, mode = "create" }) => {
     remise: "",
     // personnalise
     prixVentePack: "",
+    commission: "",
   });
 
   /* components table */
@@ -441,6 +442,7 @@ export const PackForm = ({ id, initialValues, mode = "create" }) => {
           pricingMode === "personnalise"
             ? String(packData.prixVentePack || "")
             : "",
+        commission: packData.commission != null ? String(packData.commission) : "",
       };
       setFormData(initial);
       setInitialFormData(initial);
@@ -651,6 +653,8 @@ export const PackForm = ({ id, initialValues, mode = "create" }) => {
         payload.prixVentePack = parseFloat(formData.prixVentePack);
       }
 
+      payload.commission = parseFloat(formData.commission || 0) || 0;
+
       /* diff with initial */
       if (initialFormData) {
         const changed = {};
@@ -692,6 +696,8 @@ export const PackForm = ({ id, initialValues, mode = "create" }) => {
       } else {
         payload.prixVentePack = parseFloat(formData.prixVentePack);
       }
+
+      payload.commission = parseFloat(formData.commission || 0) || 0;
 
       try {
         await createMutation.mutateAsync({
@@ -820,7 +826,7 @@ export const PackForm = ({ id, initialValues, mode = "create" }) => {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50">
+                <tr className="border-b border-slate-100 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/50">
                   <th className="px-6 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-slate-500">
                     {t("form.components_table.product")}
                   </th>
@@ -839,7 +845,7 @@ export const PackForm = ({ id, initialValues, mode = "create" }) => {
                   <th className="px-6 py-3 w-10" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-50 dark:divide-[#2e2e2e]">
                 {components.length > 0 ? (
                   components.map((comp, idx) => {
                     const qty = parseFloat(comp.quantity) || 0;
@@ -869,9 +875,9 @@ export const PackForm = ({ id, initialValues, mode = "create" }) => {
                                 e.target.value
                               )
                             }
-                            className={`w-20 px-2 py-1.5 text-center text-sm font-bold bg-white dark:bg-slate-800 border rounded-xl outline-none focus:ring-2 focus:ring-[#C86AAC] transition dark:text-slate-100 ${errors[`qty_${idx}`]
+                            className={`w-20 px-2 py-1.5 text-center text-sm font-bold bg-white dark:bg-[#222222] border rounded-xl outline-none focus:ring-2 focus:ring-[#C86AAC] transition dark:text-slate-100 ${errors[`qty_${idx}`]
                               ? "border-red-400"
-                              : "border-slate-200 dark:border-slate-700"
+                              : "border-slate-200 dark:border-[#2e2e2e]"
                               }`}
                           />
                           {errors[`qty_${idx}`] && (
@@ -940,7 +946,7 @@ export const PackForm = ({ id, initialValues, mode = "create" }) => {
                   onClick={() => handlePricingModeChange(key)}
                   className={`flex flex-col items-start gap-1 p-3 rounded-xl border-2 text-left transition-all ${active
                     ? "border-[#C86AAC] bg-[#C86AAC]/10 dark:bg-[#C86AAC]/20"
-                    : "border-slate-200 dark:border-slate-700 hover:border-[#C86AAC]/50 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                    : "border-slate-200 dark:border-[#2e2e2e] hover:border-[#C86AAC]/50 hover:bg-slate-50 dark:hover:bg-[#222222]/50"
                     }`}
                 >
                   <div className="flex items-center gap-2">
@@ -1022,6 +1028,15 @@ export const PackForm = ({ id, initialValues, mode = "create" }) => {
               />
             )}
 
+            <Input
+              label={t("form.fields.commission")}
+              type="number"
+              name="commission"
+              placeholder={t("form.fields.commission_placeholder")}
+              value={formData.commission}
+              onChange={handleChange}
+            />
+
             {/* Estimated price preview */}
             {estimatedPrice !== null && (
               <div className="flex flex-col justify-center p-3 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
@@ -1056,7 +1071,7 @@ export const PackForm = ({ id, initialValues, mode = "create" }) => {
                   onChange={handleChange}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-slate-200 dark:bg-slate-800 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C86AAC] shadow-inner" />
+                <div className="w-11 h-6 bg-slate-200 dark:bg-[#222222] rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C86AAC] shadow-inner" />
               </div>
             </label>
           </FormCard>

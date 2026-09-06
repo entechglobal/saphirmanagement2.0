@@ -14,8 +14,8 @@ import {
 
 // Custom Card wrapper matching your reference style
 const Card = ({ title, children }) => (
-  <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 overflow-hidden">
-    <div className="px-6 py-4 border-b border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+  <div className="rounded-2xl border border-slate-200 dark:border-[#2e2e2e] bg-white dark:bg-[#1c1c1c]/40 p-5 overflow-hidden">
+    <div className="px-6 py-4 border-b border-slate-50 dark:border-[#2e2e2e] bg-slate-50/50 dark:bg-[#222222]/30">
       <h3 className="font-bold text-[11px] uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
         {title}
       </h3>
@@ -27,7 +27,7 @@ const Card = ({ title, children }) => (
 const ATTRIBUTE_STYLES = {
   color: "bg-blue-50 text-blue-700 ring-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:ring-blue-800",
   size: "bg-purple-50 text-purple-700 ring-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:ring-purple-800",
-  default: "bg-slate-100 text-slate-700 ring-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700",
+  default: "bg-slate-100 text-slate-700 ring-slate-200 dark:bg-[#222222] dark:text-slate-300 dark:ring-[#2e2e2e]",
 };
 
 export const AttributePage = () => {
@@ -160,7 +160,7 @@ export const AttributePage = () => {
                 {t("form.name_label")}
               </label>
               <input
-                className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-[#C86AAC] outline-none transition dark:text-slate-100"
+                className="w-full px-4 py-2.5 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-xl focus:ring-2 focus:ring-[#C86AAC] outline-none transition dark:text-slate-100"
                 placeholder={t("form.name_placeholder")}
                 value={attributeName}
                 onChange={(e) => setAttributeName(e.target.value)}
@@ -171,7 +171,7 @@ export const AttributePage = () => {
               <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
                 {t("form.values_label")}
               </label>
-              <div className="min-h-[46px] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 flex flex-wrap items-center gap-2 focus-within:ring-2 focus-within:ring-[#C86AAC] bg-white dark:bg-slate-800">
+              <div className="min-h-[46px] border border-slate-200 dark:border-[#2e2e2e] rounded-xl px-3 py-2 flex flex-wrap items-center gap-2 focus-within:ring-2 focus-within:ring-[#C86AAC] bg-white dark:bg-[#222222]">
                 {pendingValues.map((tag, index) => (
                   <span
                     key={index}
@@ -200,7 +200,7 @@ export const AttributePage = () => {
             {editingId && (
               <button
                 onClick={resetForm}
-                className="px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition"
+                className="px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-xl transition"
               >
                 {t("form.cancel")}
               </button>
@@ -219,7 +219,7 @@ export const AttributePage = () => {
         {/* ================= TABLE SECTION ================= */}
         <Card title={t("table.title")}>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+            <table className="w-full text-sm border border-slate-200 dark:border-[#2e2e2e] rounded-xl overflow-hidden">
               <thead className="bg-slate-50 dark:bg-[#1F2937]">
                 <tr className="text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   <th className="px-6 py-4 text-left font-bold">{t("table.col_attribute")}</th>
@@ -227,7 +227,7 @@ export const AttributePage = () => {
                   <th className="px-6 py-4 text-right font-bold">{t("table.col_actions")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
                 {attributes.length === 0 ? (
                   <tr>
                     <td colSpan={3} className="px-6 py-12 text-center text-slate-400 italic">
@@ -238,7 +238,7 @@ export const AttributePage = () => {
                   attributes.map((attr) => (
                     <tr
                       key={attr.id}
-                      className={`hover:bg-slate-50 dark:hover:bg-[#111827] transition ${editingId === attr.id ? "bg-[#C86AAC]/5 dark:bg-[#C86AAC]/10" : ""
+                      className={`hover:bg-slate-50 dark:hover:bg-[#1c1c1c] transition ${editingId === attr.id ? "bg-[#C86AAC]/5 dark:bg-[#C86AAC]/10" : ""
                         }`}
                     >
                       <td className="px-6 py-4 font-semibold text-slate-800 dark:text-slate-100">

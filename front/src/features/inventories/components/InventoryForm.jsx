@@ -290,7 +290,7 @@ export const InventoryForm = () => {
 
                 <div className="overflow-x-auto">
 
-                    <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+                    <div className="px-6 py-5 border-b border-slate-100 dark:border-[#2e2e2e] flex flex-wrap items-center justify-between gap-4">
                         <div className="flex items-center gap-4">
                             <div>
                                 <h3 className="font-bold text-slate-800 dark:text-slate-100">{t("selected_articles")}</h3>
@@ -309,7 +309,7 @@ export const InventoryForm = () => {
                                     <span className="hidden sm:block text-slate-300 dark:text-slate-700 text-sm">|</span>
                               
                                     <div className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-lg border ${totalEcart === 0
-                                        ? "text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700"
+                                        ? "text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-[#222222] border-slate-200 dark:border-[#2e2e2e]"
                                         : totalEcart > 0
                                             ? "text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800"
                                             : "text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
@@ -328,7 +328,7 @@ export const InventoryForm = () => {
                     <div className="overflow-x-auto">
                         <table className="w-full table-auto">
                             <thead>
-                                <tr className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50">
+                                <tr className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/50">
                                     <th className="px-6 py-3.5 text-left font-semibold">{t("article")}</th>
                                     <th className="px-5 py-3.5 text-left font-semibold">{t("barcode")}</th>
                                     <th className="px-5 py-3.5 text-left font-semibold hidden sm:table-cell">{t("family")}</th>
@@ -340,7 +340,7 @@ export const InventoryForm = () => {
                                     <th className="px-6 py-3.5 text-right font-semibold"></th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                            <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
                                 {selectedArticles.length > 0 ? (
                                     selectedArticles.map((article) => {
                                         const isTouched = !!article.isTouched;
@@ -351,7 +351,7 @@ export const InventoryForm = () => {
                                             <tr key={articleKey(article)} className="group hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors">
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800">
+                                                        <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-[#222222]">
                                                             <Package className="w-4 h-4 text-slate-500" />
                                                         </div>
                                                         <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 truncate max-w-[180px]">
@@ -360,7 +360,7 @@ export const InventoryForm = () => {
                                                     </div>
                                                 </td>
                                                 <td className="px-5 py-4">
-                                                    <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
+                                                    <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-[#222222] px-2 py-1 rounded">
                                                         {article.barcode}
                                                     </span>
                                                 </td>
@@ -386,13 +386,13 @@ export const InventoryForm = () => {
                                                         onFocus={() => handleQuantityFocus(article)}
                                                         onChange={(e) => handleQuantityChange(article, e.target.value)}
                                                         onBlur={() => handleQuantityBlur(article)}
-                                                        className="w-20 px-2 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition-all dark:text-slate-100"
+                                                        className="w-20 px-2 py-1.5 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition-all dark:text-slate-100"
                                                     />
                                                 </td>
                                                 <td className="px-5 py-4 text-center">
                                                     {isTouched ? (
                                                         <span className={`inline-flex items-center justify-center min-w-[3rem] text-sm font-bold px-2 py-0.5 rounded-lg ${diff === 0
-                                                            ? "text-slate-400 bg-slate-50 dark:bg-slate-800"
+                                                            ? "text-slate-400 bg-slate-50 dark:bg-[#222222]"
                                                             : diff > 0
                                                                 ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20"
                                                                 : "text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20"

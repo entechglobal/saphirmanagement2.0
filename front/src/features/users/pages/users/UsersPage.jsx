@@ -138,7 +138,7 @@ export const UsersPage = () => {
                     },
                 };
                 const config = roleConfig[role] || {
-                    color: "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-400",
+                    color: "bg-slate-100 text-slate-800 dark:bg-[#222222] dark:text-slate-400",
                     icon: <UserIcon className="w-4 h-4 text-slate-500" />,
                     label: role?.replace("_", " "),
                 };
@@ -163,7 +163,7 @@ export const UsersPage = () => {
                         {t("active")}
                     </span>
                 ) : (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-500 dark:bg-[#222222] dark:text-slate-400">
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                         {t("inactive")}
                     </span>

@@ -56,6 +56,8 @@
       "sale_amount": "Montant de Vente (DH)",
       "custom_price": "Prix de Vente Pack (DH)",
       "custom_price_placeholder": "Ex: 712.50",
+      "commission": "Commission commercial (DH)",
+      "commission_placeholder": "Ex: 10.00",
       "estimated_price": "Prix de vente estimé",
       "active_label": "Pack actif",
       "active_desc": "Un pack inactif n'apparaîtra pas dans les bons de livraison"

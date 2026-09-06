@@ -1,0 +1,36 @@
+{
+  "title": "Attendance",
+  "subtitle": "Punches imported from the ZKTeco terminal via Attendance Link",
+  "banner": {
+    "title": "Import with the desktop app",
+    "desc": "Connect the terminal with Attendance Link (attendance-link folder), add users by ID, enroll fingerprints / cards, then import. Already imported punches are skipped."
+  },
+  "stats": {
+    "today": "Today"
+  },
+  "table": {
+    "id": "ID",
+    "user": "User",
+    "email": "Email",
+    "punchTime": "Date / time",
+    "type": "Type",
+    "deviceUser": "Device ID",
+    "device": "Terminal"
+  },
+  "filters": {
+    "from": "From",
+    "to": "To"
+  },
+  "punchType": {
+    "0": "Check-in",
+    "1": "Check-out",
+    "2": "Break out",
+    "3": "Break in",
+    "4": "OT in",
+    "5": "OT out"
+  },
+  "search": "Search",
+  "search_placeholder": "Name or email…",
+  "reset": "Reset",
+  "all": "All"
+}

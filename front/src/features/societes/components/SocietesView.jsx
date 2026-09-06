@@ -33,7 +33,7 @@ export const SocietesView = () => {
     }
 
     return (
-        <div className="min-h-screen pb-24 font-sans antialiased text-slate-900">
+        <div className="min-h-screen pb-24 font-sans antialiased text-slate-900 dark:text-slate-100">
             {/* HEADER SECTION */}
             <FormPageHeader
                 entityName={t("form.entity_name")}
@@ -78,7 +78,7 @@ export const SocietesView = () => {
                             color="text-blue-500" 
                             t={t}
                         />
-                        <div className="pt-4 mt-2 border-t border-slate-100 dark:border-slate-800">
+                        <div className="pt-4 mt-2 border-t border-slate-100 dark:border-[#2e2e2e]">
                             <Info 
                                 label={t("view.mobile_phone")} 
                                 value={societe.phone} 
@@ -124,7 +124,7 @@ export const SocietesView = () => {
                 <div className="col-span-12 lg:col-span-4 space-y-6">
                     {/* UPDATED LOGO CARD */}
                     <Card title={t("view.company_logo")}>
-                        <div className="relative aspect-square w-full rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-center overflow-hidden">
+                        <div className="relative aspect-square w-full rounded-2xl border-2 border-dashed border-slate-200 dark:border-[#2e2e2e] bg-slate-50 dark:bg-[#111111] flex items-center justify-center overflow-hidden">
                             {societe.logo ? (
                                 <img
                                     src={societe.logo}
@@ -188,8 +188,8 @@ export const SocietesView = () => {
 /* ---------- UI HELPERS ---------- */
 
 const Card = ({ title, children }) => (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+    <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-50 dark:border-[#2e2e2e] bg-slate-50/50 dark:bg-[#222222]/30">
             <h3 className="font-bold text-[11px] uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
                 {title}
             </h3>
@@ -199,14 +199,14 @@ const Card = ({ title, children }) => (
 );
 
 const Info = ({ label, value, color = "text-slate-900 dark:text-slate-100", isCode = false, isBold = false, icon = null, t }) => (
-    <div className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-800/50 last:border-0">
+    <div className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-[#2e2e2e]/50 last:border-0">
         <div className="flex items-center gap-2">
             {icon && <span className="text-slate-400">{icon}</span>}
             <span className="text-sm text-slate-500 font-medium">{label}</span>
         </div>
         <span
             className={`text-sm ${color} 
-                ${isCode ? "font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs" : ""} 
+                ${isCode ? "font-mono bg-slate-100 dark:bg-[#222222] px-1.5 py-0.5 rounded text-xs" : ""} 
                 ${isBold ? "font-bold" : "font-semibold"}
             `}
         >

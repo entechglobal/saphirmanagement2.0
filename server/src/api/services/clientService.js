@@ -10,6 +10,7 @@ import ApiError from "../utils/apiError.js";
 import ApiFeatures from "../utils/apiFeatures.js";
 import { formatDate, parseCSVDate } from "../utils/formatDates.js";
 import { asText, fromText } from "../utils/csvHelpers.js";
+import { getPhoneSearchVariants } from "../utils/phoneUtils.js";
 
 // ============================================
 // CREATE CLIENT
@@ -70,11 +71,12 @@ export const getAll = async (query, societeId = null) => {
   }
 
   if (query.keyword) {
+    const phoneVariants = getPhoneSearchVariants(query.keyword);
     where.OR = [
       { name: { contains: query.keyword } },
-      { phone: { contains: query.keyword } },
       { email: { contains: query.keyword } },
       { ice: { contains: query.keyword } },
+      ...phoneVariants.map((variant) => ({ phone: { contains: variant } })),
     ];
   }
 
@@ -89,6 +91,7 @@ export const getAll = async (query, societeId = null) => {
       societeId: true,
       type: true,
       address: true,
+      city: true,
       region: true,
       email: true,
       website: true,
@@ -500,6 +503,7 @@ const CLIENT_CSV_FIELDS = [
   "phone",
   "email",
   "address",
+  "city",
   "region",
   "website",
   "ice",
@@ -565,6 +569,7 @@ const mapClientToCSV = (c) => ({
   phone: asText(c.phone),
   email: c.email || "",
   address: c.address || "",
+  city: c.city || "",
   region: c.region || "",
   website: c.website || "",
   ice: asText(c.ice),
@@ -660,6 +665,7 @@ const parseClientCSVRow = (row, societeId) => {
     phone: phone.trim(),
     email: row.email || null,
     address: row.address || null,
+    city: row.city || null,
     region: row.region || null,
     website: row.website || null,
     ice: ice || null,
@@ -736,6 +742,7 @@ const saveClientUpsert = (societeId) => (client) =>
       type: client.type,
       email: client.email,
       address: client.address,
+      city: client.city,
       region: client.region,
       website: client.website,
       ice: client.ice,

@@ -33,17 +33,19 @@ import {
   ShoppingBag,
   Search,
   CalendarDays,
+  Clock,
   ShieldCheck,
   Settings,
+  Fingerprint,
   ChevronRight,
 } from "lucide-react";
-import { UserCircleIcon } from "@heroicons/react/24/outline";
 
 import { useAuth } from "@/features/auth";
 import { PERMISSIONS, hasAnyPermission } from "@/shared/utils/permissions";
-import { useCurrentUser } from "@/features/users/hooks/useUsers";
 import { useTranslation } from "react-i18next";
 import { SidebarSkeleton } from "@/shared/components/skeletons/SidebarSkeleton";
+import { MobileBottomBar } from "./MobileBottomBar";
+import { MobileNavSheet } from "./MobileNavSheet";
 
 const RAIL_WIDTH = 60;
 const FULL_WIDTH = 236;
@@ -64,7 +66,7 @@ const Tooltip = ({ label, children, enabled }) => {
     <div className="group/tip relative">
       {children}
       <div className="pointer-events-none absolute start-full top-1/2 z-[999] ms-2 -translate-y-1/2 scale-95 opacity-0 transition-all duration-150 group-hover/tip:scale-100 group-hover/tip:opacity-100">
-        <div className="whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-[11px] font-medium text-white shadow-lg dark:bg-gray-700">
+        <div className="whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-[11px] font-medium text-white shadow-lg dark:bg-[#2e2e2e]">
           {label}
         </div>
       </div>
@@ -72,26 +74,38 @@ const Tooltip = ({ label, children, enabled }) => {
   );
 };
 
-export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose }) => {
+export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose, onOpen }) => {
   const location = useLocation();
   const { t, i18n } = useTranslation("sidebar");
   const isRTL = (i18n.dir?.() ?? "ltr") === "rtl";
   const shouldReduce = useReducedMotion();
   const { user, isLoading } = useAuth();
-  const { data: currentUser } = useCurrentUser();
-  const activeUser = currentUser?.data || "";
 
   const [openGroup, setOpenGroup] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
 
   const showSkeleton = isLoading;
-  // Collapsed rail that widens on hover and pushes the page content
   const narrow = isDesktop && isCollapsed && !isHovered;
+
+  const closeMobileMenu = useCallback(() => {
+    onClose?.();
+  }, [onClose]);
+
+  const toggleMobileMenu = useCallback(() => {
+    if (isOpen) onClose?.();
+    else onOpen?.();
+  }, [isOpen, onClose, onOpen]);
 
   const isActivePath = useCallback(
     (path) => {
       if (!path) return false;
-      if (path === "/") return location.pathname === "/";
+      if (path === "/") {
+        return (
+          location.pathname === "/" ||
+          location.pathname === "/dashboard" ||
+          location.pathname.startsWith("/saphir-management-dashboard")
+        );
+      }
       const normalized = path.endsWith("/") ? path : `${path}/`;
       return location.pathname === path || location.pathname.startsWith(normalized);
     },
@@ -180,8 +194,10 @@ export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose
         items: [
           { key: "saphir-dashboard", label: t("saphirManagement.dashboard"), path: "/saphir-management-dashboard", icon: LayoutGrid, permission: [PERMISSIONS.VIEW_ADVANCED_BL, PERMISSIONS.VIEW_AGENCE, PERMISSIONS.VIEW_PACK] },
           { key: "commandes", label: t("saphirManagement.commandes"), path: "/commandes", icon: ShoppingBag, permission: PERMISSIONS.VIEW_ADVANCED_BL },
+          { key: "statistiques-commerciaux", label: t("saphirManagement.commercialStats"), path: "/statistiques-commerciaux", icon: BarChart3, permission: PERMISSIONS.VIEW_ADVANCED_BL },
           { key: "colis-tracking", label: t("saphirManagement.colisTracking"), path: "/colis-tracking", icon: Search, permission: PERMISSIONS.VIEW_ADVANCED_BL },
           { key: "planning-livraison", label: t("saphirManagement.planningLivraison"), path: "/planning-livraison", icon: CalendarDays, permission: PERMISSIONS.VIEW_ADVANCED_BL },
+          { key: "delivery-shifts", label: t("saphirManagement.deliveryShifts"), path: "/delivery-shifts", icon: Clock, permission: [PERMISSIONS.VIEW_DELIVERY_SHIFTS, PERMISSIONS.MANAGE_DELIVERY_SHIFTS] },
         ],
       },
       {
@@ -190,6 +206,7 @@ export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose
         icon: ShieldCheck,
         items: [
           { key: "users", label: t("users"), path: "/users", icon: Users, permission: [PERMISSIONS.MANAGE_USERS, PERMISSIONS.CREATE_USER] },
+          { key: "attendance", label: t("attendance"), path: "/attendance", icon: Fingerprint, permission: [PERMISSIONS.VIEW_ATTENDANCE, PERMISSIONS.MANAGE_ATTENDANCE] },
           { key: "repositories", label: t("depots"), path: "/depots", icon: Archive },
           { key: "agences", label: t("saphirManagement.agences"), path: "/agences", icon: MapPin, permission: PERMISSIONS.VIEW_AGENCE },
           { key: "societes", label: t("companies"), path: "/societes", icon: Building2, superAdminOnly: true },
@@ -230,19 +247,10 @@ export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose
     [navSections, isItemVisible]
   );
 
-  // Keep the section containing the current route open
   useEffect(() => {
     const active = sections.find((section) => section.items.some((item) => isActivePath(item.path)));
     if (active?.label) setOpenGroup(active.key);
   }, [location.pathname, sections, isActivePath]);
-
-  const bottomNavItems = useMemo(
-    () => [
-      { key: "dashboard", label: t("dashboard"), path: "/", icon: Home },
-      { key: "settings", label: t("settings"), path: "/settings", icon: Settings, hiddenForRoles: ["Preparateur", "Commercial", "Livreur"] },
-    ],
-    [t]
-  );
 
   const handleNavClick = () => {
     if (!isDesktop) onClose?.();
@@ -280,8 +288,8 @@ export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose
             ${narrow ? "justify-center px-0 py-1.5" : "gap-2 px-2 py-1.5"}
             ${
               active
-                ? "bg-white font-semibold text-[#B12B89] shadow-sm ring-1 ring-black/[0.04] dark:bg-gray-800 dark:ring-white/10"
-                : "text-gray-700 hover:bg-[#EAEAEB] dark:text-gray-300 dark:hover:bg-gray-800/70"
+                ? "bg-white font-semibold text-[#B12B89] shadow-sm ring-1 ring-black/[0.04] dark:bg-[#222222] dark:ring-white/10"
+                : "text-gray-700 hover:bg-[#EAEAEB] dark:text-gray-300 dark:hover:bg-[#222222]/70"
             }
           `}
         >
@@ -293,7 +301,6 @@ export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose
   };
 
   const renderSection = (section) => {
-    // Ungrouped items (dashboard) render as plain links
     if (!section.label) {
       return (
         <div key={section.key} className="space-y-0.5">
@@ -305,7 +312,6 @@ export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose
     const GroupIcon = section.icon;
     const hasActiveChild = section.items.some((item) => isActivePath(item.path));
 
-    // Collapsed rail: the group icon links to its first page
     if (narrow) {
       const firstItem = section.items.find((item) => item.path);
       return (
@@ -314,8 +320,8 @@ export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose
             to={firstItem.path}
             className={`flex items-center justify-center rounded-md py-1.5 transition-colors duration-150 ${
               hasActiveChild
-                ? "bg-white text-[#B12B89] shadow-sm ring-1 ring-black/[0.04] dark:bg-gray-800 dark:ring-white/10"
-                : "text-gray-700 hover:bg-[#EAEAEB] dark:text-gray-300 dark:hover:bg-gray-800/70"
+                ? "bg-white text-[#B12B89] shadow-sm ring-1 ring-black/[0.04] dark:bg-[#222222] dark:ring-white/10"
+                : "text-gray-700 hover:bg-[#EAEAEB] dark:text-gray-300 dark:hover:bg-[#222222]/70"
             }`}
           >
             <GroupIcon size={17} strokeWidth={1.75} />
@@ -334,7 +340,7 @@ export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose
           className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 transition-colors duration-150 ${
             hasActiveChild
               ? "text-gray-900 dark:text-white"
-              : "text-gray-700 hover:bg-[#EAEAEB] dark:text-gray-300 dark:hover:bg-gray-800/70"
+              : "text-gray-700 hover:bg-[#EAEAEB] dark:text-gray-300 dark:hover:bg-[#222222]/70"
           }`}
         >
           <GroupIcon size={17} strokeWidth={1.75} className="flex-shrink-0" />
@@ -357,7 +363,7 @@ export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose
               variants={shouldReduce ? {} : submenuVariants}
               className="overflow-hidden"
             >
-              <div className="ms-3.5 space-y-0.5 border-s border-[#DEDEDE] ps-2 pt-0.5 dark:border-gray-700/70">
+              <div className="ms-3.5 space-y-0.5 border-s border-[#DEDEDE] ps-2 pt-0.5 dark:border-[#2e2e2e]/70">
                 {section.items.map((item) => renderLink(item, { child: true }))}
               </div>
             </motion.div>
@@ -367,138 +373,58 @@ export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose
     );
   };
 
-  const panelWidth = isDesktop ? (narrow ? RAIL_WIDTH : FULL_WIDTH) : 272;
+  if (!isDesktop) {
+    return (
+      <>
+        <MobileBottomBar
+          user={user}
+          menuOpen={isOpen}
+          onOpenMenu={toggleMobileMenu}
+          onCloseMenu={closeMobileMenu}
+        />
+        <MobileNavSheet
+          open={isOpen}
+          onClose={closeMobileMenu}
+          sections={sections}
+          isActivePath={isActivePath}
+        />
+      </>
+    );
+  }
+
+  const panelWidth = narrow ? RAIL_WIDTH : FULL_WIDTH;
 
   return (
-    <>
-      {/* Mobile overlay — sits below the navbar so it stays reachable */}
-      <AnimatePresence>
-        {!isDesktop && isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.22 }}
-            className="modal-backdrop fixed bottom-0 left-0 right-0 top-16 z-40 lg:hidden"
-            onClick={onClose}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Sidebar panel */}
-      <motion.aside
-        initial={false}
-        onMouseEnter={() => isDesktop && isCollapsed && setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        animate={{
-          width: panelWidth,
-          x: isDesktop || isOpen ? 0 : (isRTL ? panelWidth : -panelWidth),
-        }}
-        transition={{ type: "spring", stiffness: 420, damping: 38, mass: 0.8 }}
-        className={`
-          flex flex-shrink-0 flex-col overflow-hidden
-          bg-[#F6F6F7] dark:bg-[#161616]
-          border-e border-[#E3E3E3] dark:border-gray-800
-          ${isDesktop ? "relative h-full" : "fixed bottom-0 top-16 start-0 z-50 shadow-2xl"}
-          ${!isDesktop && !isOpen ? "pointer-events-none" : ""}
-        `}
+    <motion.aside
+      initial={false}
+      onMouseEnter={() => isCollapsed && setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      animate={{ width: panelWidth }}
+      transition={{ type: "spring", stiffness: 420, damping: 38, mass: 0.8 }}
+      className="relative flex h-full flex-shrink-0 flex-col overflow-hidden border-e border-[#E3E3E3] bg-[#F6F6F7] dark:border-[#2e2e2e] dark:bg-[#161616]"
+    >
+      <nav
+        className={`flex-1 space-y-2 overflow-y-auto overflow-x-hidden py-3 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-[#3a3a3a] ${
+          narrow ? "px-1.5" : "px-2"
+        }`}
       >
-        {/* Navigation */}
-        <nav
-          className={`flex-1 space-y-2 overflow-y-auto overflow-x-hidden py-3 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-gray-700 ${
-            narrow ? "px-1.5" : "px-2"
-          }`}
-        >
-          {showSkeleton ? <SidebarSkeleton /> : sections.map(renderSection)}
-        </nav>
+        {showSkeleton ? <SidebarSkeleton /> : sections.map(renderSection)}
+      </nav>
 
-        {/* Footer */}
-        <div className="flex-shrink-0 border-t border-[#E3E3E3] px-2 py-2 dark:border-gray-800">
-          {narrow ? (
-            <p className="text-center text-[10px] font-semibold text-gray-400">©</p>
-          ) : (
-            <p className="px-1 text-center text-[10px] font-medium leading-relaxed tracking-wide text-gray-400 dark:text-gray-500">
-              {(() => {
-                const start = 2025;
-                const current = new Date().getFullYear();
-                const range = current > start ? `${start}–${current}` : `${start}`;
-                return `© ${range} SaphirCaisse — ${t("allRightsReserved")}`;
-              })()}
-            </p>
-          )}
-        </div>
-      </motion.aside>
-
-      {/* Mobile bottom navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 md:hidden">
-        <div className="border-t border-[#E3E3E3] bg-white/90 px-4 py-1.5 backdrop-blur-xl dark:border-gray-800 dark:bg-gray-900/90">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex flex-1 gap-1">
-              {bottomNavItems.slice(0, 1).map((item) => {
-                const Icon = item.icon;
-                const active = isActivePath(item.path);
-                return (
-                  <Link
-                    key={item.key}
-                    to={item.path}
-                    onClick={onClose}
-                    className={`flex flex-1 flex-col items-center justify-center rounded-lg p-2 transition-colors ${
-                      active ? "bg-[#F6F6F7] text-[#B12B89] dark:bg-gray-800" : "text-gray-500"
-                    }`}
-                  >
-                    <Icon size={19} strokeWidth={1.75} />
-                    <span className="mt-0.5 text-[10px] font-semibold">{item.label}</span>
-                  </Link>
-                );
-              })}
-            </div>
-
-            <div className="relative flex flex-col items-center" style={{ marginTop: "-28px" }}>
-              <Link to="/profile" onClick={onClose} className="flex flex-col items-center gap-1">
-                <div className="rounded-full bg-white p-0.5 dark:bg-gray-900">
-                  <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-[#303030] shadow-lg">
-                    {activeUser?.profile ? (
-                      <img src={activeUser.profile} alt={activeUser.name} className="h-full w-full object-cover" />
-                    ) : (
-                      <UserCircleIcon className="h-7 w-7 text-white" />
-                    )}
-                  </div>
-                </div>
-                <span className="text-[10px] font-semibold text-gray-700 dark:text-gray-300">
-                  {t("profile", "Profil")}
-                </span>
-              </Link>
-            </div>
-
-            <div className="flex flex-1 justify-end gap-1">
-              {bottomNavItems
-                .slice(1)
-                .filter((item) => {
-                  if (!item.hiddenForRoles) return true;
-                  const roleName = user?.roleName ?? user?.role ?? "";
-                  return !item.hiddenForRoles.includes(roleName);
-                })
-                .map((item) => {
-                  const Icon = item.icon;
-                  const active = isActivePath(item.path);
-                  return (
-                    <Link
-                      key={item.key}
-                      to={item.path}
-                      onClick={onClose}
-                      className={`flex flex-1 flex-col items-center justify-center rounded-lg p-2 transition-colors ${
-                        active ? "bg-[#F6F6F7] text-[#B12B89] dark:bg-gray-800" : "text-gray-500"
-                      }`}
-                    >
-                      <Icon size={19} strokeWidth={1.75} />
-                      <span className="mt-0.5 text-[10px] font-semibold">{item.label}</span>
-                    </Link>
-                  );
-                })}
-            </div>
-          </div>
-        </div>
+      <div className="flex-shrink-0 border-t border-[#E3E3E3] px-2 py-2 dark:border-[#2e2e2e]">
+        {narrow ? (
+          <p className="text-center text-[10px] font-semibold text-gray-400">©</p>
+        ) : (
+          <p className="px-1 text-center text-[10px] font-medium leading-relaxed tracking-wide text-gray-400 dark:text-gray-500">
+            {(() => {
+              const start = 2025;
+              const current = new Date().getFullYear();
+              const range = current > start ? `${start}–${current}` : `${start}`;
+              return `© ${range} SaphirCaisse — ${t("allRightsReserved")}`;
+            })()}
+          </p>
+        )}
       </div>
-    </>
+    </motion.aside>
   );
 };

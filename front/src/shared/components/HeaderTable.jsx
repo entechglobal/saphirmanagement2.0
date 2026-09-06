@@ -27,7 +27,7 @@ export const HeaderTable = ({
           </h1>
 
           {count !== undefined && count !== null && (
-            <span className="flex-shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold tabular-nums text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+            <span className="flex-shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-semibold tabular-nums text-slate-600 dark:bg-[#1c1c1c] dark:text-slate-300">
               {count}
             </span>
           )}

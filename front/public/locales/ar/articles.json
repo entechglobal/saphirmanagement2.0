@@ -99,6 +99,7 @@
       "sale_price_1": "ثمن البيع 1",
       "sale_price_2": "ثمن البيع 2",
       "sale_price_3": "ثمن البيع 3",
+      "commission": "عمولة التجاري",
       "discount_percent": "تخفيض %",
       "expiration_date": "تاريخ الانتهاء",
       "expiration_alert": "تنبيه الانتهاء (أيام)",
@@ -115,6 +116,7 @@
       "select": "اختر"
     },
     "buttons": {
+      "add_family": "إضافة عائلة",
       "generate": "توليد",
       "add_secondary": "+ إضافة وحدة ثانوية",
       "add_complementary": "+ إضافة وحدة تكميلية",

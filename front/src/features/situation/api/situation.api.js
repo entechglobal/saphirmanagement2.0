@@ -10,9 +10,10 @@ export const situationApi = {
     clientId,
     startDate,
     endDate,
+    paymentStatus,
   } = {}) => {
     const res = await api.get("/situation/client", {
-      params: { page, limit, keyword, clientId, startDate, endDate },
+      params: { page, limit, keyword, clientId, startDate, endDate, paymentStatus },
     });
     return res.data;
   },

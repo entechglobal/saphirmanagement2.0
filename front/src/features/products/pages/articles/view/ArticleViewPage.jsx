@@ -48,7 +48,7 @@ if (!article || isError) {
   
 
   return (
-    <div className="min-h-screen pb-24 font-sans antialiased text-slate-900">
+    <div className="min-h-screen pb-24 font-sans antialiased text-slate-900 dark:text-slate-100">
       <FormPageHeader
         entityName={t("title")}
         backPath="/articles"
@@ -71,7 +71,7 @@ if (!article || isError) {
               color="text-[#B12B89]"
             />
 
-            <div className="pt-4 mt-2 border-t border-slate-100 dark:border-slate-800">
+            <div className="pt-4 mt-2 border-t border-slate-100 dark:border-[#2e2e2e]">
               <Info
                 label={t("form.fields.unit_main")}
                 value={
@@ -168,7 +168,7 @@ if (!article || isError) {
               color="text-orange-600"
             />
 
-            <div className="pt-4 mt-2 border-t border-slate-100 dark:border-slate-800">
+            <div className="pt-4 mt-2 border-t border-slate-100 dark:border-[#2e2e2e]">
               <Info
                 label={t("fields.expiry_date")}
                 value={
@@ -193,7 +193,7 @@ if (!article || isError) {
         {/* RIGHT COLUMN: MEDIA & STATUS */}
         <div className="col-span-12 lg:col-span-4 space-y-6">
           <Card title={t("sections.image")}>
-            <div className="relative aspect-square w-full rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-center overflow-hidden">
+            <div className="relative aspect-square w-full rounded-2xl border-2 border-dashed border-slate-200 dark:border-[#2e2e2e] bg-slate-50 dark:bg-[#111111] flex items-center justify-center overflow-hidden">
               {article.image ? (
                 <img
                   src={article.image}
@@ -350,9 +350,9 @@ const ArticleStockCard = ({ articleId, articleName }) => {
 
   return (
     <>
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm overflow-hidden">
         {/* Card header */}
-        <div className="px-6 py-4 border-b border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-slate-50 dark:border-[#2e2e2e] bg-slate-50/50 dark:bg-[#222222]/30 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Warehouse size={14} className="text-slate-400" />
             <h3 className="font-bold text-[11px] uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
@@ -382,9 +382,9 @@ const ArticleStockCard = ({ articleId, articleName }) => {
               </p>
             </div>
           ) : (
-            <div className="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-xl">
+            <div className="overflow-x-auto border border-slate-200 dark:border-[#2e2e2e] rounded-xl">
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 dark:bg-slate-800/50">
+                <thead className="bg-slate-50 dark:bg-[#222222]/50">
                   <tr className="text-left text-slate-500 uppercase text-[10px] tracking-wider">
                     <th className="px-4 py-3">{t("card.col_depot")}</th>
                     <th className="px-4 py-3 text-center">{t("card.col_qty")}</th>
@@ -392,11 +392,11 @@ const ArticleStockCard = ({ articleId, articleName }) => {
                     {/* <th className="px-4 py-3 text-right">Actions</th> */}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
                   {stocksData.data.map((stock) => (
                     <tr
                       key={stock.id}
-                      className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition"
+                      className="hover:bg-slate-50/50 dark:hover:bg-[#222222]/30 transition"
                     >
                     <td className="px-4 py-3 min-w-[220px]">
                     <div className="flex items-center gap-3">
@@ -405,11 +405,11 @@ const ArticleStockCard = ({ articleId, articleName }) => {
                                          <img
                                            src={stock.depot.societe?.logo || "https://ui-avatars.com/api/?name=" + (stock.depot.societe?.raisonSocial || 'S')}
                                            alt={stock.depot.societe?.raisonSocial}
-                                           className="w-10 h-10 object-cover rounded-lg border border-slate-200 dark:border-slate-700 bg-white"
+                                           className="w-10 h-10 object-cover rounded-lg border border-slate-200 dark:border-[#2e2e2e] bg-white"
                                            onError={(e) => (e.currentTarget.src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=")}
                                          />
                                          {/* Mini Badge */}
-                                         <div className="absolute -bottom-1 -right-1 bg-white dark:bg-slate-900 rounded-full p-1 shadow-sm border border-slate-100 dark:border-slate-800">
+                                         <div className="absolute -bottom-1 -right-1 bg-white dark:bg-[#1c1c1c] rounded-full p-1 shadow-sm border border-slate-100 dark:border-[#2e2e2e]">
                                            <Warehouse size={10} className="text-blue-500" />
                                          </div>
                                        </div>
@@ -483,7 +483,7 @@ const ArticleStockCard = ({ articleId, articleName }) => {
           <div className="flex gap-3">
             <button
               onClick={closeForm}
-              className="flex-1 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              className="flex-1 py-2.5 border border-slate-200 dark:border-[#2e2e2e] rounded-xl font-semibold hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors"
             >
               {t("card.cancel")}
             </button>
@@ -530,8 +530,8 @@ const ArticleStockCard = ({ articleId, articleName }) => {
 /* ---------- UI HELPERS (unchanged) ---------- */
 
 const Card = ({ title, children }) => (
-  <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-    <div className="px-6 py-4 border-b border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+  <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm overflow-hidden">
+    <div className="px-6 py-4 border-b border-slate-50 dark:border-[#2e2e2e] bg-slate-50/50 dark:bg-[#222222]/30">
       <h3 className="font-bold text-[11px] uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
         {title}
       </h3>
@@ -549,12 +549,12 @@ const Info = ({
   isBold = false,
   isNumber = false,
 }) => (
-  <div className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-800/50 last:border-0">
+  <div className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-[#2e2e2e]/50 last:border-0">
     <span className="text-sm text-slate-500">{label}</span>
     <span
       className={`text-sm ${color} 
         ${isCode
-          ? "font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs"
+          ? "font-mono bg-slate-100 dark:bg-[#222222] px-1.5 py-0.5 rounded text-xs"
           : ""
         } 
         ${isBold ? "font-bold" : "font-semibold"}
@@ -573,7 +573,7 @@ const StatusBadge = ({ label, value, yes, no }) => (
       className={`px-3 py-1 rounded-full text-[11px] font-bold border uppercase tracking-tight ${
         value
           ? "bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400"
-          : "bg-slate-50 border-slate-200 text-slate-500 dark:bg-slate-800 dark:border-slate-700"
+          : "bg-slate-50 border-slate-200 text-slate-500 dark:bg-[#222222] dark:border-[#2e2e2e]"
       }`}
     >
       {value ? yes : no}

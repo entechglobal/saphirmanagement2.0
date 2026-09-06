@@ -56,6 +56,8 @@
       "sale_amount": "مبلغ البيع (درهم)",
       "custom_price": "سعر بيع الحزمة (درهم)",
       "custom_price_placeholder": "مثال: 712.50",
+      "commission": "عمولة التجاري (درهم)",
+      "commission_placeholder": "مثال: 10.00",
       "estimated_price": "سعر البيع المقدر",
       "active_label": "الحزمة نشطة",
       "active_desc": "لن تظهر الحزمة غير النشطة في سندات التسليم"

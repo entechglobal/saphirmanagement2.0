@@ -34,6 +34,10 @@
   "stock_description": "تتبع الكميات",
   "visibility_description": "إظهار في نقطة البيع",
   "save_family": "حفظ العائلة",
+  "quick_add_category": "إضافة فئة",
+  "quick_create_title": "عائلة جديدة",
+  "quick_create_subtitle": "إنشاء عائلة وتحديدها",
+  "quick_created": "تم إنشاء العائلة",
   "upload_image": "تحميل الصورة",
   "validation": {
     "name_required": "الاسم مطلوب",

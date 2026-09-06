@@ -66,7 +66,9 @@
     "agences": "Agences",
     "commandes": "Commandes",
     "colisTracking": "Suivi colis",
-    "planningLivraison": "Planning Livraison"
+    "planningLivraison": "Planning Livraison",
+    "deliveryShifts": "Shifts livreurs",
+    "commercialStats": "Statistique commercial"
   },
   "gestion": {
     "label": "Gestion",
@@ -79,11 +81,14 @@
   "depots": "Dépôts",
   "companies": "Sociétés",
   "users": "Utilisateurs",
+  "attendance": "Pointage",
   "settings": "Paramètres",
   "attributes": "Attributs",
   "adminPermissions": "Permissions d'administration",
   "allRightsReserved": "Tous droits réservés",
   "menu": "Menu",
+  "searchPages": "Rechercher une page…",
+  "noPagesFound": "Aucune page trouvée",
   "close": "Fermer",
   "collapse": "Réduire",
   "expand": "Développer",

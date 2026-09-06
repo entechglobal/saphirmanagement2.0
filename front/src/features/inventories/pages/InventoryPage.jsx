@@ -134,7 +134,7 @@ export const InventoryPage = () => {
                 }
                 if (value === 0) {
                     return (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-500 dark:bg-[#222222] dark:text-slate-400">
                             <Minus className="w-3.5 h-3.5" />
                             0
                         </span>

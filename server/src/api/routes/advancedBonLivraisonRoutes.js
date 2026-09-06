@@ -80,8 +80,31 @@ router.get(
 );
 
 /**
+ * GET /api/advanced-bon-livraisons/commercial-stats
+ * Commission & order stats grouped by commercial.
+ * Query: dateFrom?, dateTo?, commercialId?
+ */
+router.get(
+  "/commercial-stats",
+  hasPermission("view_advanced_bl"),
+  AdvancedBLController.getCommercialStats,
+);
+
+/**
+ * GET /api/advanced-bon-livraisons/top-commercials
+ * Top commercials by commission for dashboard sidebar.
+ * Query: dateFrom?, dateTo?, limit?
+ */
+router.get(
+  "/top-commercials",
+  hasPermission("view_advanced_bl"),
+  AdvancedBLController.getTopCommercials,
+);
+
+/**
  * GET /api/advanced-bon-livraisons/workflow-counts
  * Role-aware counters of Advanced BLs grouped by next actionable step.
+ * Query: dateFrom?, dateTo? (filters on dateLivraison)
  */
 router.get(
   "/workflow-counts",

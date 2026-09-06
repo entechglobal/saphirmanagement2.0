@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   User, Phone, MessageCircle, MapPin, Building2,
-  CalendarClock, Truck, Package, ClipboardList, Receipt, History,
+  CalendarClock, Truck, Package, ClipboardList, Receipt, History, FileText,
   ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { useCommandById } from "../hooks/useCommands";
@@ -67,7 +67,7 @@ const StatusBadge = ({ status }) => {
   const { t } = useTranslation("commands");
   const metaRaw = STATUS_META[status] ?? {
     label: status,
-    color: "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
+    color: "bg-slate-100 text-slate-600 border-slate-200 dark:bg-[#222222] dark:text-slate-300 dark:border-[#2e2e2e]",
   };
   const label = t(`status_label_${status}`, metaRaw.label);
   return (
@@ -79,8 +79,8 @@ const StatusBadge = ({ status }) => {
 
 /* ─── SectionCard ─── */
 const SectionCard = ({ title, icon: Icon, children, className = "" }) => (
-  <div className={`bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden ${className}`}>
-    <div className="px-7 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center gap-3">
+  <div className={`bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm overflow-hidden ${className}`}>
+    <div className="px-7 py-5 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center gap-3">
       {Icon && <Icon size={14} className="text-blue-500" />}
       <h3 className="font-bold text-[11px] uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500">{title}</h3>
     </div>
@@ -196,18 +196,18 @@ export const CommandDetailsPage = () => {
       <div className="max-w-6xl mx-auto px-4 md:px-6 mt-6 md:mt-8 space-y-5">
 
         {/* ─── Status summary bar ─── */}
-        <div className="flex items-center justify-between flex-wrap gap-3 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 px-7 py-5 shadow-sm">
+        <div className="flex items-center justify-between flex-wrap gap-3 bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] px-7 py-5 shadow-sm">
           <div className="flex items-center gap-4 flex-wrap">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">{t("detail_number")}</p>
               <p className="text-base font-black text-slate-800 dark:text-slate-100">{documentNumber}</p>
             </div>
-            <div className="w-px h-8 bg-slate-200 dark:bg-slate-700" />
+            <div className="w-px h-8 bg-slate-200 dark:bg-[#2e2e2e]" />
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">{t("detail_status")}</p>
               <StatusBadge status={command.commandStatus} />
             </div>
-            <div className="w-px h-8 bg-slate-200 dark:bg-slate-700" />
+            <div className="w-px h-8 bg-slate-200 dark:bg-[#2e2e2e]" />
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">{t("detail_created_at")}</p>
               <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">{fmtDateTime(command.createdAt)}</p>
@@ -229,12 +229,20 @@ export const CommandDetailsPage = () => {
           <SectionCard title={t("section_recipient")} icon={User}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <DetailField label={t("field_name")}         value={destinataire.clientName || clientName} icon={User} />
+              {destinataire.linkedClientName && destinataire.linkedClientName !== (destinataire.clientName || clientName) && (
+                <DetailField label={t("confirm_row_linked_client")} value={destinataire.linkedClientName} icon={User} />
+              )}
               <DetailField label={t("field_telephone")}    value={displayPhone}    icon={Phone} />
               <DetailField label={t("field_whatsapp")}     value={displayWhatsapp} icon={MessageCircle} href={whatsappUrl} />
               <DetailField label={t("field_ville")}        value={displayVille}    icon={MapPin} />
               <div className="sm:col-span-2">
                 <DetailField label={t("field_localisation")} value={displayLoc} icon={MapPin} />
               </div>
+              <DetailField
+                label={t("form_facture_mode")}
+                value={destinataire.withFacture || command.withFacture ? t("form_with_facture") : t("form_sans_facture")}
+                icon={FileText}
+              />
             </div>
           </SectionCard>
 
@@ -252,9 +260,21 @@ export const CommandDetailsPage = () => {
           </SectionCard>
         </div>
 
+        {(destinataire.withFacture || command.withFacture) && (destinataire.ice || destinataire.raisonSocial || destinataire.siegeSocial || command.ice || command.raisonSocial) && (
+          <SectionCard title={t("confirm_section_facture")} icon={FileText}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <DetailField label={t("form_ice")} value={destinataire.ice || command.ice} icon={FileText} />
+              <DetailField label={t("form_raison_sociale")} value={destinataire.raisonSocial || command.raisonSocial} icon={Building2} />
+              <div className="sm:col-span-2">
+                <DetailField label={t("form_siege_social")} value={destinataire.siegeSocial || command.siegeSocial} icon={MapPin} />
+              </div>
+            </div>
+          </SectionCard>
+        )}
+
         {/* ─── Commande (Products & Amount) ─── */}
         <SectionCard title={t("section_order")} icon={Receipt}>
-          <div className="flex flex-wrap gap-4 mb-6 p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+          <div className="flex flex-wrap gap-4 mb-6 p-5 rounded-2xl bg-slate-50 dark:bg-[#222222]/50 border border-slate-200 dark:border-[#2e2e2e]">
             <div className="flex-1 min-w-[140px]">
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">{t("amount_total")}</p>
               <p className="text-2xl font-black text-slate-800 dark:text-slate-100">{fmtMoney(amountDue)} MAD</p>
@@ -279,22 +299,23 @@ export const CommandDetailsPage = () => {
                 <p className="text-sm font-semibold text-slate-500">{t("no_products")}</p>
               </div>
             ) : (
-              <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800">
+              <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-[#2e2e2e]">
                 <table className="w-full">
                   <thead>
-                    <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                    <tr className="bg-slate-50 dark:bg-[#222222]/50 border-b border-slate-200 dark:border-[#2e2e2e]">
                       <th className="px-4 py-3 text-start  text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("col_hash")}</th>
                       <th className="px-4 py-3 text-start  text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("col_article")}</th>
                       <th className="px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("col_qty")}</th>
                       <th className="px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("col_unit_price")}</th>
+                      <th className="px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("col_commission")}</th>
                       <th className="px-4 py-3 text-end   text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("col_total")}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
                     {productRows.map((row, idx) => (
-                      <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition">
+                      <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-[#222222]/20 transition">
                         <td className="px-4 py-3">
-                          <span className="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-500">
+                          <span className="w-6 h-6 rounded-lg bg-slate-100 dark:bg-[#222222] flex items-center justify-center text-[10px] font-bold text-slate-500">
                             {idx + 1}
                           </span>
                         </td>
@@ -310,6 +331,9 @@ export const CommandDetailsPage = () => {
                         <td className="px-4 py-3 text-center">
                           <span className="text-sm font-bold text-slate-600 dark:text-slate-300">{fmtMoney(row.unitPrice)} MAD</span>
                         </td>
+                        <td className="px-4 py-3 text-center">
+                          <span className="text-sm font-bold text-slate-600 dark:text-slate-300">{fmtMoney(row.commissionTotal ?? (row.commission || 0) * (row.quantity || 0))} MAD</span>
+                        </td>
                         <td className="px-4 py-3 text-end">
                           <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{fmtMoney(row.total)} MAD</span>
                         </td>
@@ -317,6 +341,19 @@ export const CommandDetailsPage = () => {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            )}
+
+            {(details?.blInfo?.totalCommission > 0 || details?.blInfo?.commercialName) && (
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-fuchsia-100 bg-fuchsia-50/60 px-4 py-3 dark:border-fuchsia-900/40 dark:bg-fuchsia-900/10">
+                {details?.blInfo?.commercialName && (
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    {t("detail_commercial")}: <span className="font-semibold text-slate-800 dark:text-slate-100">{details.blInfo.commercialName}</span>
+                  </p>
+                )}
+                <p className="text-sm font-bold text-[#B12B89]">
+                  {t("detail_total_commission")}: {fmtMoney(details?.blInfo?.totalCommission || 0)} MAD
+                </p>
               </div>
             )}
           </div>
@@ -331,21 +368,21 @@ export const CommandDetailsPage = () => {
             </div>
           ) : (
             <>
-              <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800">
+              <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-[#2e2e2e]">
                 <table className="w-full">
                   <thead>
-                    <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                    <tr className="bg-slate-50 dark:bg-[#222222]/50 border-b border-slate-200 dark:border-[#2e2e2e]">
                       <th className="px-4 py-3 text-start text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("col_hash")}</th>
                       <th className="px-4 py-3 text-start text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("col_action_header")}</th>
                       <th className="px-4 py-3 text-start text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("col_user")}</th>
                       <th className="px-4 py-3 text-end  text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("col_date_header")}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
                     {paginatedHistory.map((item, idx) => {
                       const globalIdx = (historyPage - 1) * HISTORY_PAGE_SIZE + idx;
                       return (
-                        <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition">
+                        <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-[#222222]/20 transition">
                           <td className="px-4 py-3">
                             <span className="w-6 h-6 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-[10px] font-bold text-[#B12B89]">
                               {globalIdx + 1}
@@ -374,7 +411,7 @@ export const CommandDetailsPage = () => {
 
               {/* ─── Pagination ─── */}
               {historyPageCount > 1 && (
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-100 dark:border-[#2e2e2e]">
                   <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500">
                     {t("pagination_info", { from: (historyPage - 1) * HISTORY_PAGE_SIZE + 1, to: Math.min(historyPage * HISTORY_PAGE_SIZE, history.length), total: history.length })}
                   </p>
@@ -382,7 +419,7 @@ export const CommandDetailsPage = () => {
                     <button
                       onClick={() => setHistoryPage((p) => Math.max(1, p - 1))}
                       disabled={historyPage === 1}
-                      className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                      className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#222222] disabled:opacity-30 disabled:cursor-not-allowed transition"
                     >
                       <ChevronLeft size={14} className="rtl:scale-x-[-1]" />
                     </button>
@@ -393,7 +430,7 @@ export const CommandDetailsPage = () => {
                         className={`w-8 h-8 rounded-xl text-[11px] font-bold transition ${
                           page === historyPage
                             ? "bg-[#B12B89] text-white"
-                            : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                            : "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#222222]"
                         }`}
                       >
                         {page}
@@ -402,7 +439,7 @@ export const CommandDetailsPage = () => {
                     <button
                       onClick={() => setHistoryPage((p) => Math.min(historyPageCount, p + 1))}
                       disabled={historyPage === historyPageCount}
-                      className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition"
+                      className="w-8 h-8 rounded-xl flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-[#222222] disabled:opacity-30 disabled:cursor-not-allowed transition"
                     >
                       <ChevronRight size={14} className="rtl:scale-x-[-1]" />
                     </button>

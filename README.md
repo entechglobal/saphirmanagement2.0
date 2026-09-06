@@ -67,6 +67,41 @@ On a local network, both processes bind to `0.0.0.0`. The frontend logs print a 
 | `npm run seed` | server | Seed base data |
 | `npm run seed:demo` | server | Seed demo data |
 | `npm run build` | front | Production frontend build |
+| `npm run build` | root | Same — builds `front/dist` |
+| `npm run start:prod` | root | Run API + built app on one port (3000) |
+
+## Local production install
+
+Single-process mode: the API serves the built React app from `front/dist` on port 3000 (PWA included).
+
+**Windows (PowerShell):**
+
+```powershell
+.\scripts\install-production.ps1
+# edit server\.env — DATABASE_URL, JWT secrets, etc.
+cd server; npm run seed; cd ..
+.\scripts\start-production.ps1
+```
+
+**Manual steps:**
+
+```bash
+npm install
+npm run install:all
+copy server\.env.production.example server\.env
+# edit server\.env
+cd server
+npx prisma generate
+npx prisma migrate deploy
+npm run seed
+cd ..
+npm run build
+npm run start:prod
+```
+
+Open http://localhost:3000 (phones on the same Wi‑Fi can use your PC’s LAN IP on port 3000).
+
+For local HTTP installs, keep `COOKIE_SECURE=false` in `server/.env`. Set it to `true` only when `BASE_URL` uses HTTPS.
 
 ## Environment
 

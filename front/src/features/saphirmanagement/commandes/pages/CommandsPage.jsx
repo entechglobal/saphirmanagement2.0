@@ -43,6 +43,7 @@ import { useCurrentUser } from "../../../users/hooks/useUsers";
 import { ReusableTable } from "../../../../shared/components/ReusableTable";
 import { FiltersBar } from "../../../../shared/components/FiltersBar";
 import { HeaderTable } from "../../../../shared/components/HeaderTable";
+import { ShiftStatusBanner } from "../../shifts/components/ShiftStatusBanner";
 import { ConfirmationModal } from "../../../../shared/components/ConfirmationModal";
 import { FormDatePicker } from "../../../../shared/FormDatePicker";
 
@@ -137,10 +138,10 @@ const AnnulationConfirmModal = ({ open, onClose, onConfirm, isLoading }) => {
       onClick={onClose}
     >
       <div
-        className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 w-full max-w-sm shadow-2xl flex flex-col overflow-hidden"
+        className="bg-white dark:bg-[#1c1c1c] rounded-[2.5rem] border border-slate-200 dark:border-[#2e2e2e] w-full max-w-sm shadow-2xl flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-8 py-6 border-b border-slate-100 dark:border-slate-800 flex items-center gap-4">
+        <div className="px-8 py-6 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center gap-4">
           <div className="w-11 h-11 rounded-2xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center flex-shrink-0">
             <AlertTriangle size={18} className="text-red-500" />
           </div>
@@ -152,7 +153,7 @@ const AnnulationConfirmModal = ({ open, onClose, onConfirm, isLoading }) => {
           </div>
           <button
             onClick={onClose}
-            className="ml-auto p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition"
+            className="ml-auto p-2 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-xl transition"
           >
             <X size={16} className="text-slate-400" />
           </button>
@@ -175,12 +176,12 @@ const AnnulationConfirmModal = ({ open, onClose, onConfirm, isLoading }) => {
           </p>
         </div>
 
-        <div className="px-8 py-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+        <div className="px-8 py-5 border-t border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between gap-3">
           <button
             type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="px-6 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition disabled:opacity-50"
+            className="px-6 py-2.5 rounded-2xl border border-slate-200 dark:border-[#2e2e2e] text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#222222] transition disabled:opacity-50"
           >
             {t("annulation_back")}
           </button>
@@ -271,7 +272,7 @@ const InlineStatusDropdown = memo(({ status, allowedTargets, onSelect, isLoading
           minWidth: Math.max(dropPos.minWidth ?? 0, 152),
           zIndex: 99999,
         }}
-        className="py-1 px-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl"
+        className="py-1 px-1 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-xl shadow-2xl"
       >
         {allowedTargets.map((target, idx) => {
           const tcfgRaw = STATUS_CONFIG[target] ?? { label: target, dot: "bg-slate-400" };
@@ -280,7 +281,7 @@ const InlineStatusDropdown = memo(({ status, allowedTargets, onSelect, isLoading
           return (
             <div key={target}>
               {isCancel && idx > 0 && (
-                <div className="h-px bg-slate-100 dark:bg-slate-700 my-1" />
+                <div className="h-px bg-slate-100 dark:bg-[#2e2e2e] my-1" />
               )}
               <button
                 type="button"
@@ -298,7 +299,7 @@ const InlineStatusDropdown = memo(({ status, allowedTargets, onSelect, isLoading
                   "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-left transition-colors duration-100 disabled:opacity-50 disabled:cursor-not-allowed",
                   isCancel
                     ? "text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
-                    : "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/60",
+                    : "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2e2e2e]/60",
                 ].join(" ")}
               >
                 <span className={`w-2 h-2 rounded-full flex-shrink-0 ${tcfg.dot}`} />
@@ -383,7 +384,7 @@ const RowActionsMenu = memo(({
             key: "edit",
             label: t("action_edit"),
             icon: <Pencil size={13} />,
-            className: "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/60",
+            className: "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2e2e2e]/60",
             onClick: () => { onEdit(row); setOpen(false); },
           },
           {
@@ -400,7 +401,7 @@ const RowActionsMenu = memo(({
       key: "print",
       label: t("action_print"),
       icon: <Printer size={13} />,
-      className: "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/60",
+      className: "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2e2e2e]/60",
       dividerBefore: !restrictedRole,
       pending: isPrintPending,
       onClick: () => { onPrint(row); setOpen(false); },
@@ -422,7 +423,7 @@ const RowActionsMenu = memo(({
           icon: isSuspended ? <PlayCircle size={13} /> : <PauseCircle size={13} />,
           className: isSuspended
             ? "text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
-            : "text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/60",
+            : "text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#2e2e2e]/60",
           pending: isSuspendPending,
           onClick: () => { onSuspend(row); setOpen(false); },
         }]
@@ -488,12 +489,12 @@ const RowActionsMenu = memo(({
           maxWidth: "calc(100vw - 16px)",
           zIndex: 99999,
         }}
-        className="py-1.5 px-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl"
+        className="py-1.5 px-1.5 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-xl shadow-2xl"
       >
         {items.map((item) => (
           <div key={item.key}>
             {item.dividerBefore && (
-              <div className="h-px bg-slate-100 dark:bg-slate-700 my-1" />
+              <div className="h-px bg-slate-100 dark:bg-[#2e2e2e] my-1" />
             )}
             <button
               type="button"
@@ -524,10 +525,10 @@ const RowActionsMenu = memo(({
         className={[
           "flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-150",
           "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200",
-          "hover:bg-slate-100 dark:hover:bg-slate-700",
-          "border border-transparent hover:border-slate-200 dark:hover:border-slate-600",
+          "hover:bg-slate-100 dark:hover:bg-[#2e2e2e]",
+          "border border-transparent hover:border-slate-200 dark:hover:border-[#3a3a3a]",
           "disabled:opacity-40 disabled:cursor-not-allowed",
-          open ? "bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-600" : "",
+          open ? "bg-slate-100 dark:bg-[#2e2e2e] border-slate-200 dark:border-[#3a3a3a] text-slate-600" : "",
         ].join(" ")}
       >
         <MoreVertical size={20} />
@@ -568,10 +569,10 @@ export const ReportModal = ({ open, onClose, command, onConfirm, isLoading }) =>
       onClick={onClose}
     >
       <div
-        className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 w-full max-w-md shadow-2xl flex flex-col overflow-hidden"
+        className="bg-white dark:bg-[#1c1c1c] rounded-[2.5rem] border border-slate-200 dark:border-[#2e2e2e] w-full max-w-md shadow-2xl flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-8 py-6 border-b border-slate-100 dark:border-slate-800 flex items-center gap-4">
+        <div className="px-8 py-6 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center gap-4">
           <div className="w-11 h-11 rounded-2xl bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center flex-shrink-0">
             <AlertTriangle size={18} className="text-orange-500" />
           </div>
@@ -585,7 +586,7 @@ export const ReportModal = ({ open, onClose, command, onConfirm, isLoading }) =>
           </div>
           <button
             onClick={onClose}
-            className="ml-auto p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition"
+            className="ml-auto p-2 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-xl transition"
           >
             <X size={16} className="text-slate-400" />
           </button>
@@ -593,7 +594,7 @@ export const ReportModal = ({ open, onClose, command, onConfirm, isLoading }) =>
 
         <div className="px-8 py-7 flex flex-col gap-6">
           {command && (
-            <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+            <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-50 dark:bg-[#222222]/50 border border-slate-100 dark:border-[#2e2e2e]">
               <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0">
                 <User size={14} className="text-[#B12B89]" />
               </div>
@@ -617,7 +618,7 @@ export const ReportModal = ({ open, onClose, command, onConfirm, isLoading }) =>
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder={t("report_reason_placeholder")}
-              className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm resize-none bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#B12B89]/20 focus:border-[#B12B89] transition-all"
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-[#2e2e2e] text-sm resize-none bg-white dark:bg-[#222222] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#B12B89]/20 focus:border-[#B12B89] transition-all"
             />
           </div>
 
@@ -630,12 +631,12 @@ export const ReportModal = ({ open, onClose, command, onConfirm, isLoading }) =>
           />
         </div>
 
-        <div className="px-8 py-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+        <div className="px-8 py-5 border-t border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between gap-3">
           <button
             type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="px-6 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition disabled:opacity-50"
+            className="px-6 py-2.5 rounded-2xl border border-slate-200 dark:border-[#2e2e2e] text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#222222] transition disabled:opacity-50"
           >
             {t("report_cancel")}
           </button>
@@ -1042,6 +1043,7 @@ export const CommandsPage = () => {
 
   return (
     <div className="p-4 md:p-8 min-h-screen transition-colors duration-300">
+      <ShiftStatusBanner />
       <HeaderTable
         title={t("title")}
         onCreate={restrictedRole ? undefined : () => navigate("/commandes/create")}

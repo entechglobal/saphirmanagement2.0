@@ -1,5 +1,5 @@
 export const Card = ({ title, children }) => (
-  <div className="bg-white dark:bg-slate-900 rounded-3xl border p-6 space-y-4">
+  <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] p-6 space-y-4">
     <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">
       {title}
     </h3>

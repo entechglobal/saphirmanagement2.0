@@ -55,16 +55,16 @@ export const MuiProvider = ({ children }) => {
           },
 
           background: {
-            default: isDark ? "#0f172a" : "#f8fafc",   // page bg
-            paper: isDark ? "#1e293b" : "#ffffff",    // ← was #020617, too dark
-            filter: isDark ? "#1e293b" : "#f8fafc",
+            default: isDark ? "#161616" : "#f8fafc",
+            paper: isDark ? "#1c1c1c" : "#ffffff",
+            filter: isDark ? "#1c1c1c" : "#f8fafc",
           },
 
-          divider: isDark ? "#334155" : "#e2e8f0",
+          divider: isDark ? "#2e2e2e" : "#e2e8f0",
 
           text: {
-            primary: isDark ? "#e2e8f0" : "#1e293b",
-            secondary: "#64748b",
+            primary: isDark ? "#e5e5e5" : "#0f172a",
+            secondary: isDark ? "#a3a3a3" : "#64748b",
           },
         },
 
@@ -96,7 +96,7 @@ export const MuiProvider = ({ children }) => {
             styleOverrides: {
               root: {
                 "& .MuiTableCell-head": {
-                  backgroundColor: isDark ? "#172033" : "#f8fafc",
+                  backgroundColor: isDark ? "#1a1a1a" : "#f8fafc",
                   color: isDark ? "#94a3b8" : "#64748b",
                   fontSize: "0.6875rem",
                   fontWeight: 600,
@@ -104,7 +104,7 @@ export const MuiProvider = ({ children }) => {
                   textTransform: "uppercase",
                   whiteSpace: "nowrap",
                   padding: "9px 14px",
-                  borderBottom: `1px solid ${isDark ? "#334155" : "#e2e8f0"}`,
+                  borderBottom: `1px solid ${isDark ? "#2e2e2e" : "#e2e8f0"}`,
                 },
               },
             },
@@ -130,10 +130,10 @@ export const MuiProvider = ({ children }) => {
           MuiTableCell: {
             styleOverrides: {
               root: {
-                borderBottom: `1px solid ${isDark ? "#293548" : "#f1f5f9"}`,
+                borderBottom: `1px solid ${isDark ? "#2e2e2e" : "#f1f5f9"}`,
                 fontSize: "0.8125rem",
                 padding: "11px 14px",
-                color: isDark ? "#e2e8f0" : "#1e293b",
+                color: isDark ? "#e5e5e5" : "#0f172a",
               },
             },
           },
@@ -175,19 +175,19 @@ export const MuiProvider = ({ children }) => {
             styleOverrides: {
               root: {
                 borderRadius: 8,
-                backgroundColor: isDark ? "#1e293b" : "#ffffff",
+                backgroundColor: isDark ? "#222222" : "#ffffff",
                 "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: isDark ? "#334155" : "#e2e8f0",
+                  borderColor: isDark ? "#2e2e2e" : "#e2e8f0",
                 },
                 "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: isDark ? "#475569" : "#cbd5e1",
+                  borderColor: isDark ? "#3a3a3a" : "#cbd5e1",
                 },
                 "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
                   borderColor: "#B12B89",
                   borderWidth: 1.5,
                 },
                 "& input": {
-                  color: isDark ? "#e2e8f0" : "#1e293b",
+                  color: isDark ? "#e5e5e5" : "#0f172a",
                 },
               },
             },
@@ -198,13 +198,13 @@ export const MuiProvider = ({ children }) => {
             styleOverrides: {
               root: {
                 borderRadius: 8,
-                backgroundColor: isDark ? "#1e293b" : "#ffffff",
+                backgroundColor: isDark ? "#222222" : "#ffffff",
                 height: "40px",
                 "& .MuiPickersOutlinedInput-notchedOutline": {
-                  borderColor: isDark ? "#334155" : "#e2e8f0",
+                  borderColor: isDark ? "#2e2e2e" : "#e2e8f0",
                 },
                 "&:hover .MuiPickersOutlinedInput-notchedOutline": {
-                  borderColor: isDark ? "#475569" : "#cbd5e1",
+                  borderColor: isDark ? "#3a3a3a" : "#cbd5e1",
                 },
                 "&.Mui-focused .MuiPickersOutlinedInput-notchedOutline": {
                   borderColor: "#B12B89",
@@ -213,11 +213,54 @@ export const MuiProvider = ({ children }) => {
             },
           },
 
-          // ── Menu items (export dropdown) ─────────────────────────
+          // ── Menu / Dialog / Popover surfaces ─────────────────────
+          MuiMenu: {
+            styleOverrides: {
+              paper: {
+                backgroundColor: isDark ? "#1c1c1c" : "#ffffff",
+                backgroundImage: "none",
+                border: `1px solid ${isDark ? "#2e2e2e" : "#e2e8f0"}`,
+              },
+            },
+          },
+          MuiPopover: {
+            styleOverrides: {
+              paper: {
+                backgroundColor: isDark ? "#1c1c1c" : "#ffffff",
+                backgroundImage: "none",
+                border: `1px solid ${isDark ? "#2e2e2e" : "#e2e8f0"}`,
+              },
+            },
+          },
+          MuiDialog: {
+            styleOverrides: {
+              paper: {
+                backgroundColor: isDark ? "#1c1c1c" : "#ffffff",
+                backgroundImage: "none",
+              },
+            },
+          },
+          MuiAutocomplete: {
+            styleOverrides: {
+              paper: {
+                backgroundColor: isDark ? "#1c1c1c" : "#ffffff",
+                backgroundImage: "none",
+                border: `1px solid ${isDark ? "#2e2e2e" : "#e2e8f0"}`,
+              },
+              listbox: {
+                backgroundColor: isDark ? "#1c1c1c" : "#ffffff",
+              },
+            },
+          },
           MuiMenuItem: {
             styleOverrides: {
               root: {
                 fontSize: "0.875rem",
+                "&:hover": {
+                  backgroundColor: isDark
+                    ? "rgba(255,255,255,0.05)"
+                    : "rgba(15,23,42,0.04)",
+                },
               },
             },
           },
@@ -225,7 +268,7 @@ export const MuiProvider = ({ children }) => {
           // ── Select icon ──────────────────────────────────────────
           MuiSelect: {
             styleOverrides: {
-              icon: { color: "#64748b" },
+              icon: { color: isDark ? "#a3a3a3" : "#64748b" },
             },
           },
         },

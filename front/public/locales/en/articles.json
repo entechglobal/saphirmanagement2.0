@@ -99,6 +99,7 @@
       "sale_price_1": "Sale Price 1",
       "sale_price_2": "Sale Price 2",
       "sale_price_3": "Sale Price 3",
+      "commission": "Commercial commission",
       "discount_percent": "Discount %",
       "expiration_date": "Expiration Date",
       "expiration_alert": "Expiration Alert (days)",
@@ -115,6 +116,7 @@
       "select": "Select"
     },
     "buttons": {
+      "add_family": "Add a family",
       "generate": "Generate",
       "add_secondary": "+ Add secondary unit",
       "add_complementary": "+ Add complementary unit",

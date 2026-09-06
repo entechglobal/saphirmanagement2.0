@@ -163,10 +163,10 @@ export const CaisseLabelsPage = () => {
 
   return (
     <div>
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-2xl overflow-hidden shadow-sm">
 
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0">
               <Tag size={16} className="text-blue-500" />
@@ -185,12 +185,12 @@ export const CaisseLabelsPage = () => {
         </div>
 
         {/* Search */}
-        <div className="px-6 py-3 border-b border-slate-50 dark:border-slate-800/60">
+        <div className="px-6 py-3 border-b border-slate-50 dark:border-[#2e2e2e]/60">
           <input
             value={keyword}
             onChange={(e) => changeKeyword(e.target.value)}
             placeholder={t("col_name") + "…"}
-            className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-700 dark:text-slate-300 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full bg-slate-50 dark:bg-[#222222]/50 border border-slate-200 dark:border-[#2e2e2e] rounded-xl px-3 py-2 text-sm text-slate-700 dark:text-slate-300 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
 
@@ -206,7 +206,7 @@ export const CaisseLabelsPage = () => {
             <p className="text-sm">Aucun libellé trouvé</p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-50 dark:divide-slate-800/60">
+          <div className="divide-y divide-slate-50 dark:divide-[#2e2e2e]/60">
             {labels.map((label) => (
               <div key={label.id} className="flex items-center justify-between px-6 py-3.5 gap-3">
                 <div className="flex items-center gap-2.5 min-w-0">
@@ -245,7 +245,7 @@ export const CaisseLabelsPage = () => {
         )}
 
         {/* Pagination */}
-        <div className="px-5 py-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+        <div className="px-5 py-3 border-t border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <p className="text-xs text-slate-400">
               {labels.length > 0
@@ -257,7 +257,7 @@ export const CaisseLabelsPage = () => {
                 value={pageSize}
                 onChange={(e) => changeSize(e.target.value)}
                 disabled={isLoading}
-                className="appearance-none bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 pr-6 text-[11px] font-semibold text-slate-500 dark:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
+                className="appearance-none bg-slate-100 dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-lg px-2.5 py-1 pr-6 text-[11px] font-semibold text-slate-500 dark:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
               >
                 {[5, 10, 20, 50].map((n) => (
                   <option key={n} value={n}>{n} / page</option>
@@ -266,11 +266,11 @@ export const CaisseLabelsPage = () => {
               <ChevronDown size={10} className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             </div>
           </div>
-          <div dir="ltr" className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+          <div dir="ltr" className="flex items-center gap-1 bg-slate-100 dark:bg-[#222222] p-1 rounded-xl">
             <button
               onClick={() => setPage((p) => Math.max(0, p - 1))}
               disabled={!hasPrev || isLoading}
-              className="p-1.5 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition disabled:opacity-30 text-slate-500 dark:text-slate-400"
+              className="p-1.5 hover:bg-white dark:hover:bg-[#2e2e2e] rounded-lg transition disabled:opacity-30 text-slate-500 dark:text-slate-400"
             >
               <ChevronLeft size={15} />
             </button>
@@ -280,7 +280,7 @@ export const CaisseLabelsPage = () => {
             <button
               onClick={() => setPage((p) => p + 1)}
               disabled={!hasNext || isLoading}
-              className="p-1.5 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition disabled:opacity-30 text-slate-500 dark:text-slate-400"
+              className="p-1.5 hover:bg-white dark:hover:bg-[#2e2e2e] rounded-lg transition disabled:opacity-30 text-slate-500 dark:text-slate-400"
             >
               <ChevronRight size={15} />
             </button>

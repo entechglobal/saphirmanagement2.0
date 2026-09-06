@@ -115,12 +115,12 @@ export const UserDetailsPage = () => {
 
           {/* ── LEFT SIDEBAR ──────────────────────────────────── */}
           <div className="col-span-12 lg:col-span-4 space-y-6">
-            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-200 dark:border-slate-800 shadow-sm text-center relative overflow-hidden">
+            <div className="bg-white dark:bg-[#1c1c1c] rounded-[2.5rem] p-8 border border-slate-200 dark:border-[#2e2e2e] shadow-sm text-center relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-br from-blue-500/10 to-transparent" />
 
               {/* Avatar */}
               <div className="relative mt-4 inline-block">
-                <div className="w-32 h-32 rounded-[2.5rem] flex items-center justify-center overflow-hidden ring-4 ring-white dark:ring-slate-800 shadow-2xl mx-auto bg-slate-100 dark:bg-slate-800">
+                <div className="w-32 h-32 rounded-[2.5rem] flex items-center justify-center overflow-hidden ring-4 ring-white dark:ring-[#2e2e2e] shadow-2xl mx-auto bg-slate-100 dark:bg-[#222222]">
                   {u.profile ? (
                     <img src={u.profile} alt={u.name} className="w-full h-full object-cover" />
                   ) : (
@@ -131,7 +131,7 @@ export const UserDetailsPage = () => {
                   )}
                 </div>
                 {/* Active dot */}
-                <span className={`absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-slate-900 ${u.active ? "bg-emerald-500" : "bg-slate-300 dark:bg-slate-600"}`} />
+                <span className={`absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-[#1c1c1c] ${u.active ? "bg-emerald-500" : "bg-slate-300 dark:bg-[#3a3a3a]"}`} />
               </div>
 
               {/* Name & role */}
@@ -143,7 +143,7 @@ export const UserDetailsPage = () => {
               </div>
 
               {/* Status */}
-              <div className="mt-8 pt-8 border-t border-slate-50 dark:border-slate-800 space-y-3">
+              <div className="mt-8 pt-8 border-t border-slate-50 dark:border-[#2e2e2e] space-y-3">
                 <ToggleActiveRow
                   label={t("details.status.account_active")}
                   active={u.active}
@@ -156,7 +156,7 @@ export const UserDetailsPage = () => {
               <div className="mt-4 space-y-2">
                 <button
                   onClick={() => navigate(`/users/${id}/edit`)}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-black uppercase tracking-widest text-slate-500 hover:border-[#B12B89] hover:text-[#B12B89] transition-all"
+                  className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border border-slate-200 dark:border-[#2e2e2e] text-xs font-black uppercase tracking-widest text-slate-500 hover:border-[#B12B89] hover:text-[#B12B89] transition-all"
                 >
                   <Pencil size={13} /> {t("details.edit_profile")}
                 </button>
@@ -164,7 +164,7 @@ export const UserDetailsPage = () => {
                 {isSuperAdmin && !isSelf && (
                   <button
                     onClick={() => setShowDeleteModal(true)}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs font-black uppercase tracking-widest text-slate-400 hover:border-red-300 hover:text-red-500 dark:hover:border-red-800 transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border border-slate-200 dark:border-[#2e2e2e] text-xs font-black uppercase tracking-widest text-slate-400 hover:border-red-300 hover:text-red-500 dark:hover:border-red-800 transition-all"
                   >
                     <Trash2 size={13} /> {t("details.delete")}
                   </button>
@@ -217,8 +217,8 @@ export const UserDetailsPage = () => {
       {/* ── DELETE CONFIRM MODAL ────────────────────────────────── */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl w-full max-w-sm p-8 relative text-center">
-            <div className="w-14 h-14 rounded-[1.5rem] bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-5">
+          <div className="bg-white dark:bg-[#1c1c1c] rounded-[2.5rem] shadow-2xl w-full max-w-sm p-8 relative text-center">
+            <div className="w-14 h-14 rounded-[1.5rem] bg-slate-100 dark:bg-[#222222] flex items-center justify-center mx-auto mb-5">
               <Trash2 size={20} className="text-slate-500" />
             </div>
             <h3 className="text-base font-black text-slate-900 dark:text-white">{t("details.delete_modal.title")}</h3>
@@ -235,7 +235,7 @@ export const UserDetailsPage = () => {
               </button>
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-500 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                className="flex-1 bg-slate-100 dark:bg-[#222222] text-slate-500 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-200 dark:hover:bg-[#2e2e2e] transition-all"
               >
                 {t("details.delete_modal.cancel")}
               </button>
@@ -249,8 +249,8 @@ export const UserDetailsPage = () => {
 
 /* ── UI HELPERS ─────────────────────────────────────────────────── */
 const DetailSection = ({ title, icon, children }) => (
-  <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-    <div className="px-8 py-6 border-b border-slate-50 dark:border-slate-800 flex items-center gap-3">
+  <div className="bg-white dark:bg-[#1c1c1c] rounded-[2.5rem] border border-slate-200 dark:border-[#2e2e2e] shadow-sm overflow-hidden">
+    <div className="px-8 py-6 border-b border-slate-50 dark:border-[#2e2e2e] flex items-center gap-3">
       {icon && <div className="text-slate-400">{icon}</div>}
       <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{title}</h3>
     </div>
@@ -260,7 +260,7 @@ const DetailSection = ({ title, icon, children }) => (
 
 const InfoCard = ({ label, value, icon, span = 1 }) => (
   <div
-    className={`p-4 rounded-2xl border border-slate-100 dark:border-slate-800 ${span === 2 ? "md:col-span-2" : ""}`}
+    className={`p-4 rounded-2xl border border-slate-100 dark:border-[#2e2e2e] ${span === 2 ? "md:col-span-2" : ""}`}
     ref={(el) => {
       if (!el) return;
       const apply = () => {
@@ -295,7 +295,7 @@ const ToggleActiveRow = ({ label, active, disabled, onChange }) => (
         disabled={disabled}
         onChange={onChange}
       />
-      <div className="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#B12B89]" />
+      <div className="w-11 h-6 bg-slate-200 dark:bg-[#2e2e2e] rounded-full peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#B12B89]" />
     </label>
   </div>
 );

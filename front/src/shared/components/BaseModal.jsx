@@ -29,7 +29,7 @@ export const BaseModal = ({
   subtitle,
   subtitleUppercase = false,
   icon,
-  iconBg = "bg-slate-100 dark:bg-slate-800",
+  iconBg = "bg-slate-100 dark:bg-[#222222]",
   headerLeft,
   subHeader,
   footer,
@@ -46,11 +46,11 @@ export const BaseModal = ({
       onClick={!disableClose ? onClose : undefined}
     >
       <div
-        className={`bg-white dark:bg-[#111827] rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xl w-full ${maxWidth} flex flex-col max-h-[92vh] modal-panel`}
+        className={`bg-white dark:bg-[#1c1c1c] rounded-xl border border-slate-200 dark:border-[#2e2e2e] shadow-2xl w-full ${maxWidth} flex flex-col max-h-[92vh] modal-panel`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-[#2e2e2e] flex-shrink-0">
           <div className="flex items-center gap-3">
             {headerLeft}
             {icon && (
@@ -81,7 +81,7 @@ export const BaseModal = ({
             type="button"
             onClick={onClose}
             disabled={disableClose}
-            className="p-2 ml-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors disabled:opacity-50 flex-shrink-0"
+            className="p-2 ml-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-lg transition-colors disabled:opacity-50 flex-shrink-0"
           >
             <X size={18} />
           </button>
@@ -97,7 +97,7 @@ export const BaseModal = ({
 
         {/* Footer */}
         {footer && (
-          <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex-shrink-0">
+          <div className="px-6 py-4 border-t border-slate-200 dark:border-[#2e2e2e] flex-shrink-0">
             {footer}
           </div>
         )}

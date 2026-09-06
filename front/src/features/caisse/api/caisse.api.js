@@ -61,6 +61,16 @@ export const caisseApi = {
     return res.data;
   },
 
+  acceptTransferRequest: async (id) => {
+    const res = await apiClient.post(`/caisse/transfer-requests/${id}/accept`);
+    return res.data;
+  },
+
+  declineTransferRequest: async (id) => {
+    const res = await apiClient.post(`/caisse/transfer-requests/${id}/decline`);
+    return res.data;
+  },
+
   createBankWallet: async (payload) => {
     const res = await apiClient.post("/caisse/bank", payload);
     return res.data;

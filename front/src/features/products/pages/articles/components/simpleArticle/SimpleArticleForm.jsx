@@ -19,6 +19,8 @@ import { SectionLoader } from "../../../../../../shared/components/loadersCollec
 import { ConfirmationModal } from "../../../../../../shared/components/ConfirmationModal";
 import { FormCard } from "../../../../../../shared/components/FormCard";
 import { FormActions } from "../../../../../../shared/components/FormActions";
+import { SelectWithQuickAdd } from "../../../../components/SelectWithQuickAdd";
+import { QuickCreateFamilyModal } from "../../../../components/QuickCreateFamilyModal";
 const BRAND_COLOR = "#C86AAC";
 
 export const SimpleArticleForm = ({ id, initialValues, mode = "create", createMode, returnTo, onDirtyChange }) => {
@@ -50,6 +52,7 @@ export const SimpleArticleForm = ({ id, initialValues, mode = "create", createMo
     prixVente1: "",
     prixVente2: "",
     prixVente3: "",
+    commission: "",
     gereEnStock: true,
     visible: true,
     image: null,
@@ -65,6 +68,7 @@ export const SimpleArticleForm = ({ id, initialValues, mode = "create", createMo
   const [initialFormData, setInitialFormData] = useState(null);
   const [removeImage, setRemoveImage] = useState(false);
   const [pendingBack, setPendingBack] = useState(false);
+  const [showFamilyModal, setShowFamilyModal] = useState(false);
 
   const savingRef = useRef(false);
 
@@ -106,6 +110,7 @@ export const SimpleArticleForm = ({ id, initialValues, mode = "create", createMo
         prixVente1: data.prixVente1 || "",
         prixVente2: data.prixVente2 || "",
         prixVente3: data.prixVente3 || "",
+        commission: data.commission ?? "",
         gereEnStock: data.gereEnStock ?? true,
         visible: data.visible ?? true,
         dateExpiration: data.dateExpiration || "",
@@ -352,8 +357,7 @@ export const SimpleArticleForm = ({ id, initialValues, mode = "create", createMo
                   </div>
                 </div>
 
-                {/* Family */}
-                <Select
+                <SelectWithQuickAdd
                   label={t("form.fields.family")}
                   name="familyId"
                   value={formData.familyId}
@@ -361,7 +365,9 @@ export const SimpleArticleForm = ({ id, initialValues, mode = "create", createMo
                   error={errors.familyId}
                   options={familyOptions}
                   required
-                  title={t("form.placeholders.select")}
+                  placeholder={t("form.placeholders.select")}
+                  onAdd={() => setShowFamilyModal(true)}
+                  addLabel={t("form.buttons.add_family")}
                 />
 
                 {/* Main Unit */}
@@ -473,7 +479,7 @@ export const SimpleArticleForm = ({ id, initialValues, mode = "create", createMo
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 pt-5 border-t border-slate-100 dark:border-slate-800">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 pt-5 border-t border-slate-100 dark:border-[#2e2e2e]">
                 <Input
                   label={t("form.fields.sale_price_2")}
                   type="number"
@@ -488,6 +494,14 @@ export const SimpleArticleForm = ({ id, initialValues, mode = "create", createMo
                   name="prixVente3"
                   placeholder={t("form.fields.sale_price_3")}
                   value={formData.prixVente3}
+                  onChange={handleInputChange}
+                />
+                <Input
+                  label={t("form.fields.commission")}
+                  type="number"
+                  name="commission"
+                  placeholder={t("form.fields.commission")}
+                  value={formData.commission}
                   onChange={handleInputChange}
                 />
               </div>
@@ -565,6 +579,17 @@ export const SimpleArticleForm = ({ id, initialValues, mode = "create", createMo
       cancelText={t("leave_modal.cancel")}
       variant="danger"
     />
+
+    <QuickCreateFamilyModal
+      isOpen={showFamilyModal}
+      onClose={() => setShowFamilyModal(false)}
+      onCreated={(id) => {
+        if (id) {
+          setFormData((prev) => ({ ...prev, familyId: String(id) }));
+          setErrors((prev) => ({ ...prev, familyId: null }));
+        }
+      }}
+    />
     </>
   );
 };
@@ -585,7 +610,7 @@ const StatusSettings = ({ formData, handleInputChange, t }) => (
         checked={formData.gereEnStock}
         onChange={handleInputChange}
       />
-      <hr className="border-slate-100 dark:border-slate-800" />
+      <hr className="border-slate-100 dark:border-[#2e2e2e]" />
       <Toggle
         label={t("form.fields.visible")}
         description={t("form.fields.visible_desc")}
@@ -613,7 +638,7 @@ const Toggle = ({ label, description, name, checked, onChange }) => (
         onChange={onChange}
         className="sr-only peer"
       />
-      <div className="w-11 h-6 bg-slate-200 dark:bg-slate-800 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C86AAC] shadow-inner"></div>
+      <div className="w-11 h-6 bg-slate-200 dark:bg-[#222222] rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C86AAC] shadow-inner"></div>
     </div>
   </label>
 );

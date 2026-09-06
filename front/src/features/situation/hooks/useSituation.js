@@ -13,6 +13,7 @@ export const useClientSituation = ({
   clientId,
   startDate,
   endDate,
+  paymentStatus,
 } = {}) =>
   useQuery({
     queryKey: situationKeys.client({
@@ -22,6 +23,7 @@ export const useClientSituation = ({
       clientId,
       startDate,
       endDate,
+      paymentStatus,
     }),
     queryFn: () =>
       situationApi.getClientSituation({
@@ -31,6 +33,7 @@ export const useClientSituation = ({
         clientId,
         startDate,
         endDate,
+        paymentStatus,
       }),
     keepPreviousData: true,
   });

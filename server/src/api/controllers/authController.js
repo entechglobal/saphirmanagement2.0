@@ -6,6 +6,10 @@ import {
   changePassword,
 } from "../services/authService.js";
 import asyncHandler from "express-async-handler";
+import {
+  isSecureCookie,
+  refreshTokenCookieOptions,
+} from "../../utils/cookieOptions.js";
 
 // =======================
 // SIGNUP (UPDATED)
@@ -48,13 +52,11 @@ export const login = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken, user } = await loginUser(req.body);
 
   // Set refresh token ONLY
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    path: "api/auth/refresh",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  });
+  res.cookie(
+    "refreshToken",
+    refreshToken,
+    refreshTokenCookieOptions(7 * 24 * 60 * 60 * 1000),
+  );
 
   // Send access token in response body
   res.status(200).json({
@@ -104,14 +106,14 @@ export const refresh = asyncHandler(async (req, res) => {
 export const logout = asyncHandler(async (req, res) => {
   const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: isSecureCookie(),
     sameSite: "strict",
   };
 
   res.clearCookie("accessToken", cookieOptions);
   res.clearCookie("refreshToken", {
     ...cookieOptions,
-    path: "api/auth/refresh",
+    path: "/api/auth/refresh",
   });
 
   res.status(200).json({

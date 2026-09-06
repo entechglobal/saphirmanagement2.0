@@ -107,6 +107,7 @@ export const ClientsPage = () => {
     { accessorKey: "phone", header: t("columns.phone") },
     { accessorKey: "email", header: t("columns.email") },
     { accessorKey: "address", header: t("columns.address") },
+    { accessorKey: "city", header: t("columns.city") },
     { accessorKey: "region", header: t("columns.region") },
     { accessorKey: "website", header: t("columns.website") },
     { accessorKey: "ice", header: t("columns.ice") },

@@ -239,7 +239,7 @@ export const UserFormPage = () => {
 
               {/* Avatar */}
               <div className="relative mt-2 inline-block">
-                <div className="w-32 h-32 rounded-xl flex items-center justify-center overflow-hidden ring-4 ring-white dark:ring-slate-800 shadow-lg mx-auto bg-slate-100 dark:bg-slate-800">
+                <div className="w-32 h-32 rounded-xl flex items-center justify-center overflow-hidden ring-4 ring-white dark:ring-[#2e2e2e] shadow-lg mx-auto bg-slate-100 dark:bg-[#222222]">
                   {imagePreview ? (
                     <img src={imagePreview} alt="User" className="w-full h-full object-cover" />
                   ) : (
@@ -249,7 +249,7 @@ export const UserFormPage = () => {
                     </>
                   )}
                 </div>
-                <label className="absolute -bottom-2 -right-2 p-2.5 bg-white dark:bg-slate-800 text-[#B12B89] rounded-md shadow-lg border border-slate-100 dark:border-slate-700 cursor-pointer hover:scale-110 transition-transform">
+                <label className="absolute -bottom-2 -right-2 p-2.5 bg-white dark:bg-[#222222] text-[#B12B89] rounded-md shadow-lg border border-slate-100 dark:border-[#2e2e2e] cursor-pointer hover:scale-110 transition-transform">
                   <Camera size={18} />
                   <input type="file" className="hidden" onChange={handleFileChange} accept="image/*" />
                 </label>
@@ -269,7 +269,7 @@ export const UserFormPage = () => {
               </div>
 
               {/* Active toggle */}
-              <div className="mt-8 pt-8 border-t border-slate-50 dark:border-slate-800 space-y-3 text-left">
+              <div className="mt-8 pt-8 border-t border-slate-50 dark:border-[#2e2e2e] space-y-3 text-left">
                 <Controller
                   name="active"
                   control={control}
@@ -289,7 +289,7 @@ export const UserFormPage = () => {
                   <button
                     type="button"
                     onClick={() => setShowPwdModal(true)}
-                    className="w-full flex items-center justify-center gap-2 h-10 rounded-md border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-500 hover:border-[#B12B89] hover:text-[#B12B89] transition-all"
+                    className="w-full flex items-center justify-center gap-2 h-10 rounded-md border border-slate-200 dark:border-[#2e2e2e] text-sm font-medium text-slate-500 hover:border-[#B12B89] hover:text-[#B12B89] transition-all"
                   >
                     <KeyRound size={14} />
                     {t("form.change_password")}
@@ -402,7 +402,7 @@ export const UserFormPage = () => {
       {/* ── CHANGE PASSWORD MODAL ───────────────────────────────── */}
       {showPwdModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-lg shadow-2xl w-full max-w-md p-8 relative">
+          <div className="bg-white dark:bg-[#1c1c1c] rounded-lg shadow-2xl w-full max-w-md p-8 relative">
             <button
               onClick={handleClosePwdModal}
               className="absolute top-6 right-6 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"

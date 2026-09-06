@@ -42,7 +42,6 @@ router.get(
 
 router.get(
   "/transferable",
-  hasPermission("view_caisse"),
   caisseController.getTransferableCaisses
 );
 
@@ -71,10 +70,23 @@ router.post(
 
 router.post(
   "/transfer",
-  hasPermission("view_caisse"),
   createTransferValidator,
   validatorMiddleware,
   caisseController.createTransfer
+);
+
+router.post(
+  "/transfer-requests/:id/accept",
+  idValidator,
+  validatorMiddleware,
+  caisseController.acceptTransferRequest
+);
+
+router.post(
+  "/transfer-requests/:id/decline",
+  idValidator,
+  validatorMiddleware,
+  caisseController.declineTransferRequest
 );
 
 router.post(

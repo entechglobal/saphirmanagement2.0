@@ -58,7 +58,7 @@ export const BonLivraisonPreviewPage = () => {
           <button
             type="button"
             onClick={() => navigate("/bon-livraisons")}
-            className="rounded-xl border border-slate-200 p-2 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
+            className="rounded-xl border border-slate-200 p-2 hover:bg-slate-50 dark:border-[#2e2e2e] dark:hover:bg-[#222222]"
           >
             <ArrowLeft className="h-4 w-4" />
           </button>
@@ -74,7 +74,7 @@ export const BonLivraisonPreviewPage = () => {
         <div className="flex items-center gap-2">
           <Link
             to={`/bon-livraisons/${id}/edit`}
-            className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold dark:border-slate-700"
+            className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold dark:border-[#2e2e2e]"
           >
             Modifier
           </Link>
@@ -89,7 +89,7 @@ export const BonLivraisonPreviewPage = () => {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-slate-100/80 p-4 dark:border-slate-800 dark:bg-slate-900/40 print:border-0 print:bg-transparent print:p-0">
+      <div className="rounded-2xl border border-slate-200 bg-slate-100/80 p-4 dark:border-[#2e2e2e] dark:bg-[#1c1c1c]/40 print:border-0 print:bg-transparent print:p-0">
         <PrintableDocumentSheet
           title="BON DE LIVRAISON"
           documentNumber={header?.documentNumber}

@@ -102,7 +102,7 @@ const EmptyState = ({ compact = false }) => {
         compact ? "py-10" : "py-14"
       }`}
     >
-      <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500">
+      <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-400 dark:bg-[#1c1c1c] dark:text-slate-500">
         <Inbox className="h-5 w-5" strokeWidth={1.75} />
       </div>
       <p className="mb-1 text-[15px] font-semibold text-slate-800 dark:text-slate-100">
@@ -118,7 +118,7 @@ const EmptyState = ({ compact = false }) => {
 // ─── Toolbar search ───────────────────────────────────────────────────────────
 
 const TableSearchField = ({ value, onChange, placeholder }) => (
-  <label className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/80 px-3 shadow-[0_1px_2px_rgba(16,24,40,0.04)] transition-colors focus-within:border-[#B12B89] focus-within:bg-white dark:border-slate-700 dark:bg-slate-800/50 dark:focus-within:border-[#B12B89] dark:focus-within:bg-slate-800">
+  <label className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/80 px-3 shadow-[0_1px_2px_rgba(16,24,40,0.04)] transition-colors focus-within:border-[#B12B89] focus-within:bg-white dark:border-[#2e2e2e] dark:bg-[#1c1c1c] dark:focus-within:border-[#B12B89] dark:focus-within:bg-[#1c1c1c]">
     <Search className="h-4 w-4 flex-shrink-0 text-slate-400" strokeWidth={2} />
     <input
       type="search"
@@ -166,21 +166,21 @@ const TableActionsMenu = ({
   if (!hasActions) return null;
 
   const itemClass =
-    "flex w-full items-center gap-2.5 px-3 py-2 text-start text-[13px] text-slate-700 transition-colors hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800";
+    "flex w-full items-center gap-2.5 px-3 py-2 text-start text-[13px] text-slate-700 transition-colors hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-[#222]";
 
   return (
     <div className="relative flex-shrink-0" ref={rootRef}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50/80 px-3 text-[13px] font-medium text-slate-600 shadow-[0_1px_2px_rgba(16,24,40,0.04)] transition-colors hover:border-slate-300 hover:bg-white hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:bg-slate-800 dark:hover:text-white"
+        className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50/80 px-3 text-[13px] font-medium text-slate-600 shadow-[0_1px_2px_rgba(16,24,40,0.04)] transition-colors hover:border-slate-300 hover:bg-white hover:text-slate-900 dark:border-[#2e2e2e] dark:bg-[#1c1c1c] dark:text-slate-300 dark:hover:border-[#3a3a3a] dark:hover:bg-[#222] dark:hover:text-white"
       >
         <ChevronDown className="h-4 w-4" strokeWidth={2} />
         {t("more", "More")}
       </button>
 
       {open && (
-        <div className="absolute end-0 top-[calc(100%+6px)] z-30 min-w-[200px] overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl dark:border-slate-700 dark:bg-slate-900">
+        <div className="absolute end-0 top-[calc(100%+6px)] z-30 min-w-[200px] overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl dark:border-[#2e2e2e] dark:bg-[#161616]">
           {onImport && (
             <button
               type="button"
@@ -293,13 +293,13 @@ const ColumnsMenu = ({ table }) => {
         type="button"
         title={t("columns", "Columns")}
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+        className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-[#222] dark:hover:text-slate-100"
       >
         <Columns3 className="h-4 w-4" strokeWidth={1.75} />
       </button>
 
       {open && (
-        <div className="absolute end-0 top-[calc(100%+6px)] z-30 max-h-72 min-w-[220px] overflow-y-auto rounded-xl border border-slate-200 bg-white py-1.5 shadow-xl dark:border-slate-700 dark:bg-slate-900">
+        <div className="absolute end-0 top-[calc(100%+6px)] z-30 max-h-72 min-w-[220px] overflow-y-auto rounded-xl border border-slate-200 bg-white py-1.5 shadow-xl dark:border-[#2e2e2e] dark:bg-[#161616]">
           <p className="px-3 pb-1.5 pt-1 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
             {t("columns", "Columns")}
           </p>
@@ -311,7 +311,7 @@ const ColumnsMenu = ({ table }) => {
             return (
               <label
                 key={column.id}
-                className="flex cursor-pointer items-center gap-2.5 px-3 py-1.5 text-[13px] text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800"
+                className="flex cursor-pointer items-center gap-2.5 px-3 py-1.5 text-[13px] text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-[#222]"
               >
                 <input
                   type="checkbox"
@@ -348,10 +348,10 @@ const TablePagination = ({
   const canNext = pageIndex + 1 < pageCount;
 
   const btn =
-    "inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 disabled:pointer-events-none disabled:opacity-35 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100";
+    "inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 disabled:pointer-events-none disabled:opacity-35 dark:text-slate-400 dark:hover:bg-[#222] dark:hover:text-slate-100";
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-white px-3 py-2 dark:border-slate-700 dark:bg-slate-900">
+    <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-white px-3 py-2 dark:border-[#2e2e2e] dark:bg-[#161616]">
       <div className="hidden items-center gap-2 text-[12px] text-slate-500 dark:text-slate-400 md:flex">
         {paginationMeta ? (
           <>
@@ -382,7 +382,7 @@ const TablePagination = ({
             onChange={(e) =>
               setPagination({ pageIndex: 0, pageSize: Number(e.target.value) })
             }
-            className="h-8 rounded-lg border border-slate-200 bg-white px-2 text-[12px] text-slate-700 outline-none focus:border-[#B12B89] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+            className="h-8 rounded-lg border border-slate-200 bg-white px-2 text-[12px] text-slate-700 outline-none focus:border-[#B12B89] dark:border-[#2e2e2e] dark:bg-[#1c1c1c] dark:text-slate-200"
           >
             {PAGE_SIZE_OPTIONS.map((n) => (
               <option key={n} value={n}>
@@ -476,7 +476,7 @@ const MobileRowCard = ({ row, columns, onEdit, onDelete, onShow, onPreview }) =>
   };
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-[0_1px_2px_rgba(16,24,40,0.04)] dark:border-slate-700 dark:bg-slate-900">
+    <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-[0_1px_2px_rgba(16,24,40,0.04)] dark:border-[#2e2e2e] dark:bg-[#161616]">
       {titleCol && (
         <div className="mb-2 flex items-start justify-between gap-2">
           <div className="min-w-0 text-[14px] font-semibold text-slate-900 dark:text-slate-100">
@@ -490,16 +490,16 @@ const MobileRowCard = ({ row, columns, onEdit, onDelete, onShow, onPreview }) =>
                   e.stopPropagation();
                   setMenuOpen((v) => !v);
                 }}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-[#222]"
               >
                 <ChevronDown className="h-4 w-4" />
               </button>
               {menuOpen && (
-                <div className="absolute end-0 top-full z-20 mt-1 min-w-[150px] overflow-hidden rounded-lg border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-700 dark:bg-slate-900">
+                <div className="absolute end-0 top-full z-20 mt-1 min-w-[150px] overflow-hidden rounded-lg border border-slate-200 bg-white py-1 shadow-lg dark:border-[#2e2e2e] dark:bg-[#161616]">
                   {onShow && (
                     <button
                       type="button"
-                      className="flex w-full items-center gap-2 px-3 py-2 text-[13px] hover:bg-slate-50 dark:hover:bg-slate-800"
+                      className="flex w-full items-center gap-2 px-3 py-2 text-[13px] hover:bg-slate-50 dark:hover:bg-[#222]"
                       onClick={() => {
                         onShow(row);
                         setMenuOpen(false);
@@ -511,7 +511,7 @@ const MobileRowCard = ({ row, columns, onEdit, onDelete, onShow, onPreview }) =>
                   {onEdit && (
                     <button
                       type="button"
-                      className="flex w-full items-center gap-2 px-3 py-2 text-[13px] hover:bg-slate-50 dark:hover:bg-slate-800"
+                      className="flex w-full items-center gap-2 px-3 py-2 text-[13px] hover:bg-slate-50 dark:hover:bg-[#222]"
                       onClick={() => {
                         onEdit(row);
                         setMenuOpen(false);
@@ -523,7 +523,7 @@ const MobileRowCard = ({ row, columns, onEdit, onDelete, onShow, onPreview }) =>
                   {onPreview && (
                     <button
                       type="button"
-                      className="flex w-full items-center gap-2 px-3 py-2 text-[13px] hover:bg-slate-50 dark:hover:bg-slate-800"
+                      className="flex w-full items-center gap-2 px-3 py-2 text-[13px] hover:bg-slate-50 dark:hover:bg-[#222]"
                       onClick={() => {
                         onPreview(row);
                         setMenuOpen(false);
@@ -551,7 +551,7 @@ const MobileRowCard = ({ row, columns, onEdit, onDelete, onShow, onPreview }) =>
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-x-3 gap-y-2 border-t border-slate-100 pt-2 dark:border-slate-800">
+      <div className="grid grid-cols-2 gap-x-3 gap-y-2 border-t border-slate-100 pt-2 dark:border-[#2e2e2e]">
         {detailCols.map((col) => (
           <div key={col.accessorKey || col.id} className="min-w-0">
             <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
@@ -689,7 +689,7 @@ export const ReusableTable = ({
                     e.stopPropagation();
                     onShow(data);
                   }}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-[#B12B89] dark:hover:bg-slate-800"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-[#B12B89] dark:hover:bg-[#222]"
                 >
                   <Eye className="h-[17px] w-[17px]" strokeWidth={1.75} />
                 </button>
@@ -703,7 +703,7 @@ export const ReusableTable = ({
                     e.stopPropagation();
                     onEdit(data);
                   }}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-[#B12B89] dark:hover:bg-slate-800"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-[#B12B89] dark:hover:bg-[#222]"
                 >
                   <Pencil className="h-[17px] w-[17px]" strokeWidth={1.75} />
                 </button>
@@ -717,7 +717,7 @@ export const ReusableTable = ({
                     e.stopPropagation();
                     onPreview(data);
                   }}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-[#B12B89] dark:hover:bg-slate-800"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-[#B12B89] dark:hover:bg-[#222]"
                 >
                   <Printer className="h-[17px] w-[17px]" strokeWidth={1.75} />
                 </button>
@@ -827,7 +827,7 @@ export const ReusableTable = ({
             {Array.from({ length: pagination?.pageSize || 5 }).map((_, i) => (
               <div
                 key={i}
-                className="h-28 animate-pulse rounded-xl border border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-800"
+                className="h-28 animate-pulse rounded-xl border border-slate-200 bg-slate-100 dark:border-[#2e2e2e] dark:bg-[#1c1c1c]"
               />
             ))}
           </div>
@@ -854,7 +854,7 @@ export const ReusableTable = ({
         )}
 
         {setPagination && pagination && (
-          <div className="overflow-hidden rounded-md border border-slate-200 dark:border-slate-700">
+          <div className="overflow-hidden rounded-md border border-slate-200 dark:border-[#2e2e2e]">
             <TablePagination
               pageIndex={pagination.pageIndex}
               pageSize={pagination.pageSize}
@@ -903,9 +903,9 @@ export const ReusableTable = ({
         </div>
       )}
 
-      <div className="relative overflow-hidden rounded-md border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+      <div className="relative overflow-hidden rounded-md border border-slate-200 bg-white dark:border-[#2e2e2e] dark:bg-[#161616]">
         {/* Columns toggle — inside table card */}
-        <div className="flex items-center justify-end border-b border-slate-100 px-2 py-1 dark:border-slate-800">
+        <div className="flex items-center justify-end border-b border-slate-100 px-2 py-1 dark:border-[#2e2e2e]">
           <ColumnsMenu table={table} />
         </div>
 
@@ -921,7 +921,7 @@ export const ReusableTable = ({
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr
                   key={headerGroup.id}
-                  className="border-b border-slate-200 bg-slate-50/80 dark:border-slate-700 dark:bg-slate-800/60"
+                  className="border-b border-slate-200 bg-slate-50/80 dark:border-[#2e2e2e] dark:bg-[#1c1c1c]"
                 >
                   {headerGroup.headers.map((header) => {
                     const canSort = header.column.getCanSort();
@@ -974,14 +974,14 @@ export const ReusableTable = ({
             <tbody>
               {isLoading ? (
                 Array.from({ length: pagination?.pageSize || 5 }).map((_, i) => (
-                  <tr key={`sk-${i}`} className="border-b border-slate-100 dark:border-slate-800">
+                  <tr key={`sk-${i}`} className="border-b border-slate-100 dark:border-[#2e2e2e]">
                     {table.getVisibleLeafColumns().map((col) => (
                       <td
                         key={col.id}
                         className="whitespace-nowrap px-3.5 py-2"
                         style={{ width: "1%" }}
                       >
-                        <div className="h-4 w-16 animate-pulse rounded bg-slate-100 dark:bg-slate-800" />
+                        <div className="h-4 w-16 animate-pulse rounded bg-slate-100 dark:bg-[#1c1c1c]" />
                       </td>
                     ))}
                   </tr>
@@ -1005,7 +1005,7 @@ export const ReusableTable = ({
                 table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50/50 dark:border-slate-800/80 dark:hover:bg-slate-800/30"
+                    className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50/50 dark:border-[#2e2e2e] dark:hover:bg-white/5"
                   >
                     {row.getVisibleCells().map((cell) => {
                       const explicit = cell.column.columnDef.meta?.hasExplicitSize;

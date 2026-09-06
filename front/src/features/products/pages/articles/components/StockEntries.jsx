@@ -97,7 +97,7 @@ export default function StockEntries({
 
       {/* MULTIPLE DEPOTS (Bulk Edit) */}
       {entries.length > 1 && (
-        <div className="border border-slate-200 dark:border-slate-800 rounded-xl p-4 bg-blue-50 dark:bg-blue-900/20 space-y-3">
+        <div className="border border-slate-200 dark:border-[#2e2e2e] rounded-xl p-4 bg-blue-50 dark:bg-blue-900/20 space-y-3">
           <p className="text-xs font-bold uppercase tracking-wider text-[#B12B89]">
             {t("entries.apply_all")}
           </p>
@@ -134,7 +134,7 @@ export default function StockEntries({
           return (
             <div
               key={entry.depotId}
-              className="border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-3 bg-white dark:bg-slate-900"
+              className="border border-slate-200 dark:border-[#2e2e2e] rounded-xl p-4 space-y-3 bg-white dark:bg-[#1c1c1c]"
             >
               <div className="font-semibold text-sm flex items-center gap-2">
                 <Warehouse size={16} />

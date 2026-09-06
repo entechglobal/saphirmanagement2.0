@@ -7,6 +7,101 @@ import stockValidationService from "./domain/stockValidationService.js";
 import { generateDocumentPDF, formatDate } from "../utils/pdfGenerator.js";
 import { enqueueCreateColis } from "./colisSyncService.js";
 import { PROVIDER_BY_NAME } from "../../providers/index.js";
+import { getPhoneSearchVariants } from "../utils/phoneUtils.js";
+import {
+  resolveWalletForIncome,
+  creditWallet,
+} from "./caisseWalletHelper.js";
+import {
+  requireActiveShiftForLivreur,
+  linkOrderToActiveShift,
+} from "./deliveryShiftService.js";
+
+const MODES_REQUIRING_BANK = ["CARTE_BANCAIRE", "VIREMENT"];
+
+const resolveVilleName = (ville) => {
+  if (ville == null || ville === "") return null;
+  if (typeof ville === "object") return ville.name ? String(ville.name).trim() || null : null;
+  const trimmed = String(ville).trim();
+  return trimmed || null;
+};
+
+const resolveAddress = (localisation) =>
+  typeof localisation === "string" && localisation.trim()
+    ? localisation.trim()
+    : null;
+
+const persistClientLocation = async (tx, clientId, { villeName, address }) => {
+  if (!clientId) return;
+  const data = {};
+  if (villeName !== undefined) {
+    data.city = villeName;
+    if (villeName) data.region = villeName;
+  }
+  if (address !== undefined) data.address = address;
+  if (Object.keys(data).length === 0) return;
+  await tx.client.update({
+    where: { id: clientId },
+    data,
+  });
+};
+
+async function creditOrderPayment(tx, {
+  societeId,
+  modeReglement,
+  banqueId,
+  amount,
+  userId,
+  clientId,
+  documentNumber,
+  documentDue,
+}) {
+  const creditAmount = parseFloat(amount);
+  if (!creditAmount || creditAmount <= 0) return;
+
+  if (MODES_REQUIRING_BANK.includes(modeReglement) && !banqueId) {
+    throw new ApiError(
+      `banqueId is required for ${modeReglement}. Select a bank to credit its wallet.`,
+      400,
+    );
+  }
+
+  let reglementId = null;
+  if (clientId && modeReglement) {
+    const reglement = await tx.reglementClient.create({
+      data: {
+        societeId,
+        date: new Date(),
+        clientId,
+        modeReglement,
+        documentNumbers: documentNumber ? [documentNumber] : null,
+        montantRegle: creditAmount,
+        montantBL: documentDue ?? 0,
+        solde: Math.max(0, parseFloat(((documentDue ?? 0) - creditAmount).toFixed(2))),
+        banqueId: banqueId ?? null,
+      },
+    });
+    reglementId = reglement.id;
+  }
+
+  const targetWallet = await resolveWalletForIncome(tx, {
+    societeId,
+    modeReglement,
+    banqueId,
+    userId,
+  });
+  if (targetWallet) {
+    await creditWallet(tx, {
+      caisse: targetWallet,
+      amount: creditAmount,
+      note: documentNumber
+        ? `Encaissement commande ${documentNumber} (${modeReglement})`
+        : `Encaissement commande (${modeReglement})`,
+      createdBy: userId ?? null,
+      reglementClientId: reglementId,
+    });
+  }
+}
 
 /* ============================================================
    STATUS TRANSITION MAP
@@ -267,6 +362,7 @@ const FULL_ADVANCED_BL_INCLUDE = {
       user: { select: { id: true, name: true, email: true } },
     },
   },
+  banque: { select: { id: true, name: true, RIB: true } },
   depot: { select: { id: true, code: true, name: true } },
   delivery: { select: { id: true, name: true, tel: true } },
   agence: { select: { id: true, name: true, localisation: true } },
@@ -339,24 +435,36 @@ export const create = async (data, user) => {
     lines = [],
     packLines = [],
     montantPaid,
+    clientId,
+    saveAsClient,
+    updateClientLocation,
     // Advanced fields
     agenceId,
     telephone,
     whatsapp,
     ville,
     localisation,
+    withFacture,
     raisonSocial,
     ice,
     siegeSocial,
     nombreDeColis,
     observation,
     modeReglement,
+    banqueId,
     commercialId,
     preparateurId,
     livreurId,
     commandStatus,
     providerConfigId,
   } = data;
+
+  if (MODES_REQUIRING_BANK.includes(modeReglement) && !banqueId) {
+    throw new ApiError(
+      `banqueId is required for ${modeReglement}. Select a bank to credit its wallet.`,
+      400,
+    );
+  }
 
   // Initial status: EN_COURS (draft) or CONFIRME (skip approval step).
   const ALLOWED_INITIAL_STATUSES = ["EN_COURS", "CONFIRME"];
@@ -465,6 +573,7 @@ export const create = async (data, user) => {
       async (tx) => {
         // Process article lines — TTC pricing, no TVA/remise math
         const linesWithFinancials = [];
+        let articlesCommission = 0;
         for (let i = 0; i < lines.length; i++) {
           const line = lines[i];
           const article = await resolveLineArticle(
@@ -478,6 +587,8 @@ export const create = async (data, user) => {
           const quantity = parseFloat(line.quantity);
           const unitPriceTTC = parseFloat(line.unitPrice);
           const totalTTC = parseFloat((quantity * unitPriceTTC).toFixed(2));
+          const unitCommission = parseFloat(article.commission || 0);
+          articlesCommission += unitCommission * quantity;
 
           linesWithFinancials.push({
             articleId: line.articleId || null,
@@ -487,6 +598,7 @@ export const create = async (data, user) => {
             quantity,
             unitPrice: unitPriceTTC,
             remise: 0,
+            commission: unitCommission,
             totalHT: totalTTC,
             tvaRate: 0,
             totalTVA: 0,
@@ -495,10 +607,26 @@ export const create = async (data, user) => {
           });
         }
 
-        // Pack line totals (prixVente × quantity), TTC
+        // Pack line totals (prixVente × quantity), TTC + commission snapshot
         let packTotalTTC = 0;
+        let packsCommission = 0;
+        const packLinesWithCommission = [];
         for (const pl of packLines) {
-          packTotalTTC += parseFloat(pl.prixVente) * parseFloat(pl.quantity);
+          const pack = await tx.pack.findFirst({
+            where: { id: pl.id, societeId: docSocieteId, active: true },
+            select: { id: true, commission: true },
+          });
+          const qty = parseFloat(pl.quantity);
+          const unitCommission = parseFloat(pack?.commission || 0);
+          packTotalTTC += parseFloat(pl.prixVente) * qty;
+          packsCommission += unitCommission * qty;
+          packLinesWithCommission.push({
+            bonLivraisonId: null, // filled below
+            packId: pl.id,
+            quantity: qty,
+            prixVente: parseFloat(pl.prixVente),
+            commission: unitCommission,
+          });
         }
 
         const articlesTotalTTC = linesWithFinancials.reduce(
@@ -511,6 +639,9 @@ export const create = async (data, user) => {
         );
         const totalHT = totalTTC;
         const totalTVA = 0;
+        const totalCommission = parseFloat(
+          (articlesCommission + packsCommission).toFixed(2),
+        );
 
         // Payment: clamp montantPaid to [0, totalTTC]
         const paid = Math.max(
@@ -519,36 +650,86 @@ export const create = async (data, user) => {
         );
         const amountPaid = parseFloat(paid.toFixed(2));
         const amountDue = totalTTC;
-        // Side-effect: persist the recipient as a Client when a phone is
-        // provided. The compound unique (societeId, phone) makes this a
-        // no-op if the client already exists. Independent of the BL flow —
-        // failure here would only happen on schema-level errors.
+
         const phone = typeof telephone === "string" ? telephone.trim() : null;
-        if (phone) {
-          const existingClient = await tx.client.findUnique({
-            where: { societeId_phone: { societeId: docSocieteId, phone } },
+        const villeName = resolveVilleName(ville);
+        const address = resolveAddress(localisation);
+        const wantsFacture = withFacture === true || withFacture === "true";
+        const iceValue =
+          wantsFacture && typeof ice === "string" && /^\d{15}$/.test(ice.trim())
+            ? ice.trim()
+            : null;
+        const factureRaison = wantsFacture && typeof raisonSocial === "string" && raisonSocial.trim()
+          ? raisonSocial.trim()
+          : null;
+        const factureSiege = wantsFacture && typeof siegeSocial === "string" && siegeSocial.trim()
+          ? siegeSocial.trim()
+          : null;
+
+        let linkedClientId = null;
+        let createdNewClient = false;
+
+        if (clientId) {
+          const existingById = await tx.client.findFirst({
+            where: { id: Number(clientId), societeId: docSocieteId },
             select: { id: true },
           });
-          if (!existingClient) {
-            await tx.client.create({
+          if (!existingById) {
+            throw new ApiError("Client not found or access denied", 404);
+          }
+          linkedClientId = existingById.id;
+        } else if (saveAsClient && phone) {
+          const phoneVariants = getPhoneSearchVariants(phone);
+          const existingByPhone = await tx.client.findFirst({
+            where: {
+              societeId: docSocieteId,
+              phone: { in: phoneVariants },
+            },
+            select: { id: true },
+          });
+
+          if (existingByPhone) {
+            linkedClientId = existingByPhone.id;
+          } else {
+            let clientIce = null;
+            let clientType = "PARTICULIER";
+            if (iceValue) {
+              const iceTaken = await tx.client.findFirst({
+                where: { societeId: docSocieteId, ice: iceValue },
+                select: { id: true },
+              });
+              if (!iceTaken) {
+                clientIce = iceValue;
+                clientType = "SOCIETE";
+              }
+            }
+
+            const createdClient = await tx.client.create({
               data: {
                 societeId: docSocieteId,
                 name: clientName.trim(),
                 phone,
-                address:
-                  typeof localisation === "string" && localisation.trim()
-                    ? localisation.trim()
-                    : null,
+                address,
+                city: villeName,
+                region: villeName,
+                ice: clientIce,
+                type: clientType,
               },
+              select: { id: true },
             });
+            linkedClientId = createdClient.id;
+            createdNewClient = true;
           }
         }
 
-        // Create ClientDocument (anonymous — no clientId, free-text clientName)
+        if (linkedClientId && !createdNewClient && updateClientLocation !== false) {
+          await persistClientLocation(tx, linkedClientId, { villeName, address });
+        }
+
         const clientDocument = await tx.clientDocument.create({
           data: {
             societeId: docSocieteId,
-            clientId: null,
+            clientId: linkedClientId,
             clientName: clientName.trim(),
             documentNumber,
             status: "DRAFT",
@@ -583,17 +764,20 @@ export const create = async (data, user) => {
             heureLivraison: heureLivraison || null,
             telephone: telephone || null,
             whatsapp: whatsapp || null,
-            ville: ville.name || null,
-            localisation: localisation || null,
-            raisonSocial: raisonSocial || null,
-            ice: ice || null,
-            siegeSocial: siegeSocial || null,
+            ville: villeName,
+            localisation: address,
+            withFacture: wantsFacture,
+            raisonSocial: factureRaison,
+            ice: iceValue,
+            siegeSocial: factureSiege,
             nombreDeColis: nombreDeColis || null,
             observation: observation || null,
             modeReglement: modeReglement || null,
+            banqueId: banqueId || null,
             commercialId: effectiveCommercialId,
             preparateurId: preparateurId || null,
             livreurId: livreurId || null,
+            totalCommission,
             // ── Step 2: stamp colis sync state + selected provider config ───
             colisSync: livreurIsExtern ? "PENDING" : "NOT_APPLICABLE",
             colisProvider: livreurIsExtern ? providerCode : null,
@@ -614,13 +798,14 @@ export const create = async (data, user) => {
         }
 
         // Create pack lines
-        if (packLines.length > 0) {
+        if (packLinesWithCommission.length > 0) {
           await tx.bonLivraisonPackLine.createMany({
-            data: packLines.map((pl) => ({
+            data: packLinesWithCommission.map((pl) => ({
               bonLivraisonId: clientDocument.id,
-              packId: pl.id,
-              quantity: parseFloat(pl.quantity),
-              prixVente: parseFloat(pl.prixVente),
+              packId: pl.packId,
+              quantity: pl.quantity,
+              prixVente: pl.prixVente,
+              commission: pl.commission,
             })),
           });
         }
@@ -633,6 +818,19 @@ export const create = async (data, user) => {
             userId: user.id,
           },
         });
+
+        if (amountPaid > 0) {
+          await creditOrderPayment(tx, {
+            societeId: docSocieteId,
+            modeReglement,
+            banqueId,
+            amount: amountPaid,
+            userId: user.id,
+            clientId: linkedClientId,
+            documentNumber,
+            documentDue: amountDue,
+          });
+        }
 
         return tx.bonLivraison.findUnique({
           where: { id: clientDocument.id },
@@ -671,8 +869,16 @@ export const create = async (data, user) => {
 
     return result;
   } catch (error) {
-    if (error.code === "P2002")
+    if (error.code === "P2002") {
+      const target = error.meta?.target;
+      const targetStr = Array.isArray(target)
+        ? target.join(",")
+        : String(target || "");
+      if (targetStr.includes("phone")) {
+        throw new ApiError("Phone number already exists for a client", 409);
+      }
       throw new ApiError("Duplicate document number", 409);
+    }
     if (error.code === "P2003") throw new ApiError("Invalid reference", 400);
     if (error instanceof ApiError) throw error;
     throw new ApiError(
@@ -765,6 +971,14 @@ export const transitionStatus = async (id, targetStatus, user) => {
     }
   }
 
+  // Livreur must have an open shift before LIVRE / PAYE
+  if (
+    user.roleName === "Livreur" &&
+    (targetStatus === "LIVRE" || targetStatus === "PAYE")
+  ) {
+    await requireActiveShiftForLivreur(user);
+  }
+
   // Stock impact:
   //   PREPARE                                 → OUTBOUND (apply)
   //   ANNULE from {PREPARE, COLLECTE, EN_ROUTE} → INBOUND  (rollback)
@@ -836,14 +1050,40 @@ export const transitionStatus = async (id, targetStatus, user) => {
           where: { id },
           data: { status: "COMPLETED" },
         });
+        await linkOrderToActiveShift(tx, {
+          user,
+          bonLivraisonId: id,
+          status: "LIVRE",
+          amount: parseFloat(bl.document.totalTTC || 0),
+        });
       } else if (targetStatus === "PAYE") {
         // Payment settled: amountPaid = total due, amountDue → 0.
         const totalTTC = parseFloat(bl.document.totalTTC);
+        const previousPaid = parseFloat(bl.document.amountPaid || 0);
+        const remaining = parseFloat((totalTTC - previousPaid).toFixed(2));
         await tx.clientDocument.update({
           where: { id },
           data: {
             amountPaid: totalTTC,
           },
+        });
+        if (remaining > 0) {
+          await creditOrderPayment(tx, {
+            societeId: bl.document.societeId,
+            modeReglement: bl.modeReglement,
+            banqueId: bl.banqueId,
+            amount: remaining,
+            userId: user.id,
+            clientId: bl.document.clientId,
+            documentNumber: bl.document.documentNumber,
+            documentDue: totalTTC,
+          });
+        }
+        await linkOrderToActiveShift(tx, {
+          user,
+          bonLivraisonId: id,
+          status: "PAYE",
+          amount: totalTTC,
         });
       }
 
@@ -1115,6 +1355,7 @@ export const getAll = async (query, user) => {
         isSuspended: true,
         nextDeliveryDate: true,
         colisTrackingNumber: true,
+        withFacture: true,
         ice: true,
         raisonSocial: true,
         siegeSocial: true,
@@ -1155,7 +1396,7 @@ export const getAll = async (query, user) => {
     isSuspended: bl.isSuspended,
     colisTrackingNumber: bl.colisTrackingNumber,
     nextDeliveryDate: fmt(bl.nextDeliveryDate),
-    isFacture: !!(bl.ice || bl.raisonSocial || bl.siegeSocial),
+    isFacture: bl.withFacture === true || !!(bl.ice || bl.raisonSocial || bl.siegeSocial),
   }));
 
   return {
@@ -1289,10 +1530,14 @@ export const getAdvancedBLDetails = async (id, user) => {
       ville: true,
       localisation: true,
       observation: true,
+      totalCommission: true,
+      commercial: { select: { id: true, name: true } },
       document: {
         select: {
           societeId: true,
+          clientId: true,
           clientName: true,
+          client: { select: { id: true, name: true, phone: true } },
           amountDue: true,
           amountPaid: true,
           createdAt: true,
@@ -1303,6 +1548,7 @@ export const getAdvancedBLDetails = async (id, user) => {
               description: true,
               quantity: true,
               unitPrice: true,
+              commission: true,
               totalTTC: true,
               article: { select: { id: true, name: true } },
               variant: { select: { id: true, name: true } },
@@ -1318,6 +1564,7 @@ export const getAdvancedBLDetails = async (id, user) => {
         select: {
           quantity: true,
           prixVente: true,
+          commission: true,
           pack: { select: { id: true, name: true } },
         },
       },
@@ -1345,10 +1592,16 @@ export const getAdvancedBLDetails = async (id, user) => {
 
   const destinataire = {
     clientName: bl.document.clientName ?? null,
+    clientId: bl.document.clientId ?? null,
+    linkedClientName: bl.document.client?.name ?? null,
     telephone: bl.telephone ?? null,
     whatsapp: bl.whatsapp ?? null,
     ville: bl.ville ?? null,
     localisation: bl.localisation ?? null,
+    withFacture: bl.withFacture === true,
+    ice: bl.ice ?? null,
+    raisonSocial: bl.raisonSocial ?? null,
+    siegeSocial: bl.siegeSocial ?? null,
   };
 
   const products = [
@@ -1357,6 +1610,10 @@ export const getAdvancedBLDetails = async (id, user) => {
       name: l.article?.name || l.variant?.name || l.description || "—",
       quantity: parseFloat(l.quantity),
       unitPrice: parseFloat(l.unitPrice),
+      commission: parseFloat(l.commission || 0),
+      commissionTotal: parseFloat(
+        (parseFloat(l.commission || 0) * parseFloat(l.quantity)).toFixed(2),
+      ),
       total: parseFloat(l.totalTTC),
     })),
     ...bl.packLines.map((pl) => ({
@@ -1364,6 +1621,10 @@ export const getAdvancedBLDetails = async (id, user) => {
       name: pl.pack?.name ?? "—",
       quantity: parseFloat(pl.quantity),
       unitPrice: parseFloat(pl.prixVente),
+      commission: parseFloat(pl.commission || 0),
+      commissionTotal: parseFloat(
+        (parseFloat(pl.commission || 0) * parseFloat(pl.quantity)).toFixed(2),
+      ),
       total: parseFloat(
         (parseFloat(pl.prixVente) * parseFloat(pl.quantity)).toFixed(2),
       ),
@@ -1373,6 +1634,9 @@ export const getAdvancedBLDetails = async (id, user) => {
   const blInfo = {
     montantDue: parseFloat(bl.document.amountDue || 0),
     montantPaid: parseFloat(bl.document.amountPaid || 0),
+    totalCommission: parseFloat(bl.totalCommission || 0),
+    commercialName: bl.commercial?.name ?? null,
+    commercialId: bl.commercial?.id ?? null,
     products,
   };
 
@@ -1451,12 +1715,14 @@ const RESTRICTED_EDIT_FIELDS = new Set([
   "heureLivraison",
   "ville",
   "localisation",
+  "withFacture",
   "raisonSocial",
   "ice",
   "siegeSocial",
   "nombreDeColis",
   "observation",
   "modeReglement",
+  "banqueId",
   "agenceId",
   "preparateurId",
   "livreurId",
@@ -1470,7 +1736,9 @@ export const update = async (id, data, user) => {
       id: true,
       type: true,
       commandStatus: true,
-      document: { select: { societeId: true } },
+      banqueId: true,
+      modeReglement: true,
+      document: { select: { societeId: true, clientId: true, documentNumber: true } },
     },
   });
 
@@ -1521,16 +1789,38 @@ export const update = async (id, data, user) => {
     whatsapp,
     ville,
     localisation,
+    withFacture,
     raisonSocial,
     ice,
     siegeSocial,
     nombreDeColis,
     observation,
     modeReglement,
+    banqueId,
     commercialId,
     preparateurId,
     livreurId,
   } = data;
+
+  const wantsFacture =
+    withFacture === undefined
+      ? undefined
+      : withFacture === true || withFacture === "true";
+  const villeName = ville !== undefined ? resolveVilleName(ville) : undefined;
+  const address = localisation !== undefined ? resolveAddress(localisation) : undefined;
+
+  const resolvedMode = modeReglement !== undefined ? modeReglement : undefined;
+  const resolvedBanque = banqueId !== undefined ? banqueId : undefined;
+  if (
+    resolvedMode !== undefined &&
+    MODES_REQUIRING_BANK.includes(resolvedMode) &&
+    !(resolvedBanque || existing.banqueId)
+  ) {
+    throw new ApiError(
+      `banqueId is required for ${resolvedMode}. Select a bank to credit its wallet.`,
+      400,
+    );
+  }
 
   const effectiveCommercialId =
     commercialId !== undefined
@@ -1605,16 +1895,22 @@ export const update = async (id, data, user) => {
           ...(heureLivraison !== undefined && { heureLivraison }),
           ...(telephone !== undefined && { telephone }),
           ...(whatsapp !== undefined && { whatsapp }),
-          ...(ville !== undefined && { ville: ville.name }),
-          ...(localisation !== undefined && { localisation }),
-          ...(raisonSocial !== undefined && { raisonSocial }),
-          ...(ice !== undefined && { ice }),
-          ...(siegeSocial !== undefined && { siegeSocial }),
+          ...(villeName !== undefined && { ville: villeName }),
+          ...(address !== undefined && { localisation: address }),
+          ...(wantsFacture !== undefined && { withFacture: wantsFacture }),
+          ...(wantsFacture === false
+            ? { raisonSocial: null, ice: null, siegeSocial: null }
+            : {
+                ...(raisonSocial !== undefined && { raisonSocial }),
+                ...(ice !== undefined && { ice }),
+                ...(siegeSocial !== undefined && { siegeSocial }),
+              }),
           ...(nombreDeColis !== undefined && { nombreDeColis }),
           ...(observation !== undefined && { observation }),
           ...(modeReglement !== undefined && {
             modeReglement: modeReglement || null,
           }),
+          ...(banqueId !== undefined && { banqueId: banqueId || null }),
           ...(effectiveCommercialId !== undefined && {
             commercialId: effectiveCommercialId,
           }),
@@ -1624,6 +1920,16 @@ export const update = async (id, data, user) => {
           ...(livreurId !== undefined && { livreurId: livreurId || null }),
         },
       });
+
+      if (
+        existing.document.clientId &&
+        (villeName !== undefined || address !== undefined)
+      ) {
+        await persistClientLocation(tx, existing.document.clientId, {
+          villeName: villeName ?? undefined,
+          address: address ?? undefined,
+        });
+      }
 
       // Lines / packs / totals are only touched in fully-editable statuses.
       if (!isFullEdit) {
@@ -1655,6 +1961,7 @@ export const update = async (id, data, user) => {
           const quantity = parseFloat(line.quantity);
           const unitPriceTTC = parseFloat(line.unitPrice);
           const totalTTC = parseFloat((quantity * unitPriceTTC).toFixed(2));
+          const unitCommission = parseFloat(article.commission || 0);
 
           linesWithFinancials.push({
             documentId: id,
@@ -1665,6 +1972,7 @@ export const update = async (id, data, user) => {
             quantity,
             unitPrice: unitPriceTTC,
             remise: 0,
+            commission: unitCommission,
             totalHT: totalTTC,
             tvaRate: 0,
             totalTVA: 0,
@@ -1684,14 +1992,25 @@ export const update = async (id, data, user) => {
           where: { bonLivraisonId: id },
         });
         if (packLines.length > 0) {
-          await tx.bonLivraisonPackLine.createMany({
-            data: packLines.map((pl) => ({
+          const packRows = [];
+          for (const pl of packLines) {
+            const pack = await tx.pack.findFirst({
+              where: {
+                id: pl.id,
+                societeId: existing.document.societeId,
+                active: true,
+              },
+              select: { id: true, commission: true },
+            });
+            packRows.push({
               bonLivraisonId: id,
               packId: pl.id,
               quantity: parseFloat(pl.quantity),
               prixVente: parseFloat(pl.prixVente),
-            })),
-          });
+              commission: parseFloat(pack?.commission || 0),
+            });
+          }
+          await tx.bonLivraisonPackLine.createMany({ data: packRows });
         }
       }
 
@@ -1699,15 +2018,15 @@ export const update = async (id, data, user) => {
       const [updatedLines, updatedPackLines, currentDoc] = await Promise.all([
         tx.clientDocumentLine.findMany({
           where: { documentId: id },
-          select: { totalTTC: true },
+          select: { totalTTC: true, quantity: true, commission: true },
         }),
         tx.bonLivraisonPackLine.findMany({
           where: { bonLivraisonId: id },
-          select: { quantity: true, prixVente: true },
+          select: { quantity: true, prixVente: true, commission: true },
         }),
         tx.clientDocument.findUnique({
           where: { id },
-          select: { amountPaid: true },
+          select: { amountPaid: true, clientId: true, documentNumber: true },
         }),
       ]);
 
@@ -1719,6 +2038,21 @@ export const update = async (id, data, user) => {
         (acc, pl) =>
           acc + parseFloat(pl.prixVente || 0) * parseFloat(pl.quantity || 0),
         0,
+      );
+      const totalCommission = parseFloat(
+        (
+          updatedLines.reduce(
+            (acc, l) =>
+              acc + parseFloat(l.commission || 0) * parseFloat(l.quantity || 0),
+            0,
+          ) +
+          updatedPackLines.reduce(
+            (acc, pl) =>
+              acc +
+              parseFloat(pl.commission || 0) * parseFloat(pl.quantity || 0),
+            0,
+          )
+        ).toFixed(2),
       );
 
       const totalTTC = parseFloat((articlesTotalTTC + packTotalTTC).toFixed(2));
@@ -1741,6 +2075,25 @@ export const update = async (id, data, user) => {
           amountDue,
         },
       });
+
+      await tx.bonLivraison.update({
+        where: { id },
+        data: { totalCommission },
+      });
+
+      const paymentDelta = parseFloat((amountPaid - previousPaid).toFixed(2));
+      if (paymentDelta > 0) {
+        await creditOrderPayment(tx, {
+          societeId: existing.document.societeId,
+          modeReglement: modeReglement ?? existing.modeReglement,
+          banqueId: banqueId !== undefined ? banqueId : existing.banqueId,
+          amount: paymentDelta,
+          userId: user.id,
+          clientId: currentDoc?.clientId ?? existing.document.clientId,
+          documentNumber: currentDoc?.documentNumber ?? existing.document.documentNumber,
+          documentDue: amountDue,
+        });
+      }
 
       // Audit trail: who edited the BL and when. Not a lifecycle transition.
       await tx.bonLivraisonStatusHistory.create({
@@ -1897,6 +2250,7 @@ export const getProductsOrPacks = async (query, user) => {
           id: true,
           name: true,
           prixVentePack: true,
+          commission: true,
         },
         orderBy: { name: "asc" },
         skip,
@@ -1910,6 +2264,7 @@ export const getProductsOrPacks = async (query, user) => {
         id: p.id,
         name: p.name,
         prixVentePack: parseFloat(p.prixVentePack),
+        commission: parseFloat(p.commission || 0),
       })),
       pagination: {
         total,
@@ -1964,6 +2319,7 @@ export const getProductsOrPacks = async (query, user) => {
         prixVente1: true,
         prixVente2: true,
         prixVente3: true,
+        commission: true,
         stockByDepot: {
           where: { depotId: parsedDepotId },
           select: {
@@ -2010,6 +2366,7 @@ export const getProductsOrPacks = async (query, user) => {
 
     for (const article of articles) {
       const prixVente = parseFloat(article[priceField]);
+      const commission = parseFloat(article.commission || 0);
 
       if (article.variants.length === 0) {
         data.push({
@@ -2020,6 +2377,7 @@ export const getProductsOrPacks = async (query, user) => {
           image: article.image,
           type: "ARTICLE",
           prixVente,
+          commission,
           stock: formatStock(article.stockByDepot[0]),
         });
       } else {
@@ -2042,6 +2400,7 @@ export const getProductsOrPacks = async (query, user) => {
             image: article.image,
             type: "VARIANT",
             prixVente,
+            commission,
             stock: formatStock(variant.stockByDepot[0]),
           });
         }
@@ -2161,6 +2520,139 @@ export const getCommercials = async (user) => {
     select: { id: true, name: true },
     orderBy: { name: "asc" },
   });
+};
+
+/* ============================================================
+   COMMERCIAL STATS / TOP COMMERCIALS
+
+   Aggregates Advanced BLs by commercialId for a date range
+   (filters on dateLivraison). Returns order counts, CA, and
+   commission owed to each commercial.
+============================================================ */
+const buildCommercialStatsWhere = (user, query = {}) => {
+  const { dateFrom, dateTo, commercialId } = query;
+  const where = {
+    type: "ADVANCED",
+    commercialId: { not: null },
+    ...(user.isSuperAdmin ? {} : { document: { societeId: user.societeId } }),
+  };
+
+  if (user.roleName === "Commercial") {
+    where.commercialId = user.id;
+  } else if (commercialId) {
+    where.commercialId = parseInt(commercialId);
+  }
+
+  if (dateFrom || dateTo) {
+    where.dateLivraison = {};
+    if (dateFrom) where.dateLivraison.gte = new Date(dateFrom);
+    if (dateTo) where.dateLivraison.lte = new Date(dateTo);
+  }
+
+  return where;
+};
+
+export const getCommercialStats = async (user, query = {}) => {
+  const where = buildCommercialStatsWhere(user, query);
+
+  const rows = await prisma.bonLivraison.findMany({
+    where,
+    select: {
+      id: true,
+      commercialId: true,
+      totalCommission: true,
+      commandStatus: true,
+      dateLivraison: true,
+      commercial: { select: { id: true, name: true } },
+      document: {
+        select: {
+          documentNumber: true,
+          clientName: true,
+          amountDue: true,
+          amountPaid: true,
+          createdAt: true,
+        },
+      },
+    },
+    orderBy: { dateLivraison: "desc" },
+  });
+
+  const byCommercial = new Map();
+  let totalOrders = 0;
+  let totalCommission = 0;
+  let totalCA = 0;
+  let totalPaid = 0;
+
+  for (const bl of rows) {
+    const cid = bl.commercialId;
+    if (!cid) continue;
+
+    if (!byCommercial.has(cid)) {
+      byCommercial.set(cid, {
+        id: cid,
+        name: bl.commercial?.name || "—",
+        orderCount: 0,
+        totalCommission: 0,
+        totalCA: 0,
+        totalPaid: 0,
+        orders: [],
+      });
+    }
+
+    const entry = byCommercial.get(cid);
+    const commission = parseFloat(bl.totalCommission || 0);
+    const ca = parseFloat(bl.document?.amountDue || 0);
+    const paid = parseFloat(bl.document?.amountPaid || 0);
+
+    entry.orderCount += 1;
+    entry.totalCommission += commission;
+    entry.totalCA += ca;
+    entry.totalPaid += paid;
+    entry.orders.push({
+      id: bl.id,
+      documentNumber: bl.document?.documentNumber ?? null,
+      clientName: bl.document?.clientName ?? null,
+      commandStatus: bl.commandStatus,
+      dateLivraison: bl.dateLivraison,
+      amountDue: ca,
+      amountPaid: paid,
+      totalCommission: commission,
+    });
+
+    totalOrders += 1;
+    totalCommission += commission;
+    totalCA += ca;
+    totalPaid += paid;
+  }
+
+  const commercials = Array.from(byCommercial.values())
+    .map((c) => ({
+      ...c,
+      totalCommission: parseFloat(c.totalCommission.toFixed(2)),
+      totalCA: parseFloat(c.totalCA.toFixed(2)),
+      totalPaid: parseFloat(c.totalPaid.toFixed(2)),
+    }))
+    .sort((a, b) => b.totalCommission - a.totalCommission || b.orderCount - a.orderCount);
+
+  return {
+    summary: {
+      orderCount: totalOrders,
+      totalCommission: parseFloat(totalCommission.toFixed(2)),
+      totalCA: parseFloat(totalCA.toFixed(2)),
+      totalPaid: parseFloat(totalPaid.toFixed(2)),
+      commercialCount: commercials.length,
+    },
+    commercials,
+  };
+};
+
+export const getTopCommercials = async (user, query = {}) => {
+  const limit = Math.min(Math.max(parseInt(query.limit || 5), 1), 20);
+  const stats = await getCommercialStats(user, query);
+  return {
+    summary: stats.summary,
+    commercials: stats.commercials.slice(0, limit).map(({ orders, ...rest }) => rest),
+  };
 };
 
 /* ============================================================
@@ -2367,13 +2859,37 @@ export const getBLsByStatus = async (query, user) => {
      - Livreur     → only aCollecter, enRoute, aLivrer, aPayer (own BLs)
      - Preparateur → only aPreparer (own BLs)
 ============================================================ */
-export const getWorkflowCounts = async (user) => {
+export const getWorkflowCounts = async (user, query = {}) => {
+  const { dateFrom, dateTo } = query;
+
   const where = {
     type: "ADVANCED",
     ...(user.isSuperAdmin ? {} : { document: { societeId: user.societeId } }),
   };
 
-  // Role scoping
+  // Optional period filter on delivery date (same spirit as main dashboard)
+  if (dateFrom || dateTo) {
+    const range = {};
+    if (dateFrom) {
+      const from = new Date(dateFrom);
+      if (!Number.isNaN(from.getTime())) {
+        from.setHours(0, 0, 0, 0);
+        range.gte = from;
+      }
+    }
+    if (dateTo) {
+      const to = new Date(dateTo);
+      if (!Number.isNaN(to.getTime())) {
+        to.setHours(23, 59, 59, 999);
+        range.lte = to;
+      }
+    }
+    if (Object.keys(range).length) {
+      where.dateLivraison = range;
+    }
+  }
+
+  // Role scoping — affected orders only for operational roles
   if (!user.isSuperAdmin) {
     if (user.roleName === "Livreur") {
       const delivery = await prisma.delivery.findUnique({
@@ -2408,18 +2924,21 @@ export const getWorkflowCounts = async (user) => {
     aPayer: byStatus.LIVRE ?? 0,
   };
 
+  const total = Object.values(byStatus).reduce((s, n) => s + n, 0);
+
   if (user.roleName === "Livreur") {
     return {
       aCollecter: allCounts.aCollecter,
       enRoute: allCounts.enRoute,
       aLivrer: allCounts.aLivrer,
       aPayer: allCounts.aPayer,
+      total,
     };
   }
   if (user.roleName === "Preparateur") {
-    return { aPreparer: allCounts.aPreparer };
+    return { aPreparer: allCounts.aPreparer, total };
   }
-  return allCounts;
+  return { ...allCounts, total };
 };
 
 /* ============================================================
@@ -2462,6 +2981,21 @@ export const getPlanning = async (query, user) => {
     document: user.isSuperAdmin ? undefined : { societeId: user.societeId },
   };
 
+  // Role scoping — same as workflow counts / list
+  if (!user.isSuperAdmin && !livreurId) {
+    if (user.roleName === "Livreur") {
+      const delivery = await prisma.delivery.findUnique({
+        where: { userId: user.id },
+        select: { id: true },
+      });
+      where.livreurId = delivery?.id ?? -1;
+    } else if (user.roleName === "Preparateur") {
+      where.preparateurId = user.id;
+    } else if (user.roleName === "Commercial") {
+      where.commercialId = user.id;
+    }
+  }
+
   const rows = await prisma.bonLivraison.findMany({
     where,
     select: {
@@ -2478,9 +3012,9 @@ export const getPlanning = async (query, user) => {
       isReported: true,
       isSuspended: true,
       livreurId: true,
+      preparateurId: true,
       observation: true,
       modeReglement: true,
-      observation: true,
       document: {
         select: {
           user: { select: { name: true } },
@@ -2492,6 +3026,7 @@ export const getPlanning = async (query, user) => {
       },
       agence: { select: { id: true, name: true } },
       livreur: { select: { id: true, name: true, tel: true } },
+      preparateur: { select: { id: true, name: true } },
     },
     orderBy: [{ documentDate: "asc" }, { createdAt: "asc" }],
   });
@@ -2530,7 +3065,6 @@ export const getPlanning = async (query, user) => {
       heureLivraison: bl.heureLivraison,
       nombreDeColis: bl.nombreDeColis ?? 0,
       commandStatus: bl.commandStatus,
-      observation: bl.observation,
       modeReglement: bl.modeReglement,
       isReported: bl.isReported,
       isSuspended: bl.isSuspended,
@@ -2538,6 +3072,8 @@ export const getPlanning = async (query, user) => {
       livreurId: bl.livreurId,
       livreurName: bl.livreur?.name ?? null,
       livreurPhone: bl.livreur?.tel ?? null,
+      preparateurId: bl.preparateurId,
+      preparateurName: bl.preparateur?.name ?? null,
       amountDue,
       amountPaid,
       reste,

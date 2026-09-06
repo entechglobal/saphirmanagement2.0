@@ -42,7 +42,8 @@ const relatedWithOptionalDate = (startDate, endDate) => {
 };
 
 /**
- * Situation client — unpaid / partial Bon de livraison lines.
+ * Situation client — all Bon de livraison lines, optionally filtered by payment.
+ * paymentStatus: all (default) | paid | unpaid
  */
 export const getClientSituation = async (query, societeId) => {
   const page = Math.max(1, parseInt(query.page, 10) || 1);
@@ -51,6 +52,9 @@ export const getClientSituation = async (query, societeId) => {
   const clientId = query.clientId ? parseInt(query.clientId, 10) : undefined;
   const startDate = query.startDate ? new Date(query.startDate) : null;
   const endDate = query.endDate ? new Date(query.endDate) : null;
+  const paymentStatus = ["paid", "unpaid"].includes(query.paymentStatus)
+    ? query.paymentStatus
+    : "all";
 
   const where = {
     bonLivraison: relatedWithOptionalDate(startDate, endDate),
@@ -82,6 +86,7 @@ export const getClientSituation = async (query, societeId) => {
       const amountDue = Number(d.amountDue);
       const amountPaid = Number(d.amountPaid);
       const reste = amountDue - amountPaid;
+      const isPaid = reste <= TOLERANCE;
       return {
         id: d.bonLivraison?.id ?? d.id,
         documentId: d.id,
@@ -92,11 +97,16 @@ export const getClientSituation = async (query, societeId) => {
         partnerPhone: d.client?.phone ?? null,
         amountDue,
         amountPaid,
-        reste,
+        reste: isPaid ? 0 : reste,
+        isPaid,
         status: d.status,
       };
     })
-    .filter((r) => r.reste > TOLERANCE);
+    .filter((r) => {
+      if (paymentStatus === "paid") return r.isPaid;
+      if (paymentStatus === "unpaid") return !r.isPaid;
+      return true;
+    });
 
   const summary = computeSummary(rows);
   const { data, results, pagination } = paginate(rows, page, limit);

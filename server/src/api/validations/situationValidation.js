@@ -9,5 +9,9 @@ export const listSituationValidator = [
   check("fournisseurId").optional().isInt({ min: 1 }),
   check("startDate").optional().isISO8601(),
   check("endDate").optional().isISO8601(),
+  check("paymentStatus")
+    .optional()
+    .isIn(["all", "paid", "unpaid"])
+    .withMessage("paymentStatus must be all, paid or unpaid"),
   validatorMiddleware,
 ];

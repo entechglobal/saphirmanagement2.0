@@ -6,13 +6,165 @@ import {
   OUTFLOW_TYPES,
   TRANSFER_TYPES,
 } from "./caisseWalletHelper.js";
+import { createNotifications } from "./notificationService.js";
 
 // -----------------------------------------------
 // HELPERS
 // -----------------------------------------------
 
+const SUPER_ADMIN_ROLES = ["Super_Admin", "SUPERADMIN"];
+
 const isInstitutionalWallet = (caisse) =>
   caisse.caisseType === "BANK" || caisse.caisseType === "COFFRE";
+
+const isSuperAdminUser = (user) =>
+  !!user?.isSuperAdmin || SUPER_ADMIN_ROLES.includes(user?.roleName);
+
+const TRANSFER_REQUEST_INCLUDE = {
+  sourceCaisse: {
+    select: {
+      id: true,
+      name: true,
+      caisseType: true,
+      user: { select: { id: true, name: true } },
+      banque: { select: { id: true, name: true } },
+    },
+  },
+  destinationCaisse: {
+    select: {
+      id: true,
+      name: true,
+      caisseType: true,
+      userId: true,
+      user: { select: { id: true, name: true } },
+      banque: { select: { id: true, name: true } },
+    },
+  },
+  createdBy: { select: { id: true, name: true } },
+  respondedBy: { select: { id: true, name: true } },
+};
+
+const walletDisplayName = (caisse) => {
+  if (!caisse) return "";
+  if (caisse.caisseType === "BANK") return caisse.banque?.name || caisse.name;
+  if (caisse.caisseType === "COFFRE") return caisse.name;
+  return caisse.user?.name || caisse.name;
+};
+
+const getPendingOutgoingAmount = async (caisseId, db = prisma) => {
+  const agg = await db.caisseTransferRequest.aggregate({
+    where: { sourceCaisseId: caisseId, status: "PENDING" },
+    _sum: { amount: true },
+  });
+  return parseFloat(agg._sum.amount || 0);
+};
+
+const attachAvailableBalances = async (caisses) => {
+  if (!caisses.length) return caisses;
+  const ids = caisses.map((c) => c.id);
+  const pending = await prisma.caisseTransferRequest.groupBy({
+    by: ["sourceCaisseId"],
+    where: { sourceCaisseId: { in: ids }, status: "PENDING" },
+    _sum: { amount: true },
+  });
+  const map = new Map(
+    pending.map((p) => [p.sourceCaisseId, parseFloat(p._sum.amount || 0)])
+  );
+  return caisses.map((c) => {
+    const pendingOutgoing = map.get(c.id) || 0;
+    return {
+      ...c,
+      pendingOutgoing,
+      availableBalance: parseFloat(
+        (parseFloat(c.currentBalance) - pendingOutgoing).toFixed(2)
+      ),
+    };
+  });
+};
+
+const attachAvailableBalance = async (caisse) => {
+  if (!caisse) return caisse;
+  const [withBalance] = await attachAvailableBalances([caisse]);
+  return withBalance;
+};
+
+const getSuperAdminIds = async () => {
+  const users = await prisma.user.findMany({
+    where: {
+      active: true,
+      OR: [
+        { isSuperAdmin: true },
+        { role: { name: { in: SUPER_ADMIN_ROLES } } },
+      ],
+    },
+    select: { id: true },
+  });
+  return [...new Set(users.map((u) => u.id))];
+};
+
+const requiresSuperAdminApproval = (destinationCaisse) =>
+  isInstitutionalWallet(destinationCaisse);
+
+/** Only instant when sending to your own user wallet — everything else waits for accept. */
+const canAutoCompleteTransfer = (destinationCaisse, currentUser) => {
+  if (requiresSuperAdminApproval(destinationCaisse)) return false;
+  return destinationCaisse.userId === currentUser.id;
+};
+
+const resolveApproverUserIds = async (destinationCaisse) => {
+  if (requiresSuperAdminApproval(destinationCaisse)) {
+    const ids = await getSuperAdminIds();
+    if (!ids.length) {
+      throw new ApiError(
+        "Aucun super administrateur disponible pour valider ce transfert",
+        400
+      );
+    }
+    return ids;
+  }
+  if (!destinationCaisse.userId) {
+    throw new ApiError(
+      "Ce wallet n'a pas de destinataire pouvant accepter le transfert",
+      400
+    );
+  }
+  return [destinationCaisse.userId];
+};
+
+const assertCanRespondToTransfer = (request, destinationCaisse, currentUser) => {
+  if (request.status !== "PENDING") {
+    throw new ApiError("Cette demande a déjà été traitée", 400);
+  }
+  if (requiresSuperAdminApproval(destinationCaisse)) {
+    if (!isSuperAdminUser(currentUser)) {
+      throw new ApiError(
+        "Seul un super administrateur peut valider ce transfert",
+        403
+      );
+    }
+    return;
+  }
+  if (destinationCaisse.userId !== currentUser.id) {
+    throw new ApiError("Vous n'êtes pas le destinataire de ce transfert", 403);
+  }
+};
+
+const buildTransferPayload = (
+  sourceCaisse,
+  destinationCaisse,
+  amount,
+  currentUser,
+  extra = {}
+) => ({
+  amount: parseFloat(amount),
+  sourceName: walletDisplayName(sourceCaisse),
+  destinationName: walletDisplayName(destinationCaisse),
+  senderName: currentUser.name,
+  senderId: currentUser.id,
+  destinationType: destinationCaisse.caisseType,
+  requiresSuperAdmin: requiresSuperAdminApproval(destinationCaisse),
+  ...extra,
+});
 
 const assertSocieteAccess = (currentUser, societeId) => {
   if (!currentUser.isSuperAdmin && societeId !== currentUser.societeId) {
@@ -269,7 +421,7 @@ export const getAll = async (query, currentUser) => {
   ]);
 
   return {
-    data: caisses,
+    data: await attachAvailableBalances(caisses),
     pagination: {
       total,
       page: parseInt(page),
@@ -284,10 +436,26 @@ export const createMyCaisse = async (data, currentUser) => {
 };
 
 export const getMyCaisse = async (currentUser) => {
-  return prisma.caisse.findUnique({
+  const existing = await prisma.caisse.findUnique({
     where: { userId: currentUser.id },
     include: CAISSE_INCLUDE,
   });
+  if (existing) return attachAvailableBalance(existing);
+
+  if (!currentUser.isSuperAdmin) return null;
+
+  const created = await prisma.caisse.create({
+    data: {
+      userId: currentUser.id,
+      caisseType: "CENTRAL",
+      name: "Caisse Centrale",
+      initialBalance: 0,
+      currentBalance: 0,
+      active: true,
+    },
+    include: CAISSE_INCLUDE,
+  });
+  return attachAvailableBalance(created);
 };
 
 export const getById = async (id, currentUser) => {
@@ -308,7 +476,7 @@ export const getById = async (id, currentUser) => {
     }
   }
 
-  return caisse;
+  return attachAvailableBalance(caisse);
 };
 
 export const update = async (id, data, currentUser) => {
@@ -366,9 +534,11 @@ export const createCharge = async (data, currentUser) => {
   }
 
   const currentBalance = parseFloat(caisse.currentBalance);
-  if (chargeAmount > currentBalance) {
+  const pendingOutgoing = await getPendingOutgoingAmount(caisse.id);
+  const available = parseFloat((currentBalance - pendingOutgoing).toFixed(2));
+  if (chargeAmount > available) {
     throw new ApiError(
-      `Solde insuffisant. Solde actuel: ${currentBalance.toFixed(2)} MAD`,
+      `Solde insuffisant. Solde disponible: ${available.toFixed(2)} MAD`,
       400
     );
   }
@@ -406,36 +576,45 @@ export const createCharge = async (data, currentUser) => {
 // -----------------------------------------------
 
 export const getTransferableCaisses = async (query, currentUser) => {
-  const { societeId, search, page = 1, limit = 100, excludeCaisseId } = query;
+  const { societeId, search, page = 1, limit = 500, excludeCaisseId } = query;
   const skip = (parseInt(page) - 1) * parseInt(limit);
 
-  let where = { active: true };
+  const and = [{ active: true }];
 
   if (currentUser.isSuperAdmin) {
-    if (societeId) where.societeId = parseInt(societeId);
+    if (societeId) {
+      and.push({
+        OR: [
+          { societeId: parseInt(societeId) },
+          { caisseType: "CENTRAL", societeId: null },
+        ],
+      });
+    }
   } else {
     if (!currentUser.societeId) {
       throw new ApiError("Aucune société associée à votre compte", 400);
     }
-    where.societeId = currentUser.societeId;
+    and.push({ societeId: currentUser.societeId });
   }
 
   if (excludeCaisseId) {
-    where.NOT = { id: parseInt(excludeCaisseId) };
+    and.push({ id: { not: parseInt(excludeCaisseId) } });
   }
 
   if (search) {
-    where.AND = [
-      ...(where.AND || []),
-      {
-        OR: [
-          { name: { contains: search } },
-          { user: { name: { contains: search } } },
-          { banque: { name: { contains: search } } },
-        ],
-      },
-    ];
+    and.push({
+      OR: [
+        { name: { contains: search } },
+        { user: { name: { contains: search } } },
+        { user: { email: { contains: search } } },
+        { banque: { name: { contains: search } } },
+        { societe: { raisonSocial: { contains: search } } },
+      ],
+    });
   }
+
+  const where = { AND: and };
+  const TYPE_ORDER = ["USER", "SOCIETE", "CENTRAL", "BANK", "COFFRE"];
 
   const [caisses, total] = await Promise.all([
     prisma.caisse.findMany({
@@ -443,13 +622,22 @@ export const getTransferableCaisses = async (query, currentUser) => {
       skip,
       take: parseInt(limit),
       include: CAISSE_INCLUDE,
-      orderBy: [{ caisseType: "asc" }, { name: "asc" }],
+      orderBy: [{ name: "asc" }],
     }),
     prisma.caisse.count({ where }),
   ]);
 
+  const sorted = [...caisses].sort((a, b) => {
+    const ai = TYPE_ORDER.indexOf(a.caisseType);
+    const bi = TYPE_ORDER.indexOf(b.caisseType);
+    if (ai !== bi) return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+    const an = walletDisplayName(a).toLowerCase();
+    const bn = walletDisplayName(b).toLowerCase();
+    return an.localeCompare(bn, "fr");
+  });
+
   return {
-    data: caisses,
+    data: await attachAvailableBalances(sorted),
     pagination: { total, page: parseInt(page), limit: parseInt(limit) },
   };
 };
@@ -458,7 +646,8 @@ export const getTransferableCaisses = async (query, currentUser) => {
 // TRANSFER (internal — used by retrait and depot)
 // -----------------------------------------------
 
-const executeTransfer = async (
+const applyTransfer = async (
+  tx,
   sourceCaisse,
   destinationCaisse,
   amount,
@@ -466,8 +655,17 @@ const executeTransfer = async (
   currentUser
 ) => {
   const transferAmount = parseFloat(amount);
-  const sourceBalance = parseFloat(sourceCaisse.currentBalance);
+  const freshSource = await tx.caisse.findUnique({
+    where: { id: sourceCaisse.id },
+  });
+  const freshDest = await tx.caisse.findUnique({
+    where: { id: destinationCaisse.id },
+  });
+  if (!freshSource || !freshDest) {
+    throw new ApiError("Caisse introuvable", 404);
+  }
 
+  const sourceBalance = parseFloat(freshSource.currentBalance);
   if (transferAmount > sourceBalance) {
     throw new ApiError(
       `Solde insuffisant dans la caisse source. Solde actuel: ${sourceBalance.toFixed(2)} MAD`,
@@ -478,63 +676,85 @@ const executeTransfer = async (
   const sourceNewBalance = parseFloat(
     (sourceBalance - transferAmount).toFixed(2)
   );
-  const destCurrentBalance = parseFloat(destinationCaisse.currentBalance);
+  const destCurrentBalance = parseFloat(freshDest.currentBalance);
   const destNewBalance = parseFloat(
     (destCurrentBalance + transferAmount).toFixed(2)
   );
 
-  return prisma.$transaction(async (tx) => {
-    await tx.caisse.update({
-      where: { id: sourceCaisse.id },
-      data: { currentBalance: sourceNewBalance },
-    });
-    await tx.caisse.update({
-      where: { id: destinationCaisse.id },
-      data: { currentBalance: destNewBalance },
-    });
-
-    const [txOut, txIn] = await Promise.all([
-      tx.caisseTransaction.create({
-        data: {
-          caisseId: sourceCaisse.id,
-          transactionType: "TRANSFER_OUT",
-          amount: -transferAmount,
-          oldBalance: sourceBalance,
-          newBalance: sourceNewBalance,
-          note: note || null,
-          referenceCaisseId: destinationCaisse.id,
-          createdBy: currentUser.id,
-        },
-      }),
-      tx.caisseTransaction.create({
-        data: {
-          caisseId: destinationCaisse.id,
-          transactionType: "TRANSFER_IN",
-          amount: transferAmount,
-          oldBalance: destCurrentBalance,
-          newBalance: destNewBalance,
-          note: note || null,
-          referenceCaisseId: sourceCaisse.id,
-          createdBy: currentUser.id,
-        },
-      }),
-    ]);
-
-    return {
-      transactionOut: txOut,
-      transactionIn: txIn,
-      source: {
-        id: sourceCaisse.id,
-        name: sourceCaisse.name,
-        newBalance: sourceNewBalance,
-      },
-      destination: {
-        id: destinationCaisse.id,
-        name: destinationCaisse.name,
-        newBalance: destNewBalance,
-      },
-    };
+  await tx.caisse.update({
+    where: { id: sourceCaisse.id },
+    data: { currentBalance: sourceNewBalance },
   });
+  await tx.caisse.update({
+    where: { id: destinationCaisse.id },
+    data: { currentBalance: destNewBalance },
+  });
+
+  const [txOut, txIn] = await Promise.all([
+    tx.caisseTransaction.create({
+      data: {
+        caisseId: sourceCaisse.id,
+        transactionType: "TRANSFER_OUT",
+        amount: -transferAmount,
+        oldBalance: sourceBalance,
+        newBalance: sourceNewBalance,
+        note: note || null,
+        referenceCaisseId: destinationCaisse.id,
+        createdBy: currentUser.id,
+      },
+    }),
+    tx.caisseTransaction.create({
+      data: {
+        caisseId: destinationCaisse.id,
+        transactionType: "TRANSFER_IN",
+        amount: transferAmount,
+        oldBalance: destCurrentBalance,
+        newBalance: destNewBalance,
+        note: note || null,
+        referenceCaisseId: sourceCaisse.id,
+        createdBy: currentUser.id,
+      },
+    }),
+  ]);
+
+  return {
+    transactionOut: txOut,
+    transactionIn: txIn,
+    source: {
+      id: sourceCaisse.id,
+      name: sourceCaisse.name,
+      newBalance: sourceNewBalance,
+    },
+    destination: {
+      id: destinationCaisse.id,
+      name: destinationCaisse.name,
+      newBalance: destNewBalance,
+    },
+  };
+};
+
+const executeTransfer = async (
+  sourceCaisse,
+  destinationCaisse,
+  amount,
+  note,
+  currentUser
+) => {
+  const transferAmount = parseFloat(amount);
+  const pendingOutgoing = await getPendingOutgoingAmount(sourceCaisse.id);
+  const available = parseFloat(
+    (parseFloat(sourceCaisse.currentBalance) - pendingOutgoing).toFixed(2)
+  );
+  if (transferAmount > available) {
+    throw new ApiError(
+      `Solde insuffisant dans la caisse source. Solde disponible: ${available.toFixed(2)} MAD`,
+      400
+    );
+  }
+
+  return prisma.$transaction((tx) =>
+    applyTransfer(tx, sourceCaisse, destinationCaisse, amount, note, currentUser)
+  );
 };
 
 // -----------------------------------------------
@@ -654,7 +874,194 @@ export const createTransfer = async (data, currentUser) => {
     }
   }
 
-  return executeTransfer(sourceCaisse, destinationCaisse, amount, note, currentUser);
+  const transferAmount = parseFloat(amount);
+  const pendingOutgoing = await getPendingOutgoingAmount(sourceCaisse.id);
+  const available = parseFloat(
+    (parseFloat(sourceCaisse.currentBalance) - pendingOutgoing).toFixed(2)
+  );
+  if (transferAmount > available) {
+    throw new ApiError(
+      `Solde insuffisant. Solde disponible: ${available.toFixed(2)} MAD`,
+      400
+    );
+  }
+
+  if (canAutoCompleteTransfer(destinationCaisse, currentUser)) {
+    const result = await executeTransfer(
+      sourceCaisse,
+      destinationCaisse,
+      amount,
+      note,
+      currentUser
+    );
+    return { pending: false, ...result };
+  }
+
+  const requiresSuperAdmin = requiresSuperAdminApproval(destinationCaisse);
+  const approverIds = await resolveApproverUserIds(destinationCaisse);
+  // Always notify approvers — balance is only moved on accept, never on create.
+  const notifyIds = [...new Set(approverIds)];
+
+  const transferRequest = await prisma.$transaction(async (tx) => {
+    const created = await tx.caisseTransferRequest.create({
+      data: {
+        sourceCaisseId: sourceCaisse.id,
+        destinationCaisseId: destinationCaisse.id,
+        amount: transferAmount,
+        note: note || null,
+        requiresSuperAdmin,
+        createdById: currentUser.id,
+      },
+      include: TRANSFER_REQUEST_INCLUDE,
+    });
+
+    await createNotifications(tx, {
+      userIds: notifyIds,
+      type: "WALLET_TRANSFER_REQUEST",
+      payload: buildTransferPayload(
+        sourceCaisse,
+        destinationCaisse,
+        transferAmount,
+        currentUser,
+        { note: note || null }
+      ),
+      transferRequestId: created.id,
+    });
+
+    return created;
+  });
+
+  return { pending: true, transferRequest };
+};
+
+export const acceptTransferRequest = async (id, currentUser) => {
+  const request = await prisma.caisseTransferRequest.findUnique({
+    where: { id: parseInt(id) },
+    include: {
+      sourceCaisse: { include: CAISSE_INCLUDE },
+      destinationCaisse: { include: CAISSE_INCLUDE },
+      createdBy: { select: { id: true, name: true } },
+    },
+  });
+  if (!request) throw new ApiError("Demande de transfert introuvable", 404);
+  if (!request.sourceCaisse?.active) {
+    throw new ApiError("La caisse source est désactivée", 400);
+  }
+  if (!request.destinationCaisse?.active) {
+    throw new ApiError("La caisse destination est désactivée", 400);
+  }
+  assertCanRespondToTransfer(request, request.destinationCaisse, currentUser);
+
+  const transferAmount = parseFloat(request.amount);
+  const pendingOutgoing = await getPendingOutgoingAmount(request.sourceCaisseId);
+  const otherPending = parseFloat(
+    (pendingOutgoing - transferAmount).toFixed(2)
+  );
+  const available = parseFloat(
+    (parseFloat(request.sourceCaisse.currentBalance) - otherPending).toFixed(2)
+  );
+  if (transferAmount > available) {
+    throw new ApiError(
+      `Solde insuffisant sur la caisse source. Disponible: ${available.toFixed(2)} MAD`,
+      400
+    );
+  }
+
+  return prisma.$transaction(async (tx) => {
+    const claimed = await tx.caisseTransferRequest.updateMany({
+      where: { id: request.id, status: "PENDING" },
+      data: {
+        status: "ACCEPTED",
+        respondedById: currentUser.id,
+        respondedAt: new Date(),
+      },
+    });
+    if (claimed.count !== 1) {
+      throw new ApiError("Cette demande a déjà été traitée", 400);
+    }
+
+    const result = await applyTransfer(
+      tx,
+      request.sourceCaisse,
+      request.destinationCaisse,
+      transferAmount,
+      request.note,
+      { id: request.createdById }
+    );
+
+    await tx.notification.updateMany({
+      where: {
+        transferRequestId: request.id,
+        type: "WALLET_TRANSFER_REQUEST",
+      },
+      data: { read: true },
+    });
+
+    await createNotifications(tx, {
+      userIds: [request.createdById],
+      type: "WALLET_TRANSFER_ACCEPTED",
+      payload: buildTransferPayload(
+        request.sourceCaisse,
+        request.destinationCaisse,
+        transferAmount,
+        request.createdBy,
+        { responderName: currentUser.name, responderId: currentUser.id }
+      ),
+      transferRequestId: request.id,
+    });
+
+    return result;
+  });
+};
+
+export const declineTransferRequest = async (id, currentUser) => {
+  const request = await prisma.caisseTransferRequest.findUnique({
+    where: { id: parseInt(id) },
+    include: {
+      sourceCaisse: { include: CAISSE_INCLUDE },
+      destinationCaisse: { include: CAISSE_INCLUDE },
+      createdBy: { select: { id: true, name: true } },
+    },
+  });
+  if (!request) throw new ApiError("Demande de transfert introuvable", 404);
+  assertCanRespondToTransfer(request, request.destinationCaisse, currentUser);
+
+  return prisma.$transaction(async (tx) => {
+    const claimed = await tx.caisseTransferRequest.updateMany({
+      where: { id: request.id, status: "PENDING" },
+      data: {
+        status: "DECLINED",
+        respondedById: currentUser.id,
+        respondedAt: new Date(),
+      },
+    });
+    if (claimed.count !== 1) {
+      throw new ApiError("Cette demande a déjà été traitée", 400);
+    }
+
+    await tx.notification.updateMany({
+      where: {
+        transferRequestId: request.id,
+        type: "WALLET_TRANSFER_REQUEST",
+      },
+      data: { read: true },
+    });
+
+    await createNotifications(tx, {
+      userIds: [request.createdById],
+      type: "WALLET_TRANSFER_DECLINED",
+      payload: buildTransferPayload(
+        request.sourceCaisse,
+        request.destinationCaisse,
+        request.amount,
+        request.createdBy,
+        { responderName: currentUser.name, responderId: currentUser.id }
+      ),
+      transferRequestId: request.id,
+    });
+
+    return { declined: true, id: request.id };
+  });
 };
 
 // -----------------------------------------------

@@ -50,7 +50,7 @@ export const ClientsForm = () => {
     resolver: zodResolver(clientSchema),
     defaultValues: {
       name: "", phone: "", email: "", type: "", address: "",
-      region: "", website: "", ice: "", if: "", rc: "",
+      city: "", region: "", website: "", ice: "", if: "", rc: "",
       tp: "", creditLimit: 0, paymentDeadline: 0, discount: 0,
       active: true, societeId: "",
     }
@@ -188,6 +188,12 @@ export const ClientsForm = () => {
                     {...register("address")}
                     placeholder={t("fields.address.placeholder")}
                     error={errors.address?.message}
+                  />
+                  <Input
+                    label={t("fields.city.label")}
+                    {...register("city")}
+                    placeholder={t("fields.city.placeholder")}
+                    error={errors.city?.message}
                   />
                   <Input
                     label={t("fields.region.label")}

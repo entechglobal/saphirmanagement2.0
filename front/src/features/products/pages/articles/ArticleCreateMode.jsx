@@ -17,7 +17,7 @@ export const ArticleCreateMode = () => {
           type="button"
           onClick={() => navigate(returnTo || "/articles")}
           aria-label={t("back")}
-          className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+          className="p-2 rounded-xl border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] text-slate-700 dark:text-slate-200 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>
@@ -57,7 +57,7 @@ export const ArticleCreateMode = () => {
 const SelectionCard = ({ to, title, description, icon, badge, cta }) => (
   <Link
     to={to}
-    className="group relative rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 p-5 space-y-4 transition-all duration-200 hover:border-[#C86AAC]/40"
+    className="group relative rounded-2xl border border-slate-200 dark:border-[#2e2e2e] bg-white dark:bg-[#1c1c1c]/40 p-5 space-y-4 transition-all duration-200 hover:border-[#C86AAC]/40"
   >
     <div className="flex items-center justify-between gap-3">
       <div
@@ -66,7 +66,7 @@ const SelectionCard = ({ to, title, description, icon, badge, cta }) => (
       >
         {icon}
       </div>
-      <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded-xl">
+      <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 border border-slate-200 dark:border-[#2e2e2e] px-2 py-0.5 rounded-xl">
         {badge}
       </span>
     </div>

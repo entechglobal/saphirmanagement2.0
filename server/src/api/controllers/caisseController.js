@@ -57,7 +57,41 @@ export const createDepot = async (req, res) => {
 
 export const createTransfer = async (req, res) => {
   const result = await caisseService.createTransfer(req.body, req.user);
-  res.status(201).json({ status: "success", data: result });
+  const message = result.pending
+    ? result.transferRequest?.requiresSuperAdmin
+      ? "Transfert envoyé. En attente de validation du super administrateur."
+      : "Transfert envoyé. En attente d'acceptation du destinataire."
+    : undefined;
+  res.status(201).json({
+    status: "success",
+    pending: !!result.pending,
+    ...(message && { message }),
+    data: result,
+  });
+};
+
+export const acceptTransferRequest = async (req, res) => {
+  const result = await caisseService.acceptTransferRequest(
+    req.params.id,
+    req.user
+  );
+  res.json({
+    status: "success",
+    message: "Transfert accepté",
+    data: result,
+  });
+};
+
+export const declineTransferRequest = async (req, res) => {
+  const result = await caisseService.declineTransferRequest(
+    req.params.id,
+    req.user
+  );
+  res.json({
+    status: "success",
+    message: "Transfert refusé",
+    data: result,
+  });
 };
 
 export const createBankWallet = async (req, res) => {

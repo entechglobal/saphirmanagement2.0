@@ -12,10 +12,10 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 
 const LAN_HOST =
   /^(localhost|127\.0\.0\.1|10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})$/;
-const LAN_PORTS = new Set(["", "80", "443", "3000", "4173", "5173"]);
+const LAN_PORTS = new Set(["", "80", "443", "3000", "4173", "5173", "5174"]);
 
 const isAllowedOrigin = (origin) => {
-  if (!origin) return true;
+  if (!origin || origin === "null" || origin === "file://") return true;
   if (allowedOrigins.includes(origin)) return true;
   try {
     const url = new URL(origin);

@@ -75,6 +75,24 @@ export const createValidator = [
     .withMessage("agenceId must be a positive integer")
     .toInt(),
 
+  body("clientId")
+    .optional({ nullable: true })
+    .isInt({ min: 1 })
+    .withMessage("clientId must be a positive integer")
+    .toInt(),
+
+  body("saveAsClient")
+    .optional()
+    .isBoolean()
+    .withMessage("saveAsClient must be a boolean")
+    .toBoolean(),
+
+  body("updateClientLocation")
+    .optional()
+    .isBoolean()
+    .withMessage("updateClientLocation must be a boolean")
+    .toBoolean(),
+
   body("telephone")
     .optional()
     .isLength({ max: 20 })
@@ -87,10 +105,23 @@ export const createValidator = [
 
   body("ville")
     .optional()
-    .isLength({ max: 100 })
+    .custom((value) => {
+      if (value == null || value === "") return true;
+      if (typeof value === "string") return value.length <= 100;
+      if (typeof value === "object" && value.name != null) {
+        return String(value.name).length <= 100;
+      }
+      return false;
+    })
     .withMessage("ville cannot exceed 100 characters"),
 
   body("localisation").optional().isString(),
+
+  body("withFacture")
+    .optional()
+    .isBoolean()
+    .withMessage("withFacture must be a boolean")
+    .toBoolean(),
 
   body("raisonSocial").optional().isLength({ max: 255 }),
 
@@ -110,6 +141,12 @@ export const createValidator = [
     .optional()
     .isIn(VALID_MODES)
     .withMessage(`modeReglement must be one of: ${VALID_MODES.join(", ")}`),
+
+  body("banqueId")
+    .optional({ nullable: true })
+    .isInt({ min: 1 })
+    .withMessage("banqueId must be a positive integer")
+    .toInt(),
 
   body("montantPaid")
     .optional()

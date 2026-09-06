@@ -84,26 +84,26 @@ const SelectFrsModal = ({ isOpen, onClose, onSelect }) => {
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-2">
             <button onClick={() => setPage((p) => p - 1)} disabled={page === 1}
-              className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition">
+              className="p-2 rounded-lg border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] disabled:opacity-40 disabled:cursor-not-allowed transition">
               <ChevronLeft className="w-4 h-4 text-slate-600 dark:text-slate-300" />
             </button>
             <span className="text-xs text-slate-500 tabular-nums min-w-[70px] text-center">
               Page {page} / {totalPages}
             </span>
             <button onClick={() => setPage((p) => p + 1)} disabled={page >= totalPages}
-              className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition">
+              className="p-2 rounded-lg border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] disabled:opacity-40 disabled:cursor-not-allowed transition">
               <ChevronRight className="w-4 h-4 text-slate-600 dark:text-slate-300" />
             </button>
           </div>
           <button onClick={onClose}
-            className="px-4 py-2 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition font-semibold text-sm">
+            className="px-4 py-2 border border-slate-200 dark:border-[#2e2e2e] text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-[#222222] transition font-semibold text-sm">
             {t("btn_cancel")}
           </button>
         </div>
       }
     >
       {/* Search */}
-      <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
+      <div className="px-6 py-4 border-b border-slate-200 dark:border-[#2e2e2e] flex-shrink-0">
         <div className="relative">
           {isLoading
             ? <Loader2 className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 animate-spin" />
@@ -115,7 +115,7 @@ const SelectFrsModal = ({ isOpen, onClose, onSelect }) => {
             placeholder="Rechercher par nom, téléphone, ICE..."
             value={search}
             onChange={(e) => handleSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-[#B12B89] outline-none text-sm dark:text-slate-100 transition"
+            className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-xl focus:ring-2 focus:ring-[#B12B89] outline-none text-sm dark:text-slate-100 transition"
           />
         </div>
       </div>
@@ -134,19 +134,19 @@ const SelectFrsModal = ({ isOpen, onClose, onSelect }) => {
         ) : (
           <table className="w-full">
             <thead>
-              <tr className="bg-slate-50/80 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+              <tr className="bg-slate-50/80 dark:bg-[#222222]/50 border-b border-slate-100 dark:border-[#2e2e2e]">
                 <th className="px-6 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-slate-500">Réf.</th>
                 <th className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-slate-500">Nom</th>
                 <th className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-slate-500 hidden sm:table-cell">Téléphone</th>
                 <th className="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-wider text-slate-500 hidden md:table-cell">Type</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+            <tbody className="divide-y divide-slate-50 dark:divide-[#2e2e2e]">
               {paginated.map((frs) => (
                 <tr key={frs.id} onClick={() => onSelect(frs)}
                   className="cursor-pointer hover:bg-blue-50/60 dark:hover:bg-blue-900/10 transition-colors">
                   <td className="px-6 py-3.5">
-                    <span className="font-mono text-xs text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
+                    <span className="font-mono text-xs text-slate-500 bg-slate-100 dark:bg-[#222222] px-2 py-0.5 rounded">
                       #{frs.id}
                     </span>
                   </td>
@@ -248,7 +248,7 @@ const SelectBRModal = ({ isOpen, unpaidDocs = [], initialSelectedBRs = [], onClo
       footer={
         <div className="flex items-center justify-end gap-3 w-full">
           <button onClick={onClose}
-            className="px-4 py-2.5 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition font-semibold text-sm">
+            className="px-4 py-2.5 border border-slate-200 dark:border-[#2e2e2e] text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-[#222222] transition font-semibold text-sm">
             {t("btn_cancel")}
           </button>
           <button onClick={() => onConfirm(pendingSelected)} disabled={pendingSelected.length === 0}
@@ -268,7 +268,7 @@ const SelectBRModal = ({ isOpen, unpaidDocs = [], initialSelectedBRs = [], onClo
         ) : (
           <table className="w-full">
             <thead>
-              <tr className="bg-slate-50/80 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+              <tr className="bg-slate-50/80 dark:bg-[#222222]/50 border-b border-slate-100 dark:border-[#2e2e2e]">
                 <th className="px-6 py-3 w-12">
                   <div className="flex flex-col items-center gap-1 mx-auto">
                     <button onClick={handleToggleAll}
@@ -284,12 +284,12 @@ const SelectBRModal = ({ isOpen, unpaidDocs = [], initialSelectedBRs = [], onClo
                 <th className="px-4 py-3 text-right text-[10px] font-bold uppercase tracking-wider text-slate-500">{t("col_reste")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+            <tbody className="divide-y divide-slate-50 dark:divide-[#2e2e2e]">
               {unpaidDocs.map((doc) => {
                 const selected = pendingSelected.includes(doc.documentNumber);
                 return (
                   <tr key={doc.documentNumber} onClick={() => toggleBR(doc.documentNumber)}
-                    className={`cursor-pointer transition-colors ${selected ? "bg-blue-50/70 dark:bg-blue-900/10" : "hover:bg-slate-50 dark:hover:bg-slate-800/30"}`}>
+                    className={`cursor-pointer transition-colors ${selected ? "bg-blue-50/70 dark:bg-blue-900/10" : "hover:bg-slate-50 dark:hover:bg-[#222222]/30"}`}>
                     <td className="px-6 py-3.5">
                       {selected
                         ? <CheckSquare className="w-5 h-5 text-blue-500" />
@@ -524,7 +524,7 @@ export const ReglementFournisseurForm = () => {
                 <button
                   type="button"
                   onClick={() => setShowFrsModal(true)}
-                  className="w-full flex items-center gap-3 px-4 py-3 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-lg text-slate-400 hover:border-blue-300 hover:text-blue-500 transition-all text-sm font-semibold"
+                  className="w-full flex items-center gap-3 px-4 py-3 border-2 border-dashed border-slate-200 dark:border-[#2e2e2e] rounded-lg text-slate-400 hover:border-blue-300 hover:text-blue-500 transition-all text-sm font-semibold"
                 >
                   <Building2 className="w-4 h-4" />
                   {t("select_fournisseur_placeholder")}
@@ -547,12 +547,12 @@ export const ReglementFournisseurForm = () => {
                         fullWidth: true,
                         sx: (theme) => ({
                           "& .MuiPickersInputBase-root, & .MuiPickersOutlinedInput-root": {
-                            backgroundColor: theme.palette.mode === "dark" ? "#1e293b" : "#ffffff",
+                            backgroundColor: theme.palette.mode === "dark" ? "#222222" : "#ffffff",
                             borderRadius: "10px",
                             height: "46px",
                           },
                           "& .MuiPickersOutlinedInput-notchedOutline": {
-                            borderColor: theme.palette.mode === "dark" ? "#334155" : "#e2e8f0",
+                            borderColor: theme.palette.mode === "dark" ? "#2e2e2e" : "#e2e8f0",
                           },
                           "&:hover .MuiPickersOutlinedInput-notchedOutline": { borderColor: "#B12B89" },
                           "& .Mui-focused .MuiPickersOutlinedInput-notchedOutline": { borderColor: "#B12B89" },
@@ -620,7 +620,7 @@ export const ReglementFournisseurForm = () => {
                           onClick={() => setSelectedBanque(isSelected ? null : banque)}
                           className={`flex items-center justify-between px-4 py-3 rounded-lg border cursor-pointer transition-all ${isSelected
                             ? "bg-sky-100 dark:bg-sky-900/30 border-sky-400 dark:border-sky-600"
-                            : "bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 hover:border-sky-300"
+                            : "bg-white dark:bg-[#222222]/50 border-slate-200 dark:border-[#2e2e2e] hover:border-sky-300"
                           }`}
                         >
                           <div className="flex items-center gap-3">
@@ -646,13 +646,13 @@ export const ReglementFournisseurForm = () => {
         {selectedFrs && (
           <FormCard>
             <div className="flex gap-2 flex-wrap">
-              <div className="flex-1 min-w-[120px] px-3 py-2 rounded-lg border bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700">
+              <div className="flex-1 min-w-[120px] px-3 py-2 rounded-lg border bg-slate-50 dark:bg-[#222222]/50 border-slate-200 dark:border-[#2e2e2e]">
                 <span className="text-[9px] uppercase font-semibold tracking-wider text-slate-400">{t("total_br")}</span>
                 <p className="text-[11px] font-black text-[#B12B89] dark:text-blue-400 font-mono mt-1">
                   {fmt(unpaidDocs.reduce((sum, d) => sum + Number(d.reste), 0))} MAD
                 </p>
               </div>
-              <div className="flex-1 min-w-[120px] px-3 py-2 rounded-lg border bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700">
+              <div className="flex-1 min-w-[120px] px-3 py-2 rounded-lg border bg-slate-50 dark:bg-[#222222]/50 border-slate-200 dark:border-[#2e2e2e]">
                 <span className="text-[9px] uppercase font-semibold tracking-wider text-slate-400">{t("total_avances")}</span>
                 <p className="text-[11px] font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1">
                   {fmt(advances.reduce((sum, a) => sum + Number(a.montantRegle), 0))} MAD
@@ -687,7 +687,7 @@ export const ReglementFournisseurForm = () => {
               {selectedBRs.map((docNum) => {
                 const doc = unpaidDocs.find((d) => d.documentNumber === docNum);
                 return (
-                  <div key={docNum} className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg">
+                  <div key={docNum} className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-[#222222]/50 border border-slate-200 dark:border-[#2e2e2e] rounded-lg">
                     <div className="flex items-center gap-3">
                       <FileText className="w-4 h-4 text-blue-400" />
                       <span className="font-mono text-xs font-bold text-blue-700 dark:text-blue-400">{docNum}</span>
@@ -710,7 +710,7 @@ export const ReglementFournisseurForm = () => {
                   </div>
                 );
               })}
-              <div className="flex items-center justify-end gap-3 pt-2 border-t border-slate-100 dark:border-slate-800 mt-2">
+              <div className="flex items-center justify-end gap-3 pt-2 border-t border-slate-100 dark:border-[#2e2e2e] mt-2">
                 <span className="text-xs text-slate-500 font-semibold">{t("total_reste")}</span>
                 <span className="font-bold text-slate-800 dark:text-slate-100 text-sm">{fmt(totalReste)} MAD</span>
               </div>
@@ -758,7 +758,7 @@ export const ReglementFournisseurForm = () => {
                   value={montantRegle}
                   onChange={(e) => setMontantRegle(e.target.value)}
                   placeholder="0.00"
-                  className="w-full h-10 pl-9 pr-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md focus:ring-2 focus:ring-[#B12B89] outline-none text-sm dark:text-slate-100 font-semibold transition"
+                  className="w-full h-10 pl-9 pr-4 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-md focus:ring-2 focus:ring-[#B12B89] outline-none text-sm dark:text-slate-100 font-semibold transition"
                 />
               </div>
               {selectedBRs.length > 0 && (
@@ -769,7 +769,7 @@ export const ReglementFournisseurForm = () => {
             </div>
 
             {selectedBRs.length > 0 && (
-              <div className="flex flex-col gap-1 px-4 py-3 rounded-lg border min-w-[180px] bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700">
+              <div className="flex flex-col gap-1 px-4 py-3 rounded-lg border min-w-[180px] bg-slate-50 dark:bg-[#222222]/50 border-slate-200 dark:border-[#2e2e2e]">
                 <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">{t("label_solde_restant")}</span>
                 <span className={`text-lg font-black font-mono ${solde > 0 ? "text-red-600" : "text-emerald-600"}`}>
                   {fmt(solde)} MAD

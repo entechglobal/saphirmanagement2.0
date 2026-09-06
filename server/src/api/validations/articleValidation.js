@@ -168,6 +168,12 @@ export const createArticleValidator = [
     .isFloat({ min: 0, max: 1 })
     .withMessage("Remise must be between 0 and 1"),
 
+  // Commission per unit (optional, default 0)
+  check("commission")
+    .optional({ nullable: true })
+    .isFloat({ min: 0 })
+    .withMessage("Commission must be a positive number"),
+
   // Date Expiration validation (optional)
   check("dateExpiration")
     .optional({ nullable: true })
@@ -346,6 +352,12 @@ export const updateArticleValidator = [
     .optional({ nullable: true })
     .isFloat({ min: 0, max: 1 })
     .withMessage("Remise must be between 0 and 1"),
+
+  // Commission per unit (optional)
+  check("commission")
+    .optional({ nullable: true })
+    .isFloat({ min: 0 })
+    .withMessage("Commission must be a positive number"),
 
   // Date Expiration validation (optional)
   check("dateExpiration")

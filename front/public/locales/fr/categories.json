@@ -27,6 +27,10 @@
   "category_image": "Image de la catégorie",
   "visibility_description": "Afficher la catégorie au point de vente",
   "save_category": "Enregistrer la catégorie",
+  "quick_add": "Ajouter",
+  "quick_create_title": "Nouvelle catégorie",
+  "quick_create_subtitle": "Créer une catégorie et la sélectionner",
+  "quick_created": "Catégorie créée",
   "saving": "Enregistrement...",
   "upload_image": "Télécharger l'image",
   "validation": {

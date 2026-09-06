@@ -132,7 +132,7 @@ export const BonRetourFournisseurForm = () => {
         <button
           type="button"
           onClick={() => navigate("/bon-retour-fournisseurs")}
-          className="p-2 rounded-md border border-slate-200 dark:border-slate-700"
+          className="p-2 rounded-md border border-slate-200 dark:border-[#2e2e2e]"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>

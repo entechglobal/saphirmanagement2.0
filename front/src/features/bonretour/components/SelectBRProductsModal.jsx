@@ -43,10 +43,10 @@ const Checkbox = ({ checked, indeterminate = false, onChange, disabled = false }
     disabled={disabled}
     className={`flex-shrink-0 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
       disabled
-        ? "bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 cursor-not-allowed opacity-40"
+        ? "bg-slate-100 dark:bg-[#2e2e2e] border-slate-200 dark:border-[#3a3a3a] cursor-not-allowed opacity-40"
         : checked || indeterminate
         ? "bg-[#B12B89] border-[#B12B89]"
-        : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 hover:border-blue-400"
+        : "bg-white dark:bg-[#222222] border-slate-300 dark:border-[#3a3a3a] hover:border-blue-400"
     }`}
   >
     {!disabled && indeterminate && !checked ? (
@@ -156,7 +156,7 @@ export const SelectBRProductsModal = ({
   const allChecked = eligible.length > 0 && pendingOnPage === eligible.length;
   const someChecked = pendingOnPage > 0 && pendingOnPage < eligible.length;
 
-  const inputClass = "w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-400 outline-none transition dark:text-slate-100 text-sm";
+  const inputClass = "w-full px-4 py-2.5 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-xl focus:ring-2 focus:ring-blue-400 outline-none transition dark:text-slate-100 text-sm";
 
   return (
     <BaseModal
@@ -172,24 +172,24 @@ export const SelectBRProductsModal = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button onClick={() => setCurrentPage((p) => p - 1)} disabled={currentPage === 1}
-              className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition">
+              className="p-2 rounded-lg border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] disabled:opacity-40 disabled:cursor-not-allowed transition">
               <ChevronLeft className="w-4 h-4 text-slate-600 dark:text-slate-300" />
             </button>
             <span className="text-xs text-slate-500 tabular-nums min-w-[80px] text-center">
               {t("page")} {currentPage} / {totalPages}
             </span>
             <button onClick={() => setCurrentPage((p) => p + 1)} disabled={currentPage >= totalPages}
-              className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition">
+              className="p-2 rounded-lg border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] disabled:opacity-40 disabled:cursor-not-allowed transition">
               <ChevronRight className="w-4 h-4 text-slate-600 dark:text-slate-300" />
             </button>
           </div>
           <div className="flex items-center gap-3">
             <button onClick={onClose}
-              className="px-4 py-2.5 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl transition font-semibold text-sm">
+              className="px-4 py-2.5 border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] text-slate-600 dark:text-slate-300 rounded-xl transition font-semibold text-sm">
               {t("cancel")}
             </button>
             <button onClick={onCreateArticle}
-              className="flex items-center gap-2 px-4 py-2.5 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl transition font-semibold text-sm">
+              className="flex items-center gap-2 px-4 py-2.5 border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] text-slate-600 dark:text-slate-300 rounded-xl transition font-semibold text-sm">
               <Plus className="w-4 h-4" />
               {t("create_article")}
             </button>
@@ -203,7 +203,7 @@ export const SelectBRProductsModal = ({
         </div>
       }
     >
-      <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 space-y-3 flex-shrink-0">
+      <div className="px-6 py-4 border-b border-slate-200 dark:border-[#2e2e2e] space-y-3 flex-shrink-0">
         <div className="relative">
           {isLoading || isFetching ? (
             <Loader2 className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 animate-spin" />
@@ -228,7 +228,7 @@ export const SelectBRProductsModal = ({
         ) : products.length > 0 ? (
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50">
+              <tr className="border-b border-slate-100 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/50">
                 <th className="px-6 py-3 w-12">
                   <Checkbox checked={allChecked} indeterminate={someChecked} onChange={handleToggleAll} />
                 </th>
@@ -238,16 +238,16 @@ export const SelectBRProductsModal = ({
                 <th className="px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("stock")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+            <tbody className="divide-y divide-slate-50 dark:divide-[#2e2e2e]">
               {products.map((product) => {
                 const disabled = isDisabled(product);
                 const pending = isPending(product);
                 return (
                   <tr key={productKey(product)} onClick={() => handleToggle(product)}
                     className={`transition-colors ${
-                      disabled ? "opacity-40 cursor-not-allowed bg-slate-50/50 dark:bg-slate-800/20"
+                      disabled ? "opacity-40 cursor-not-allowed bg-slate-50/50 dark:bg-[#222222]/20"
                         : pending ? "bg-blue-50/70 dark:bg-blue-900/10 cursor-pointer"
-                        : "hover:bg-slate-50 dark:hover:bg-slate-800/30 cursor-pointer"
+                        : "hover:bg-slate-50 dark:hover:bg-[#222222]/30 cursor-pointer"
                     }`}
                   >
                     <td className="px-6 py-3.5">
@@ -257,7 +257,7 @@ export const SelectBRProductsModal = ({
                       <p className={`font-semibold text-sm ${pending && !disabled ? "text-blue-700 dark:text-blue-300" : "text-slate-800 dark:text-slate-100"}`}>
                         {product.name}
                         {disabled && (
-                          <span className="ml-2 text-[9px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">
+                          <span className="ml-2 text-[9px] font-bold text-slate-400 bg-slate-100 dark:bg-[#2e2e2e] px-1.5 py-0.5 rounded">
                             {t("already_added")}
                           </span>
                         )}

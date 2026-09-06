@@ -482,7 +482,7 @@ const PRIMARY_BTN =
   "bg-[#B12B89] text-white hover:brightness-110 shadow-[0_1px_2px_rgba(16,24,40,0.06)]";
 
 const SECONDARY_BTN =
-  "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-transparent dark:text-slate-200 dark:hover:bg-slate-800";
+  "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-[#2e2e2e] dark:bg-transparent dark:text-slate-200 dark:hover:bg-[#222222]";
 
 const ActionBtn = ({ label, icon, cls, onClick }) => (
   <button
@@ -495,7 +495,7 @@ const ActionBtn = ({ label, icon, cls, onClick }) => (
 );
 
 const StatCard = ({ label, value, icon, color, bg, loading }) => (
-  <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(16,24,40,0.04)] dark:border-slate-800 dark:bg-slate-900">
+  <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgba(16,24,40,0.04)] dark:border-[#2e2e2e] dark:bg-[#1c1c1c]">
     <div className="mb-2.5 flex items-center justify-between">
       <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-slate-500 dark:text-slate-400">
         {label}
@@ -503,7 +503,7 @@ const StatCard = ({ label, value, icon, color, bg, loading }) => (
       <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${bg} ${color}`}>{icon}</div>
     </div>
     {loading ? (
-      <div className="h-7 w-36 animate-pulse rounded-lg bg-slate-100 dark:bg-slate-800" />
+      <div className="h-7 w-36 animate-pulse rounded-lg bg-slate-100 dark:bg-[#222222]" />
     ) : (
       <p className={`text-[22px] font-bold tracking-[-0.01em] ${color}`}>{value}</p>
     )}

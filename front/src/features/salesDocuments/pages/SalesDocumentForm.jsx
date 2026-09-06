@@ -295,7 +295,7 @@ export const SalesDocumentForm = ({ config }) => {
         <button
           type="button"
           onClick={() => navigate(config.path)}
-          className="p-2 rounded-md border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+          className="p-2 rounded-md border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222]"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>
@@ -412,14 +412,14 @@ export const SalesDocumentForm = ({ config }) => {
         >
 
           {lines.length === 0 ? (
-            <p className="text-sm text-slate-400 py-8 text-center border border-dashed border-slate-200 dark:border-slate-700 rounded-lg">
+            <p className="text-sm text-slate-400 py-8 text-center border border-dashed border-slate-200 dark:border-[#2e2e2e] rounded-lg">
               Aucun produit — cliquez sur Ajouter
             </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-100 dark:border-slate-800">
+                  <tr className="text-left text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-100 dark:border-[#2e2e2e]">
                     <th className="py-2 pr-3 font-bold">Produit</th>
                     <th className="py-2 px-2 font-bold w-28">Qté</th>
                     {!config.hidePrices && (
@@ -441,7 +441,7 @@ export const SalesDocumentForm = ({ config }) => {
                     return (
                       <tr
                         key={key}
-                        className="border-b border-slate-50 dark:border-slate-800/80"
+                        className="border-b border-slate-50 dark:border-[#2e2e2e]/80"
                       >
                         <td className="py-2.5 pr-3">
                           <p className="font-semibold text-slate-800 dark:text-slate-100">
@@ -534,7 +534,7 @@ export const SalesDocumentForm = ({ config }) => {
                     {totals.totalTVA.toFixed(2)} DH
                   </span>
                 </div>
-                <div className="flex justify-between font-bold text-slate-900 dark:text-white text-base pt-1 border-t border-slate-100 dark:border-slate-800">
+                <div className="flex justify-between font-bold text-slate-900 dark:text-white text-base pt-1 border-t border-slate-100 dark:border-[#2e2e2e]">
                   <span>Total TTC</span>
                   <span className="tabular-nums">
                     {totals.totalTTC.toFixed(2)} DH

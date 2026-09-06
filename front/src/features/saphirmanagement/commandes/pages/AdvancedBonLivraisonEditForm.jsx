@@ -12,17 +12,13 @@ import {
   X,
   Search,
   ChevronLeft,
-  Building2,
-  User,
   ShoppingCart,
   Truck,
-  FileText,
   AlertTriangle,
   Tag,
   Lock,
   Clock,
   ChevronDown,
-  ChevronUp,
   Save,
   Info,
 } from "lucide-react";
@@ -38,7 +34,8 @@ import {
   useLivreurs,
   usePreparateurs,
 } from "../hooks/useCommands";
-import { MODE_REGLEMENT_OPTIONS } from "../api/commands.api";
+import { MODE_REGLEMENT_OPTIONS, MODES_WITH_BANQUE } from "../api/commands.api";
+import { useBanques } from "../../../reglement/hooks/useReglementClient";
 
 import { Input } from "../../../../shared/components/Input";
 import { SelectDropDown } from "../../../../shared/components/SelectDropDown";
@@ -51,6 +48,7 @@ import { SuccessOverlay } from "../../../../shared/components/animations/Success
 import { ConfirmationModal } from "../../../../shared/components/ConfirmationModal";
 import { SectionLoader } from "../../../../shared/components/loadersCollections/SectionLoader";
 import { CitySearchDropdown } from "../components/CitySearchDropdown";
+import { OrderSection, FactureToggle } from "../components/OrderSection";
 
 /* ─── Constants ─── */
 const BRAND = "#B12B89";
@@ -109,10 +107,10 @@ const LinesTable = ({ lines, onUpdateLine, onRemoveLine, locked = false }) => {
   const { t } = useTranslation("commands");
   if (lines.length === 0) return null;
   return (
-    <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800 mt-4">
+    <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-[#2e2e2e] mt-4">
       <table className="w-full">
         <thead>
-          <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+          <tr className="bg-slate-50 dark:bg-[#222222]/50 border-b border-slate-200 dark:border-[#2e2e2e]">
             <th className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("table_col_article")}</th>
             <th className="px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("table_col_qty")}</th>
             <th className="px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("table_col_unit_price")}</th>
@@ -120,9 +118,9 @@ const LinesTable = ({ lines, onUpdateLine, onRemoveLine, locked = false }) => {
             {!locked && <th className="px-4 py-3 w-10" />}
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+        <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
           {lines.map((line, idx) => (
-            <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition">
+            <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-[#222222]/20 transition">
               <td className="px-4 py-3">
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{line.name}</p>
                 <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${line.type === "VARIANT" ? "bg-purple-50 dark:bg-purple-900/20 text-purple-500" : "bg-blue-50 dark:bg-blue-900/20 text-blue-500"}`}>
@@ -135,7 +133,7 @@ const LinesTable = ({ lines, onUpdateLine, onRemoveLine, locked = false }) => {
                 ) : (
                   <input type="number" min={1} value={line.quantity}
                     onChange={(e) => onUpdateLine(idx, "quantity", Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-16 px-2 py-1.5 border border-slate-200 dark:border-slate-700 rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-slate-800 dark:text-slate-100" />
+                    className="w-16 px-2 py-1.5 border border-slate-200 dark:border-[#2e2e2e] rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-[#222222] dark:text-slate-100" />
                 )}
               </td>
               <td className="px-4 py-3 text-center">
@@ -144,7 +142,7 @@ const LinesTable = ({ lines, onUpdateLine, onRemoveLine, locked = false }) => {
                 ) : (
                   <input type="number" min={0} step={0.01} value={line.unitPrice}
                     onChange={(e) => onUpdateLine(idx, "unitPrice", parseFloat(e.target.value) || 0)}
-                    className="w-24 px-2 py-1.5 border border-slate-200 dark:border-slate-700 rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-slate-800 dark:text-slate-100" />
+                    className="w-24 px-2 py-1.5 border border-slate-200 dark:border-[#2e2e2e] rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-[#222222] dark:text-slate-100" />
                 )}
               </td>
               <td className="px-4 py-3 text-center">
@@ -171,10 +169,10 @@ const PacksTable = ({ packs, onUpdatePack, onRemovePack, locked = false }) => {
   const { t } = useTranslation("commands");
   if (packs.length === 0) return null;
   return (
-    <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800 mt-4">
+    <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-[#2e2e2e] mt-4">
       <table className="w-full">
         <thead>
-          <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+          <tr className="bg-slate-50 dark:bg-[#222222]/50 border-b border-slate-200 dark:border-[#2e2e2e]">
             <th className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("table_col_pack")}</th>
             <th className="px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("table_col_qty")}</th>
             <th className="px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("table_col_sale_price")}</th>
@@ -182,9 +180,9 @@ const PacksTable = ({ packs, onUpdatePack, onRemovePack, locked = false }) => {
             {!locked && <th className="px-4 py-3 w-10" />}
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+        <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
           {packs.map((pack, idx) => (
-            <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition">
+            <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-[#222222]/20 transition">
               <td className="px-4 py-3">
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{pack.name}</p>
                 <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-900/20 text-amber-500">PACK</span>
@@ -195,7 +193,7 @@ const PacksTable = ({ packs, onUpdatePack, onRemovePack, locked = false }) => {
                 ) : (
                   <input type="number" min={1} value={pack.quantity}
                     onChange={(e) => onUpdatePack(idx, "quantity", Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-16 px-2 py-1.5 border border-slate-200 dark:border-slate-700 rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-slate-800 dark:text-slate-100" />
+                    className="w-16 px-2 py-1.5 border border-slate-200 dark:border-[#2e2e2e] rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-[#222222] dark:text-slate-100" />
                 )}
               </td>
               <td className="px-4 py-3 text-center">
@@ -204,7 +202,7 @@ const PacksTable = ({ packs, onUpdatePack, onRemovePack, locked = false }) => {
                 ) : (
                   <input type="number" min={0} step={0.01} value={pack.prixVente}
                     onChange={(e) => onUpdatePack(idx, "prixVente", parseFloat(e.target.value) || 0)}
-                    className="w-24 px-2 py-1.5 border border-slate-200 dark:border-slate-700 rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-slate-800 dark:text-slate-100" />
+                    className="w-24 px-2 py-1.5 border border-slate-200 dark:border-[#2e2e2e] rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-[#222222] dark:text-slate-100" />
                 )}
               </td>
               <td className="px-4 py-3 text-center">
@@ -284,7 +282,8 @@ const ProductPickerModal = ({ depotId, onClose, onConfirm, alreadyLines, already
     } else {
       setPendingProducts((prev) => [...prev, {
         _key: key, variantId: p.variantId ?? null, articleId: p.articleId ?? null,
-        name: p.name, quantity: 1, unitPrice: p.prixVente, priceField, stock: p.stock, type: p.type,
+        name: p.name, quantity: 1, unitPrice: p.prixVente, priceField,
+        commission: Number(p.commission || 0), stock: p.stock, type: p.type,
       }]);
     }
   };
@@ -292,7 +291,7 @@ const ProductPickerModal = ({ depotId, onClose, onConfirm, alreadyLines, already
   const togglePack = (p) => {
     if (alreadyPackIds.has(p.id)) return;
     if (isPackPending(p)) setPendingPacks((prev) => prev.filter((x) => x.id !== p.id));
-    else setPendingPacks((prev) => [...prev, { id: p.id, name: p.name, quantity: 1, prixVente: p.prixVentePack }]);
+    else setPendingPacks((prev) => [...prev, { id: p.id, name: p.name, quantity: 1, prixVente: p.prixVentePack, commission: Number(p.commission || 0) }]);
   };
 
   const handleConfirm = () => { onConfirm(pendingProducts, pendingPacks); onClose(); };
@@ -300,20 +299,20 @@ const ProductPickerModal = ({ depotId, onClose, onConfirm, alreadyLines, already
 
   return (
     <div className="fixed inset-0 modal-backdrop flex items-center justify-center z-50 p-4" onClick={onClose}>
-      <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col shadow-2xl" onClick={(e) => e.stopPropagation()}>
-        <div className="px-8 py-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+      <div className="bg-white dark:bg-[#1c1c1c] rounded-lg border border-slate-200 dark:border-[#2e2e2e] max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="px-8 py-6 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between">
           <div>
             <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">{t("picker_title")}</h2>
             <p className="text-[10px] text-slate-400 mt-0.5">
               {totalSelected > 0 && <span className="text-blue-500 font-semibold">{t("picker_subtitle_selected", { count: totalSelected })}</span>}
             </p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition">
+          <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-md transition">
             <X size={18} className="text-slate-500" />
           </button>
         </div>
 
-        <div className="px-8 pt-4 pb-0 flex gap-2 border-b border-slate-100 dark:border-slate-800">
+        <div className="px-8 pt-4 pb-0 flex gap-2 border-b border-slate-100 dark:border-[#2e2e2e]">
           {["products", "packs"].map((tabKey) => (
             <button key={tabKey} type="button"
               onClick={() => { setTab(tabKey); setPage(1); setSearch(""); setDebouncedSearch(""); }}
@@ -325,12 +324,12 @@ const ProductPickerModal = ({ depotId, onClose, onConfirm, alreadyLines, already
         </div>
 
         {tab === "products" && (
-          <div className="px-8 py-4 border-b border-slate-100 dark:border-slate-800 space-y-3">
+          <div className="px-8 py-4 border-b border-slate-100 dark:border-[#2e2e2e] space-y-3">
             <div className="relative">
               <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
               <input type="text" placeholder={t("picker_search_article")} value={search}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="w-full pl-10 pr-4 h-10 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-sm focus:ring-2 focus:ring-[#B12B89] outline-none transition dark:text-slate-100"
+                className="w-full pl-10 pr-4 h-10 bg-slate-50 dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-md text-sm focus:ring-2 focus:ring-[#B12B89] outline-none transition dark:text-slate-100"
                 autoFocus />
             </div>
             <PriceFieldDropDown
@@ -350,30 +349,30 @@ const ProductPickerModal = ({ depotId, onClose, onConfirm, alreadyLines, already
             ) : (
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50">
+                  <tr className="border-b border-slate-100 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/50">
                     <th className="w-10 px-4 py-3" />
                     <th className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("picker_col_article")}</th>
                     <th className="px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("picker_col_price")}</th>
                     <th className="px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("picker_col_stock")}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+                <tbody className="divide-y divide-slate-50 dark:divide-[#2e2e2e]">
                   {products.map((p) => {
                     const key = `${p.type}-${p.variantId ?? p.id}`;
                     const disabled = alreadyProductKeys.has(key);
                     const pending = isProductPending(p);
                     return (
                       <tr key={key} onClick={() => toggleProduct(p)}
-                        className={`transition-colors ${disabled ? "opacity-40 cursor-not-allowed" : pending ? "bg-blue-50/60 dark:bg-blue-900/10 cursor-pointer" : "hover:bg-slate-50 dark:hover:bg-slate-800/30 cursor-pointer"}`}>
+                        className={`transition-colors ${disabled ? "opacity-40 cursor-not-allowed" : pending ? "bg-blue-50/60 dark:bg-blue-900/10 cursor-pointer" : "hover:bg-slate-50 dark:hover:bg-[#222222]/30 cursor-pointer"}`}>
                         <td className="px-4 py-3 text-center">
-                          <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center mx-auto transition-all ${pending ? "bg-[#B12B89] border-[#B12B89]" : "border-slate-300 dark:border-slate-600"}`}>
+                          <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center mx-auto transition-all ${pending ? "bg-[#B12B89] border-[#B12B89]" : "border-slate-300 dark:border-[#3a3a3a]"}`}>
                             {pending && <Check size={11} className="text-white" strokeWidth={3} />}
                           </div>
                         </td>
                         <td className="px-4 py-3.5">
                           <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                             {p.name}
-                            {disabled && <span className="ml-2 text-[9px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">{t("picker_already_added")}</span>}
+                            {disabled && <span className="ml-2 text-[9px] font-bold text-slate-400 bg-slate-100 dark:bg-[#2e2e2e] px-1.5 py-0.5 rounded">{t("picker_already_added")}</span>}
                           </p>
                           <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${p.type === "VARIANT" ? "bg-purple-50 dark:bg-purple-900/20 text-purple-500" : "bg-blue-50 dark:bg-blue-900/20 text-blue-500"}`}>
                             {p.type}
@@ -404,13 +403,13 @@ const ProductPickerModal = ({ depotId, onClose, onConfirm, alreadyLines, already
                 const pending = isPackPending(p);
                 return (
                   <button key={p.id} type="button" onClick={() => togglePack(p)} disabled={disabled}
-                    className={`text-left p-4 rounded-lg border-2 transition-all ${disabled ? "opacity-40 cursor-not-allowed border-slate-200 dark:border-slate-700" : pending ? "border-[#B12B89] bg-blue-50/60 dark:bg-blue-900/10" : "border-slate-200 dark:border-slate-700 hover:border-blue-300 hover:bg-slate-50 dark:hover:bg-slate-800/50"}`}>
+                    className={`text-left p-4 rounded-lg border-2 transition-all ${disabled ? "opacity-40 cursor-not-allowed border-slate-200 dark:border-[#2e2e2e]" : pending ? "border-[#B12B89] bg-blue-50/60 dark:bg-blue-900/10" : "border-slate-200 dark:border-[#2e2e2e] hover:border-blue-300 hover:bg-slate-50 dark:hover:bg-[#222222]/50"}`}>
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <p className="text-sm font-bold text-slate-800 dark:text-slate-100">{p.name}</p>
                         <p className="text-xs font-semibold text-blue-500 mt-1">{fmt(p.prixVentePack)} MAD</p>
                       </div>
-                      <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${pending ? "bg-[#B12B89] border-[#B12B89]" : "border-slate-300 dark:border-slate-600"}`}>
+                      <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${pending ? "bg-[#B12B89] border-[#B12B89]" : "border-slate-300 dark:border-[#3a3a3a]"}`}>
                         {pending && <Check size={11} className="text-white" strokeWidth={3} />}
                       </div>
                     </div>
@@ -422,22 +421,22 @@ const ProductPickerModal = ({ depotId, onClose, onConfirm, alreadyLines, already
         </div>
 
         {tab === "products" && totalPages > 1 && (
-          <div className="px-8 py-3 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2 justify-center">
+          <div className="px-8 py-3 border-t border-slate-100 dark:border-[#2e2e2e] flex items-center gap-2 justify-center">
             <button onClick={() => setPage((p) => p - 1)} disabled={page === 1}
-              className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40 transition">
+              className="p-2 rounded-lg border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] disabled:opacity-40 transition">
               <ChevronLeft size={14} className="text-slate-600 dark:text-slate-300" />
             </button>
             <span className="text-xs text-slate-500 tabular-nums">{page} / {totalPages}</span>
             <button onClick={() => setPage((p) => p + 1)} disabled={page >= totalPages}
-              className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40 transition">
+              className="p-2 rounded-lg border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] disabled:opacity-40 transition">
               <ChevronLeft size={14} className="text-slate-600 dark:text-slate-300 rotate-180" />
             </button>
           </div>
         )}
 
-        <div className="px-8 py-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-3">
+        <div className="px-8 py-4 border-t border-slate-100 dark:border-[#2e2e2e] flex items-center justify-end gap-3">
           <button type="button" onClick={onClose}
-            className="px-4 h-10 rounded-md border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            className="px-4 h-10 rounded-md border border-slate-300 dark:border-[#2e2e2e] text-slate-700 dark:text-slate-200 text-sm font-medium hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors">
             {t("picker_cancel")}
           </button>
           <button type="button" onClick={handleConfirm} disabled={totalSelected === 0}
@@ -468,7 +467,6 @@ export const AdvancedBonLivraisonEditForm = () => {
   const [packLines, setPackLines] = useState([]);
   const [livreurType, setLivreurType] = useState("intern");
   const [showHeureInput, setShowHeureInput] = useState(false);
-  const [showFacture, setShowFacture] = useState(false);
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
@@ -504,11 +502,13 @@ export const AdvancedBonLivraisonEditForm = () => {
       sameAsPhone: command.telephone === command.whatsapp && !!command.telephone,
       ville: command.ville ?? "",
       localisation: command.localisation ?? "",
+      withFacture: command.withFacture === true || !!(command.ice || command.raisonSocial || command.siegeSocial),
       nombreDeColis: String(command.nombreDeColis ?? ""),
       ice: command.ice ?? "",
       raisonSocial: command.raisonSocial ?? "",
       siegeSocial: command.siegeSocial ?? "",
       modeReglement: command.modeReglement ?? "VIREMENT",
+      banqueId: command.banqueId ? String(command.banqueId) : "",
       montantPaid: doc.amountPaid && Number(doc.amountPaid) > 0 ? String(doc.amountPaid) : "",
       livreurId: String(command.livreurId ?? ""),
       preparateurId: String(command.preparateurId ?? ""),
@@ -523,8 +523,6 @@ export const AdvancedBonLivraisonEditForm = () => {
     // Show heure input if there's a value
     if (command.heureLivraison) setShowHeureInput(true);
 
-    // Show facture section if data exists
-    if (command.ice || command.raisonSocial || command.siegeSocial) setShowFacture(true);
 
     // Map document lines → our local line format
     const mappedLines = (doc.lines ?? []).map((l) => ({
@@ -534,6 +532,7 @@ export const AdvancedBonLivraisonEditForm = () => {
       name: l.description ?? l.variant?.name ?? l.article?.name ?? "Article",
       quantity: Number(l.quantity),
       unitPrice: Number(l.unitPrice),
+      commission: Number(l.commission || 0),
       priceField: l.priceField ?? "prixVente1",
       type: l.variantId ? "VARIANT" : "ARTICLE",
     }));
@@ -545,6 +544,7 @@ export const AdvancedBonLivraisonEditForm = () => {
       name: p.pack?.name ?? p.name ?? "Pack",
       quantity: Number(p.quantity),
       prixVente: Number(p.prixVente),
+      commission: Number(p.commission || 0),
     }));
     setPackLines(mappedPacks);
 
@@ -569,6 +569,9 @@ export const AdvancedBonLivraisonEditForm = () => {
   });
   const livreurs = livreursData?.data ?? [];
   const preparateurs = preparateursData?.data ?? [];
+  const { data: banquesData, isLoading: banquesLoading } = useBanques();
+  const banques = banquesData?.data ?? [];
+  const needsBanque = MODES_WITH_BANQUE.includes(form?.modeReglement);
 
   const isMoroccoPhone = (val) => /^0[67]\d{8}$/.test(val.replace(/\s/g, ""));
   const getVilleValue = (ville) => (typeof ville === "object" ? ville?.name ?? "" : ville ?? "");
@@ -595,12 +598,23 @@ export const AdvancedBonLivraisonEditForm = () => {
       setForm((prev) => ({ ...prev, telephone: value, whatsapp: value }));
       return;
     }
+    if (name === "modeReglement") {
+      setForm((prev) => ({
+        ...prev,
+        modeReglement: value,
+        banqueId: MODES_WITH_BANQUE.includes(value) ? prev.banqueId : "",
+      }));
+      return;
+    }
     setForm((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
   };
 
   const totalLines = lines.reduce((s, l) => s + l.quantity * l.unitPrice, 0);
   const totalPacks = packLines.reduce((s, p) => s + p.quantity * p.prixVente, 0);
   const totalCommande = totalLines + totalPacks;
+  const totalCommission =
+    lines.reduce((s, l) => s + l.quantity * Number(l.commission || 0), 0) +
+    packLines.reduce((s, p) => s + p.quantity * Number(p.commission || 0), 0);
 
   const handlePickerConfirm = (newProducts, newPacks) => {
     setLines((prev) => {
@@ -632,9 +646,10 @@ export const AdvancedBonLivraisonEditForm = () => {
       !!form.agenceId && !!form.depotId && !!form.dateLivraison &&
       (lines.length + packLines.length) > 0 &&
       !!form.modeReglement &&
+      (!needsBanque || !!form.banqueId) &&
       !!form.livreurId && !!form.preparateurId
     );
-  }, [form, lines, packLines, isRestricted]);
+  }, [form, lines, packLines, isRestricted, needsBanque]);
 
   const handleSubmit = async () => {
     let payload;
@@ -648,13 +663,19 @@ export const AdvancedBonLivraisonEditForm = () => {
         agenceId: Number(form.agenceId),
         telephone: form.telephone,
         whatsapp: form.whatsapp || undefined,
-        ville: form.ville,
+        ville: typeof form.ville === "object" ? form.ville?.name : form.ville,
         localisation: form.localisation || undefined,
-        raisonSocial: form.raisonSocial.trim() || undefined,
-        ice: form.ice.trim() || undefined,
-        siegeSocial: form.siegeSocial.trim() || undefined,
+        withFacture: !!form.withFacture,
+        ...(form.withFacture
+          ? {
+              raisonSocial: form.raisonSocial.trim() || undefined,
+              ice: form.ice.trim() || undefined,
+              siegeSocial: form.siegeSocial.trim() || undefined,
+            }
+          : {}),
         nombreDeColis: Number(form.nombreDeColis),
         modeReglement: form.modeReglement,
+        banqueId: form.banqueId ? Number(form.banqueId) : undefined,
         observation: form.observation.trim() || undefined,
         livreurId: Number(form.livreurId),
         preparateurId: Number(form.preparateurId),
@@ -668,10 +689,12 @@ export const AdvancedBonLivraisonEditForm = () => {
         agenceId: Number(form.agenceId),
         telephone: form.telephone,
         whatsapp: form.whatsapp || undefined,
-        ville: form.ville,
+        ville: typeof form.ville === "object" ? form.ville?.name : form.ville,
         localisation: form.localisation || undefined,
+        withFacture: !!form.withFacture,
         nombreDeColis: Number(form.nombreDeColis),
         modeReglement: form.modeReglement,
+        banqueId: form.banqueId ? Number(form.banqueId) : undefined,
         observation: form.observation.trim() || undefined,
         livreurId: Number(form.livreurId),
         preparateurId: Number(form.preparateurId),
@@ -686,9 +709,11 @@ export const AdvancedBonLivraisonEditForm = () => {
         packLines: packLines.map((p) => ({ id: p.id, quantity: p.quantity, prixVente: p.prixVente })),
       };
       if (form.heureLivraison) payload.heureLivraison = form.heureLivraison;
-      if (form.ice.trim()) payload.ice = form.ice.trim();
-      if (form.raisonSocial.trim()) payload.raisonSocial = form.raisonSocial.trim();
-      if (form.siegeSocial.trim()) payload.siegeSocial = form.siegeSocial.trim();
+      if (form.withFacture) {
+        if (form.ice.trim()) payload.ice = form.ice.trim();
+        if (form.raisonSocial.trim()) payload.raisonSocial = form.raisonSocial.trim();
+        if (form.siegeSocial.trim()) payload.siegeSocial = form.siegeSocial.trim();
+      }
     }
 
     updateMutation.mutate({ id: Number(id), payload }, {
@@ -732,12 +757,12 @@ export const AdvancedBonLivraisonEditForm = () => {
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">{t("edit_number")}</p>
               <p className="text-base font-black text-slate-800 dark:text-slate-100">{documentNumber}</p>
             </div>
-            <div className="w-px h-8 bg-slate-200 dark:bg-slate-700" />
+            <div className="w-px h-8 bg-slate-200 dark:bg-[#2e2e2e]" />
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">{t("edit_status")}</p>
               <StatusBadge status={command.commandStatus} />
             </div>
-            <div className="w-px h-8 bg-slate-200 dark:bg-slate-700" />
+            <div className="w-px h-8 bg-slate-200 dark:bg-[#2e2e2e]" />
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">{t("edit_created_at")}</p>
               <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
@@ -759,7 +784,7 @@ export const AdvancedBonLivraisonEditForm = () => {
         {/* ─────────────────────────────────────────
             SECTION 1 — Agence & Livraison
         ───────────────────────────────────────── */}
-        <FormCard title={t("card_agency_delivery")} icon={<Building2 />}>
+        <OrderSection title={t("card_agency_delivery")}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <SelectDropDown
               label={t("form_agence")}
@@ -793,13 +818,13 @@ export const AdvancedBonLivraisonEditForm = () => {
               </label>
               {!showHeureInput ? (
                 <button type="button" onClick={() => setShowHeureInput(true)}
-                  className="flex items-center gap-2 h-10 px-4 rounded-md border-2 border-dashed border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-400 dark:text-slate-500 hover:border-blue-300 hover:text-blue-500 transition-all w-full">
+                  className="flex items-center gap-2 h-10 px-4 rounded-md border-2 border-dashed border-slate-200 dark:border-[#2e2e2e] text-sm font-medium text-slate-400 dark:text-slate-500 hover:border-blue-300 hover:text-blue-500 transition-all w-full">
                   <Clock size={15} /> {t("form_add_heure")}
                 </button>
               ) : (
                 <div className="relative">
                   <input type="time" name="heureLivraison" value={form.heureLivraison} onChange={handleChange} autoFocus
-                    className="w-full h-10 px-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-sm font-semibold text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-[#B12B89] outline-none transition pr-10" />
+                    className="w-full h-10 px-4 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-md text-sm font-semibold text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-[#B12B89] outline-none transition pr-10" />
                   <button type="button" onClick={() => { setShowHeureInput(false); set("heureLivraison", ""); }}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-400 transition">
                     <X size={14} />
@@ -808,12 +833,12 @@ export const AdvancedBonLivraisonEditForm = () => {
               )}
             </div>
           </div>
-        </FormCard>
+        </OrderSection>
 
         {/* ─────────────────────────────────────────
             SECTION 2 — Informations client
         ───────────────────────────────────────── */}
-        <FormCard title={t("card_client_info")} icon={<User />}>
+        <OrderSection title={t("card_client_info")}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <Input label={t("form_client_name")} name="clientName" value={form.clientName} onChange={handleChange} placeholder={t("form_client_name_placeholder")} />
             <Input
@@ -821,7 +846,6 @@ export const AdvancedBonLivraisonEditForm = () => {
               placeholder="0612345678"
               error={form.telephone && !isMoroccoPhone(form.telephone) ? t("form_telephone_error") : undefined}
             />
-            {/* WhatsApp with toggle */}
             <div className="flex flex-col">
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 ml-1">WhatsApp</label>
@@ -829,7 +853,7 @@ export const AdvancedBonLivraisonEditForm = () => {
                   <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 group-hover:text-slate-600 transition">{t("form_same_as_phone")}</span>
                   <div className="relative">
                     <input type="checkbox" name="sameAsPhone" checked={form.sameAsPhone} onChange={handleChange} className="sr-only peer" />
-                    <div className="w-9 h-5 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:bg-[#B12B89] transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:w-4 after:h-4 after:transition-all peer-checked:after:translate-x-4 shadow-inner" />
+                    <div className="w-9 h-5 bg-slate-200 dark:bg-[#2e2e2e] rounded-full peer peer-checked:bg-[#B12B89] transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:w-4 after:h-4 after:transition-all peer-checked:after:translate-x-4 shadow-inner" />
                   </div>
                 </label>
               </div>
@@ -838,6 +862,11 @@ export const AdvancedBonLivraisonEditForm = () => {
                 error={form.whatsapp && !form.sameAsPhone && !isMoroccoPhone(form.whatsapp) ? t("form_whatsapp_error") : undefined}
               />
             </div>
+          </div>
+        </OrderSection>
+
+        <OrderSection title={t("card_delivery_address")}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <CitySearchDropdown
               label={t("form_city")}
               value={form.ville}
@@ -848,40 +877,31 @@ export const AdvancedBonLivraisonEditForm = () => {
             <Input label={t("form_localisation")} name="localisation" value={form.localisation} onChange={handleChange} placeholder={t("form_localisation_placeholder")} />
             <Input label={t("form_nb_colis_req")} name="nombreDeColis" type="number" value={form.nombreDeColis} onChange={handleChange} placeholder="5" />
           </div>
-        </FormCard>
+        </OrderSection>
 
-        {/* Détails de facture collapsible */}
-        <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-          <button type="button" onClick={() => setShowFacture((v) => !v)}
-            className="w-full px-7 py-5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition group">
-            <div className="flex items-center gap-3">
-              <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${showFacture ? "bg-[#B12B89] text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500"}`}>
-                {showFacture ? <ChevronUp size={14} /> : <Plus size={14} />}
-              </div>
-              <div className="text-left">
-                <span className="font-bold text-[11px] uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">{t("confirm_section_facture")}</span>
-                <span className="ml-2 text-[10px] text-slate-300 dark:text-slate-600">{t("form_facture_optional")}</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              {(form.ice || form.raisonSocial) && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-500">{t("form_facture_filled")}</span>
-              )}
-              <FileText size={15} className="text-slate-300 dark:text-slate-600" />
-            </div>
-          </button>
-          {showFacture && (
-            <div className="px-7 pb-7 pt-6 border-t border-slate-100 dark:border-slate-800">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <Input label={t("confirm_row_ice")} name="ice" value={form.ice} onChange={handleChange} placeholder="001234567890123" />
-                <Input label={t("confirm_row_raison_sociale")} name="raisonSocial" value={form.raisonSocial} onChange={handleChange} placeholder={t("form_raison_sociale_placeholder")} />
-                <div className="sm:col-span-2">
-                  <Input label={t("confirm_row_siege_social")} name="siegeSocial" value={form.siegeSocial} onChange={handleChange} placeholder={t("form_siege_social_placeholder")} />
-                </div>
+        <OrderSection
+          title={t("form_invoice_title")}
+          action={
+            <FactureToggle
+              value={!!form.withFacture}
+              onChange={(checked) => set("withFacture", checked)}
+              withLabel={t("form_with_facture")}
+              withoutLabel={t("form_sans_facture")}
+            />
+          }
+        >
+          {form.withFacture ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <Input label={t("confirm_row_ice")} name="ice" value={form.ice} onChange={handleChange} placeholder="001234567890123" />
+              <Input label={t("confirm_row_raison_sociale")} name="raisonSocial" value={form.raisonSocial} onChange={handleChange} placeholder={t("form_raison_sociale_placeholder")} />
+              <div className="sm:col-span-2">
+                <Input label={t("confirm_row_siege_social")} name="siegeSocial" value={form.siegeSocial} onChange={handleChange} placeholder={t("form_siege_social_placeholder")} />
               </div>
             </div>
+          ) : (
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t("form_sans_facture_hint")}</p>
           )}
-        </div>
+        </OrderSection>
 
         {/* ─────────────────────────────────────────
             SECTION 3 — Articles & Règlement
@@ -890,7 +910,7 @@ export const AdvancedBonLivraisonEditForm = () => {
           title={t("card_articles_packs")}
           icon={<ShoppingCart />}
           action={isRestricted ? (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[#222222]">
               <Lock size={10} className="text-slate-400" />
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("edit_locked")}</span>
             </div>
@@ -938,14 +958,14 @@ export const AdvancedBonLivraisonEditForm = () => {
         <FormCard
           title={t("card_amount_reglement")}
           action={isRestricted ? (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[#222222]">
               <Lock size={10} className="text-slate-400" />
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t("edit_locked")}</span>
             </div>
           ) : null}
           bodyClassName={isRestricted ? "opacity-60 pointer-events-none select-none" : ""}
         >
-          <div className="flex items-center justify-between p-5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 mb-6">
+          <div className="flex items-center justify-between p-5 rounded-lg bg-slate-50 dark:bg-[#222222]/50 border border-slate-200 dark:border-[#2e2e2e] mb-6">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{t("confirm_financial_total")}</p>
               <p className="text-2xl font-black text-slate-800 dark:text-slate-100 mt-0.5">{fmt(totalCommande)} MAD</p>
@@ -953,6 +973,7 @@ export const AdvancedBonLivraisonEditForm = () => {
             <div className="text-right text-xs text-slate-400 space-y-1">
               <p>{t("form_articles_amount", { amount: fmt(totalLines) })}</p>
               <p>{t("form_packs_amount", { amount: fmt(totalPacks) })}</p>
+              <p>{t("form_commission_amount", { amount: fmt(totalCommission) })}</p>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -967,6 +988,28 @@ export const AdvancedBonLivraisonEditForm = () => {
             <Input label={t("form_montant_regle")} name="montantPaid" type="number" value={form.montantPaid}
               onChange={handleChange} placeholder="0.00" disabled={isRestricted} />
           </div>
+          {needsBanque && (
+            <div className="mt-6">
+              <SelectDropDown
+                label={t("form_banque")}
+                name="banqueId"
+                value={form.banqueId}
+                options={banques.map((b) => ({
+                  value: b.id,
+                  label: b.name,
+                  subLabel: b.RIB,
+                }))}
+                isLoading={banquesLoading}
+                onChange={handleChange}
+                placeholder={t("form_select_banque")}
+                disabled={isRestricted}
+                required
+              />
+              <p className="mt-2 text-[11px] font-medium text-sky-600 dark:text-sky-400">
+                {t("form_banque_hint")}
+              </p>
+            </div>
+          )}
         </FormCard>
 
         {/* ─────────────────────────────────────────
@@ -977,7 +1020,7 @@ export const AdvancedBonLivraisonEditForm = () => {
             {["intern", "extern"].map((ltype) => (
               <button key={ltype} type="button"
                 onClick={() => { setLivreurType(ltype); set("livreurId", ""); }}
-                className={`px-4 h-10 rounded-md text-xs font-semibold border transition-all ${livreurType === ltype ? "border-[#B12B89] text-[#B12B89] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20" : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-slate-300"}`}>
+                className={`px-4 h-10 rounded-md text-xs font-semibold border transition-all ${livreurType === ltype ? "border-[#B12B89] text-[#B12B89] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20" : "border-slate-200 dark:border-[#2e2e2e] text-slate-500 dark:text-slate-400 hover:border-slate-300"}`}>
                 {ltype === "intern" ? t("form_livreur_intern") : t("form_livreur_extern")}
               </button>
             ))}
@@ -1008,7 +1051,7 @@ export const AdvancedBonLivraisonEditForm = () => {
               </label>
               <textarea name="observation" value={form.observation} onChange={handleChange} rows={3}
                 placeholder={t("form_observation_placeholder")}
-                className="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-[#B12B89] outline-none transition resize-none" />
+                className="w-full px-4 py-3 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-md text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-[#B12B89] outline-none transition resize-none" />
             </div>
           </div>
         </FormCard>
@@ -1020,7 +1063,7 @@ export const AdvancedBonLivraisonEditForm = () => {
               if (isDirty) setPendingBack(true);
               else { savingRef.current = true; navigate("/commandes"); }
             }}
-            className="inline-flex items-center justify-center gap-2 px-4 h-10 rounded-md border border-slate-300 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+            className="inline-flex items-center justify-center gap-2 px-4 h-10 rounded-md border border-slate-300 dark:border-[#2e2e2e] text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors"
           >
             <ChevronLeft size={15} /> {t("edit_cancel")}
           </button>

@@ -98,6 +98,7 @@ export const create = async (data, societeId, user) => {
     tauxMarge,
     montantVenteArticles,
     remise = 0,
+    commission = 0,
   } = data;
 
   if (user.isSuperAdmin && !societeId) {
@@ -282,6 +283,7 @@ export const create = async (data, societeId, user) => {
       montantVenteArticles: strategy === "discount" ? serverMontantVente : 0,
       remise: finalRemise,
       prixVentePack: computedPrixVentePack,
+      commission: parseFloat(commission) || 0,
       components: {
         create: components.map((c) => ({
           articleId: c.articleId || null,
@@ -317,6 +319,7 @@ export const update = async (id, data, societeId, user) => {
     tauxMarge,
     montantVenteArticles,
     remise,
+    commission,
   } = data;
 
   // ── Barcode uniqueness ──────────────────────────────────────────
@@ -561,6 +564,9 @@ export const update = async (id, data, societeId, user) => {
         ...(barcode && { barcode }),
         ...(name && { name }),
         ...(active !== undefined && { active }),
+        ...(commission !== undefined && {
+          commission: parseFloat(commission) || 0,
+        }),
         purchasePrice: serverCoutRevient,
         coutRevient: updateStrategy === "cost" ? serverCoutRevient : 0,
         tauxMarge: finalTauxMarge,

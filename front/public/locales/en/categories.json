@@ -27,6 +27,10 @@
   "category_image": "Category Image",
   "visibility_description": "Show category in point of sale",
   "save_category": "Save Category",
+  "quick_add": "Add",
+  "quick_create_title": "New category",
+  "quick_create_subtitle": "Create a category and select it",
+  "quick_created": "Category created",
   "saving": "Saving...",
   "upload_image": "Upload Image",
   "validation": {

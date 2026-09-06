@@ -26,10 +26,10 @@ const Checkbox = ({ checked, onChange, disabled = false }) => (
     disabled={disabled}
     className={`flex-shrink-0 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
       disabled
-        ? "bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 cursor-not-allowed opacity-40"
+        ? "bg-slate-100 dark:bg-[#2e2e2e] border-slate-200 dark:border-[#3a3a3a] cursor-not-allowed opacity-40"
         : checked
         ? "bg-[#B12B89] border-[#B12B89]"
-        : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 hover:border-blue-400"
+        : "bg-white dark:bg-[#222222] border-slate-300 dark:border-[#3a3a3a] hover:border-blue-400"
     }`}
   >
     {checked && !disabled && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
@@ -134,6 +134,7 @@ export const ProductPickerModal = ({
           quantity: 1,
           unitPrice: p.prixVente,
           priceField,
+          commission: Number(p.commission || 0),
           stock: p.stock,
           type: p.type,
         },
@@ -146,7 +147,16 @@ export const ProductPickerModal = ({
     if (isPackPending(p)) {
       setPendingPacks((prev) => prev.filter((x) => x.id !== p.id));
     } else {
-      setPendingPacks((prev) => [...prev, { id: p.id, name: p.name, quantity: 1, prixVente: p.prixVentePack }]);
+      setPendingPacks((prev) => [
+        ...prev,
+        {
+          id: p.id,
+          name: p.name,
+          quantity: 1,
+          prixVente: p.prixVentePack,
+          commission: Number(p.commission || 0),
+        },
+      ]);
     }
   };
 
@@ -172,7 +182,7 @@ export const ProductPickerModal = ({
       maxWidth="max-w-2xl"
       bodyClassName="flex flex-col overflow-hidden p-0 min-h-0"
       subHeader={
-        <div className="flex gap-1 border-b border-slate-200 dark:border-slate-800 -mx-6 px-6 pb-0">
+        <div className="flex gap-1 border-b border-slate-200 dark:border-[#2e2e2e] -mx-6 px-6 pb-0">
           {["products", "packs"].map((tabKey) => (
             <button key={tabKey} type="button"
               onClick={() => { setTab(tabKey); setPage(1); setSearch(""); setDebouncedSearch(""); }}
@@ -192,19 +202,19 @@ export const ProductPickerModal = ({
           {tab === "products" && totalPages > 1 ? (
             <div className="flex items-center gap-2">
               <button onClick={() => setPage((p) => p - 1)} disabled={page === 1}
-                className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40 transition">
+                className="p-2 rounded-lg border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] disabled:opacity-40 transition">
                 <ChevronLeft size={14} className="text-slate-600 dark:text-slate-300" />
               </button>
               <span className="text-xs text-slate-500 tabular-nums min-w-[64px] text-center">{page} / {totalPages}</span>
               <button onClick={() => setPage((p) => p + 1)} disabled={page >= totalPages}
-                className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40 transition">
+                className="p-2 rounded-lg border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] disabled:opacity-40 transition">
                 <ChevronRight size={14} className="text-slate-600 dark:text-slate-300" />
               </button>
             </div>
           ) : <div />}
           <div className="flex items-center gap-3">
             <button type="button" onClick={onClose}
-              className="px-4 py-2.5 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+              className="px-4 py-2.5 border border-slate-200 dark:border-[#2e2e2e] text-slate-600 dark:text-slate-300 rounded-xl text-sm font-semibold hover:bg-slate-50 dark:hover:bg-[#222222] transition">
               {t("picker_cancel")}
             </button>
             <button type="button" onClick={handleConfirm} disabled={totalSelected === 0 || isCheckingPacks}
@@ -221,7 +231,7 @@ export const ProductPickerModal = ({
     >
       {/* Search + price field — fixed section */}
       {tab === "products" && (
-        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 space-y-3 flex-shrink-0">
+        <div className="px-6 py-4 border-b border-slate-200 dark:border-[#2e2e2e] space-y-3 flex-shrink-0">
           <div className="relative">
             {loadingProducts || isFetching ? (
               <Loader2 className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 animate-spin" />
@@ -233,7 +243,7 @@ export const ProductPickerModal = ({
               placeholder={t("picker_search_article")}
               value={search}
               onChange={(e) => handleSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-[#B12B89] outline-none transition dark:text-slate-100"
+              className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-xl text-sm focus:ring-2 focus:ring-[#B12B89] outline-none transition dark:text-slate-100"
               autoFocus
             />
           </div>
@@ -260,7 +270,7 @@ export const ProductPickerModal = ({
           ) : (
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50">
+                <tr className="border-b border-slate-100 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/50">
                   <th className="w-10 px-6 py-3" />
                   <th className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("picker_col_article")}</th>
                   <th className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-slate-500 hidden sm:table-cell">{t("picker_col_type")}</th>
@@ -268,21 +278,21 @@ export const ProductPickerModal = ({
                   <th className="px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("picker_col_stock")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-50 dark:divide-[#2e2e2e]">
                 {products.map((p) => {
                   const key = `${p.type}-${p.variantId ?? p.id}`;
                   const disabled = alreadyProductKeys.has(key);
                   const pending = isProductPending(p);
                   return (
                     <tr key={key} onClick={() => toggleProduct(p)}
-                      className={`transition-colors ${disabled ? "opacity-40 cursor-not-allowed bg-slate-50/50 dark:bg-slate-800/20" : pending ? "bg-blue-50/70 dark:bg-blue-900/10 cursor-pointer" : "hover:bg-slate-50 dark:hover:bg-slate-800/30 cursor-pointer"}`}>
+                      className={`transition-colors ${disabled ? "opacity-40 cursor-not-allowed bg-slate-50/50 dark:bg-[#222222]/20" : pending ? "bg-blue-50/70 dark:bg-blue-900/10 cursor-pointer" : "hover:bg-slate-50 dark:hover:bg-[#222222]/30 cursor-pointer"}`}>
                       <td className="px-6 py-3.5">
                         <Checkbox checked={pending} disabled={disabled} onChange={() => toggleProduct(p)} />
                       </td>
                       <td className="px-4 py-3.5">
                         <p className={`text-sm font-semibold ${pending && !disabled ? "text-blue-700 dark:text-blue-300" : "text-slate-800 dark:text-slate-100"}`}>
                           {p.name}
-                          {disabled && <span className="ml-2 text-[9px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">{t("picker_already_added")}</span>}
+                          {disabled && <span className="ml-2 text-[9px] font-bold text-slate-400 bg-slate-100 dark:bg-[#2e2e2e] px-1.5 py-0.5 rounded">{t("picker_already_added")}</span>}
                         </p>
                       </td>
                       <td className="px-4 py-3.5 hidden sm:table-cell">
@@ -320,13 +330,13 @@ export const ProductPickerModal = ({
               const pending = isPackPending(p);
               return (
                 <button key={p.id} type="button" onClick={() => togglePack(p)} disabled={disabled}
-                  className={`text-left p-4 rounded-xl border-2 transition-all ${disabled ? "opacity-40 cursor-not-allowed border-slate-200 dark:border-slate-700" : pending ? "border-[#B12B89] bg-blue-50/60 dark:bg-blue-900/10" : "border-slate-200 dark:border-slate-700 hover:border-blue-300 hover:bg-slate-50 dark:hover:bg-slate-800/50"}`}>
+                  className={`text-left p-4 rounded-xl border-2 transition-all ${disabled ? "opacity-40 cursor-not-allowed border-slate-200 dark:border-[#2e2e2e]" : pending ? "border-[#B12B89] bg-blue-50/60 dark:bg-blue-900/10" : "border-slate-200 dark:border-[#2e2e2e] hover:border-blue-300 hover:bg-slate-50 dark:hover:bg-[#222222]/50"}`}>
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <p className="text-sm font-bold text-slate-800 dark:text-slate-100">{p.name}</p>
                       <p className="text-xs font-semibold text-blue-500 mt-1">{fmt(p.prixVentePack)} MAD</p>
                     </div>
-                    <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${pending ? "bg-[#B12B89] border-[#B12B89]" : "border-slate-300 dark:border-slate-600"}`}>
+                    <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${pending ? "bg-[#B12B89] border-[#B12B89]" : "border-slate-300 dark:border-[#3a3a3a]"}`}>
                       {pending && <Check size={11} className="text-white" strokeWidth={3} />}
                     </div>
                   </div>

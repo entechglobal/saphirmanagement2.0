@@ -24,8 +24,14 @@ html.no-transition * {
               box-shadow 0.3s ease !important;
 }
 
+html {
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
   font-family: "DM Sans", system-ui, -apple-system, sans-serif;
+  background-color: var(--bg, #f8fafc);
 }
 
 /* Modal overlay — solid dim only (no backdrop-filter: blur is costly over heavy forms) */
@@ -80,24 +86,24 @@ main .min-h-screen {
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: #3a3a3a;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: #525252;
 }
 
 /* ===== Sonner toaster ===== */
 [data-sonner-toaster][data-theme="light"] {
   --normal-bg: #ffffff;
   --normal-border: #e2e8f0;
-  --normal-text: #1e293b;
+  --normal-text: #0f172a;
 }
 
 [data-sonner-toaster][data-theme="dark"] {
-  --normal-bg: #1e293b;
-  --normal-border: #334155;
-  --normal-text: #e2e8f0;
+  --normal-bg: #1c1c1c;
+  --normal-border: #2e2e2e;
+  --normal-text: #e5e5e5;
 }
 
 [data-sonner-toaster] {

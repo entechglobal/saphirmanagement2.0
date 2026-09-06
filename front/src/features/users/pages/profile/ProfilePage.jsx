@@ -174,7 +174,7 @@ export const ProfilePage = () => {
 
               {/* Avatar */}
               <div className="relative mt-2 inline-block">
-                <div className="w-32 h-32 rounded-xl flex items-center justify-center overflow-hidden ring-4 ring-white dark:ring-slate-800 shadow-lg mx-auto bg-slate-100 dark:bg-slate-800">
+                <div className="w-32 h-32 rounded-xl flex items-center justify-center overflow-hidden ring-4 ring-white dark:ring-[#2e2e2e] shadow-lg mx-auto bg-slate-100 dark:bg-[#222222]">
                   {hasCustomImage ? (
                     <img src={imagePreview} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
@@ -185,7 +185,7 @@ export const ProfilePage = () => {
                   )}
                 </div>
                 {isEditing && (
-                  <label className="absolute -bottom-2 -right-2 p-2.5 bg-white dark:bg-slate-800 text-[#B12B89] rounded-md shadow-lg border border-slate-100 dark:border-slate-700 cursor-pointer hover:scale-110 transition-transform">
+                  <label className="absolute -bottom-2 -right-2 p-2.5 bg-white dark:bg-[#222222] text-[#B12B89] rounded-md shadow-lg border border-slate-100 dark:border-[#2e2e2e] cursor-pointer hover:scale-110 transition-transform">
                     <Camera size={18} />
                     <input type="file" className="hidden" onChange={handleFileChange} accept="image/*" />
                   </label>
@@ -210,7 +210,7 @@ export const ProfilePage = () => {
                 <button
                   type="button"
                   onClick={() => setShowPwdModal(true)}
-                  className="w-full flex items-center justify-center gap-2 h-10 rounded-md border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-500 hover:border-[#B12B89] hover:text-[#B12B89] transition-all"
+                  className="w-full flex items-center justify-center gap-2 h-10 rounded-md border border-slate-200 dark:border-[#2e2e2e] text-sm font-medium text-slate-500 hover:border-[#B12B89] hover:text-[#B12B89] transition-all"
                 >
                   <KeyRound size={14} />
                   {t("sidebar.change_password")}
@@ -259,7 +259,7 @@ export const ProfilePage = () => {
                     <button
                       type="button"
                       onClick={handleCancelEdit}
-                      className="inline-flex items-center gap-1.5 px-3 h-10 rounded-md text-sm font-medium text-slate-500 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
+                      className="inline-flex items-center gap-1.5 px-3 h-10 rounded-md text-sm font-medium text-slate-500 border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] transition-all"
                     >
                       <Ban size={12} /> {t("personal_info.cancel")}
                     </button>
@@ -307,13 +307,13 @@ export const ProfilePage = () => {
             {/* Account Details — always read-only */}
             <FormCard title={t("account_details.section_title")} icon={<Building2 size={14} />}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800">
+                <div className="p-4 rounded-lg bg-slate-50 dark:bg-[#111111] border border-slate-100 dark:border-[#2e2e2e]">
                   <p className="text-[10px] text-slate-400 uppercase font-black mb-1">{t("account_details.company_role")}</p>
                   <p className="text-sm font-bold text-slate-700 dark:text-slate-200">
                     {roleName?.replace("_", " ") || "—"}
                   </p>
                 </div>
-                <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800">
+                <div className="p-4 rounded-lg bg-slate-50 dark:bg-[#111111] border border-slate-100 dark:border-[#2e2e2e]">
                   <p className="text-[10px] text-slate-400 uppercase font-black mb-1">{t("account_details.account_status")}</p>
                   <p className="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
                     <span className={`w-2 h-2 rounded-full ${u?.active ? "bg-green-500" : "bg-slate-400"}`} />
@@ -329,7 +329,7 @@ export const ProfilePage = () => {
       {/* ── CHANGE PASSWORD MODAL ───────────────────────────────── */}
       {showPwdModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-lg shadow-2xl w-full max-w-md p-8 relative">
+          <div className="bg-white dark:bg-[#1c1c1c] rounded-lg shadow-2xl w-full max-w-md p-8 relative">
             <button
               onClick={() => { setShowPwdModal(false); resetPwd(); }}
               className="absolute top-6 right-6 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
@@ -411,7 +411,7 @@ const InfoRow = ({ label, value, icon }) => (
       {icon && <span className="text-slate-400">{icon}</span>}
       {label}
     </p>
-    <div className="w-full px-4 py-3 text-sm rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-300 font-medium">
+    <div className="w-full px-4 py-3 text-sm rounded-xl border border-slate-100 dark:border-[#2e2e2e] bg-slate-50 dark:bg-[#111111] text-slate-700 dark:text-slate-300 font-medium">
       {value || <span className="text-slate-400 italic">—</span>}
     </div>
   </div>

@@ -38,7 +38,7 @@ const ATTRIBUTE_STYLES = {
   },
   default: {
     light: "bg-slate-100 text-slate-700 ring-slate-200",
-    dark: "dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700",
+    dark: "dark:bg-[#222222] dark:text-slate-300 dark:ring-[#2e2e2e]",
   },
 };
 
@@ -254,11 +254,11 @@ export const VariantsManager = ({ returnTo, onBeforeFinish }) => {
             label={t("article_info.barcode")}
             value={parentArticle?.barcode || t("article_info.no_barcode")}
           />
-          <div className="md:border-l md:pl-8 border-slate-100 dark:border-slate-800">
+          <div className="md:border-l md:pl-8 border-slate-100 dark:border-[#2e2e2e]">
             <InfoField label={t("article_info.reference")} value={`#${parentArticle?.id}`} />
           </div>
         </div>
-        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500">
+        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-[#2e2e2e] text-xs text-slate-500">
           {t("article_info.total")}:{" "}
           {t("article_info.variants_count", { count: variants.length })}
         </div>
@@ -271,7 +271,7 @@ export const VariantsManager = ({ returnTo, onBeforeFinish }) => {
             {hasVariants && (
               <button
                 onClick={() => setStockWizardOpen(true)}
-                className="flex items-center gap-2 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 px-4 py-2 rounded-xl font-bold text-sm transition-all"
+                className="flex items-center gap-2 border border-slate-200 dark:border-[#2e2e2e] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#222222] px-4 py-2 rounded-xl font-bold text-sm transition-all"
               >
                 <Warehouse size={16} /> Stock
               </button>
@@ -286,9 +286,9 @@ export const VariantsManager = ({ returnTo, onBeforeFinish }) => {
         }
       >
         {/* DESKTOP TABLE */}
-        <div className="hidden md:block overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-xl">
+        <div className="hidden md:block overflow-x-auto border border-slate-200 dark:border-[#2e2e2e] rounded-xl">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 dark:bg-slate-800/50">
+            <thead className="bg-slate-50 dark:bg-[#222222]/50">
               <tr className="text-left text-slate-500 uppercase text-[10px] tracking-wider">
                 <th className="px-4 py-3">{t("table.variant")}</th>
                 <th className="px-4 py-3">{t("table.barcode")}</th>
@@ -297,9 +297,9 @@ export const VariantsManager = ({ returnTo, onBeforeFinish }) => {
                 <th className="px-4 py-3 text-right">{t("table.actions")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
               {variants.map((v) => (
-                <tr key={v.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
+                <tr key={v.id} className="hover:bg-slate-50/50 dark:hover:bg-[#222222]/30 transition">
                   <td className="px-4 py-3 font-semibold text-slate-900 dark:text-slate-100">{v.name}</td>
                   <td className="px-4 py-3 font-mono text-slate-500 text-xs">
                     {v.barcode || (
@@ -345,7 +345,7 @@ export const VariantsManager = ({ returnTo, onBeforeFinish }) => {
           {variants.map((v) => (
             <div
               key={v.id}
-              className="border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-3 bg-white dark:bg-slate-900"
+              className="border border-slate-200 dark:border-[#2e2e2e] rounded-xl p-4 space-y-3 bg-white dark:bg-[#1c1c1c]"
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
@@ -372,12 +372,12 @@ export const VariantsManager = ({ returnTo, onBeforeFinish }) => {
                 ))}
                 <button
                   onClick={() => openEditAttributes(v)}
-                  className="p-1.5 rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="p-1.5 rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-[#222222]"
                 >
                   <EditIcon style={{ fontSize: 14 }} />
                 </button>
               </div>
-              <div className="pt-1 border-t border-slate-100 dark:border-slate-800">
+              <div className="pt-1 border-t border-slate-100 dark:border-[#2e2e2e]">
                 <p className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1.5">
                   {t("table.stock")}
                 </p>
@@ -389,7 +389,7 @@ export const VariantsManager = ({ returnTo, onBeforeFinish }) => {
       </FormCard>
 
       {hasVariants && (
-        <div className="flex flex-col sm:flex-row items-center justify-end gap-4 border-t border-slate-200 dark:border-slate-800 pt-8 mt-4">
+        <div className="flex flex-col sm:flex-row items-center justify-end gap-4 border-t border-slate-200 dark:border-[#2e2e2e] pt-8 mt-4">
           <button
             onClick={() => hasStock ? handleFinish() : setShowFinishModal(true)}
             className="w-full sm:w-auto px-10 py-3 rounded-xl text-white font-bold transition-all hover:brightness-110 active:scale-95 shadow-lg shadow-[#C86AAC]/25"
@@ -414,7 +414,7 @@ export const VariantsManager = ({ returnTo, onBeforeFinish }) => {
             <div className="flex gap-3">
               <button
                 onClick={() => { setDialog({ type: null, variant: null }); resetForm(); }}
-                className="flex-1 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                className="flex-1 py-2.5 border border-slate-200 dark:border-[#2e2e2e] rounded-xl font-semibold hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors"
               >
                 {t("dialog.cancel")}
               </button>
@@ -447,12 +447,12 @@ export const VariantsManager = ({ returnTo, onBeforeFinish }) => {
                       [e.target.name]: e.target.value,
                     }))
                   }
-                  className="flex-1 rounded-xl border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm dark:bg-slate-900 focus:ring-2 focus:ring-[#C86AAC] outline-none"
+                  className="flex-1 rounded-xl border border-slate-300 dark:border-[#2e2e2e] px-3 py-2 text-sm dark:bg-[#1c1c1c] focus:ring-2 focus:ring-[#C86AAC] outline-none"
                 />
                 <button
                   type="button"
                   onClick={generateBarcode}
-                  className="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center gap-1.5"
+                  className="px-3 py-2 rounded-xl border border-slate-300 dark:border-[#2e2e2e] text-xs font-semibold hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors flex items-center gap-1.5"
                 >
                   <QrCode size={14} /> {t("form.generate")}
                 </button>
@@ -479,7 +479,7 @@ export const VariantsManager = ({ returnTo, onBeforeFinish }) => {
                     <select
                       value={attr.attributeId}
                       onChange={(e) => updateAttribute(attr.id, "attributeId", e.target.value)}
-                      className="w-full rounded-xl border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm dark:bg-slate-900 focus:ring-2 focus:ring-[#C86AAC] outline-none"
+                      className="w-full rounded-xl border border-slate-300 dark:border-[#2e2e2e] px-3 py-2 text-sm dark:bg-[#1c1c1c] focus:ring-2 focus:ring-[#C86AAC] outline-none"
                     >
                       <option value="">{t("form.select_type")}</option>
                       {allAttributes.map((a) => (
@@ -497,7 +497,7 @@ export const VariantsManager = ({ returnTo, onBeforeFinish }) => {
                       value={attr.attributeValueId}
                       disabled={!attr.attributeId}
                       onChange={(e) => updateAttribute(attr.id, "attributeValueId", e.target.value)}
-                      className="w-full rounded-xl border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm dark:bg-slate-900 disabled:opacity-50 focus:ring-2 focus:ring-[#C86AAC] outline-none"
+                      className="w-full rounded-xl border border-slate-300 dark:border-[#2e2e2e] px-3 py-2 text-sm dark:bg-[#1c1c1c] disabled:opacity-50 focus:ring-2 focus:ring-[#C86AAC] outline-none"
                     >
                       <option value="">{t("form.select_value")}</option>
                       {allAttributes

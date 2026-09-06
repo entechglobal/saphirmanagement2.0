@@ -76,7 +76,7 @@ export const DashboardPage = () => {
               return (
                 <div
                   key={card.label}
-                  className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 dark:border-slate-700 dark:bg-slate-800"
+                  className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 dark:border-[#2e2e2e] dark:bg-[#1c1c1c]"
                 >
                   <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${card.bg}`}>
                     <Icon className={`h-5 w-5 ${card.cls}`} />

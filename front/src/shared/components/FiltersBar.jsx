@@ -317,7 +317,7 @@ export const FiltersBar = ({
           {effectiveRows.map((row, rowIdx) => (
             <div key={rowIdx}>
               {row.divider && (
-                <div className="my-3 border-t border-dashed border-slate-200 dark:border-slate-700/50" />
+                <div className="my-3 border-t border-dashed border-slate-200 dark:border-[#2e2e2e]/50" />
               )}
               <Box
                 sx={{
@@ -356,7 +356,7 @@ export const FiltersBar = ({
           <button
             type="button"
             onClick={onReset}
-            className="mt-1 flex shrink-0 cursor-pointer items-center gap-1 rounded-lg px-2 py-1.5 text-[12px] font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-red-500 dark:text-slate-400 dark:hover:bg-slate-700/60 dark:hover:text-red-400"
+            className="mt-1 flex shrink-0 cursor-pointer items-center gap-1 rounded-lg px-2 py-1.5 text-[12px] font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-red-500 dark:text-slate-400 dark:hover:bg-[#2e2e2e]/60 dark:hover:text-red-400"
           >
             <X className="h-3.5 w-3.5" strokeWidth={2.25} />
             {resetLabel}
@@ -364,7 +364,7 @@ export const FiltersBar = ({
         )}
       </div>
 
-      <hr className="mt-4 border-0 border-t border-slate-200 dark:border-slate-700" />
+      <hr className="mt-4 border-0 border-t border-slate-200 dark:border-[#2e2e2e]" />
     </div>
   );
 };

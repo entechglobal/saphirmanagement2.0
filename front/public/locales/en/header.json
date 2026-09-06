@@ -37,6 +37,40 @@
   "wallet": {
     "tooltip": "Your wallet balance"
   },
+  "fullscreen": "Fullscreen",
+  "fullscreen_exit": "Exit fullscreen",
+  "notifications": {
+    "title": "Notifications",
+    "unread": "{{count}} unread",
+    "empty": "No notifications",
+    "loading": "Loading...",
+    "mark_all_read": "Mark all as read",
+    "view_all": "More notifications",
+    "back": "Back",
+    "someone": "Someone",
+    "time": {
+      "just_now": "Just now",
+      "minutes_ago": "{{count}}m ago",
+      "hours_ago": "{{count}}h ago",
+      "days_ago": "{{count}}d ago"
+    },
+    "transfer": {
+      "incoming_title": "Incoming transfer",
+      "incoming_desc": "{{senderName}} sent you {{amount}} MAD",
+      "incoming_admin_title": "Transfer to bank / safe",
+      "incoming_admin_desc": "{{senderName}} sent {{amount}} MAD to {{destinationName}}",
+      "accepted_title": "Transfer accepted",
+      "accepted_desc": "{{responderName}} accepted your transfer of {{amount}} MAD to {{destinationName}}",
+      "declined_title": "Transfer declined",
+      "declined_desc": "{{responderName}} declined your transfer of {{amount}} MAD to {{destinationName}}",
+      "accept": "Accept",
+      "decline": "Decline",
+      "processing": "Processing...",
+      "accepted_toast": "Transfer accepted",
+      "declined_toast": "Transfer declined",
+      "action_error": "Unable to process this transfer"
+    }
+  },
   "palette": {
     "placeholder": "Search for a page or action...",
     "no_results": "No results for",

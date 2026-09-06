@@ -43,7 +43,7 @@ export function FormPageHeader({
         type="button"
         onClick={handleBack}
         aria-label={backLabel}
-        className="p-2 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+        className="p-2 rounded-lg border border-slate-300 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] text-slate-700 dark:text-slate-200 transition-colors"
       >
         <ArrowLeft className="w-4 h-4 rtl:hidden" />
         <ArrowRight className="w-4 h-4 ltr:hidden" />

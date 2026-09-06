@@ -1,0 +1,81 @@
+{
+  "title": "Shifts livreurs",
+  "search_placeholder": "Rechercher un livreur…",
+  "not_found": "Shift introuvable",
+  "table": {
+    "id": "ID",
+    "livreur": "Livreur",
+    "status": "Statut",
+    "started": "Début",
+    "closed": "Fin",
+    "orders": "Commandes",
+    "collected": "Encaissé",
+    "remitted": "Versé"
+  },
+  "status": {
+    "open": "Ouvert",
+    "closed": "Fermé",
+    "pending": "En attente"
+  },
+  "filters": {
+    "status": "Statut"
+  },
+  "banner": {
+    "active_title": "Shift en cours",
+    "active_desc": "Démarré le {{since}}. Vous pouvez livrer et encaisser.",
+    "inactive_title": "Aucun shift actif",
+    "inactive_desc": "Démarrez un shift pour pouvoir marquer les commandes comme livrées ou payées."
+  },
+  "actions": {
+    "start": "Démarrer le shift",
+    "close": "Fermer le shift",
+    "view": "Voir",
+    "cancel": "Annuler"
+  },
+  "confirm": {
+    "close_title": "Fermer le shift ?",
+    "close_message": "Le résumé des commandes et montants sera généré. Vous pourrez ensuite verser le solde."
+  },
+  "toast": {
+    "started": "Shift démarré",
+    "start_error": "Impossible de démarrer le shift",
+    "closed": "Shift fermé",
+    "close_error": "Impossible de fermer le shift",
+    "remitted": "Solde versé avec succès",
+    "remit_pending": "Demande de versement envoyée (en attente d'approbation)",
+    "remit_error": "Échec du versement"
+  },
+  "detail": {
+    "title": "Shift #{{id}}",
+    "started": "Début",
+    "orders": "Commandes",
+    "collected": "Total encaissé",
+    "wallet": "Solde wallet",
+    "summary": "Résumé",
+    "opening_balance": "Solde d'ouverture",
+    "closing_balance": "Solde de clôture",
+    "delivered": "Livrées",
+    "paid": "Payées",
+    "remitted": "Versement"
+  },
+  "orders": {
+    "title": "Historique des commandes",
+    "document": "N° document",
+    "client": "Client",
+    "status": "Statut",
+    "amount": "Montant",
+    "linked_at": "Horodatage"
+  },
+  "remit": {
+    "title": "Verser le solde du shift",
+    "subtitle": "Montant suggéré : {{amount}} MAD — envoyez vers un utilisateur ou un compte bancaire.",
+    "destination": "Destination (utilisateur / banque)",
+    "amount": "Montant",
+    "note": "Note (optionnel)",
+    "submit": "Envoyer le solde",
+    "loading": "Chargement…",
+    "err_destination": "Choisissez une destination",
+    "err_amount": "Montant invalide"
+  },
+  "all": "Tous"
+}

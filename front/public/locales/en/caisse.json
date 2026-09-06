@@ -2,7 +2,6 @@
   "page_title": "Cash Management",
   "page_subtitle": "Real-time transactions & balances",
   "labels_page_title": "Expense Labels",
-
   "btn_create_caisse": "Create Cash Register",
   "btn_create_charge": "Create Charge",
   "btn_retrait": "Withdrawal",
@@ -19,12 +18,10 @@
   "btn_new_label": "New label",
   "btn_confirm_retrait": "Confirm withdrawal",
   "btn_confirm_depot": "Confirm deposit",
-
   "stat_final_balance": "Final Balance",
   "stat_total_in": "Total Receipts",
   "stat_total_out": "Total Disbursements",
   "stat_total_transfer": "Total Transfers",
-
   "filter_type": "Type",
   "filter_user": "User",
   "filter_role": "Role",
@@ -36,14 +33,12 @@
   "filters": "Filters",
   "reset": "Reset",
   "all": "All",
-
   "type_encaissement": "Receipts",
   "type_decaissement": "Disbursements",
   "type_transfert": "Transfers",
   "type_label_encaissement": "Receipt",
   "type_label_decaissement": "Disbursement",
   "type_label_transfert": "Transfer",
-
   "col_date_op": "Date",
   "col_time": "Time",
   "col_type": "Type",
@@ -55,7 +50,6 @@
   "col_name": "Name",
   "col_status": "Status",
   "col_created_at": "Created at",
-
   "libelle_initial": "Opening balance",
   "libelle_charge": "Charge",
   "libelle_transfer_in": "Transfer from {{name}}",
@@ -82,6 +76,8 @@
   "err_banque_required": "Bank is required",
   "err_coffre_name_required": "Safe name is required",
   "success_transfer": "Transfer completed successfully",
+  "success_transfer_pending": "Transfer sent. Waiting for the recipient to accept.",
+  "success_transfer_pending_admin": "Transfer sent. Waiting for super admin approval.",
   "success_bank_wallet_created": "Bank wallet created successfully",
   "success_coffre_wallet_created": "Safe wallet created successfully",
   "btn_create_user_wallet": "User Wallet",
@@ -90,7 +86,6 @@
   "btn_transfer": "Transfer",
   "btn_confirm_transfer": "Confirm transfer",
   "caisses_page_subtitle": "Users, banks and safe",
-
   "modal_create_caisse_title": "Create Cash Register",
   "modal_create_caisse_subtitle": "Automatically configured based on user role",
   "modal_charge_title": "Create Charge",
@@ -102,7 +97,6 @@
   "modal_label_create_title": "New label",
   "modal_label_edit_title": "Edit label",
   "modal_label_subtitle": "Expense category",
-
   "name_preview_label": "Auto-generated name",
   "modal_create_my_caisse_title": "Create My Wallet",
   "modal_create_my_caisse_subtitle": "Your wallet will be configured automatically based on your role",
@@ -112,7 +106,6 @@
   "success_my_caisse_created": "Your wallet has been created successfully",
   "err_create_my_caisse": "Error creating your wallet",
   "available_balance": "Available balance",
-
   "field_societe": "Company",
   "field_user": "User",
   "field_initial_balance": "Opening balance (MAD)",
@@ -125,7 +118,6 @@
   "field_dest_caisse": "Destination cash register",
   "field_label_name": "Label name",
   "field_active": "Active",
-
   "placeholder_select_societe": "Select a company",
   "placeholder_all_societes": "All companies",
   "filter_all_societes": "All companies",
@@ -136,7 +128,6 @@
   "placeholder_amount": "0.00",
   "placeholder_note": "Transfer reason...",
   "placeholder_label_name": "e.g. Fuel",
-
   "err_societe_required": "Company is required",
   "err_user_required": "User is required",
   "err_caisse_required": "Cash register is required",
@@ -146,15 +137,12 @@
   "err_source_caisse_required": "Source cash register is required",
   "err_dest_caisse_required": "Destination cash register is required",
   "err_label_name_required": "Name is required",
-
   "no_societe_available": "No company available",
   "no_caisse_available": "No cash register available",
   "no_user_available": "No users available",
   "no_label_available": "No active labels",
-
   "status_active": "Active",
   "status_inactive": "Inactive",
-
   "success_caisse_created": "Cash register created successfully",
   "success_charge_created": "Charge recorded",
   "success_retrait": "Withdrawal completed",
@@ -162,18 +150,15 @@
   "success_label_created": "Label created",
   "success_label_updated": "Label updated",
   "success_label_deleted": "Label deleted",
-
   "err_create_caisse": "Error creating cash register",
   "err_create_charge": "Error recording charge",
   "err_transfer": "Transfer error",
   "err_label_create": "Creation error",
   "err_label_update": "Update error",
   "err_label_delete": "Deletion error",
-
   "delete_label_title": "Delete label",
   "delete_label_message": "Delete \"{{name}}\"? It will no longer be available in charges.",
   "delete_label_confirm": "Delete",
-
   "caisses_page_title": "Wallet Management",
   "modal_edit_caisse_title": "Edit Cash Register",
   "field_caisse_name": "Cash register name",
@@ -196,5 +181,11 @@
   "col_caisse_name": "Cash Register",
   "col_societe": "Company",
   "col_current_balance": "Current Balance",
-  "global_access": "Global access"
+  "global_access": "Global access",
+  "wallet_group_users": "Users",
+  "wallet_group_societe": "Company",
+  "wallet_group_central": "Central cash",
+  "wallet_group_banks": "Banks",
+  "wallet_group_coffres": "Safes",
+  "err_amount_exceeds_available": "Insufficient available balance ({{amount}} MAD)"
 }

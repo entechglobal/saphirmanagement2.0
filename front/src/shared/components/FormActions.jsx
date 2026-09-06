@@ -27,7 +27,12 @@ export const FormActionBar = ({ children, placement = "fixed", className = "" })
   );
 
   if (placement === "fixed" && slot) {
-    return createPortal(bar, slot);
+    return (
+      <>
+        <div className="h-20 w-full shrink-0" aria-hidden="true" />
+        {createPortal(bar, slot)}
+      </>
+    );
   }
   return bar;
 };
@@ -69,7 +74,7 @@ export const FormActions = ({
     <div
       className={`flex w-full items-center justify-end gap-2.5 ${
         !isFixed && bordered
-          ? "mt-2 pt-5 border-t border-slate-200 dark:border-slate-800"
+          ? "mt-2 pt-5 border-t border-slate-200 dark:border-[#2e2e2e]"
           : ""
       } ${className}`}
     >
@@ -79,7 +84,7 @@ export const FormActions = ({
           type="button"
           onClick={onCancel}
           disabled={isLoading}
-          className="px-4 h-10 rounded-md border border-slate-300 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors disabled:opacity-50"
+          className="px-4 h-10 rounded-md border border-slate-300 dark:border-[#2e2e2e] text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors disabled:opacity-50"
         >
           {cancelLabel}
         </button>
@@ -99,7 +104,9 @@ export const FormActions = ({
 
   return (
     <>
-      {isFixed ? <span ref={anchorRef} className="hidden" aria-hidden /> : null}
+      {isFixed ? (
+        <div ref={anchorRef} className="h-20 w-full shrink-0" aria-hidden="true" />
+      ) : null}
       {isFixed && slot ? createPortal(bar, slot) : bar}
     </>
   );

@@ -113,11 +113,20 @@ export const TransferModal = ({ isOpen, onClose, mode = "retrait" }) => {
   );
 
   const caisseOptions = useMemo(
-    () => transferableCaisses.map((c) => ({
-      label: c.user?.name || c.name,
-      subLabel: `${c.caisseType} • ${formatMAD(c.currentBalance)} MAD`,
-      value: c.id,
-    })),
+    () =>
+      transferableCaisses.map((c) => {
+        const label =
+          c.caisseType === "BANK"
+            ? c.banque?.name || c.name
+            : c.caisseType === "COFFRE"
+              ? c.name
+              : c.user?.name || c.name;
+        return {
+          label,
+          subLabel: `${c.caisseType} • ${formatMAD(c.currentBalance)} MAD`,
+          value: c.id,
+        };
+      }),
     [transferableCaisses]
   );
 
@@ -189,12 +198,12 @@ export const TransferModal = ({ isOpen, onClose, mode = "retrait" }) => {
 
         {/* Balance display — only for Retrait when a caisse is selected */}
         {isRetrait && selectedCaisse && (
-          <div className="flex justify-between items-center px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+          <div className="flex justify-between items-center px-4 py-3 rounded-xl bg-slate-50 dark:bg-[#222222]/60 border border-slate-200 dark:border-[#2e2e2e]">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
               {t("available_balance")}
             </span>
             <span className="text-base font-extrabold text-emerald-600 dark:text-emerald-400">
-              {formatMAD(selectedCaisse.currentBalance)} MAD
+              {formatMAD(selectedCaisse.availableBalance ?? selectedCaisse.currentBalance)} MAD
             </span>
           </div>
         )}
@@ -221,7 +230,7 @@ export const TransferModal = ({ isOpen, onClose, mode = "retrait" }) => {
             {...register("note")}
             rows={2}
             placeholder={t("placeholder_note")}
-            className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-[#B12B89] focus:ring-4 focus:ring-[#B12B89]/5 outline-none transition-all resize-none"
+            className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 dark:border-[#2e2e2e] bg-white dark:bg-[#222222]/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-[#B12B89] focus:ring-4 focus:ring-[#B12B89]/5 outline-none transition-all resize-none"
           />
         </div>
       </form>

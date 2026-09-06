@@ -68,7 +68,7 @@ export const NotFound = ({
       </div>
 
       <div style={{ textAlign: 'center', maxWidth: '400px' }}>
-        <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#334155', margin: '0 0 8px 0' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#2e2e2e', margin: '0 0 8px 0' }}>
           {title}
         </h3>
         {message && (

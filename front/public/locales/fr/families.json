@@ -34,6 +34,10 @@
   "stock_description": "Suivre les quantités",
   "visibility_description": "Afficher au point de vente",
   "save_family": "Enregistrer la famille",
+  "quick_add_category": "Ajouter une catégorie",
+  "quick_create_title": "Nouvelle famille",
+  "quick_create_subtitle": "Créer une famille et la sélectionner",
+  "quick_created": "Famille créée",
    "upload_image": "Télécharger l'image",
   "validation": {
     "name_required": "L'intitulé est obligatoire",

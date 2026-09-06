@@ -134,7 +134,7 @@ export const StockArticleForm = ({ variantMode, variantId, returnTo, onBeforeFin
           <InfoField label={t("article_info.name")} value={parentArticle?.name} />
           <InfoField label={t("article_info.barcode")} value={parentArticle?.barcode} isMono isBrand />
           <InfoField label={t("article_info.family")} value={parentArticle?.family?.name || t("article_info.standard")} />
-          <div className="md:border-l md:pl-8 border-slate-100 dark:border-slate-800">
+          <div className="md:border-l md:pl-8 border-slate-100 dark:border-[#2e2e2e]">
             <InfoField label={t("article_info.reference")} value={`#${parentArticle?.id}`} isMono isMuted />
           </div>
         </div>
@@ -156,15 +156,15 @@ export const StockArticleForm = ({ variantMode, variantId, returnTo, onBeforeFin
         {/* ── Mobile cards (xs) ── */}
         <div className="sm:hidden space-y-2">
           {stocksData?.data.map((stock) => (
-            <div key={stock.id} className="flex items-center gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/30">
+            <div key={stock.id} className="flex items-center gap-3 p-3 rounded-xl border border-slate-100 dark:border-[#2e2e2e] bg-slate-50/60 dark:bg-[#222222]/30">
               <div className="relative flex-shrink-0">
                 <img
                   src={stock.depot.societe?.logo || "https://ui-avatars.com/api/?name=" + (stock.depot.societe?.raisonSocial || "S")}
                   alt={stock.depot.societe?.raisonSocial}
-                  className="w-10 h-10 object-cover rounded-xl border border-slate-200 dark:border-slate-700 bg-white"
+                  className="w-10 h-10 object-cover rounded-xl border border-slate-200 dark:border-[#2e2e2e] bg-white"
                   onError={(e) => (e.currentTarget.src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=")}
                 />
-                <div className="absolute -bottom-1 -end-1 bg-white dark:bg-slate-900 rounded-full p-0.5 shadow-sm border border-slate-100 dark:border-slate-800">
+                <div className="absolute -bottom-1 -end-1 bg-white dark:bg-[#1c1c1c] rounded-full p-0.5 shadow-sm border border-slate-100 dark:border-[#2e2e2e]">
                   <Warehouse size={9} className="text-[#C86AAC]" />
                 </div>
               </div>
@@ -195,9 +195,9 @@ export const StockArticleForm = ({ variantMode, variantId, returnTo, onBeforeFin
         </div>
 
         {/* ── Desktop table (sm+) ── */}
-        <div className="hidden sm:block overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-xl">
+        <div className="hidden sm:block overflow-x-auto border border-slate-200 dark:border-[#2e2e2e] rounded-xl">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 dark:bg-slate-800/50">
+            <thead className="bg-slate-50 dark:bg-[#222222]/50">
               <tr className="text-start text-slate-500 uppercase text-[10px] tracking-wider">
                 <th className="px-4 py-3 text-start">{t("card.col_depot")}</th>
                 <th className="px-4 py-3 text-center">{t("card.col_qty")}</th>
@@ -205,19 +205,19 @@ export const StockArticleForm = ({ variantMode, variantId, returnTo, onBeforeFin
                 <th className="px-4 py-3 text-end">{t("card.col_actions")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
               {stocksData?.data.map((stock) => (
-                <tr key={stock.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition">
+                <tr key={stock.id} className="hover:bg-slate-50/50 dark:hover:bg-[#222222]/30 transition">
                   <td className="px-4 py-3 min-w-[220px]">
                     <div className="flex items-center gap-3">
                       <div className="relative flex-shrink-0">
                         <img
                           src={stock.depot.societe?.logo || "https://ui-avatars.com/api/?name=" + (stock.depot.societe?.raisonSocial || "S")}
                           alt={stock.depot.societe?.raisonSocial}
-                          className="w-10 h-10 object-cover rounded-xl border border-slate-200 dark:border-slate-700 bg-white"
+                          className="w-10 h-10 object-cover rounded-xl border border-slate-200 dark:border-[#2e2e2e] bg-white"
                           onError={(e) => (e.currentTarget.src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=")}
                         />
-                        <div className="absolute -bottom-1 -end-1 bg-white dark:bg-slate-900 rounded-full p-1 shadow-sm border border-slate-100 dark:border-slate-800">
+                        <div className="absolute -bottom-1 -end-1 bg-white dark:bg-[#1c1c1c] rounded-full p-1 shadow-sm border border-slate-100 dark:border-[#2e2e2e]">
                           <Warehouse size={10} className="text-[#C86AAC]" />
                         </div>
                       </div>
@@ -251,7 +251,7 @@ export const StockArticleForm = ({ variantMode, variantId, returnTo, onBeforeFin
           </table>
         </div>
       </FormCard>
-      {!variantMode && (<div className="flex flex-col sm:flex-row items-center justify-end gap-4 border-t border-slate-200 dark:border-slate-800 pt-8 mt-4">
+      {!variantMode && (<div className="flex flex-col sm:flex-row items-center justify-end gap-4 border-t border-slate-200 dark:border-[#2e2e2e] pt-8 mt-4">
         {stocksData?.data?.length > 0 ? (
           /* Done/Finish Button (Primary) */
           <button
@@ -266,7 +266,7 @@ export const StockArticleForm = ({ variantMode, variantId, returnTo, onBeforeFin
           /* Skip Button (Secondary style but prominent) */
           <button
             onClick={() => setShowSkipModal(true)}
-            className="w-full sm:w-auto px-10 py-3 rounded-xl text-slate-600 dark:text-slate-400 font-bold border-2 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-10 py-3 rounded-xl text-slate-600 dark:text-slate-400 font-bold border-2 border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] transition-all flex items-center justify-center gap-2"
           >
             {t("form.buttons.skip", "Skip and Finish")}
           </button>
@@ -298,7 +298,7 @@ export const StockArticleForm = ({ variantMode, variantId, returnTo, onBeforeFin
           <div className="flex gap-3">
             <button
               onClick={closeDialog}
-              className="flex-1 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              className="flex-1 py-2.5 border border-slate-200 dark:border-[#2e2e2e] rounded-xl font-semibold hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors"
             >
               {t("card.cancel")}
             </button>

@@ -53,7 +53,7 @@ const ActiveSwitch = ({ row, isPending, onToggle }) => {
       onClick={() => onToggle(row)}
       disabled={isPending}
       className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
-        active ? "bg-[#B12B89]" : "bg-slate-200 dark:bg-slate-700"
+        active ? "bg-[#B12B89]" : "bg-slate-200 dark:bg-[#2e2e2e]"
       } ${isPending ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
     >
       <span

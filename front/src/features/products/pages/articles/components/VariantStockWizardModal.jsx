@@ -220,22 +220,22 @@ export const VariantStockWizardModal = ({
   if (!isReady) {
     return createPortal(
       <div className="fixed inset-0 z-[9999] flex items-center justify-center modal-backdrop p-4">
-        <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200 dark:border-slate-800 w-full max-w-lg shadow-2xl flex flex-col">
-          <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <div className="bg-white dark:bg-[#1c1c1c] rounded-2xl border border-slate-200 dark:border-[#2e2e2e] w-full max-w-lg shadow-2xl flex flex-col">
+          <div className="px-6 py-5 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
                 <Warehouse size={18} className="text-[#B12B89]" />
               </div>
               <p className="text-sm font-bold text-slate-400">Chargement…</p>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition">
+            <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-xl transition">
               <X size={16} className="text-slate-400" />
             </button>
           </div>
           <div className="flex justify-center items-center py-12">
             <Loader2 size={24} className="animate-spin text-blue-500" />
           </div>
-          <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="px-6 py-4 border-t border-slate-100 dark:border-[#2e2e2e]">
             <button type="button" onClick={onClose} className="text-sm font-semibold text-slate-400 hover:text-slate-600 transition">
               Fermer
             </button>
@@ -251,8 +251,8 @@ export const VariantStockWizardModal = ({
   if (allDepots.length === 0) {
     return createPortal(
       <div className="fixed inset-0 z-[9999] flex items-center justify-center modal-backdrop p-4">
-        <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200 dark:border-slate-800 w-full max-w-sm shadow-2xl flex flex-col">
-          <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <div className="bg-white dark:bg-[#1c1c1c] rounded-2xl border border-slate-200 dark:border-[#2e2e2e] w-full max-w-sm shadow-2xl flex flex-col">
+          <div className="px-6 py-5 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
                 <Warehouse size={18} className="text-amber-500" />
@@ -261,7 +261,7 @@ export const VariantStockWizardModal = ({
                 Aucun dépôt disponible
               </p>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition">
+            <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-xl transition">
               <X size={16} className="text-slate-400" />
             </button>
           </div>
@@ -276,7 +276,7 @@ export const VariantStockWizardModal = ({
               Pour ajouter du stock, vous devez d'abord créer au moins un dépôt.
             </p>
           </div>
-          <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+          <div className="px-6 py-4 border-t border-slate-100 dark:border-[#2e2e2e] flex justify-end">
             <button
               type="button"
               onClick={onClose}
@@ -301,9 +301,9 @@ export const VariantStockWizardModal = ({
 
     return createPortal(
       <div className="fixed inset-0 z-[9999] flex items-center justify-center modal-backdrop p-4">
-        <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200 dark:border-slate-800 w-full max-w-sm shadow-2xl flex flex-col">
+        <div className="bg-white dark:bg-[#1c1c1c] rounded-2xl border border-slate-200 dark:border-[#2e2e2e] w-full max-w-sm shadow-2xl flex flex-col">
           {/* Header */}
-          <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <div className="px-6 py-5 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center">
                 <Warehouse size={18} className="text-amber-500" />
@@ -312,7 +312,7 @@ export const VariantStockWizardModal = ({
                 Aucun dépôt disponible
               </p>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition">
+            <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-xl transition">
               <X size={16} className="text-slate-400" />
             </button>
           </div>
@@ -331,7 +331,7 @@ export const VariantStockWizardModal = ({
           </div>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+          <div className="px-6 py-4 border-t border-slate-100 dark:border-[#2e2e2e] flex justify-end">
             <button
               type="button"
               onClick={onClose}
@@ -351,10 +351,10 @@ export const VariantStockWizardModal = ({
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center modal-backdrop p-4">
-      <div className="bg-white dark:bg-[#111827] rounded-2xl border border-slate-200 dark:border-slate-800 w-full max-w-lg shadow-2xl flex flex-col max-h-[92vh]">
+      <div className="bg-white dark:bg-[#1c1c1c] rounded-2xl border border-slate-200 dark:border-[#2e2e2e] w-full max-w-lg shadow-2xl flex flex-col max-h-[92vh]">
 
         {/* Header */}
-        <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center gap-4">
+        <div className="px-6 py-5 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center gap-4">
           <div className="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
             <Warehouse size={18} className="text-[#B12B89]" />
           </div>
@@ -366,7 +366,7 @@ export const VariantStockWizardModal = ({
               {currentItem?.name}
             </h2>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition">
+          <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-xl transition">
             <X size={16} className="text-slate-400" />
           </button>
         </div>
@@ -378,7 +378,7 @@ export const VariantStockWizardModal = ({
               <div
                 key={i}
                 className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                  i <= safeStepIdx ? "bg-[#B12B89]" : "bg-slate-200 dark:bg-slate-700"
+                  i <= safeStepIdx ? "bg-[#B12B89]" : "bg-slate-200 dark:bg-[#2e2e2e]"
                 }`}
               />
             ))}
@@ -518,7 +518,7 @@ export const VariantStockWizardModal = ({
                           value={data.qty}
                           onChange={(e) => updateField(depot.id, "qty", e.target.value)}
                           placeholder="0"
-                          className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-semibold bg-white dark:bg-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-[#B12B89] outline-none transition"
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#2e2e2e] text-sm font-semibold bg-white dark:bg-[#222222] dark:text-slate-100 focus:ring-2 focus:ring-[#B12B89] outline-none transition"
                         />
                       </div>
                       <div>
@@ -531,7 +531,7 @@ export const VariantStockWizardModal = ({
                           value={data.alert}
                           onChange={(e) => updateField(depot.id, "alert", e.target.value)}
                           placeholder="0"
-                          className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-semibold bg-white dark:bg-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-[#B12B89] outline-none transition"
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#2e2e2e] text-sm font-semibold bg-white dark:bg-[#222222] dark:text-slate-100 focus:ring-2 focus:ring-[#B12B89] outline-none transition"
                         />
                       </div>
                     </div>
@@ -543,7 +543,7 @@ export const VariantStockWizardModal = ({
 
           {/* ── Batch apply — visible when 2+ depots selected ── */}
           {showBatch && (
-            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-3">
+            <div className="pt-3 border-t border-slate-100 dark:border-[#2e2e2e] space-y-3">
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 Appliquer à tous les dépôts sélectionnés ({selectedDepots.length})
               </p>
@@ -556,7 +556,7 @@ export const VariantStockWizardModal = ({
                     value={batchQty}
                     onChange={(e) => setBatchQty(e.target.value)}
                     placeholder="Ex : 100"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-semibold bg-white dark:bg-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-[#B12B89] outline-none transition"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#2e2e2e] text-sm font-semibold bg-white dark:bg-[#222222] dark:text-slate-100 focus:ring-2 focus:ring-[#B12B89] outline-none transition"
                   />
                 </div>
                 <div>
@@ -567,7 +567,7 @@ export const VariantStockWizardModal = ({
                     value={batchAlert}
                     onChange={(e) => setBatchAlert(e.target.value)}
                     placeholder="Ex : 5"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-semibold bg-white dark:bg-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-[#B12B89] outline-none transition"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-[#2e2e2e] text-sm font-semibold bg-white dark:bg-[#222222] dark:text-slate-100 focus:ring-2 focus:ring-[#B12B89] outline-none transition"
                   />
                 </div>
               </div>
@@ -586,7 +586,7 @@ export const VariantStockWizardModal = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+        <div className="px-6 py-4 border-t border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between gap-3">
           <button
             type="button"
             onClick={onClose}
@@ -600,7 +600,7 @@ export const VariantStockWizardModal = ({
               <button
                 type="button"
                 onClick={() => setStepIdx((p) => p - 1)}
-                className="flex items-center gap-1.5 px-5 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+                className="flex items-center gap-1.5 px-5 py-2.5 rounded-2xl border border-slate-200 dark:border-[#2e2e2e] text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#222222] transition"
               >
                 <ChevronLeft size={15} className="rtl:scale-x-[-1]" /> Retour
               </button>

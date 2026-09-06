@@ -45,12 +45,16 @@
     },
     "email": { "label": "Email", "placeholder": "contact@client.com" },
     "address": {
-      "label": "Adresse Siège",
-      "placeholder": "ex: Client-CASA-01"
+      "label": "Adresse / Localisation",
+      "placeholder": "Adresse, quartier..."
+    },
+    "city": {
+      "label": "Ville",
+      "placeholder": "Casablanca"
     },
     "region": {
-      "label": "Région / Ville",
-      "placeholder": "Entrez la région ou ville"
+      "label": "Région",
+      "placeholder": "Entrez la région"
     },
     "website": { "label": "Site Web", "placeholder": "https://example.com" },
     "ice": { "label": "ICE", "placeholder": "Identifiant de 15 chiffres" },
@@ -103,6 +107,7 @@
     "phone": "Téléphone",
     "email": "Email",
     "address": "Adresse",
+    "city": "Ville",
     "region": "Région",
     "website": "Site Web",
     "ice": "ICE",

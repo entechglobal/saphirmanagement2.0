@@ -130,11 +130,11 @@ export const themes = {
   
   dark: {
     // ===== GLOBAL TOKENS =====
-    bg: "#0f172a",
-    card: "#1e293b",
+    bg: "#161616",
+    card: "#1c1c1c",
     textPrimary: "#f8fafc",
-    textSecondary: "#94a3b8",
-    border: "#334155",
+    textSecondary: "#a3a3a3",
+    border: "#2e2e2e",
     primary: "#B12B89",
     success: "#10B981",
     warning: "#F59E0B",
@@ -143,47 +143,47 @@ export const themes = {
     
     // ===== SIDEBAR SPECIFIC TOKENS =====
     sidebar: {
-      bg: "#1e293b",                    // Dark sidebar background
-      border: "#334155",                // Sidebar borders
-      logoBorder: "#0f172a",            // Logo bottom border
+      bg: "#161616",                    // Dark sidebar background
+      border: "#2e2e2e",                // Sidebar borders
+      logoBorder: "#111111",            // Logo bottom border
       textPrimary: "#f8fafc",           // Primary text in sidebar
-      textSecondary: "#94a3b8",         // Secondary text in sidebar
+      textSecondary: "#a3a3a3",         // Secondary text in sidebar
       
       menuItem: {
         activeText: "#B12B89",          // Active menu text
-        activeBg: "rgba(15, 131, 239, 0.1)", // Active menu background
-        hoverBg: "#1f2937",             // Hover background
+        activeBg: "rgba(177, 43, 137, 0.12)", // Active menu background
+        hoverBg: "#222222",             // Hover background
         hoverText: "#f8fafc",           // Hover text
       },
       
       submenu: {
-        border: "#334155",              // Submenu border
+        border: "#2e2e2e",              // Submenu border
         itemActiveBg: "#B12B89",       // Active submenu background
         itemActiveText: "#ffffff",     // Active submenu text
-        itemHoverBg: "#1f2937",        // Submenu hover background
+        itemHoverBg: "#222222",        // Submenu hover background
         itemHoverText: "#f8fafc",      // Submenu hover text
       },
       
       mobileNav: {
-        bg: "rgba(30, 41, 59, 0.8)",   // Mobile nav background
-        border: "#334155",              // Mobile nav border
+        bg: "rgba(22, 22, 22, 0.92)",   // Mobile nav background
+        border: "#2e2e2e",              // Mobile nav border
         gradientFrom: "rgba(0, 0, 0, 0.05)", // Gradient overlay
-        itemActiveBg: "rgba(15, 131, 239, 0.1)", // Active background
-        itemHoverBg: "#1f2937",         // Hover background
+        itemActiveBg: "rgba(177, 43, 137, 0.12)", // Active background
+        itemHoverBg: "#222222",         // Hover background
       },
       
       profileCircle: {
         bg: "#B12B89",                 // Profile circle background
-        ringBg: "#1e293b",             // Ring background
+        ringBg: "#1c1c1c",             // Ring background
       },
       
       scrollbar: {
-        thumb: "#475569",              // Scrollbar thumb
+        thumb: "#3a3a3a",              // Scrollbar thumb
         thumbHover: "#B12B89",         // Scrollbar thumb hover
       },
       
       skeleton: {
-        bg: "#1f2937",                 // Skeleton background
+        bg: "#222222",                 // Skeleton background
       },
       
       overlay: "rgba(0, 0, 0, 0.6)",   // Mobile backdrop
@@ -191,53 +191,53 @@ export const themes = {
     
     // ===== HEADER SPECIFIC TOKENS =====
     header: {
-      bg: "rgba(30, 41, 59, 0.85)",    // Header background with blur
-      border: "#334155",               // Header bottom border
+      bg: "rgba(22, 22, 22, 0.92)",    // Header background with blur
+      border: "#2e2e2e",               // Header bottom border
       
       button: {
-        bg: "#1e293b",                 // Button background
-        hoverBg: "#334155",            // Button hover background
-        text: "#94a3b8",               // Button text
+        bg: "#222222",                 // Button background
+        hoverBg: "#2e2e2e",            // Button hover background
+        text: "#a3a3a3",               // Button text
         hoverText: "#B12B89",          // Button hover text
       },
       
       branding: {
-        border: "#334155",             // Branding border
-        companyBg: "#1e293b",          // Company logo background
-        companyBorder: "#334155",      // Company logo border
+        border: "#2e2e2e",             // Branding border
+        companyBg: "#222222",          // Company logo background
+        companyBorder: "#2e2e2e",      // Company logo border
         textPrimary: "#f8fafc",        // Primary branding text
-        textSecondary: "#94a3b8",      // Secondary branding text
+        textSecondary: "#a3a3a3",      // Secondary branding text
       },
       
       status: {
         dotBg: "#10B981",              // Online status dot
-        dotBorder: "#1e293b",          // Status dot border
+        dotBorder: "#1c1c1c",          // Status dot border
       },
       
       roleBadge: {
-        bg: "rgba(15, 131, 239, 0.1)", // Role badge background
-        text: "#60a5fa",               // Role badge text (lighter for dark mode)
-        border: "rgba(15, 131, 239, 0.2)", // Role badge border
+        bg: "rgba(177, 43, 137, 0.12)", // Role badge background
+        text: "#E879C0",               // Role badge text (lighter for dark mode)
+        border: "rgba(177, 43, 137, 0.25)", // Role badge border
       },
       
       dropdown: {
-        bg: "#1e293b",                 // Dropdown background
-        border: "#334155",             // Dropdown border
-        headerBg: "rgba(30, 41, 59, 0.5)", // Dropdown header
-        itemHoverBg: "#1e293b",        // Item hover background
+        bg: "#1c1c1c",                 // Dropdown background
+        border: "#2e2e2e",             // Dropdown border
+        headerBg: "rgba(28, 28, 28, 0.8)", // Dropdown header
+        itemHoverBg: "#222222",        // Item hover background
         itemHoverText: "#B12B89",      // Item hover text
-        divider: "#334155",            // Divider color
+        divider: "#2e2e2e",            // Divider color
       },
       
       languageSelector: {
-        bg: "#1e293b",                 // Language selector background
-        hoverBg: "#334155",            // Language hover background
+        bg: "#222222",                 // Language selector background
+        hoverBg: "#2e2e2e",            // Language hover background
       },
       
       toggle: {
-        bg: "#1e293b",                 // Toggle group background
-        hoverBg: "#1e293b",            // Toggle hover background
-        text: "#94a3b8",               // Toggle text
+        bg: "#222222",                 // Toggle group background
+        hoverBg: "#222222",            // Toggle hover background
+        text: "#a3a3a3",               // Toggle text
         activeText: "#F59E0B",         // Active toggle text
       },
     },

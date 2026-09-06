@@ -51,7 +51,7 @@ const STATUS_MAP = {
 
 // ─── Stat Card ─────────────────────────────────────────────────────────────
 const StatCard = ({ icon: Icon, label, value, color }) => (
-  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm px-3 sm:px-5 py-3 sm:py-4 flex items-center gap-3 sm:gap-4">
+  <div className="bg-white dark:bg-[#1c1c1c] rounded-2xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm px-3 sm:px-5 py-3 sm:py-4 flex items-center gap-3 sm:gap-4">
     <div
       className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0"
       style={{ backgroundColor: `${color}18` }}
@@ -84,19 +84,19 @@ const BLCard = ({ bl }) => {
 
   const statusCfg = STATUS_MAP[bl.commandStatus] ?? {
     labelKey: null,
-    bg: "bg-slate-50 dark:bg-slate-800",
+    bg: "bg-slate-50 dark:bg-[#222222]",
     text: "text-slate-600 dark:text-slate-300",
     dot: "bg-slate-400",
   };
   const status = { ...statusCfg, label: statusCfg.labelKey ? t(statusCfg.labelKey) : bl.commandStatus };
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-all">
+    <div className="bg-white dark:bg-[#1c1c1c] rounded-2xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm overflow-hidden transition-all">
       {/* Collapsed header – always visible */}
       <button
         type="button"
         onClick={() => setExpanded((p) => !p)}
-        className="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition"
+        className="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-[#222222]/60 transition"
       >
         {/* Status dot */}
         <span className={`w-2 h-2 rounded-full shrink-0 ${status.dot}`} />
@@ -130,7 +130,7 @@ const BLCard = ({ bl }) => {
 
       {/* Expanded details */}
       {expanded && (
-        <div className="border-t border-slate-100 dark:border-slate-800 px-4 pb-4 pt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5">
+        <div className="border-t border-slate-100 dark:border-[#2e2e2e] px-4 pb-4 pt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5">
           <DetailRow icon={Hash} label={t("detail_document")} value={bl.documentNumber} />
           <DetailRow icon={User} label={t("detail_created_by")} value={bl.createdBy ?? "—"} />
           <DetailRow
@@ -212,7 +212,7 @@ const BLCard = ({ bl }) => {
               </span>
             )}
             {bl.agenceName && (
-              <span className="inline-flex items-center text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <span className="inline-flex items-center text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#222222] text-slate-600 dark:text-slate-300">
                 {bl.agenceName}
               </span>
             )}
@@ -287,13 +287,13 @@ const MiniCalendar = ({ planningData, calMonth, setCalMonth, onDaySelect, select
     dayjs().year() === calMonth.year();
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm overflow-hidden">
       {/* Month nav */}
-      <div className="flex items-center justify-between px-3 sm:px-5 py-3 sm:py-4 border-b border-slate-100 dark:border-slate-800">
+      <div className="flex items-center justify-between px-3 sm:px-5 py-3 sm:py-4 border-b border-slate-100 dark:border-[#2e2e2e]">
         <button
           type="button"
           onClick={() => setCalMonth((m) => m.subtract(1, "month"))}
-          className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-slate-100 dark:hover:bg-[#222222] transition"
         >
           <ChevronLeft size={16} className="text-slate-500" />
         </button>
@@ -303,7 +303,7 @@ const MiniCalendar = ({ planningData, calMonth, setCalMonth, onDaySelect, select
         <button
           type="button"
           onClick={() => setCalMonth((m) => m.add(1, "month"))}
-          className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-slate-100 dark:hover:bg-[#222222] transition"
         >
           <ChevronRight size={16} className="text-slate-500" />
         </button>
@@ -345,7 +345,7 @@ const MiniCalendar = ({ planningData, calMonth, setCalMonth, onDaySelect, select
                   : hasDeliveries
                     ? "text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40"
                     : inRange
-                      ? "text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      ? "text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#222222]"
                       : "text-slate-300 dark:text-slate-700 cursor-default",
                 today && !selected ? "ring-2 ring-blue-400" : "",
               ].join(" ")}
@@ -379,11 +379,11 @@ const MiniCalendar = ({ planningData, calMonth, setCalMonth, onDaySelect, select
           {t("legend_with_deliveries")}
         </span>
         <span className="flex items-center gap-1.5 text-[10px] text-slate-400">
-          <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700 shrink-0" />
+          <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-[#2e2e2e] shrink-0" />
           {t("legend_without")}
         </span>
         <span className="flex items-center gap-1.5 text-[10px] text-slate-300 dark:text-slate-700">
-          <span className="w-2 h-2 rounded-full bg-slate-200 dark:bg-slate-800 shrink-0" />
+          <span className="w-2 h-2 rounded-full bg-slate-200 dark:bg-[#222222] shrink-0" />
           {t("legend_out_of_range")}
         </span>
       </div>
@@ -449,7 +449,7 @@ export const PlanningLivraisonPage = () => {
 
       <div className="px-4 md:px-8 space-y-6">
         {/* ── Filters ── */}
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-5">
+        <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm p-5">
           <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-4">
             {t("filter_label")}
           </p>
@@ -557,7 +557,7 @@ export const PlanningLivraisonPage = () => {
             {isLoading || isFetching ? (
               <SectionLoader />
             ) : displayedDays.length === 0 ? (
-              <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-10 text-center">
+              <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm p-10 text-center">
                 <Truck size={36} className="text-slate-300 dark:text-slate-700 mx-auto mb-3" />
                 <p className="text-sm font-semibold text-slate-400">
                   {t("empty_period")}
@@ -586,7 +586,7 @@ export const PlanningLivraisonPage = () => {
                         {t("no_delivery")}
                       </span>
                     )}
-                    <div className="flex-1 h-px bg-slate-100 dark:bg-slate-800" />
+                    <div className="flex-1 h-px bg-slate-100 dark:bg-[#222222]" />
                   </div>
 
                   {/* BL cards */}
@@ -597,7 +597,7 @@ export const PlanningLivraisonPage = () => {
                       ))}
                     </div>
                   ) : (
-                    <div className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 py-4 px-5">
+                    <div className="bg-slate-50 dark:bg-[#1c1c1c]/50 rounded-2xl border border-dashed border-slate-200 dark:border-[#2e2e2e] py-4 px-5">
                       <p className="text-[12px] text-slate-400 text-center">
                         {t("day_no_delivery")}
                       </p>

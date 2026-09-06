@@ -29,7 +29,7 @@ const ATTRIBUTE_STYLES = {
   },
   default: {
     light: "bg-slate-100 text-slate-700 ring-slate-200",
-    dark: "dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700",
+    dark: "dark:bg-[#222222] dark:text-slate-300 dark:ring-[#2e2e2e]",
   },
 };
 
@@ -104,7 +104,7 @@ export function ArticleVariantsViewTAble({ variants }) {
 
         {/* DESKTOP TABLE */}
         <div className="hidden md:block overflow-x-auto">
-          <table className="w-full text-sm border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+          <table className="w-full text-sm border border-slate-200 dark:border-[#2e2e2e] rounded-xl overflow-hidden">
             <thead className="bg-slate-50 dark:bg-[#1F2937]">
               <tr className="text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 <th className="px-4 py-3 text-left">{t("table.variant")}</th>
@@ -114,9 +114,9 @@ export function ArticleVariantsViewTAble({ variants }) {
                 <th className="px-4 py-3 text-right">{t("table.actions")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
               {variants.map((v) => (
-                <tr key={v.id} className="hover:bg-slate-50 dark:hover:bg-[#111827] transition">
+                <tr key={v.id} className="hover:bg-slate-50 dark:hover:bg-[#1c1c1c] transition">
                   <td className="px-4 py-3 font-semibold text-slate-800 dark:text-slate-100">
                     {v.name}
                   </td>
@@ -136,7 +136,7 @@ export function ArticleVariantsViewTAble({ variants }) {
                       ))}
                       <button
                         onClick={() => setEditingAttributesVariant(v)}
-                        className="inline-flex items-center justify-center w-6 h-6 rounded-full text-slate-500 hover:text-[#B12B89] hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                        className="inline-flex items-center justify-center w-6 h-6 rounded-full text-slate-500 hover:text-[#B12B89] hover:bg-slate-100 dark:hover:bg-[#222222] transition"
                         title={t("form.manage_attr")}
                       >
                         <EditIcon sx={{ fontSize: 14 }} />
@@ -163,7 +163,7 @@ export function ArticleVariantsViewTAble({ variants }) {
           {variants.map((v) => (
             <div
               key={v.id}
-              className="border border-slate-200 dark:border-slate-800 rounded-xl p-4 bg-white dark:bg-[#111827]"
+              className="border border-slate-200 dark:border-[#2e2e2e] rounded-xl p-4 bg-white dark:bg-[#1c1c1c]"
             >
               <div className="font-bold text-slate-800 dark:text-slate-100">{v.name}</div>
               <div className="text-xs font-mono text-slate-500 dark:text-slate-400">{v.barcode}</div>
@@ -181,13 +181,13 @@ export function ArticleVariantsViewTAble({ variants }) {
                 </div>
                 <button
                   onClick={() => setEditingAttributesVariant(v)}
-                  className="inline-flex items-center justify-center w-6 h-6 rounded-full text-slate-500 hover:text-[#B12B89] hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                  className="inline-flex items-center justify-center w-6 h-6 rounded-full text-slate-500 hover:text-[#B12B89] hover:bg-slate-100 dark:hover:bg-[#222222] transition"
                   title={t("form.manage_attr")}
                 >
                   <EditIcon sx={{ fontSize: 14 }} />
                 </button>
               </div>
-              <div className="pt-2 mt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="pt-2 mt-2 border-t border-slate-100 dark:border-[#2e2e2e]">
                 <p className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-1.5">
                   {t("table.stock")}
                 </p>
@@ -278,7 +278,7 @@ const EditVariantModal = ({ variant, onClose, onSubmit, isLoading }) => {
             type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="flex-1 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition disabled:opacity-50"
+            className="flex-1 py-2.5 border border-slate-200 dark:border-[#2e2e2e] rounded-xl font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#222222] transition disabled:opacity-50"
           >
             {t("dialog.cancel")}
           </button>
@@ -315,7 +315,7 @@ const EditVariantModal = ({ variant, onClose, onSubmit, isLoading }) => {
             value={formData.name}
             onChange={(e) => setFormData((p) => ({ ...p, name: e.target.value }))}
             required
-            className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-[#B12B89] focus:border-transparent dark:bg-slate-800 dark:text-slate-100 outline-none"
+            className="w-full px-3 py-2 border border-slate-300 dark:border-[#2e2e2e] rounded-xl focus:ring-2 focus:ring-[#B12B89] focus:border-transparent dark:bg-[#222222] dark:text-slate-100 outline-none"
           />
         </div>
         <div>
@@ -328,7 +328,7 @@ const EditVariantModal = ({ variant, onClose, onSubmit, isLoading }) => {
             value={formData.barcode}
             onChange={(e) => setFormData((p) => ({ ...p, barcode: e.target.value }))}
             required
-            className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-xl font-mono focus:ring-2 focus:ring-[#B12B89] focus:border-transparent dark:bg-slate-800 dark:text-slate-100 outline-none"
+            className="w-full px-3 py-2 border border-slate-300 dark:border-[#2e2e2e] rounded-xl font-mono focus:ring-2 focus:ring-[#B12B89] focus:border-transparent dark:bg-[#222222] dark:text-slate-100 outline-none"
           />
         </div>
       </form>
@@ -361,8 +361,8 @@ const VariantActions = ({ onEdit, onDelete }) => {
 
 /* ================== CARD ================== */
 const Card = ({ title, children }) => (
-  <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-    <div className="px-6 py-4 border-b border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+  <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm overflow-hidden">
+    <div className="px-6 py-4 border-b border-slate-50 dark:border-[#2e2e2e] bg-slate-50/50 dark:bg-[#222222]/30">
       <h3 className="font-bold text-[11px] uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
         {title}
       </h3>
@@ -448,7 +448,7 @@ const EditVariantAttributesModal = ({ variant, onClose, onSubmit, isLoading }) =
               type="button"
               onClick={onClose}
               disabled={isLoading}
-              className="px-5 py-2.5 text-sm font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition disabled:opacity-50"
+              className="px-5 py-2.5 text-sm font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#2e2e2e] rounded-xl hover:bg-slate-50 dark:hover:bg-[#222222] transition disabled:opacity-50"
             >
               {t("dialog.cancel")}
             </button>
@@ -487,7 +487,7 @@ const EditVariantAttributesModal = ({ variant, onClose, onSubmit, isLoading }) =
           {attributes.map((attr, index) => (
             <div
               key={index}
-              className="flex flex-col md:flex-row gap-3 items-end bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-100 dark:border-slate-800"
+              className="flex flex-col md:flex-row gap-3 items-end bg-slate-50 dark:bg-[#222222]/40 p-3 rounded-xl border border-slate-100 dark:border-[#2e2e2e]"
             >
               <div className="flex-1 w-full">
                 <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
@@ -497,7 +497,7 @@ const EditVariantAttributesModal = ({ variant, onClose, onSubmit, isLoading }) =
                   required
                   value={attr.attributeId}
                   onChange={(e) => handleTypeChange(index, e.target.value)}
-                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm dark:bg-slate-900 outline-none focus:ring-2 focus:ring-[#B12B89]"
+                  className="w-full rounded-xl border border-slate-300 dark:border-[#2e2e2e] px-3 py-2 text-sm dark:bg-[#1c1c1c] outline-none focus:ring-2 focus:ring-[#B12B89]"
                 >
                   <option value="">{t("form.select_type")}</option>
                   {allAttributes.map((a) => (
@@ -516,7 +516,7 @@ const EditVariantAttributesModal = ({ variant, onClose, onSubmit, isLoading }) =
                   disabled={!attr.attributeId}
                   value={attr.attributeValueId}
                   onChange={(e) => handleValueChange(index, e.target.value)}
-                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm dark:bg-slate-900 disabled:opacity-50 outline-none focus:ring-2 focus:ring-[#B12B89]"
+                  className="w-full rounded-xl border border-slate-300 dark:border-[#2e2e2e] px-3 py-2 text-sm dark:bg-[#1c1c1c] disabled:opacity-50 outline-none focus:ring-2 focus:ring-[#B12B89]"
                 >
                   <option value="">{t("form.select_value")}</option>
                   {allAttributes

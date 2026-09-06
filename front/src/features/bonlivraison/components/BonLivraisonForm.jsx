@@ -97,7 +97,7 @@ const EditableCell = ({ value, onActivate, onCommit, min = 0, max, step = 1, wid
       type="number" min={min} max={max} step={step}
       value={editing ? raw : value}
       onFocus={handleFocus} onBlur={handleBlur} onChange={handleChange}
-      className={`${width} px-2 py-1.5 border rounded-lg text-center text-sm font-bold outline-none focus:border-[#B12B89] focus:ring-2 focus:ring-[#B12B89]/15 transition-colors dark:text-slate-100 bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 ${className}`}
+      className={`${width} px-2 py-1.5 border rounded-lg text-center text-sm font-bold outline-none focus:border-[#B12B89] focus:ring-2 focus:ring-[#B12B89]/15 transition-colors dark:text-slate-100 bg-white dark:bg-[#222222] border-slate-300 dark:border-[#2e2e2e] ${className}`}
     />
   );
 };
@@ -540,7 +540,7 @@ export const BonLivraisonForm = () => {
         </FormCard>
 
         <div className="overflow-x-auto">
-          <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+          <div className="px-6 py-5 border-b border-slate-100 dark:border-[#2e2e2e] flex flex-wrap items-center justify-between gap-4">
             <div>
               <h3 className="font-bold text-slate-800 dark:text-slate-100">{t("articles_packs", "Articles & Packs")}</h3>
               <p className="text-[10px] text-slate-400 mt-0.5">
@@ -560,7 +560,7 @@ export const BonLivraisonForm = () => {
           <div className="overflow-x-auto">
             <table className="w-full table-auto">
               <thead>
-                <tr className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50">
+                <tr className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/50">
                   <th className="px-6 py-3.5 text-left font-semibold">{t("article")}</th>
                   <th className="px-5 py-3.5 text-left font-semibold hidden md:table-cell">{t("family")}</th>
                   <th className="px-5 py-3.5 text-left font-semibold hidden md:table-cell">{t("type")}</th>
@@ -573,7 +573,7 @@ export const BonLivraisonForm = () => {
                   <th className="px-6 py-3.5 text-right font-semibold"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
                 {selectedProducts.length === 0 && selectedPacks.length === 0 ? (
                   <tr>
                     <td colSpan="10" className="px-6 py-16 text-center">
@@ -597,7 +597,7 @@ export const BonLivraisonForm = () => {
                           className={`group transition-colors ${hasLowStock ? "bg-amber-50/30 dark:bg-amber-900/5" : "hover:bg-blue-50/30 dark:hover:bg-blue-900/10"}`}>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
-                              <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800">
+                              <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-[#222222]">
                                 <Package className="w-4 h-4 text-slate-500" />
                               </div>
                               <div>
@@ -733,7 +733,7 @@ export const BonLivraisonForm = () => {
 
               {(hasTouched || hasTouchedPack) && (
                 <tfoot>
-                  <tr className="border-t-2 border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-800/40">
+                  <tr className="border-t-2 border-slate-200 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/40">
                     <td colSpan="8" className="px-6 py-4 text-right text-xs font-bold uppercase text-slate-500 tracking-wider">
                       {t("total_excl_tax")}
                     </td>

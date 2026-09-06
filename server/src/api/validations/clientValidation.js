@@ -61,6 +61,12 @@ export const createClientValidator = [
     .withMessage("Address is too long (max 1000 characters)")
     .trim(),
 
+  check("city")
+    .optional()
+    .isLength({ max: 100 })
+    .withMessage("City name is too long (max 100 characters)")
+    .trim(),
+
   // Region validation (optional)
   check("region")
     .optional()
@@ -219,6 +225,12 @@ export const updateClientValidator = [
     .optional()
     .isLength({ max: 1000 })
     .withMessage("Address is too long (max 1000 characters)")
+    .trim(),
+
+  check("city")
+    .optional()
+    .isLength({ max: 100 })
+    .withMessage("City name is too long (max 100 characters)")
     .trim(),
 
   // Region validation (optional)

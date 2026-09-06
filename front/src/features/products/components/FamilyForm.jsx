@@ -13,6 +13,8 @@ import { FormActions } from "../../../shared/components/FormActions";
 import { Input } from "../../../shared/components/Input";
 import { InputToggle } from "../../../shared/components/InputToggle";
 import { SelectDropDown } from "../../../shared/components/SelectDropDown";
+import { SelectWithQuickAdd } from "./SelectWithQuickAdd";
+import { QuickCreateCategoryModal } from "./QuickCreateCategoryModal";
 
 const TVA_OPTIONS = [
   { label: "0%", value: 0 },
@@ -38,6 +40,7 @@ export const FamilyForm = ({ id, initialValues, onSubmit, isLoading }) => {
   });
 
   const [imageDirty, setImageDirty] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
   const { data: categoriesData, isLoading: categoriesLoading } = useCategories({
     pageSize: 1000,
   });
@@ -139,7 +142,7 @@ export const FamilyForm = ({ id, initialValues, onSubmit, isLoading }) => {
             error={errors.name}
             required
           />
-          <SelectDropDown
+          <SelectWithQuickAdd
             label={t("category")}
             name="categoryId"
             value={form.categoryId}
@@ -148,6 +151,8 @@ export const FamilyForm = ({ id, initialValues, onSubmit, isLoading }) => {
             options={categoriesOptions}
             isLoading={categoriesLoading}
             required
+            onAdd={() => setShowCategoryModal(true)}
+            addLabel={t("quick_add_category")}
           />
           <div className="sm:col-span-2">
             <p className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1.5 ml-1">
@@ -184,7 +189,7 @@ export const FamilyForm = ({ id, initialValues, onSubmit, isLoading }) => {
             value={form.remise}
             onChange={handleChange}
           />
-          <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/30 p-4">
+          <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 rounded-xl border border-slate-100 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/30 p-4">
             <InputToggle
               label={t("manage_stock")}
               description={t("stock_description")}
@@ -208,6 +213,17 @@ export const FamilyForm = ({ id, initialValues, onSubmit, isLoading }) => {
         cancelLabel={t("common:cancel", { defaultValue: "Annuler" })}
         submitLabel={t("save_family")}
         isLoading={isLoading}
+      />
+
+      <QuickCreateCategoryModal
+        isOpen={showCategoryModal}
+        onClose={() => setShowCategoryModal(false)}
+        onCreated={(id) => {
+          if (id) {
+            setForm((prev) => ({ ...prev, categoryId: String(id) }));
+            setErrors((prev) => ({ ...prev, categoryId: null }));
+          }
+        }}
       />
     </form>
   );

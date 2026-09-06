@@ -136,6 +136,65 @@
   "stat_en_route": "En route",
   "stat_livre": "Livré",
 
+  "saphir_home": {
+    "badge": "Saphir Gestion",
+    "subtitle": "Suivi des commandes affectées et planning des livraisons",
+    "all_orders": "Toutes les commandes",
+    "new_order": "Nouvelle commande"
+  },
+  "saphir_stats": {
+    "total_period": "Commandes sur la période",
+    "in_pipeline": "En cours de traitement",
+    "empty": "Aucune commande pour cette période",
+    "a_preparer": "À préparer",
+    "a_collecter": "À collecter",
+    "en_route": "Collecté",
+    "a_livrer": "À livrer",
+    "a_payer": "À encaisser",
+    "hint_preparer": "Commandes confirmées en attente",
+    "hint_collecter": "Prêtes pour le livreur",
+    "hint_en_route": "Prises en charge",
+    "hint_livrer": "En cours de livraison",
+    "hint_payer": "Livrées, paiement en attente"
+  },
+  "saphir_planning": {
+    "title": "Planning",
+    "see_all": "Voir tout",
+    "today": "Aujourd'hui",
+    "tomorrow": "Demain",
+    "empty_today": "Aucune livraison prévue aujourd'hui",
+    "empty_tomorrow": "Aucune livraison prévue demain",
+    "tomorrow_summary": "{{count}} commande(s) demain",
+    "cities": "Villes",
+    "unassigned": "Non assigné",
+    "orders_count": "{{count}} commande(s)",
+    "more": "+{{count}} autres"
+  },
+  "saphir_top_commercials": {
+    "title": "Top commerciaux",
+    "subtitle": "Commandes & commissions",
+    "see_all": "Voir tout",
+    "orders": "Commandes",
+    "commission": "Commission",
+    "order_count": "{{count}} commande(s)",
+    "empty": "Aucun commercial sur cette période",
+    "error": "Impossible de charger le classement"
+  },
+  "saphir_commercial_stats": {
+    "badge": "Commissions",
+    "title": "Statistique commercial",
+    "subtitle": "Commandes créées et commissions dues par commercial",
+    "kpi_commercials": "Commerciaux",
+    "kpi_orders": "Commandes",
+    "kpi_ca": "Chiffre d'affaires",
+    "kpi_commission": "Commission totale",
+    "commission": "Commission",
+    "orders_label": "{{count}} commande(s)",
+    "no_orders": "Aucune commande",
+    "empty": "Aucune donnée pour cette période",
+    "error": "Impossible de charger les statistiques"
+  },
+
   "status_label_CONFIRME": "Confirmé",
   "status_label_PREPARE": "Préparé",
   "status_label_COLLECTE": "Collecté",

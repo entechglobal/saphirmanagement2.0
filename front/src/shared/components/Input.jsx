@@ -15,7 +15,7 @@ export const Input = React.forwardRef(({
 
   const stateStyles = error
     ? "border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/15"
-    : "border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 focus:border-[#B12B89] focus:ring-2 focus:ring-[#B12B89]/15";
+    : "border-slate-300 dark:border-[#2e2e2e] hover:border-slate-400 dark:hover:border-[#3a3a3a] focus:border-[#B12B89] focus:ring-2 focus:ring-[#B12B89]/15";
 
   return (
     <div className={`w-full ${className}`}>
@@ -32,10 +32,10 @@ export const Input = React.forwardRef(({
           {...props}
           className={`
             w-full px-3 h-10 text-sm rounded-md border outline-none transition-colors
-            bg-white dark:bg-slate-800/60
+            bg-white dark:bg-[#222222]/60
             text-slate-900 dark:text-slate-100
             placeholder:text-slate-400 dark:placeholder:text-slate-500
-            disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-50 dark:disabled:bg-slate-800/40
+            disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-50 dark:disabled:bg-[#222222]/40
             ${isPassword ? "pl-3 pr-10" : ""}
             ${stateStyles}
           `}

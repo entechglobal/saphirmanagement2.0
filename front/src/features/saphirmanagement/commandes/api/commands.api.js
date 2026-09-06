@@ -85,14 +85,33 @@ export const commandsApi = {
     return res.data;
   },
 
-  getWorkflowCounts: async () => {
-    const res = await api.get("/advanced-bon-livraisons/workflow-counts");
+  getWorkflowCounts: async (filters = {}) => {
+    const params = buildParams(filters);
+    const res = await api.get("/advanced-bon-livraisons/workflow-counts", {
+      params,
+    });
     return res.data;
   },
   // Inside commandsApi object, add:
   getBLsByStatus: async (filters = {}) => {
     const params = buildParams(filters);
     const res = await api.get("/advanced-bon-livraisons/BLs-By-Status", {
+      params,
+    });
+    return res.data;
+  },
+
+  getCommercialStats: async (filters = {}) => {
+    const params = buildParams(filters);
+    const res = await api.get("/advanced-bon-livraisons/commercial-stats", {
+      params,
+    });
+    return res.data;
+  },
+
+  getTopCommercials: async (filters = {}) => {
+    const params = buildParams(filters);
+    const res = await api.get("/advanced-bon-livraisons/top-commercials", {
       params,
     });
     return res.data;
@@ -229,3 +248,5 @@ export const MODE_REGLEMENT_OPTIONS = [
   { value: "REMISE", label: "Remise" },
   { value: "VIREMENT", label: "Virement bancaire" },
 ];
+
+export const MODES_WITH_BANQUE = ["CARTE_BANCAIRE", "VIREMENT"];

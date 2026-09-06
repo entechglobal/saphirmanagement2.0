@@ -42,12 +42,16 @@
       "placeholder": "contact@client.com"
     },
     "address": {
-      "label": "عنوان المقر",
-      "placeholder": "مثال: Client-CASA-01"
+      "label": "العنوان / الموقع",
+      "placeholder": "العنوان، الحي..."
+    },
+    "city": {
+      "label": "المدينة",
+      "placeholder": "الدار البيضاء"
     },
     "region": {
-      "label": "الجهة / المدينة",
-      "placeholder": "أدخل الجهة أو المدينة"
+      "label": "الجهة",
+      "placeholder": "أدخل الجهة"
     },
     "website": {
       "label": "الموقع الإلكتروني",
@@ -94,6 +98,7 @@
     "phone": "الهاتف",
     "email": "البريد الإلكتروني",
     "address": "العنوان",
+    "city": "المدينة",
     "region": "الجهة",
     "website": "الموقع الإلكتروني",
     "ice": "ICE",

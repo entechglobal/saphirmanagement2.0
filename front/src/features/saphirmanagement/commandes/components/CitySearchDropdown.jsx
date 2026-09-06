@@ -156,7 +156,7 @@ export const CitySearchDropdown = React.forwardRef(({
   
   const stateStyles = error
     ? "border-red-500 ring-4 ring-red-500/5"
-    : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 focus-within:border-[#B12B89] focus-within:ring-4 focus-within:ring-[#B12B89]/5";
+    : "border-slate-200 dark:border-[#2e2e2e] hover:border-slate-300 dark:hover:border-[#3a3a3a] focus-within:border-[#B12B89] focus-within:ring-4 focus-within:ring-[#B12B89]/5";
 
   return (
     <div ref={containerRef} className="w-full group">
@@ -183,7 +183,7 @@ export const CitySearchDropdown = React.forwardRef(({
           className={`
             w-full px-4 text-sm rounded-xl border transition-all duration-200 outline-none
             h-[46px] leading-none
-            bg-white dark:bg-slate-800/60
+            bg-white dark:bg-[#222222]/60
             text-slate-900 dark:text-slate-100
             placeholder:text-slate-400 dark:placeholder:text-slate-500
             disabled:opacity-60 disabled:cursor-not-allowed
@@ -227,10 +227,10 @@ export const CitySearchDropdown = React.forwardRef(({
             width: `${position.width}px`,
             zIndex: 10001,
           }}
-          className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg overflow-hidden"
+          className="bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-xl shadow-lg overflow-hidden"
         >
           {/* Search Input */}
-          <div className="p-3 border-b border-slate-100 dark:border-slate-700">
+          <div className="p-3 border-b border-slate-100 dark:border-[#2e2e2e]">
             <div className="relative">
               <Search
                 size={14}
@@ -243,7 +243,7 @@ export const CitySearchDropdown = React.forwardRef(({
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder={manualMode ? t("city_type_name") : t("city_search")}
-                className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-[#B12B89] focus:border-[#B12B89] transition-all"
+                className="w-full pl-9 pr-3 py-2 rounded-lg border border-slate-200 dark:border-[#3a3a3a] dark:bg-[#2e2e2e] dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-[#B12B89] focus:border-[#B12B89] transition-all"
                 autoFocus
               />
               {manualMode && search.trim() && (
@@ -306,7 +306,7 @@ export const CitySearchDropdown = React.forwardRef(({
                             ${
                               isSelected
                                 ? "bg-blue-50 dark:bg-blue-900/20 text-[#B12B89] dark:text-blue-400 font-semibold"
-                                : "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/50"
+                                : "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2e2e2e]/50"
                             }
                           `}
                         >

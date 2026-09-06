@@ -7,9 +7,11 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
+    "start:prod": "cross-env NODE_ENV=production node src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "node prisma/seed.js",
-    "seed:demo": "node prisma/seedDemo.js"
+    "seed:demo": "node prisma/seedDemo.js",
+    "test:saphir": "node scripts/test-saphir-wide.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -41,6 +43,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "prisma": "^5.22.0"
   }
 }

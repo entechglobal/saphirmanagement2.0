@@ -112,7 +112,7 @@ export const AssignPermissionsModal = ({
             <button
               onClick={onClose}
               disabled={isSaving}
-              className="px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition disabled:opacity-50"
+              className="px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-xl transition disabled:opacity-50"
             >
               {t("modal_cancel")}
             </button>
@@ -128,7 +128,7 @@ export const AssignPermissionsModal = ({
       }
     >
       {/* Search bar */}
-      <div className="px-6 pt-4 pb-3 flex-shrink-0 border-b border-slate-100 dark:border-slate-800">
+      <div className="px-6 pt-4 pb-3 flex-shrink-0 border-b border-slate-100 dark:border-[#2e2e2e]">
         <div className="relative">
           <Search size={14} className="absolute start-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
@@ -136,7 +136,7 @@ export const AssignPermissionsModal = ({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t("modal_search_placeholder")}
-            className="w-full ps-9 pe-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 outline-none focus:ring-2 focus:ring-[#B12B89] transition"
+            className="w-full ps-9 pe-4 py-2.5 bg-slate-50 dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-xl text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 outline-none focus:ring-2 focus:ring-[#B12B89] transition"
           />
         </div>
         {mode === "user" && (
@@ -150,11 +150,11 @@ export const AssignPermissionsModal = ({
       {/* Permission list */}
       <div className="flex-1 overflow-y-auto px-2">
         {isLoading ? (
-          <div className="divide-y divide-slate-100 dark:divide-slate-800/50 px-4">
+          <div className="divide-y divide-slate-100 dark:divide-[#2e2e2e]/50 px-4">
             {Array.from({ length: 7 }).map((_, i) => (
               <div key={i} className="py-3 flex items-center justify-between animate-pulse">
-                <div className="h-6 w-44 bg-slate-100 dark:bg-slate-800 rounded-lg" />
-                <div className="h-6 w-11 bg-slate-100 dark:bg-slate-800 rounded-full" />
+                <div className="h-6 w-44 bg-slate-100 dark:bg-[#222222] rounded-lg" />
+                <div className="h-6 w-11 bg-slate-100 dark:bg-[#222222] rounded-full" />
               </div>
             ))}
           </div>
@@ -163,7 +163,7 @@ export const AssignPermissionsModal = ({
             {t("modal_no_results")}
           </div>
         ) : (
-          <div className="divide-y divide-slate-100 dark:divide-slate-800/50 px-4">
+          <div className="divide-y divide-slate-100 dark:divide-[#2e2e2e]/50 px-4">
             {permissions.map((perm) => {
               const isInherited = mode === "user" && roleInheritedIds?.has(perm.id)
               const isChecked = isInherited ? false : selectedIds.has(perm.id)
@@ -174,7 +174,7 @@ export const AssignPermissionsModal = ({
                   className={`py-3 flex items-center justify-between gap-3 rounded-xl transition ${
                     isInherited
                       ? "opacity-50 cursor-default"
-                      : "cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/40 -mx-2 px-2"
+                      : "cursor-pointer hover:bg-slate-50 dark:hover:bg-[#222222]/40 -mx-2 px-2"
                   }`}
                 >
                   <div className="flex items-center gap-2 min-w-0">
@@ -182,7 +182,7 @@ export const AssignPermissionsModal = ({
                       {getPermissionLabel(perm.name)}
                     </span>
                     {isInherited && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full flex-shrink-0">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-400 bg-slate-100 dark:bg-[#222222] px-2 py-0.5 rounded-full flex-shrink-0">
                         <Lock size={8} />
                         {t("badge_via_role")}
                       </span>
@@ -190,7 +190,7 @@ export const AssignPermissionsModal = ({
                   </div>
                   <div
                     className={`relative flex-shrink-0 w-11 h-6 rounded-full transition-colors duration-200 ${
-                      isChecked ? "bg-[#B12B89]" : "bg-slate-200 dark:bg-slate-700"
+                      isChecked ? "bg-[#B12B89]" : "bg-slate-200 dark:bg-[#2e2e2e]"
                     }`}
                   >
                     <span
@@ -208,7 +208,7 @@ export const AssignPermissionsModal = ({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between px-6 py-3 border-t border-slate-100 dark:border-slate-800 flex-shrink-0">
+        <div className="flex items-center justify-between px-6 py-3 border-t border-slate-100 dark:border-[#2e2e2e] flex-shrink-0">
           <span className="text-xs text-slate-400">
             {t("modal_page", { page, total: totalPages })}
           </span>
@@ -216,7 +216,7 @@ export const AssignPermissionsModal = ({
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 disabled:opacity-30 transition"
+              className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#222222] text-slate-400 disabled:opacity-30 transition"
             >
               <ChevronLeft size={16} />
             </button>
@@ -229,7 +229,7 @@ export const AssignPermissionsModal = ({
                   className={`w-7 h-7 rounded-lg text-xs font-semibold transition ${
                     page === pageNum
                       ? "bg-[#B12B89] text-white"
-                      : "text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      : "text-slate-500 hover:bg-slate-100 dark:hover:bg-[#222222]"
                   }`}
                 >
                   {pageNum}
@@ -240,7 +240,7 @@ export const AssignPermissionsModal = ({
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 disabled:opacity-30 transition"
+              className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#222222] text-slate-400 disabled:opacity-30 transition"
             >
               <ChevronRight size={16} />
             </button>

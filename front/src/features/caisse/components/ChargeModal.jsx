@@ -129,7 +129,7 @@ export const ChargeModal = ({ isOpen, onClose }) => {
             {...register("note")}
             rows={2}
             placeholder={t("placeholder_observation")}
-            className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-[#B12B89] focus:ring-4 focus:ring-[#B12B89]/5 outline-none transition-all resize-none"
+            className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 dark:border-[#2e2e2e] bg-white dark:bg-[#222222]/60 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-[#B12B89] focus:ring-4 focus:ring-[#B12B89]/5 outline-none transition-all resize-none"
           />
         </div>
       </form>

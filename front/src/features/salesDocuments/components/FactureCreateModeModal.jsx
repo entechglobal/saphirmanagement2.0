@@ -15,7 +15,7 @@ export const FactureCreateModeModal = ({ isOpen, onClose, onChooseBlank, onChoos
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300"
+          className="px-4 py-2.5 border border-slate-200 dark:border-[#2e2e2e] rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300"
         >
           Annuler
         </button>
@@ -25,9 +25,9 @@ export const FactureCreateModeModal = ({ isOpen, onClose, onChooseBlank, onChoos
         <button
           type="button"
           onClick={onChooseBlank}
-          className="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 p-4 text-left hover:border-[#B12B89] hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition"
+          className="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-[#2e2e2e] p-4 text-left hover:border-[#B12B89] hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition"
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-100 dark:bg-[#222222]">
             <FilePlus2 className="w-5 h-5 text-slate-600 dark:text-slate-300" />
           </div>
           <div>
@@ -43,7 +43,7 @@ export const FactureCreateModeModal = ({ isOpen, onClose, onChooseBlank, onChoos
         <button
           type="button"
           onClick={onChooseFromBl}
-          className="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-slate-700 p-4 text-left hover:border-[#B12B89] hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition"
+          className="flex items-start gap-3 rounded-xl border border-slate-200 dark:border-[#2e2e2e] p-4 text-left hover:border-[#B12B89] hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition"
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-900/30">
             <Truck className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />

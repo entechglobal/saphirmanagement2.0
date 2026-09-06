@@ -33,13 +33,13 @@ const DateTimeRangePicker = ({
 }) => {
   const pickerTextFieldSx = (theme) => ({
     "& .MuiPickersInputBase-root, & .MuiPickersOutlinedInput-root": {
-      backgroundColor: theme.palette.mode === "dark" ? "#1e293b" : "#ffffff",
+      backgroundColor: theme.palette.mode === "dark" ? "#222222" : "#ffffff",
       borderRadius: "10px",
       height: "40px",
     },
 
     "& .MuiPickersOutlinedInput-notchedOutline": {
-      borderColor: theme.palette.mode === "dark" ? "#334155" : "#e2e8f0",
+      borderColor: theme.palette.mode === "dark" ? "#2e2e2e" : "#e2e8f0",
     },
 
     "&:hover .MuiPickersOutlinedInput-notchedOutline": {

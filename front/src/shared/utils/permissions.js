@@ -119,6 +119,14 @@ export const PERMISSIONS = {
   UPDATE_AGENCE: "update_agence", // Modifier une agence
   DELETE_AGENCE: "delete_agence", // Supprimer une agence
 
+  // ── Delivery shifts ──────────────────────────────────────────────────────
+  VIEW_DELIVERY_SHIFTS: "view_delivery_shifts", // Voir les shifts livreurs
+  MANAGE_DELIVERY_SHIFTS: "manage_delivery_shifts", // Démarrer / fermer / verser un shift
+
+  // ── Attendance (ZKTeco) ──────────────────────────────────────────────────
+  VIEW_ATTENDANCE: "view_attendance",
+  MANAGE_ATTENDANCE: "manage_attendance",
+
   // ── Banques ──────────────────────────────────────────────────────────────
   CREATE_BANQUES: "create_banques", // Créer une banque
   UPDATE_BANQUES: "update_banques", // Modifier une banque
@@ -238,6 +246,12 @@ export const PERMISSION_LABELS = {
   create_agence: "Créer une agence",
   update_agence: "Modifier une agence",
   delete_agence: "Supprimer une agence",
+
+  view_delivery_shifts: "Voir les shifts livreurs",
+  manage_delivery_shifts: "Gérer les shifts livreurs",
+
+  view_attendance: "Voir le pointage",
+  manage_attendance: "Gérer le pointage",
 
   create_banques: "Créer une banque",
   update_banques: "Modifier une banque",

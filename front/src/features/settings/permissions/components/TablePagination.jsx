@@ -2,11 +2,11 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const TablePagination = ({ page, setPage, total = 1 }) => (
-  <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+  <div className="flex items-center gap-1 bg-slate-100 dark:bg-[#222222] p-1 rounded-xl">
     <button
       onClick={() => setPage((p) => Math.max(1, p - 1))}
       disabled={page === 1}
-      className="p-1.5 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition disabled:opacity-30 text-slate-500 dark:text-slate-400"
+      className="p-1.5 hover:bg-white dark:hover:bg-[#2e2e2e] rounded-lg transition disabled:opacity-30 text-slate-500 dark:text-slate-400"
     >
       <ChevronLeft size={16} />
     </button>
@@ -16,7 +16,7 @@ const TablePagination = ({ page, setPage, total = 1 }) => (
     <button
       onClick={() => setPage((p) => Math.min(total, p + 1))}
       disabled={page >= total}
-      className="p-1.5 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition disabled:opacity-30 text-slate-500 dark:text-slate-400"
+      className="p-1.5 hover:bg-white dark:hover:bg-[#2e2e2e] rounded-lg transition disabled:opacity-30 text-slate-500 dark:text-slate-400"
     >
       <ChevronRight size={16} />
     </button>

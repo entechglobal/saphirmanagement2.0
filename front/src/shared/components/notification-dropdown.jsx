@@ -1,76 +1,48 @@
-"use client";
-
 import { useState, useRef, useEffect } from "react";
-import { BellIcon } from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
+import { Bell } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { toast } from "@/shared/utils/toast";
+import { useAuth } from "@/features/auth";
+import {
+  useNotifications,
+  useMarkNotificationRead,
+  useMarkAllNotificationsRead,
+} from "@/shared/hooks/useNotifications";
+import {
+  useAcceptTransferRequest,
+  useDeclineTransferRequest,
+} from "@/features/caisse/hooks/useCaisse";
+import {
+  formatRelativeTime,
+  notificationMeta,
+  typeDot,
+} from "@/shared/utils/notificationMeta";
 
-// Mock notifications
-const mockNotifications = [
-  {
-    id: "1",
-    title: "Stock Alert: Low Inventory",
-    description: "SKU-2024-001 is below the minimum stock threshold",
-    timestamp: "1h ago",
-    read: false,
-    type: "error",
-  },
-  {
-    id: "2",
-    title: "Stock Alert: Reorder Needed",
-    description: "SKU-2024-045 needs to be reordered soon",
-    timestamp: "3h ago",
-    read: false,
-    type: "warning",
-  },
-  {
-    id: "3",
-    title: "Expiration Alert",
-    description: "Product SKU-2024-078 will expire in 5 days",
-    timestamp: "5h ago",
-    read: false,
-    type: "warning",
-  },
-  {
-    id: "4",
-    title: "Stock Alert: Overstock",
-    description: "SKU-2024-032 is over the recommended stock limit",
-    timestamp: "1d ago",
-    read: true,
-    type: "info",
-  },
-  {
-    id: "5",
-    title: "Expiration Alert",
-    description: "Product SKU-2024-056 expired yesterday",
-    timestamp: "2d ago",
-    read: true,
-    type: "error",
-  },
-];
-
-export const NotificationDropdown = ({
-  isDark = false,
-  onNotificationClick,
-  onViewAll,
-}) => {
-  const { i18n } = useTranslation();
-  const [notifications, setNotifications] = useState(mockNotifications);
+export const NotificationDropdown = () => {
+  const { t, i18n } = useTranslation("header");
+  const shouldReduce = useReducedMotion();
+  const { isAuthenticated } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const isRTL = i18n.language === "ar";
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const { data, isLoading } = useNotifications({
+    enabled: isAuthenticated,
+    unreadOnly: true,
+    limit: 20,
+  });
+  const notifications = data?.data ?? [];
+  const unreadCount = data?.unreadCount ?? notifications.length;
 
-  const handleNotificationClick = (id) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    );
-    if (onNotificationClick) onNotificationClick(id);
-  };
+  const markRead = useMarkNotificationRead();
+  const markAllRead = useMarkAllNotificationsRead();
+  const acceptTransfer = useAcceptTransferRequest();
+  const declineTransfer = useDeclineTransferRequest();
 
-  const handleViewAll = () => {
-    if (onViewAll) onViewAll();
-    setIsOpen(false);
-  };
+  const actingId = acceptTransfer.variables || declineTransfer.variables || null;
+  const isActing = acceptTransfer.isPending || declineTransfer.isPending;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -78,139 +50,213 @@ export const NotificationDropdown = ({
         setIsOpen(false);
       }
     };
+    const handleKey = (event) => {
+      if (event.key === "Escape") setIsOpen(false);
+    };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKey);
+    };
   }, []);
 
-  const getTypeStyles = (type) => {
-    switch (type) {
-      case "success":
-        return "bg-green-50 dark:bg-green-950/30 border-l-4 border-green-500";
-      case "warning":
-        return "bg-yellow-50 dark:bg-yellow-950/30 border-l-4 border-yellow-500";
-      case "error":
-        return "bg-red-50 dark:bg-red-950/30 border-l-4 border-red-500";
-      default:
-        return "bg-blue-50 dark:bg-blue-950/30 border-l-4 border-[#B12B89]";
-    }
+  const handleAccept = (event, notification) => {
+    event.stopPropagation();
+    const requestId =
+      notification.transferRequestId || notification.transferRequest?.id;
+    if (!requestId) return;
+    acceptTransfer.mutate(requestId, {
+      onSuccess: (res) => {
+        toast.success(res?.message || t("notifications.transfer.accepted_toast"));
+        if (!notification.read) markRead.mutate(notification.id);
+      },
+      onError: (err) => {
+        toast.error(
+          err?.response?.data?.message || t("notifications.transfer.action_error")
+        );
+      },
+    });
   };
 
-  const getTypeIndicator = (type) => {
-    switch (type) {
-      case "success":
-        return "bg-green-500";
-      case "warning":
-        return "bg-yellow-500";
-      case "error":
-        return "bg-red-500";
-      default:
-        return "bg-[#B12B89]";
-    }
+  const handleDecline = (event, notification) => {
+    event.stopPropagation();
+    const requestId =
+      notification.transferRequestId || notification.transferRequest?.id;
+    if (!requestId) return;
+    declineTransfer.mutate(requestId, {
+      onSuccess: (res) => {
+        toast.success(res?.message || t("notifications.transfer.declined_toast"));
+        if (!notification.read) markRead.mutate(notification.id);
+      },
+      onError: (err) => {
+        toast.error(
+          err?.response?.data?.message || t("notifications.transfer.action_error")
+        );
+      },
+    });
   };
+
+  const dropdownVariants = shouldReduce
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1 }, exit: { opacity: 0 } }
+    : {
+        hidden: { opacity: 0, scale: 0.95, y: -6 },
+        visible: {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          transition: { type: "spring", stiffness: 400, damping: 28 },
+        },
+        exit: { opacity: 0, scale: 0.95, y: -4, transition: { duration: 0.13 } },
+      };
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* Bell Icon Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-all relative"
-        aria-label="Notifications"
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        aria-expanded={isOpen}
+        aria-haspopup="menu"
+        aria-label={t("notifications.title")}
+        className={`relative flex h-9 w-9 items-center justify-center rounded-lg transition-colors ${
+          isOpen
+            ? "bg-gray-100 text-gray-800 dark:bg-white/10 dark:text-white"
+            : "text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/10 dark:hover:text-gray-200"
+        }`}
       >
-        <BellIcon className="w-5 h-5" />
+        <Bell className="h-4 w-4" strokeWidth={2} />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full min-w-5">
-            {unreadCount}
+          <span className="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+            {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
       </button>
 
-      {/* Dropdown Menu */}
-      {isOpen && (
-        <div className={`
-          fixed inset-x-3 top-[76px] z-50
-          sm:absolute sm:inset-x-auto sm:top-auto sm:mt-2 sm:w-96
-          ${i18n.language === "ar" ? "sm:left-0" : "sm:right-0"}
-          bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden
-        `}>
-          {/* Header */}
-          <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-              Notifications
-            </h3>
-            {unreadCount > 0 && (
-              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                {unreadCount} unread
-              </span>
-            )}
-          </div>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            variants={dropdownVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            role="menu"
+            className={`absolute top-[calc(100%+6px)] z-50 w-[min(22rem,calc(100vw-1.5rem))] overflow-hidden rounded-xl border border-gray-200/80 bg-white shadow-xl shadow-gray-200/40 dark:border-[#2e2e2e] dark:bg-[#1c1c1c] dark:shadow-black/40 ${
+              isRTL ? "left-0" : "right-0"
+            }`}
+          >
+            <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-[#2e2e2e]">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                {t("notifications.title")}
+              </h3>
+              {unreadCount > 0 && (
+                <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                  {t("notifications.unread", { count: unreadCount })}
+                </span>
+              )}
+            </div>
 
-          {/* Scrollable Notifications List */}
-          <div className="max-h-[55vh] sm:max-h-96 overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700">
-            {notifications.length > 0 ? (
-              notifications.map((notification) => (
-                <button
-                  key={notification.id}
-                  onClick={() => handleNotificationClick(notification.id)}
-                  className={`w-full px-4 py-3 text-left transition-colors ${
-                    notification.read
-                      ? "bg-white dark:bg-gray-800"
-                      : "bg-blue-50 dark:bg-blue-950/20"
-                  } hover:bg-gray-50 dark:hover:bg-gray-700/50`}
-                >
-                  <div className="flex items-start gap-3">
-                    {/* Type Indicator */}
+            <div className="max-h-[55vh] divide-y divide-gray-100 overflow-y-auto dark:divide-[#2e2e2e] sm:max-h-80">
+              {isLoading ? (
+                <div className="px-4 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
+                  {t("notifications.loading")}
+                </div>
+              ) : notifications.length > 0 ? (
+                notifications.map((notification) => {
+                  const meta = notificationMeta(notification, t);
+                  const canRespond =
+                    notification.type === "WALLET_TRANSFER_REQUEST" &&
+                    notification.transferRequest?.status === "PENDING";
+                  const requestId =
+                    notification.transferRequestId ||
+                    notification.transferRequest?.id;
+                  const thisActing = isActing && actingId === requestId;
+
+                  return (
                     <div
-                      className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${getTypeIndicator(
-                        notification.type
-                      )}`}
-                    />
-
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p
-                          className={`text-sm truncate ${
-                            notification.read
-                              ? "text-gray-900 dark:text-gray-100"
-                              : "text-gray-900 dark:text-gray-100 font-bold"
+                      key={notification.id}
+                      role="menuitem"
+                      onClick={() => {
+                        if (!notification.read) markRead.mutate(notification.id);
+                      }}
+                      className="w-full cursor-pointer bg-fuchsia-50/60 px-4 py-3 text-start transition-colors hover:bg-gray-50 dark:bg-[#B12B89]/10 dark:hover:bg-white/5"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div
+                          className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${
+                            typeDot[meta.type] ?? typeDot.info
                           }`}
-                        >
-                          {notification.title}
-                        </p>
-                        {!notification.read && (
-                          <span className="inline-flex w-2 h-2 bg-[#B12B89] rounded-full flex-shrink-0" />
-                        )}
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className="truncate text-sm font-bold text-slate-900 dark:text-slate-100">
+                              {meta.title}
+                            </p>
+                            <span className="inline-flex h-1.5 w-1.5 shrink-0 rounded-full bg-[#B12B89]" />
+                          </div>
+                          <p className="mt-0.5 line-clamp-3 text-xs text-slate-500 dark:text-slate-400">
+                            {meta.description}
+                          </p>
+                          <p className="mt-1 text-[11px] text-slate-400">
+                            {formatRelativeTime(notification.createdAt, t)}
+                          </p>
+                          {canRespond && (
+                            <div className="mt-2.5 flex gap-2">
+                              <button
+                                type="button"
+                                disabled={isActing}
+                                onClick={(event) => handleAccept(event, notification)}
+                                className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50"
+                              >
+                                {thisActing && acceptTransfer.isPending
+                                  ? t("notifications.transfer.processing")
+                                  : t("notifications.transfer.accept")}
+                              </button>
+                              <button
+                                type="button"
+                                disabled={isActing}
+                                onClick={(event) => handleDecline(event, notification)}
+                                className="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-100 disabled:opacity-50 dark:bg-red-950/40 dark:text-red-400 dark:hover:bg-red-950/70"
+                              >
+                                {thisActing && declineTransfer.isPending
+                                  ? t("notifications.transfer.processing")
+                                  : t("notifications.transfer.decline")}
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 mt-1">
-                        {notification.description}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                        {notification.timestamp}
-                      </p>
                     </div>
-                  </div>
-                </button>
-              ))
-            ) : (
-              <div className="px-4 py-8 text-center">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  No notifications
-                </p>
-              </div>
-            )}
-          </div>
+                  );
+                })
+              ) : (
+                <div className="px-4 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
+                  {t("notifications.empty")}
+                </div>
+              )}
+            </div>
 
-          {/* Footer */}
-          <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-            <button
-              onClick={handleViewAll}
-              className="w-full text-center text-sm font-medium text-[#B12B89] dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors py-2"
-            >
-              View All Notifications
-            </button>
-          </div>
-        </div>
-      )}
+            <div className="space-y-1 border-t border-gray-100 bg-gray-50 px-4 py-2.5 dark:border-[#2e2e2e] dark:bg-[#161616]">
+              {unreadCount > 0 && (
+                <button
+                  type="button"
+                  disabled={markAllRead.isPending}
+                  onClick={() => markAllRead.mutate()}
+                  className="w-full py-1.5 text-center text-sm font-medium text-[#B12B89] transition-colors hover:text-[#9A2478] disabled:opacity-40"
+                >
+                  {t("notifications.mark_all_read")}
+                </button>
+              )}
+              <Link
+                to="/notifications"
+                onClick={() => setIsOpen(false)}
+                className="block w-full py-1.5 text-center text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
+              >
+                {t("notifications.view_all")}
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

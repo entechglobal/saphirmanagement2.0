@@ -11,3 +11,6 @@ export { ColisTrackingPage } from "./colisTracking/pages/ColisTrackingPage";
 export {PlanningLivraisonPage} from "./plannings/pages/PlanningLivraisonPage";
 export { SpahirMangmentDashboarPage } from "./dashboard/pages/SpahirMangmentDashboarPage";
 export {CommandsByStatusPage} from "./dashboard/pages/CommandsByStatusPage";
+export { CommercialStatsPage } from "./dashboard/pages/CommercialStatsPage";
+export { DeliveryShiftsPage } from "./shifts/pages/DeliveryShiftsPage";
+export { DeliveryShiftDetailPage } from "./shifts/pages/DeliveryShiftDetailPage";

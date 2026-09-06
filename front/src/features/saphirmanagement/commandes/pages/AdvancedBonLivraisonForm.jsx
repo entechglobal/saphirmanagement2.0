@@ -10,16 +10,14 @@ import {
   Trash2,
   Loader2,
   X,
-  ChevronUp,
   Building2,
   User,
   ShoppingCart,
   Truck,
   CheckCircle2,
   Clock,
-  FileText,
   AlertTriangle,
-  Tag,
+  Users,
 } from "lucide-react";
 import dayjs from "dayjs";
 
@@ -32,17 +30,19 @@ import {
   usePreparateurs,
 } from "../hooks/useCommands";
 import { ProductPickerModal } from "../components/ProductPickerModal";
-import { MODE_REGLEMENT_OPTIONS } from "../api/commands.api";
+import { MODE_REGLEMENT_OPTIONS, MODES_WITH_BANQUE } from "../api/commands.api";
+import { useBanques } from "../../../reglement/hooks/useReglementClient";
 
 import { Input } from "../../../../shared/components/Input";
 import { SelectDropDown } from "../../../../shared/components/SelectDropDown";
 import { FormDatePicker } from "../../../../shared/FormDatePicker";
 import { FormPageHeader } from "../../../../shared/components/FormPageHeader";
-import { FormCard } from "../../../../shared/components/FormCard";
 import { FormActionBar } from "../../../../shared/components/FormActions";
 import { SuccessOverlay } from "../../../../shared/components/animations/SuccessOverlay";
 import { ConfirmationModal } from "../../../../shared/components/ConfirmationModal";
 import { CitySearchDropdown } from "../components/CitySearchDropdown";
+import { PhoneClientAutocomplete, toLocalMoroccoPhone } from "../components/PhoneClientAutocomplete";
+import { OrderSection, FactureToggle } from "../components/OrderSection";
 import { useDeliveryProviderConfigs } from "../../../stracture/deliveryProviderConfigs/hooks/useDeliveryProviderConfigs";
 
 /* ─── Constants ─── */
@@ -75,7 +75,7 @@ const StepIndicator = ({ currentStep }) => {
                   ? "bg-emerald-500 border-emerald-500 text-white shadow-lg"
                   : active
                     ? "bg-[#B12B89] border-[#B12B89] text-white shadow-xl"
-                    : "bg-gray-100 border-gray-300 text-gray-400 dark:bg-gray-800 dark:border-gray-600"
+                    : "bg-gray-100 border-gray-300 text-gray-400 dark:bg-[#222222] dark:border-[#3a3a3a]"
                   }`}
               >
                 {done ? <Check size={20} strokeWidth={3} /> : <Icon size={20} />}
@@ -93,7 +93,7 @@ const StepIndicator = ({ currentStep }) => {
             </div>
             {idx < STEPS.length - 1 && (
               <div
-                className={`h-0.5 w-12 sm:w-16 md:w-20 lg:w-24 mt-6 transition-all duration-500 ${currentStep > step.id ? "bg-emerald-400" : "bg-gray-300 dark:bg-gray-600"
+                className={`h-0.5 w-12 sm:w-16 md:w-20 lg:w-24 mt-6 transition-all duration-500 ${currentStep > step.id ? "bg-emerald-400" : "bg-gray-300 dark:bg-[#3a3a3a]"
                   }`}
               />
             )}
@@ -113,7 +113,7 @@ const WizardNav = ({ step, onPrev, onNext, onShowConfirm, canNext }) => {
         <button
           type="button"
           onClick={onPrev}
-          className="flex items-center gap-2 px-4 h-10 rounded-md border border-slate-300 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          className="flex items-center gap-2 px-4 h-10 rounded-md border border-slate-300 dark:border-[#2e2e2e] text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors"
         >
           <ChevronLeft size={16} className="rtl:scale-x-[-1]" /> {t("btn_prev")}
         </button>
@@ -152,11 +152,14 @@ const statusMeta = {
 };
 
 /* ─── ConfirmModal ─── */
-const ConfirmModal = ({ form, lines, packLines, agences, depots, livreurs, preparateurs, onConfirm, onCancel, isSubmitting }) => {
+const ConfirmModal = ({ form, lines, packLines, agences, depots, livreurs, preparateurs, selectedClient, onConfirm, onCancel, isSubmitting }) => {
   const { t } = useTranslation("commands");
   const totalLines = lines.reduce((s, l) => s + l.quantity * l.unitPrice, 0);
   const totalPacks = packLines.reduce((s, p) => s + p.quantity * p.prixVente, 0);
   const totalCommande = totalLines + totalPacks;
+  const totalCommission =
+    lines.reduce((s, l) => s + l.quantity * Number(l.commission || 0), 0) +
+    packLines.reduce((s, p) => s + p.quantity * Number(p.commission || 0), 0);
 
   const agenceName = agences.find((a) => String(a.id) === String(form.agenceId))?.name ?? "—";
   const depotName = depots.find((d) => String(d.id) === String(form.depotId))?.name ?? "—";
@@ -166,7 +169,7 @@ const ConfirmModal = ({ form, lines, packLines, agences, depots, livreurs, prepa
   const statusInfo = { ...statusInfoRaw, label: t(`status_label_${form.commandStatus}`, statusInfoRaw.label) };
 
   const Row = ({ label, value, highlight }) => (
-    <div className="flex items-start justify-between gap-1 py-2.5 border-b border-slate-100 dark:border-slate-800 last:border-0">
+    <div className="flex items-start justify-between gap-1 py-2.5 border-b border-slate-100 dark:border-[#2e2e2e] last:border-0">
       <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex-shrink-0 w-32">{label}</span>
       <span className={`text-sm font-bold text- break-word ${highlight ? "text-[#B12B89] dark:text-blue-400" : "text-slate-700 dark:text-slate-200"}`}>{value}</span>
     </div>
@@ -185,10 +188,10 @@ const ConfirmModal = ({ form, lines, packLines, agences, depots, livreurs, prepa
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 modal-backdrop p-4" onClick={onCancel}>
-      <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-white dark:bg-[#1c1c1c] rounded-lg border border-slate-200 dark:border-[#2e2e2e] max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl" onClick={(e) => e.stopPropagation()}>
 
         {/* Header */}
-        <div className="px-8 py-6 border-b border-slate-100 dark:border-slate-800 flex items-center gap-4">
+        <div className="px-8 py-6 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center gap-4">
           <div className="w-12 h-12 rounded-lg bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center flex-shrink-0">
             <AlertTriangle size={20} className="text-amber-500" />
           </div>
@@ -196,7 +199,7 @@ const ConfirmModal = ({ form, lines, packLines, agences, depots, livreurs, prepa
             <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">{t("confirm_order_title")}</h2>
             <p className="text-xs text-slate-400 mt-0.5">{t("confirm_order_subtitle")}</p>
           </div>
-          <button onClick={onCancel} className="ms-auto p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition">
+          <button onClick={onCancel} className="ms-auto p-2 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-md transition">
             <X size={18} className="text-slate-400" />
           </button>
         </div>
@@ -205,17 +208,21 @@ const ConfirmModal = ({ form, lines, packLines, agences, depots, livreurs, prepa
         <div className="flex-1 overflow-y-auto p-8 space-y-6">
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-5">
+            <div className="bg-slate-50 dark:bg-[#222222]/50 rounded-lg p-5">
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-3">{t("confirm_section_client")}</p>
               <Row label={t("confirm_row_client")} value={form.clientName || "—"} />
+              {selectedClient && (
+                <Row label={t("confirm_row_linked_client")} value={selectedClient.name} highlight />
+              )}
               <Row label={t("confirm_row_telephone")} value={form.telephone || "—"} />
               <Row label={t("confirm_row_whatsapp")} value={form.whatsapp || "—"} />
               <Row label={t("confirm_row_ville")} value={typeof form.ville === "object" ? form.ville?.name || "—" : form.ville || "—"} />
               {form.localisation && <Row label={t("confirm_row_localisation")} value={form.localisation} />}
               <Row label={t("confirm_row_colis")} value={form.nombreDeColis || "—"} />
+              <Row label={t("form_facture_mode")} value={form.withFacture ? t("form_with_facture") : t("form_sans_facture")} />
             </div>
 
-            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-5">
+            <div className="bg-slate-50 dark:bg-[#222222]/50 rounded-lg p-5">
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-3">{t("confirm_section_livraison")}</p>
               <Row label={t("confirm_row_agence")} value={agenceName} />
               <Row label={t("confirm_row_depot")} value={depotName} />
@@ -227,8 +234,8 @@ const ConfirmModal = ({ form, lines, packLines, agences, depots, livreurs, prepa
             </div>
           </div>
 
-          {(form.ice || form.raisonSocial) && (
-            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-5">
+          {form.withFacture && (form.ice || form.raisonSocial || form.siegeSocial) && (
+            <div className="bg-slate-50 dark:bg-[#222222]/50 rounded-lg p-5">
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-3">{t("confirm_section_facture")}</p>
               {form.ice && <Row label={t("confirm_row_ice")} value={form.ice} />}
               {form.raisonSocial && <Row label={t("confirm_row_raison_sociale")} value={form.raisonSocial} />}
@@ -239,17 +246,17 @@ const ConfirmModal = ({ form, lines, packLines, agences, depots, livreurs, prepa
           {lines.length > 0 && (
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">{t("confirm_articles", { count: lines.length })}</p>
-              <div className="rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+              <div className="rounded-lg border border-slate-200 dark:border-[#2e2e2e] overflow-hidden">
                 <table className="w-full">
                   <thead>
-                    <tr className="bg-slate-50 dark:bg-slate-800/50 text-[10px] uppercase tracking-wider text-slate-400">
+                    <tr className="bg-slate-50 dark:bg-[#222222]/50 text-[10px] uppercase tracking-wider text-slate-400">
                       <th className="px-4 py-2.5 text-left font-semibold">{t("confirm_col_article")}</th>
                       <th className="px-4 py-2.5 text-center font-semibold">{t("confirm_col_qty")}</th>
                       <th className="px-4 py-2.5 text-center font-semibold">{t("confirm_col_price")}</th>
                       <th className="px-4 py-2.5 text-right font-semibold">{t("confirm_col_total")}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
                     {lines.map((l, i) => (
                       <tr key={i}>
                         <td className="px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200">{l.name}</td>
@@ -267,17 +274,17 @@ const ConfirmModal = ({ form, lines, packLines, agences, depots, livreurs, prepa
           {packLines.length > 0 && (
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">{t("confirm_packs", { count: packLines.length })}</p>
-              <div className="rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+              <div className="rounded-lg border border-slate-200 dark:border-[#2e2e2e] overflow-hidden">
                 <table className="w-full">
                   <thead>
-                    <tr className="bg-slate-50 dark:bg-slate-800/50 text-[10px] uppercase tracking-wider text-slate-400">
+                    <tr className="bg-slate-50 dark:bg-[#222222]/50 text-[10px] uppercase tracking-wider text-slate-400">
                       <th className="px-4 py-2.5 text-left font-semibold">{t("confirm_col_pack")}</th>
                       <th className="px-4 py-2.5 text-center font-semibold">{t("confirm_col_qty")}</th>
                       <th className="px-4 py-2.5 text-center font-semibold">{t("confirm_col_price")}</th>
                       <th className="px-4 py-2.5 text-right font-semibold">{t("confirm_col_total")}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
                     {packLines.map((p, i) => (
                       <tr key={i}>
                         <td className="px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200">{p.name}</td>
@@ -297,6 +304,7 @@ const ConfirmModal = ({ form, lines, packLines, agences, depots, livreurs, prepa
             <p className="text-[10px] font-bold uppercase tracking-wider text-blue-400 mb-3">{t("confirm_financial_summary")}</p>
             <Row label={t("confirm_financial_articles")} value={`${fmt(totalLines)} MAD`} />
             <Row label={t("confirm_financial_packs")} value={`${fmt(totalPacks)} MAD`} />
+            <Row label={t("confirm_financial_commission")} value={`${fmt(totalCommission)} MAD`} />
             <div className="flex items-center justify-between pt-3 mt-1 border-t border-blue-100 dark:border-blue-800">
               <span className="text-sm font-bold text-slate-600 dark:text-slate-300">{t("confirm_financial_total")}</span>
               <span className="text-xl font-black text-[#B12B89] dark:text-blue-400">{fmt(totalCommande)} MAD</span>
@@ -305,6 +313,14 @@ const ConfirmModal = ({ form, lines, packLines, agences, depots, livreurs, prepa
               <span className="text-xs text-slate-400">{t("confirm_financial_mode")}</span>
               <span className="text-xs font-bold text-slate-600 dark:text-slate-300">{form.modeReglement}</span>
             </div>
+            {form.banqueId && (
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-slate-400">{t("form_banque")}</span>
+                <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                  {banques.find((b) => String(b.id) === String(form.banqueId))?.name || form.banqueId}
+                </span>
+              </div>
+            )}
             {form.montantPaid && (
               <div className="flex items-center justify-between">
                 <span className="text-xs text-slate-400">{t("confirm_financial_paid")}</span>
@@ -321,9 +337,9 @@ const ConfirmModal = ({ form, lines, packLines, agences, depots, livreurs, prepa
         </div>
 
         {/* Footer */}
-        <div className="px-8 py-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
+        <div className="px-8 py-5 border-t border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between gap-4">
           <button type="button" onClick={onCancel}
-            className="px-4 h-10 rounded-md border border-slate-300 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+            className="px-4 h-10 rounded-md border border-slate-300 dark:border-[#2e2e2e] text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors">
             {t("confirm_btn_modify")}
           </button>
           <button type="button" onClick={onConfirm} disabled={isSubmitting}
@@ -347,10 +363,10 @@ const LinesTable = ({ lines, onUpdateLine, onRemoveLine }) => {
   const { t } = useTranslation("commands");
   if (lines.length === 0) return null;
   return (
-    <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800 mt-4">
+    <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-[#2e2e2e] mt-4">
       <table className="w-full">
         <thead>
-          <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+          <tr className="bg-slate-50 dark:bg-[#222222]/50 border-b border-slate-200 dark:border-[#2e2e2e]">
             <th className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("table_col_article")}</th>
             <th className="px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("table_col_qty")}</th>
             <th className="px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("table_col_unit_price")}</th>
@@ -358,9 +374,9 @@ const LinesTable = ({ lines, onUpdateLine, onRemoveLine }) => {
             <th className="px-4 py-3 w-10" />
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+        <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
           {lines.map((line, idx) => (
-            <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition">
+            <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-[#222222]/20 transition">
               <td className="px-4 py-3">
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{line.name}</p>
                 <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${line.type === "VARIANT" ? "bg-purple-50 dark:bg-purple-900/20 text-purple-500" : "bg-blue-50 dark:bg-blue-900/20 text-blue-500"}`}>{line.type}</span>
@@ -368,12 +384,12 @@ const LinesTable = ({ lines, onUpdateLine, onRemoveLine }) => {
               <td className="px-4 py-3 text-center">
                 <input type="number" min={1} value={line.quantity}
                   onChange={(e) => onUpdateLine(idx, "quantity", Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-16 px-2 py-1.5 border border-slate-200 dark:border-slate-700 rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-slate-800 dark:text-slate-100" />
+                  className="w-16 px-2 py-1.5 border border-slate-200 dark:border-[#2e2e2e] rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-[#222222] dark:text-slate-100" />
               </td>
               <td className="px-4 py-3 text-center">
                 <input type="number" min={0} step={0.01} value={line.unitPrice}
                   onChange={(e) => onUpdateLine(idx, "unitPrice", parseFloat(e.target.value) || 0)}
-                  className="w-24 px-2 py-1.5 border border-slate-200 dark:border-slate-700 rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-slate-800 dark:text-slate-100" />
+                  className="w-24 px-2 py-1.5 border border-slate-200 dark:border-[#2e2e2e] rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-[#222222] dark:text-slate-100" />
               </td>
               <td className="px-4 py-3 text-center">
                 <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{fmt(line.quantity * line.unitPrice)} MAD</span>
@@ -397,10 +413,10 @@ const PacksTable = ({ packs, onUpdatePack, onRemovePack }) => {
   const { t } = useTranslation("commands");
   if (packs.length === 0) return null;
   return (
-    <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-800 mt-4">
+    <div className="overflow-x-auto rounded-lg border border-slate-200 dark:border-[#2e2e2e] mt-4">
       <table className="w-full">
         <thead>
-          <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+          <tr className="bg-slate-50 dark:bg-[#222222]/50 border-b border-slate-200 dark:border-[#2e2e2e]">
             <th className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("table_col_pack")}</th>
             <th className="px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("table_col_qty")}</th>
             <th className="px-4 py-3 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("table_col_sale_price")}</th>
@@ -408,9 +424,9 @@ const PacksTable = ({ packs, onUpdatePack, onRemovePack }) => {
             <th className="px-4 py-3 w-10" />
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+        <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
           {packs.map((pack, idx) => (
-            <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition">
+            <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-[#222222]/20 transition">
               <td className="px-4 py-3">
                 <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{pack.name}</p>
                 <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-900/20 text-amber-500">PACK</span>
@@ -418,12 +434,12 @@ const PacksTable = ({ packs, onUpdatePack, onRemovePack }) => {
               <td className="px-4 py-3 text-center">
                 <input type="number" min={1} value={pack.quantity}
                   onChange={(e) => onUpdatePack(idx, "quantity", Math.max(1, parseInt(e.target.value) || 1))}
-                  className="w-16 px-2 py-1.5 border border-slate-200 dark:border-slate-700 rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-slate-800 dark:text-slate-100" />
+                  className="w-16 px-2 py-1.5 border border-slate-200 dark:border-[#2e2e2e] rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-[#222222] dark:text-slate-100" />
               </td>
               <td className="px-4 py-3 text-center">
                 <input type="number" min={0} step={0.01} value={pack.prixVente}
                   onChange={(e) => onUpdatePack(idx, "prixVente", parseFloat(e.target.value) || 0)}
-                  className="w-24 px-2 py-1.5 border border-slate-200 dark:border-slate-700 rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-slate-800 dark:text-slate-100" />
+                  className="w-24 px-2 py-1.5 border border-slate-200 dark:border-[#2e2e2e] rounded-lg text-center text-sm font-bold outline-none focus:ring-2 focus:ring-[#B12B89] transition bg-white dark:bg-[#222222] dark:text-slate-100" />
               </td>
               <td className="px-4 py-3 text-center">
                 <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{fmt(pack.quantity * pack.prixVente)} MAD</span>
@@ -460,11 +476,14 @@ export const AdvancedBonLivraisonForm = () => {
 
   const [step, setStep] = useState(1);
   const [isPickerOpen, setIsPickerOpen] = useState(false);
-  const [showFacture, setShowFacture] = useState(false);
   const [showHeureInput, setShowHeureInput] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [pendingBack, setPendingBack] = useState(false);
+  const [selectedClient, setSelectedClient] = useState(null);
+  const [expeditionMode, setExpeditionMode] = useState(null);
+  const [saveAsClientDecision, setSaveAsClientDecision] = useState(null);
+  const [showSaveClientModal, setShowSaveClientModal] = useState(false);
 
   const savingRef = useRef(false);
 
@@ -479,11 +498,13 @@ export const AdvancedBonLivraisonForm = () => {
     sameAsPhone: false,
     ville: "",
     localisation: "",
+    withFacture: false,
     nombreDeColis: "",
     ice: "",
     raisonSocial: "",
     siegeSocial: "",
     modeReglement: "VIREMENT",
+    banqueId: "",
     montantPaid: "",
     livreurId: "",
     preparateurId: "",
@@ -525,6 +546,9 @@ export const AdvancedBonLivraisonForm = () => {
 
   const { data: preparateursData, isLoading: preparateursLoading } = usePreparateurs({ societeId: selectedAgence?.societeId });
   const preparateurs = preparateursData?.data ?? [];
+  const { data: banquesData, isLoading: banquesLoading } = useBanques();
+  const banques = banquesData?.data ?? [];
+  const needsBanque = MODES_WITH_BANQUE.includes(form.modeReglement);
 
   // ─────────────────────────────────────────────────────────────
 
@@ -560,16 +584,86 @@ export const AdvancedBonLivraisonForm = () => {
       setForm((prev) => ({ ...prev, sameAsPhone: checked, whatsapp: checked ? prev.telephone : prev.whatsapp }));
       return;
     }
-    if (name === "telephone" && form.sameAsPhone) {
-      setForm((prev) => ({ ...prev, telephone: value, whatsapp: value }));
+    if (name === "telephone") {
+      setForm((prev) => ({
+        ...prev,
+        telephone: value,
+        whatsapp: prev.sameAsPhone ? value : prev.whatsapp,
+      }));
+      if (selectedClient && expeditionMode !== "other") {
+        setSelectedClient(null);
+        setExpeditionMode(null);
+      }
+      setSaveAsClientDecision(null);
+      return;
+    }
+    if (name === "clientName") {
+      setSaveAsClientDecision(null);
+    }
+    if (name === "modeReglement") {
+      setForm((prev) => ({
+        ...prev,
+        modeReglement: value,
+        banqueId: MODES_WITH_BANQUE.includes(value) ? prev.banqueId : "",
+      }));
       return;
     }
     setForm((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
   };
 
+  const applyClientSocieteFields = (client) => {
+    const isCompany = client?.type === "SOCIETE" || !!client?.ice;
+    return {
+      withFacture: isCompany,
+      ice: isCompany ? (client.ice || "") : "",
+      raisonSocial: isCompany ? (client.name || "") : "",
+      siegeSocial: isCompany ? (client.address || "") : "",
+    };
+  };
+
+  const applySelectedClient = (client) => {
+    const localPhone = toLocalMoroccoPhone(client.phone);
+    setSelectedClient(client);
+    setExpeditionMode(null);
+    setSaveAsClientDecision(null);
+    setForm((prev) => ({
+      ...prev,
+      telephone: localPhone,
+      whatsapp: prev.sameAsPhone ? localPhone : prev.whatsapp,
+      clientName: client.name ?? "",
+      localisation: client.address ?? "",
+      ville: client.city || client.region || prev.ville,
+      ...applyClientSocieteFields(client),
+    }));
+  };
+
+  const clearSelectedClient = () => {
+    setSelectedClient(null);
+    setExpeditionMode(null);
+    setSaveAsClientDecision(null);
+  };
+
+  const applyExpeditionMode = (mode) => {
+    setExpeditionMode(mode);
+    if (mode === "same" && selectedClient) {
+      const localPhone = toLocalMoroccoPhone(selectedClient.phone);
+      setForm((prev) => ({
+        ...prev,
+        telephone: localPhone,
+        whatsapp: prev.sameAsPhone ? localPhone : prev.whatsapp,
+        clientName: selectedClient.name ?? prev.clientName,
+        localisation: selectedClient.address ?? prev.localisation,
+        ville: selectedClient.city || selectedClient.region || prev.ville,
+      }));
+    }
+  };
+
   const totalLines = lines.reduce((s, l) => s + l.quantity * l.unitPrice, 0);
   const totalPacks = packLines.reduce((s, p) => s + p.quantity * p.prixVente, 0);
   const totalCommande = totalLines + totalPacks;
+  const totalCommission =
+    lines.reduce((s, l) => s + l.quantity * Number(l.commission || 0), 0) +
+    packLines.reduce((s, p) => s + p.quantity * Number(p.commission || 0), 0);
 
   const handlePickerConfirm = async (newProducts, newPacks) => {
     if (newPacks.length > 0) {
@@ -624,16 +718,21 @@ export const AdvancedBonLivraisonForm = () => {
       !!form.telephone.trim() && isMoroccoPhone(form.telephone) &&
       (!form.whatsapp || isMoroccoPhone(form.whatsapp)) &&
       isVilleValid(form.ville) &&
-      !!form.localisation.trim()
+      !!form.localisation.trim() &&
+      (!selectedClient || !!expeditionMode)
     );
-    if (step === 3) return (lines.length + packLines.length) > 0 && !!form.modeReglement;
+    if (step === 3) {
+      return (lines.length + packLines.length) > 0
+        && !!form.modeReglement
+        && (!needsBanque || !!form.banqueId);
+    }
     if (step === 4) {
       const selLiv = livreurs.find((l) => String(l.id) === String(form.livreurId));
       const needsConfig = livreurType === "extern" && selLiv?.entityType === "SOCIETE";
       return !!form.livreurId && !!form.preparateurId && !!form.commandStatus && (!needsConfig || !!form.providerConfigId);
     }
     return false;
-  }, [step, form, lines, packLines, livreurs, livreurType]);
+  }, [step, form, lines, packLines, livreurs, livreurType, selectedClient, expeditionMode, needsBanque]);
 
   const handleSubmit = async () => {
     const payload = {
@@ -643,10 +742,12 @@ export const AdvancedBonLivraisonForm = () => {
       agenceId: Number(form.agenceId),
       telephone: form.telephone,
       whatsapp: form.whatsapp,
-      ville: form.ville,
+      ville: getVilleValue(form.ville),
       localisation: form.localisation,
+      withFacture: !!form.withFacture,
       nombreDeColis: Number(form.nombreDeColis),
       modeReglement: form.modeReglement,
+      banqueId: form.banqueId ? Number(form.banqueId) : undefined,
       observation: form.observation.trim() || undefined,
       livreurId: Number(form.livreurId),
       preparateurId: Number(form.preparateurId),
@@ -662,11 +763,20 @@ export const AdvancedBonLivraisonForm = () => {
       packLines: packLines.map((p) => ({ id: p.id, quantity: p.quantity, prixVente: p.prixVente })),
     };
 
+    if (selectedClient?.id) {
+      payload.clientId = Number(selectedClient.id);
+      payload.updateClientLocation = expeditionMode !== "other";
+    } else if (saveAsClientDecision === true) {
+      payload.saveAsClient = true;
+      payload.updateClientLocation = true;
+    }
     if (form.providerConfigId) payload.providerConfigId = Number(form.providerConfigId);
     if (form.heureLivraison) payload.heureLivraison = form.heureLivraison;
-    if (form.ice.trim()) payload.ice = form.ice.trim();
-    if (form.raisonSocial.trim()) payload.raisonSocial = form.raisonSocial.trim();
-    if (form.siegeSocial.trim()) payload.siegeSocial = form.siegeSocial.trim();
+    if (form.withFacture) {
+      if (form.ice.trim()) payload.ice = form.ice.trim();
+      if (form.raisonSocial.trim()) payload.raisonSocial = form.raisonSocial.trim();
+      if (form.siegeSocial.trim()) payload.siegeSocial = form.siegeSocial.trim();
+    }
 
     createMutation.mutate(payload, {
       onSuccess: () => {
@@ -680,8 +790,17 @@ export const AdvancedBonLivraisonForm = () => {
   };
 
   /* ── Step renderers ── */
+  const setWithFacture = (checked) => {
+    setForm((prev) => {
+      if (checked && selectedClient) {
+        return { ...prev, ...applyClientSocieteFields(selectedClient), withFacture: true };
+      }
+      return { ...prev, withFacture: checked };
+    });
+  };
+
   const renderStep1 = () => (
-    <FormCard title={t("card_agency_delivery")} icon={<Building2 />}>
+    <OrderSection title={t("card_agency_delivery")}>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <SelectDropDown
           label={t("form_agence")}
@@ -722,7 +841,7 @@ export const AdvancedBonLivraisonForm = () => {
             <button
               type="button"
               onClick={() => setShowHeureInput(true)}
-              className="flex items-center gap-2 h-10 px-4 rounded-md border-2 border-dashed border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-400 dark:text-slate-500 hover:border-blue-300 hover:text-blue-500 transition-all w-full"
+              className="flex items-center gap-2 h-10 px-4 rounded-md border-2 border-dashed border-slate-200 dark:border-[#2e2e2e] text-sm font-medium text-slate-400 dark:text-slate-500 hover:border-blue-300 hover:text-blue-500 transition-all w-full"
             >
               <Clock size={15} />
               {t("form_add_heure")}
@@ -735,7 +854,7 @@ export const AdvancedBonLivraisonForm = () => {
                 value={form.heureLivraison}
                 onChange={handleChange}
                 autoFocus
-                className="w-full h-10 px-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-sm font-semibold text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-[#B12B89] outline-none transition pr-10"
+                className="w-full h-10 px-4 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-md text-sm font-semibold text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-[#B12B89] outline-none transition pr-10"
               />
               <button
                 type="button"
@@ -748,26 +867,49 @@ export const AdvancedBonLivraisonForm = () => {
           )}
         </div>
       </div>
-    </FormCard>
+    </OrderSection>
   );
+
+  const expeditionLocked = !!selectedClient && expeditionMode === "same";
+
+  const handleStepNext = () => {
+    if (step === 2 && !selectedClient && saveAsClientDecision === null) {
+      setShowSaveClientModal(true);
+      return;
+    }
+    setStep((s) => s + 1);
+  };
 
   const renderStep2 = () => (
     <div className="space-y-5">
-      <FormCard title={t("card_client_info")} icon={<User />}>
+      <OrderSection title={t("card_client_info")}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <Input label={t("form_client_name")} name="clientName" value={form.clientName} onChange={handleChange} placeholder={t("form_client_name_placeholder")} required />
+          <div className="sm:col-span-2">
+            <PhoneClientAutocomplete
+              label={t("form_telephone")}
+              value={form.telephone}
+              onChange={handleChange}
+              onSelectClient={applySelectedClient}
+              selectedClient={selectedClient}
+              onClearClient={clearSelectedClient}
+              societeId={selectedAgence?.societeId}
+              placeholder="0612345678"
+              error={form.telephone && !isMoroccoPhone(form.telephone) ? t("form_telephone_error") : undefined}
+              required
+              disabled={expeditionLocked}
+            />
+          </div>
 
           <Input
-            label={t("form_telephone")}
-            name="telephone"
-            value={form.telephone}
+            label={selectedClient && expeditionMode === "other" ? t("form_recipient_name") : t("form_client_name")}
+            name="clientName"
+            value={form.clientName}
             onChange={handleChange}
-            placeholder="0612345678"
-            error={form.telephone && !isMoroccoPhone(form.telephone) ? t("form_telephone_error") : undefined}
+            placeholder={t("form_client_name_placeholder")}
             required
+            disabled={expeditionLocked && !!form.clientName.trim()}
           />
 
-          {/* WhatsApp with toggle switch */}
           <div className="flex flex-col">
             <div className="flex items-center justify-between mb-1.5">
               <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 ml-1">
@@ -779,7 +921,7 @@ export const AdvancedBonLivraisonForm = () => {
                 </span>
                 <div className="relative">
                   <input type="checkbox" name="sameAsPhone" checked={form.sameAsPhone} onChange={handleChange} className="sr-only peer" />
-                  <div className="w-9 h-5 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:bg-[#B12B89] transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:w-4 after:h-4 after:transition-all peer-checked:after:translate-x-4 shadow-inner" />
+                  <div className="w-9 h-5 bg-slate-200 dark:bg-[#2e2e2e] rounded-full peer peer-checked:bg-[#B12B89] transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:w-4 after:h-4 after:transition-all peer-checked:after:translate-x-4 shadow-inner" />
                 </div>
               </label>
             </div>
@@ -792,7 +934,61 @@ export const AdvancedBonLivraisonForm = () => {
               error={form.whatsapp && !form.sameAsPhone && !isMoroccoPhone(form.whatsapp) ? t("form_whatsapp_error") : undefined}
             />
           </div>
+        </div>
+      </OrderSection>
 
+      {selectedClient && (
+        <OrderSection title={t("expedition_ask_title")}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => applyExpeditionMode("same")}
+              className={`text-left p-4 rounded-lg border-2 transition-all ${
+                expeditionMode === "same"
+                  ? "border-[#B12B89] bg-[#B12B89]/5 dark:bg-[#B12B89]/10"
+                  : "border-slate-200 dark:border-[#2e2e2e] hover:border-slate-300"
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-1.5">
+                <User size={16} className={expeditionMode === "same" ? "text-[#B12B89]" : "text-slate-400"} />
+                <span className={`text-sm font-semibold ${expeditionMode === "same" ? "text-[#B12B89]" : "text-slate-700 dark:text-slate-200"}`}>
+                  {t("expedition_same")}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                {t("expedition_same_hint")}
+              </p>
+            </button>
+            <button
+              type="button"
+              onClick={() => applyExpeditionMode("other")}
+              className={`text-left p-4 rounded-lg border-2 transition-all ${
+                expeditionMode === "other"
+                  ? "border-[#B12B89] bg-[#B12B89]/5 dark:bg-[#B12B89]/10"
+                  : "border-slate-200 dark:border-[#2e2e2e] hover:border-slate-300"
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-1.5">
+                <Users size={16} className={expeditionMode === "other" ? "text-[#B12B89]" : "text-slate-400"} />
+                <span className={`text-sm font-semibold ${expeditionMode === "other" ? "text-[#B12B89]" : "text-slate-700 dark:text-slate-200"}`}>
+                  {t("expedition_other")}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                {t("expedition_other_hint")}
+              </p>
+            </button>
+          </div>
+          {expeditionMode === "other" && (
+            <p className="mt-3 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-[#222222]/50 rounded-md px-3 py-2">
+              {t("expedition_other_note")}
+            </p>
+          )}
+        </OrderSection>
+      )}
+
+      <OrderSection title={t("card_delivery_address")}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <CitySearchDropdown
             label={t("form_city")}
             value={form.ville}
@@ -800,57 +996,47 @@ export const AdvancedBonLivraisonForm = () => {
             placeholder={t("form_city_placeholder")}
             required
           />
-          <Input label={t("form_localisation")} name="localisation" value={form.localisation} onChange={handleChange} placeholder={t("form_localisation_placeholder")} required />
+          <Input
+            label={t("form_localisation")}
+            name="localisation"
+            value={form.localisation}
+            onChange={handleChange}
+            placeholder={t("form_localisation_placeholder")}
+            required
+          />
           <Input label={t("form_colis")} name="nombreDeColis" type="number" value={form.nombreDeColis} onChange={handleChange} placeholder="5" />
         </div>
-      </FormCard>
+      </OrderSection>
 
-      {/* Détails de facture collapsible */}
-      <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <button
-          type="button"
-          onClick={() => setShowFacture((v) => !v)}
-          className="w-full px-7 py-5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition group"
-        >
-          <div className="flex items-center gap-3">
-            <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${showFacture ? "bg-[#B12B89] text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-400 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 group-hover:text-blue-500"
-              }`}>
-              {showFacture ? <ChevronUp size={14} /> : <Plus size={14} />}
-            </div>
-            <div className="text-left">
-              <span className="font-bold text-[11px] uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
-                {t("form_invoice_title")}
-              </span>
-              <span className="ms-2 text-[10px] text-slate-300 dark:text-slate-600">{t("form_facture_optional")}</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            {(form.ice || form.raisonSocial) && (
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-500">
-                {t("form_facture_filled")}
-              </span>
-            )}
-            <FileText size={15} className="text-slate-300 dark:text-slate-600" />
-          </div>
-        </button>
-        {showFacture && (
-          <div className="px-7 pb-7 pt-6 border-t border-slate-100 dark:border-slate-800">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <Input label={t("form_ice")} name="ice" value={form.ice} onChange={handleChange} placeholder="001234567890123" />
-              <Input label={t("form_raison_sociale")} name="raisonSocial" value={form.raisonSocial} onChange={handleChange} placeholder={t("form_raison_sociale_placeholder")} />
-              <div className="sm:col-span-2">
-                <Input label={t("form_siege_social")} name="siegeSocial" value={form.siegeSocial} onChange={handleChange} placeholder={t("form_siege_social_placeholder")} />
-              </div>
+      <OrderSection
+        title={t("form_invoice_title")}
+        action={
+          <FactureToggle
+            value={!!form.withFacture}
+            onChange={setWithFacture}
+            withLabel={t("form_with_facture")}
+            withoutLabel={t("form_sans_facture")}
+          />
+        }
+      >
+        {form.withFacture ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <Input label={t("form_ice")} name="ice" value={form.ice} onChange={handleChange} placeholder="001234567890123" />
+            <Input label={t("form_raison_sociale")} name="raisonSocial" value={form.raisonSocial} onChange={handleChange} placeholder={t("form_raison_sociale_placeholder")} />
+            <div className="sm:col-span-2">
+              <Input label={t("form_siege_social")} name="siegeSocial" value={form.siegeSocial} onChange={handleChange} placeholder={t("form_siege_social_placeholder")} />
             </div>
           </div>
+        ) : (
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t("form_sans_facture_hint")}</p>
         )}
-      </div>
+      </OrderSection>
     </div>
   );
 
   const renderStep3 = () => (
     <div className="space-y-5">
-      <FormCard title={t("card_articles_packs")} icon={<ShoppingCart />}>
+      <OrderSection title={t("card_articles_packs")}>
         <div className="flex items-center justify-between mb-2">
           <p className="text-xs text-slate-500 dark:text-slate-400">
             {lines.length + packLines.length === 0 ? t("form_no_articles") : t("form_articles_summary", { lines: lines.length, packs: packLines.length })}
@@ -889,11 +1075,10 @@ export const AdvancedBonLivraisonForm = () => {
             <p className="text-xs text-slate-400 mt-1">{t("form_click_to_add")}</p>
           </div>
         )}
-      </FormCard>
+      </OrderSection>
 
-      {/* Règlement */}
-      <FormCard title={t("card_amount_reglement")}>
-        <div className="flex items-center justify-between p-5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 mb-6">
+      <OrderSection title={t("card_amount_reglement")}>
+        <div className="flex items-center justify-between p-5 rounded-lg bg-slate-50 dark:bg-[#222222]/50 border border-slate-200 dark:border-[#2e2e2e] mb-6">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{t("form_total_order")}</p>
             <p className="text-2xl font-black text-slate-800 dark:text-slate-100 mt-0.5">{fmt(totalCommande)} MAD</p>
@@ -901,6 +1086,7 @@ export const AdvancedBonLivraisonForm = () => {
           <div className="text-end text-xs text-slate-400 space-y-1">
             <p>{t("form_articles_amount", { amount: fmt(totalLines) })}</p>
             <p>{t("form_packs_amount", { amount: fmt(totalPacks) })}</p>
+            <p>{t("form_commission_amount", { amount: fmt(totalCommission) })}</p>
           </div>
         </div>
 
@@ -915,20 +1101,41 @@ export const AdvancedBonLivraisonForm = () => {
           />
           <Input label={t("form_montant_regle")} name="montantPaid" type="number" value={form.montantPaid} onChange={handleChange} placeholder="0.00" />
         </div>
-      </FormCard>
+        {needsBanque && (
+          <div className="mt-6">
+            <SelectDropDown
+              label={t("form_banque")}
+              name="banqueId"
+              value={form.banqueId}
+              options={banques.map((b) => ({
+                value: b.id,
+                label: b.name,
+                subLabel: b.RIB,
+              }))}
+              isLoading={banquesLoading}
+              onChange={handleChange}
+              placeholder={t("form_select_banque")}
+              required
+            />
+            <p className="mt-2 text-[11px] font-medium text-sky-600 dark:text-sky-400">
+              {t("form_banque_hint")}
+            </p>
+          </div>
+        )}
+      </OrderSection>
     </div>
   );
 
   const renderStep4 = () => (
     <div className="space-y-5">
-      <FormCard title={t("card_livreur")} icon={<Truck />}>
+      <OrderSection title={t("card_livreur")}>
         <div className="flex gap-2 mb-6">
           {["intern", "extern"].map((ltype) => (
             <button key={ltype} type="button"
               onClick={() => { setLivreurType(ltype); setForm((prev) => ({ ...prev, livreurId: "", providerConfigId: "" })); }}
               className={`px-4 h-10 rounded-md text-xs font-semibold border transition-all ${livreurType === ltype}
                 ? "border-[#B12B89] text-[#B12B89] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
-                : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-slate-300"
+                : "border-slate-200 dark:border-[#2e2e2e] text-slate-500 dark:text-slate-400 hover:border-slate-300"
                 }`}>
               {ltype === "intern" ? t("form_livreur_intern") : t("form_livreur_extern")}
             </button>
@@ -957,9 +1164,9 @@ export const AdvancedBonLivraisonForm = () => {
             />
           </div>
         )}
-      </FormCard>
+      </OrderSection>
 
-      <FormCard title={t("card_preparateur_status_obs")} icon={<Tag />}>
+      <OrderSection title={t("card_preparateur_status_obs")}>
         <div className="space-y-6">
           <SelectDropDown
             label={t("form_preparateur")}
@@ -991,11 +1198,11 @@ export const AdvancedBonLivraisonForm = () => {
               onChange={handleChange}
               rows={3}
               placeholder={t("form_observation_placeholder")}
-              className="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-[#B12B89] outline-none transition resize-none"
+              className="w-full px-4 py-3 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-md text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-[#B12B89] outline-none transition resize-none"
             />
           </div>
         </div>
-      </FormCard>
+      </OrderSection>
     </div>
   );
 
@@ -1024,7 +1231,7 @@ export const AdvancedBonLivraisonForm = () => {
         <WizardNav
           step={step}
           onPrev={() => setStep((s) => s - 1)}
-          onNext={() => setStep((s) => s + 1)}
+          onNext={handleStepNext}
           onShowConfirm={() => setShowConfirm(true)}
           canNext={canGoNext()}
         />
@@ -1049,10 +1256,67 @@ export const AdvancedBonLivraisonForm = () => {
           depots={depots}
           livreurs={livreurs}
           preparateurs={preparateurs}
+          selectedClient={selectedClient}
           onConfirm={handleSubmit}
           onCancel={() => setShowConfirm(false)}
           isSubmitting={createMutation.isPending}
         />
+      )}
+
+      {showSaveClientModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 modal-backdrop p-4" onClick={() => setShowSaveClientModal(false)}>
+          <div
+            className="bg-white dark:bg-[#1c1c1c] rounded-lg border border-slate-200 dark:border-[#2e2e2e] max-w-md w-full shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-6 py-5 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-[#B12B89]/10 flex items-center justify-center flex-shrink-0">
+                <User size={18} className="text-[#B12B89]" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h2 className="text-base font-bold text-slate-800 dark:text-slate-100">{t("save_client_title")}</h2>
+                <p className="text-xs text-slate-400 mt-0.5">{t("save_client_subtitle")}</p>
+              </div>
+              <button type="button" onClick={() => setShowSaveClientModal(false)} className="p-2 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-md transition">
+                <X size={16} className="text-slate-400" />
+              </button>
+            </div>
+            <div className="px-6 py-5 space-y-3">
+              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                {t("save_client_message", { name: form.clientName, phone: form.telephone })}
+              </p>
+              <div className="rounded-md bg-slate-50 dark:bg-[#222222]/50 px-3 py-2.5 text-sm">
+                <p className="font-semibold text-slate-700 dark:text-slate-200">{form.clientName}</p>
+                <p className="text-slate-500 dark:text-slate-400">{form.telephone}</p>
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-slate-100 dark:border-[#2e2e2e] flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setSaveAsClientDecision(false);
+                  setShowSaveClientModal(false);
+                  setStep((s) => s + 1);
+                }}
+                className="px-4 h-10 rounded-md border border-slate-300 dark:border-[#2e2e2e] text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#222222] transition-colors"
+              >
+                {t("save_client_skip")}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSaveAsClientDecision(true);
+                  setShowSaveClientModal(false);
+                  setStep((s) => s + 1);
+                }}
+                className="inline-flex items-center justify-center gap-2 px-5 h-10 rounded-md text-sm font-medium text-white transition-colors"
+                style={{ backgroundColor: BRAND }}
+              >
+                {t("save_client_confirm")}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {showSuccess && (

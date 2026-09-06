@@ -160,7 +160,7 @@ export const SituationFournisseurPage = () => {
       />
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900/40">
+        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-[#2e2e2e] dark:bg-[#1c1c1c]/40">
           <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
             {t("summary_docs")}
           </p>
@@ -168,7 +168,7 @@ export const SituationFournisseurPage = () => {
             {summary.documentCount ?? 0}
           </p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900/40">
+        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-[#2e2e2e] dark:bg-[#1c1c1c]/40">
           <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
             {t("summary_paid")}
           </p>

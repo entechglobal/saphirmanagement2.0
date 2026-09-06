@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { User } from "lucide-react";
+import { User, CircleDollarSign } from "lucide-react";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import { useClientSituation } from "../hooks/useSituation";
@@ -24,6 +24,7 @@ export const SituationClientPage = () => {
   const [globalFilter, setGlobalFilter] = useState("");
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [selectedClient, setSelectedClient] = useState(null);
+  const [paymentFilter, setPaymentFilter] = useState(null);
 
   const { startHour, endHour } = useOperatingHours();
   const defaultStart =
@@ -76,6 +77,7 @@ export const SituationClientPage = () => {
     clientId: selectedClient?.id,
     startDate: apiStartDate,
     endDate: apiEndDate,
+    paymentStatus: paymentFilter?.value,
   });
 
   const tableData = data?.data ?? [];
@@ -88,10 +90,19 @@ export const SituationClientPage = () => {
 
   const datesAreDefault =
     startDateTime?.isSame(defaultStart) && endDateTime?.isSame(defaultEnd);
-  const hasActiveFilters = !!(selectedClient || !datesAreDefault || globalFilter);
+  const hasActiveFilters = !!(selectedClient || paymentFilter || !datesAreDefault || globalFilter);
+
+  const paymentOptions = useMemo(
+    () => [
+      { value: "unpaid", label: t("filter_unpaid") },
+      { value: "paid", label: t("filter_paid") },
+    ],
+    [t],
+  );
 
   const handleReset = useCallback(() => {
     setSelectedClient(null);
+    setPaymentFilter(null);
     setStartDateTime(defaultStart);
     setEndDateTime(defaultEnd);
     setGlobalFilter("");
@@ -142,10 +153,24 @@ export const SituationClientPage = () => {
         accessorKey: "reste",
         header: t("col_reste"),
         Cell: ({ row }) => (
-          <span className="font-semibold text-[#B12B89]">
+          <span className={`font-semibold ${row.original.isPaid ? "text-emerald-600 dark:text-emerald-400" : "text-[#B12B89]"}`}>
             {fmt(row.original.reste)}
           </span>
         ),
+      },
+      {
+        accessorKey: "isPaid",
+        header: t("col_status"),
+        Cell: ({ row }) =>
+          row.original.isPaid ? (
+            <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+              {t("status_paid")}
+            </span>
+          ) : (
+            <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+              {t("status_unpaid")}
+            </span>
+          ),
       },
     ],
     [t],
@@ -160,7 +185,7 @@ export const SituationClientPage = () => {
       />
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900/40">
+        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-[#2e2e2e] dark:bg-[#1c1c1c]/40">
           <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
             {t("summary_docs")}
           </p>
@@ -168,7 +193,7 @@ export const SituationClientPage = () => {
             {summary.documentCount ?? 0}
           </p>
         </div>
-        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-700 dark:bg-slate-900/40">
+        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-[#2e2e2e] dark:bg-[#1c1c1c]/40">
           <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
             {t("summary_paid")}
           </p>
@@ -208,6 +233,18 @@ export const SituationClientPage = () => {
             loading: clientsLoading,
             getOptionLabel: (o) => o?.label ?? o?.name ?? "",
             allLabel: t("filter_all_clients"),
+          },
+          {
+            type: "select",
+            id: "paymentStatus",
+            label: t("filter_payment"),
+            icon: CircleDollarSign,
+            options: paymentOptions,
+            value: paymentFilter,
+            onChange: (v) => {
+              setPaymentFilter(v);
+              resetPage();
+            },
           },
           {
             type: "date-range",

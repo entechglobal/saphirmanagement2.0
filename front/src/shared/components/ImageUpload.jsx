@@ -9,7 +9,7 @@ export const ImageUpload = ({
   maxWidth = "max-w-[280px]" 
 }) => {
   return (
-    <div className={`relative aspect-square w-full ${maxWidth} mx-auto lg:max-w-none rounded-lg border border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950 transition-colors hover:border-[#B12B89]`}>
+    <div className={`relative aspect-square w-full ${maxWidth} mx-auto lg:max-w-none rounded-lg border border-dashed border-slate-300 dark:border-[#2e2e2e] flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-[#111111] transition-colors hover:border-[#B12B89]`}>
       {imagePreview ? (
         <>
           <img
@@ -27,7 +27,7 @@ export const ImageUpload = ({
         </>
       ) : (
         <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer p-4">
-          <div className="p-3 bg-white dark:bg-slate-900 rounded-lg shadow-sm mb-2 border border-slate-200 dark:border-slate-800">
+          <div className="p-3 bg-white dark:bg-[#1c1c1c] rounded-lg shadow-sm mb-2 border border-slate-200 dark:border-[#2e2e2e]">
             <Upload className="w-5 h-5 text-[#B12B89]" />
           </div>
           <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">

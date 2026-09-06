@@ -71,10 +71,10 @@ const Checkbox = ({ checked, indeterminate = false, onChange, disabled = false }
     disabled={disabled}
     className={`flex-shrink-0 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
       disabled
-        ? "bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 cursor-not-allowed opacity-40"
+        ? "bg-slate-100 dark:bg-[#2e2e2e] border-slate-200 dark:border-[#3a3a3a] cursor-not-allowed opacity-40"
         : checked || indeterminate
         ? "bg-[#B12B89] border-[#B12B89]"
-        : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 hover:border-blue-400"
+        : "bg-white dark:bg-[#222222] border-slate-300 dark:border-[#3a3a3a] hover:border-blue-400"
     }`}
   >
     {!disabled && indeterminate && !checked && <Minus className="w-3 h-3 text-white" strokeWidth={3} />}
@@ -114,7 +114,7 @@ const LabelPreviewCard = ({ label }) => {
       )}
 
       <div
-        className="border border-dashed border-slate-300 dark:border-slate-600 bg-white rounded flex flex-col items-center justify-center"
+        className="border border-dashed border-slate-300 dark:border-[#3a3a3a] bg-white rounded flex flex-col items-center justify-center"
         style={{
           width: small ? "113px" : "189px",
           height: small ? "57px" : "94px",
@@ -170,11 +170,11 @@ const ConfigPanel = ({
   const needsPriceField = labelType !== "sansPrix";
 
   return (
-    <div className="w-72 flex-shrink-0 overflow-y-auto p-4 space-y-4 border-l border-slate-200 dark:border-slate-800">
+    <div className="w-72 flex-shrink-0 overflow-y-auto p-4 space-y-4 border-l border-slate-200 dark:border-[#2e2e2e]">
 
       {/* Single article info (articles mode only) */}
       {mode === "articles" && singleItem && (
-        <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
+        <div className="p-3 bg-slate-50 dark:bg-[#222222]/60 rounded-xl border border-slate-200 dark:border-[#2e2e2e]">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2">{t("config.selected_article")}</p>
           <p className="font-bold text-sm text-slate-800 dark:text-slate-100 truncate">{singleItem.name}</p>
           <p className="text-[10px] font-mono text-slate-500 mt-0.5">{singleItem.barcode}</p>
@@ -207,7 +207,7 @@ const ConfigPanel = ({
               className={`px-2 py-2 rounded-lg text-xs font-semibold transition border ${
                 labelType === value
                   ? "bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900/30 dark:border-blue-700 dark:text-blue-300"
-                  : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-300"
+                  : "bg-white dark:bg-[#222222] border-slate-200 dark:border-[#2e2e2e] text-slate-600 dark:text-slate-300 hover:border-blue-300"
               }`}
             >
               {t(`config.label_types.${value}`)}
@@ -236,7 +236,7 @@ const ConfigPanel = ({
               className={`flex-1 py-2 rounded-lg text-xs font-bold transition border ${
                 size === s
                   ? "bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900/30 dark:border-blue-700 dark:text-blue-300"
-                  : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-300"
+                  : "bg-white dark:bg-[#222222] border-slate-200 dark:border-[#2e2e2e] text-slate-600 dark:text-slate-300 hover:border-blue-300"
               }`}
             >
               {s} mm
@@ -261,7 +261,7 @@ const ConfigPanel = ({
                 className={`flex-1 py-2 rounded-lg text-[11px] font-semibold transition border ${
                   quantityMode === qm.value
                     ? "bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900/30 dark:border-blue-700 dark:text-blue-300"
-                    : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-300"
+                    : "bg-white dark:bg-[#222222] border-slate-200 dark:border-[#2e2e2e] text-slate-600 dark:text-slate-300 hover:border-blue-300"
                 }`}
               >
                 {t(qm.labelKey)}
@@ -286,7 +286,7 @@ const ConfigPanel = ({
                 allDepots.map((depot) => (
                   <label
                     key={depot.id}
-                    className="flex items-center gap-2 cursor-pointer p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition"
+                    className="flex items-center gap-2 cursor-pointer p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-[#222222]/50 transition"
                   >
                     <input
                       type="checkbox"
@@ -594,7 +594,7 @@ export const PrintBarcodeModal = ({ isOpen, onClose, initialMode = "articles" })
   };
 
   const inputClass =
-    "w-full px-3 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-[#B12B89] outline-none transition dark:text-slate-100 text-sm";
+    "w-full px-3 py-2.5 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-xl focus:ring-2 focus:ring-[#B12B89] outline-none transition dark:text-slate-100 text-sm";
 
   const singleItem = selected.length === 1 ? selected[0] : null;
 
@@ -625,7 +625,7 @@ export const PrintBarcodeModal = ({ isOpen, onClose, initialMode = "articles" })
               <button
                 onClick={() => isPacks ? setPackPage((p) => p - 1) : setPage((p) => p - 1)}
                 disabled={currentPage === 1}
-                className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                className="p-2 rounded-lg border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] disabled:opacity-40 disabled:cursor-not-allowed transition"
               >
                 <ChevronLeft className="w-4 h-4 text-slate-600 dark:text-slate-300" />
               </button>
@@ -635,7 +635,7 @@ export const PrintBarcodeModal = ({ isOpen, onClose, initialMode = "articles" })
               <button
                 onClick={() => isPacks ? setPackPage((p) => p + 1) : setPage((p) => p + 1)}
                 disabled={currentPage >= currentTotal}
-                className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                className="p-2 rounded-lg border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] disabled:opacity-40 disabled:cursor-not-allowed transition"
               >
                 <ChevronRight className="w-4 h-4 text-slate-600 dark:text-slate-300" />
               </button>
@@ -644,7 +644,7 @@ export const PrintBarcodeModal = ({ isOpen, onClose, initialMode = "articles" })
             <div className="flex items-center gap-3">
               <button
                 onClick={onClose}
-                className="px-4 py-2.5 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl transition font-semibold text-sm"
+                className="px-4 py-2.5 border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] text-slate-600 dark:text-slate-300 rounded-xl transition font-semibold text-sm"
               >
                 {t("modal.cancel")}
               </button>
@@ -665,7 +665,7 @@ export const PrintBarcodeModal = ({ isOpen, onClose, initialMode = "articles" })
 
           {/* Tabs — only shown when no initialMode lock */}
           {!initialMode && (
-            <div className="flex px-4 pt-2 gap-1 border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
+            <div className="flex px-4 pt-2 gap-1 border-b border-slate-200 dark:border-[#2e2e2e] flex-shrink-0">
               {[
                 { value: "articles", label: t("modal.tab_articles") },
                 { value: "packs",    label: t("modal.tab_packs")    },
@@ -697,7 +697,7 @@ export const PrintBarcodeModal = ({ isOpen, onClose, initialMode = "articles" })
           )}
 
           {/* Search */}
-          <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex-shrink-0">
+          <div className="px-4 py-3 border-b border-slate-200 dark:border-[#2e2e2e] flex-shrink-0">
             <div className="relative">
               {(isPacks ? packsLoading || packsFetching : isLoading || isFetching) ? (
                 <Loader2 className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-400 animate-spin" />
@@ -731,7 +731,7 @@ export const PrintBarcodeModal = ({ isOpen, onClose, initialMode = "articles" })
               ) : (
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50 sticky top-0 z-10">
+                    <tr className="border-b border-slate-100 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/50 sticky top-0 z-10">
                       <th className="px-4 py-2.5 w-10">
                         <Checkbox
                           checked={packs.length > 0 && packs.every(isPackSelected)}
@@ -743,7 +743,7 @@ export const PrintBarcodeModal = ({ isOpen, onClose, initialMode = "articles" })
                       <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("modal.col_barcode")}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+                  <tbody className="divide-y divide-slate-50 dark:divide-[#2e2e2e]">
                     {packs.map((pack) => {
                       const pending = isPackSelected(pack);
                       return (
@@ -753,7 +753,7 @@ export const PrintBarcodeModal = ({ isOpen, onClose, initialMode = "articles" })
                           className={`transition-colors cursor-pointer ${
                             pending
                               ? "bg-blue-50/70 dark:bg-blue-900/10"
-                              : "hover:bg-slate-50 dark:hover:bg-slate-800/30"
+                              : "hover:bg-slate-50 dark:hover:bg-[#222222]/30"
                           }`}
                         >
                           <td className="px-4 py-3">
@@ -787,7 +787,7 @@ export const PrintBarcodeModal = ({ isOpen, onClose, initialMode = "articles" })
               ) : (
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50 sticky top-0 z-10">
+                    <tr className="border-b border-slate-100 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/50 sticky top-0 z-10">
                       <th className="px-4 py-2.5 w-10">
                         <Checkbox checked={allChecked} indeterminate={someChecked} onChange={handleToggleAll} />
                       </th>
@@ -796,7 +796,7 @@ export const PrintBarcodeModal = ({ isOpen, onClose, initialMode = "articles" })
                       <th className="px-3 py-2.5 text-center text-[10px] font-semibold uppercase tracking-wider text-slate-500">{t("modal.col_price")}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+                  <tbody className="divide-y divide-slate-50 dark:divide-[#2e2e2e]">
                     {products.map((p) => {
                       const pending = isPending(p);
                       return (
@@ -806,7 +806,7 @@ export const PrintBarcodeModal = ({ isOpen, onClose, initialMode = "articles" })
                           className={`transition-colors cursor-pointer ${
                             pending
                               ? "bg-blue-50/70 dark:bg-blue-900/10"
-                              : "hover:bg-slate-50 dark:hover:bg-slate-800/30"
+                              : "hover:bg-slate-50 dark:hover:bg-[#222222]/30"
                           }`}
                         >
                           <td className="px-4 py-3">
@@ -876,7 +876,7 @@ export const PrintBarcodeModal = ({ isOpen, onClose, initialMode = "articles" })
         headerLeft={
           <button
             onClick={() => setStep("select")}
-            className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition mr-1"
+            className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-[#222222] transition mr-1"
           >
             <ArrowLeft className="w-4 h-4 text-slate-600 dark:text-slate-300" />
           </button>
@@ -897,7 +897,7 @@ export const PrintBarcodeModal = ({ isOpen, onClose, initialMode = "articles" })
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setStep("select")}
-                className="px-4 py-2.5 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl transition font-semibold text-sm"
+                className="px-4 py-2.5 border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] text-slate-600 dark:text-slate-300 rounded-xl transition font-semibold text-sm"
               >
                 {t("preview.back")}
               </button>
@@ -913,7 +913,7 @@ export const PrintBarcodeModal = ({ isOpen, onClose, initialMode = "articles" })
         }
       >
         {/* Summary bar */}
-        <div className="mb-4 p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-wrap gap-4">
+        <div className="mb-4 p-3 bg-slate-50 dark:bg-[#222222]/60 rounded-xl border border-slate-200 dark:border-[#2e2e2e] flex flex-wrap gap-4">
           {[
             { label: t("preview.col_type"),       value: labelData.labelType    },
             { label: t("preview.col_size"),       value: `${labelData.size} mm` },

@@ -100,6 +100,7 @@
       "sale_price_1": "Prix Vente 1",
       "sale_price_2": "Prix Vente 2",
       "sale_price_3": "Prix Vente 3",
+      "commission": "Commission commercial",
       "discount_percent": "Remise %",
       "expiration_date": "Date d'Expiration",
       "expiration_alert": "Durée Alerte Expiration (jours)",
@@ -116,6 +117,7 @@
       "select": "Sélectionnez"
     },
     "buttons": {
+      "add_family": "Ajouter une famille",
       "generate": "Générer",
       "add_secondary": "+ Ajouter une unité secondaire",
       "add_complementary": "+ Ajouter une unité complémentaire",

@@ -34,7 +34,7 @@ const Toggle = ({ checked, onChange, disabled }) => (
     onClick={onChange}
     disabled={disabled}
     className={`relative h-6 w-11 rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B12B89]/40 ${
-      checked ? "bg-[#B12B89]" : "bg-slate-200 dark:bg-slate-700"
+      checked ? "bg-[#B12B89]" : "bg-slate-200 dark:bg-[#2e2e2e]"
     } ${disabled ? "cursor-not-allowed opacity-40" : "cursor-pointer"}`}
   >
     <span
@@ -48,8 +48,8 @@ const Toggle = ({ checked, onChange, disabled }) => (
 const PriceGridSection = ({ active, toggle }) => {
   const { t } = useTranslation("settings");
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
-      <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4 dark:border-slate-800">
+    <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-[#2e2e2e]">
+      <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4 dark:border-[#2e2e2e]">
         <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/30">
           <Tag className="h-4 w-4 text-blue-500" />
         </div>
@@ -57,7 +57,7 @@ const PriceGridSection = ({ active, toggle }) => {
           {t("price_grid.title")}
         </h2>
       </div>
-      <div className="divide-y divide-slate-50 dark:divide-slate-800/60">
+      <div className="divide-y divide-slate-50 dark:divide-[#2e2e2e]/60">
         {PRICE_FIELD_OPTIONS.map((opt, i) => {
           const isActive = active.includes(opt.value);
           const isOnly = active.length === 1 && isActive;
@@ -78,7 +78,7 @@ const PriceGridSection = ({ active, toggle }) => {
                     </span>
                   )}
                   {!isActive && (
-                    <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 dark:bg-slate-800">
+                    <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 dark:bg-[#222222]">
                       {t("price_grid.badge_hidden")}
                     </span>
                   )}
@@ -178,7 +178,7 @@ export const SettingsPage = () => {
                   className={`flex min-w-max items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-[13px] font-semibold transition-colors lg:min-w-0 ${
                     isActive
                       ? "bg-[#B12B89]/10 text-[#B12B89]"
-                      : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/60 dark:hover:text-white"
+                      : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#222222]/60 dark:hover:text-white"
                   }`}
                 >
                   <Icon

@@ -32,7 +32,7 @@ export const StatCard = ({ title, value, growth, prefix = "", suffix = "", spark
   const gradId = `spk-${(title ?? "x").replace(/[^a-z0-9]/gi, "")}`
 
   return (
-    <div className="bg-card rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-4">
+    <div className="bg-card rounded-xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm p-4">
       <div className="flex items-center justify-between mb-2.5">
         <p className="text-xs text-gray-400 dark:text-gray-500 tracking-wide">{title}</p>
         {Icon && (

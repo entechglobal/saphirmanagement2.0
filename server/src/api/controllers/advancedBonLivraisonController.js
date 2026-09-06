@@ -114,7 +114,7 @@ export const getProductsOrPacks = asyncHandler(async (req, res) => {
 });
 
 export const getWorkflowCounts = asyncHandler(async (req, res) => {
-  const data = await AdvancedBLService.getWorkflowCounts(req.user);
+  const data = await AdvancedBLService.getWorkflowCounts(req.user, req.query);
   res.status(200).json({ success: true, data });
 });
 export const getBLsByStatus = asyncHandler(async (req, res) => {
@@ -140,6 +140,22 @@ export const getCommercials = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     results: data.length,
+    data,
+  });
+});
+
+export const getCommercialStats = asyncHandler(async (req, res) => {
+  const data = await AdvancedBLService.getCommercialStats(req.user, req.query);
+  res.status(200).json({
+    success: true,
+    data,
+  });
+});
+
+export const getTopCommercials = asyncHandler(async (req, res) => {
+  const data = await AdvancedBLService.getTopCommercials(req.user, req.query);
+  res.status(200).json({
+    success: true,
     data,
   });
 });

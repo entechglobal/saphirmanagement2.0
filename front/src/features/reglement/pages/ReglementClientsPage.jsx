@@ -153,7 +153,7 @@ export const ReglementClientsPage = () => {
       id: "id",
       header: t("col_ref"),
       Cell: ({ row }) => (
-        <span className="font-mono text-xs font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
+        <span className="font-mono text-xs font-bold text-slate-500 bg-slate-100 dark:bg-[#222222] px-2 py-0.5 rounded">
           #{row.original.id}
         </span>
       ),
@@ -214,7 +214,7 @@ export const ReglementClientsPage = () => {
       accessorKey: "montantBL",
       header: t("col_montant_bl"),
       Cell: ({ cell }) => (
-        <span className="font-mono text-sm font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md border border-slate-200 dark:border-slate-700">
+        <span className="font-mono text-sm font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-[#222222] px-2 py-1 rounded-md border border-slate-200 dark:border-[#2e2e2e]">
           {fmt(cell.getValue())} <span className="text-[10px] ml-1 opacity-70">MAD</span>
         </span>
       ),
@@ -227,7 +227,7 @@ export const ReglementClientsPage = () => {
         return (
           <span className={`font-mono text-sm font-black px-2 py-1 rounded-md border shadow-sm ${v > 0
               ? "text-red-600 bg-red-50 border-red-100 dark:bg-red-500/10 dark:border-red-500/20"
-              : "text-gray-400 bg-gray-50 border-gray-100 dark:bg-gray-800/50 dark:border-gray-700 opacity-60"
+              : "text-gray-400 bg-gray-50 border-gray-100 dark:bg-[#222222]/50 dark:border-[#2e2e2e] opacity-60"
             }`}>
             {fmt(v)} <span className="text-[10px] ml-1 uppercase opacity-70">MAD</span>
           </span>

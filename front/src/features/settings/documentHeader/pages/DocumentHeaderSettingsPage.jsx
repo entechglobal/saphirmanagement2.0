@@ -27,10 +27,10 @@ const MiniPreview = ({ themeId, selected, onSelect, label, description }) => {
       className={`overflow-hidden rounded-xl border text-left transition-all ${
         selected
           ? "border-[#B12B89] ring-2 ring-[#B12B89]/25"
-          : "border-slate-200 hover:border-slate-300 dark:border-slate-700"
+          : "border-slate-200 hover:border-slate-300 dark:border-[#2e2e2e]"
       }`}
     >
-      <div className="flex items-center justify-between gap-2 border-b border-slate-100 bg-slate-50 px-3 py-2 dark:border-slate-800 dark:bg-slate-950/40">
+      <div className="flex items-center justify-between gap-2 border-b border-slate-100 bg-slate-50 px-3 py-2 dark:border-[#2e2e2e] dark:bg-[#111111]/40">
         <div className="min-w-0">
           <p className={`truncate text-xs font-semibold ${selected ? "text-[#B12B89]" : "text-slate-700 dark:text-slate-200"}`}>
             {label}
@@ -140,14 +140,14 @@ const LivePreview = ({ themeId, societe }) => {
   const demoClient = { name: "Client Démo", address: "Casablanca", phone: "05 22 00 00 00" };
 
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
-      <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5 dark:border-slate-800">
+    <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-[#2e2e2e]">
+      <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5 dark:border-[#2e2e2e]">
         <Eye className="h-4 w-4 text-slate-400" />
         <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
           {t("doc_header.preview")}
         </span>
       </div>
-      <div className="bg-slate-50 p-3 dark:bg-slate-950/40">
+      <div className="bg-slate-50 p-3 dark:bg-[#111111]/40">
         <div className="overflow-hidden rounded-lg border border-slate-200/70 bg-white shadow-sm">
           <DocumentThemeHeader
             title="FACTURE"
@@ -228,7 +228,7 @@ export const DocumentHeaderSettingsPage = () => {
 
   if (!societes.length) {
     return (
-      <div className="rounded-xl border border-slate-200 px-6 py-10 text-center dark:border-slate-800">
+      <div className="rounded-xl border border-slate-200 px-6 py-10 text-center dark:border-[#2e2e2e]">
         <Building2 className="mx-auto h-8 w-8 text-slate-300" />
         <p className="mt-3 text-sm font-semibold">{t("doc_header.no_societe_title")}</p>
         <p className="mt-1 text-xs text-slate-500">{t("doc_header.no_societe_list")}</p>
@@ -253,7 +253,7 @@ export const DocumentHeaderSettingsPage = () => {
             <select
               value={selectedId ?? ""}
               onChange={(e) => setSelectedId(Number(e.target.value))}
-              className="rounded-lg border border-slate-200 bg-transparent px-3 py-2 text-sm font-medium outline-none focus:ring-2 focus:ring-[#B12B89]/15 dark:border-slate-700"
+              className="rounded-lg border border-slate-200 bg-transparent px-3 py-2 text-sm font-medium outline-none focus:ring-2 focus:ring-[#B12B89]/15 dark:border-[#2e2e2e]"
             >
               {societes.map((s) => (
                 <option key={s.id} value={s.id}>

@@ -330,7 +330,7 @@ export const TransferForm = () => {
 
         <div className="overflow-x-auto">
 
-          <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+          <div className="px-6 py-5 border-b border-slate-100 dark:border-[#2e2e2e] flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div>
                 <h3 className="font-bold text-slate-800 dark:text-slate-100">{t("articles_to_transfer")}</h3>
@@ -350,7 +350,7 @@ export const TransferForm = () => {
                   <div className="flex items-center gap-1 text-xs font-bold text-[#B12B89] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 px-2.5 py-1 rounded-lg">
                     {t("total_quantity")}: {totalQuantity}
                   </div>
-                  <div className="flex items-center gap-1 text-xs font-bold text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2.5 py-1 rounded-lg">
+                  <div className="flex items-center gap-1 text-xs font-bold text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] px-2.5 py-1 rounded-lg">
                     {t("total_value")}: {fmt(totalValue)} MAD
                   </div>
                 </div>
@@ -365,7 +365,7 @@ export const TransferForm = () => {
           <div className="overflow-x-auto">
             <table className="w-full table-auto">
               <thead>
-                <tr className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50">
+                <tr className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/50">
                   <th className="px-6 py-3.5 text-left font-semibold">{t("article")}</th>
                   <th className="px-5 py-3.5 text-left font-semibold">{t("barcode")}</th>
                   <th className="px-5 py-3.5 text-left font-semibold hidden sm:table-cell">{t("family")}</th>
@@ -376,7 +376,7 @@ export const TransferForm = () => {
                   <th className="px-6 py-3.5 text-right font-semibold"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
                 {selectedArticles.length > 0 ? (
                   selectedArticles.map((article) => {
                     const isTouched = !!article.isTouched;
@@ -396,7 +396,7 @@ export const TransferForm = () => {
                         {/* Article */}
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800">
+                            <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-slate-100 dark:bg-[#222222]">
                               <Package className="w-4 h-4 text-slate-500" />
                             </div>
                             <div>
@@ -414,7 +414,7 @@ export const TransferForm = () => {
 
                         {/* Barcode */}
                         <td className="px-5 py-4">
-                          <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
+                          <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-[#222222] px-2 py-1 rounded">
                             {article.barcode}
                           </span>
                         </td>
@@ -449,7 +449,7 @@ export const TransferForm = () => {
                             onBlur={() => handleQuantityBlur(article)}
                             className={`w-24 px-2 py-1.5 border rounded-lg text-center text-sm font-bold outline-none focus:ring-2 transition-all dark:text-slate-100 ${overStock
                               ? "bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 focus:ring-amber-400"
-                              : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus:ring-[#B12B89]"
+                              : "bg-white dark:bg-[#222222] border-slate-200 dark:border-[#2e2e2e] focus:ring-[#B12B89]"
                               }`}
                           />
                         </td>

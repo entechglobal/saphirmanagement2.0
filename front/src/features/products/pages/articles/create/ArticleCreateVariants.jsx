@@ -118,7 +118,7 @@ export const VariantsFlow = () => {
             <div className="flex items-center group">
               <div className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-all duration-300 ${isVariantsStep
                 ? "bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800"
-                : "bg-[#C86AAC] text-white shadow-lg shadow-[#C86AAC]/20 ring-4 ring-[#C86AAC]/20 dark:ring-[#C86AAC]/30 ring-offset-2 dark:ring-offset-slate-950"
+                : "bg-[#C86AAC] text-white shadow-lg shadow-[#C86AAC]/20 ring-4 ring-[#C86AAC]/20 dark:ring-[#C86AAC]/30 ring-offset-2 dark:ring-offset-[#161616]"
                 }`}>
                 {isVariantsStep ? <CheckCircle2 size={18} /> : <Package size={18} />}
               </div>
@@ -140,8 +140,8 @@ export const VariantsFlow = () => {
             {/* Step 2: Variants Management */}
             <div className="flex items-center">
               <div className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border transition-all duration-300 ${isVariantsStep
-                ? "bg-[#C86AAC] text-white shadow-lg shadow-[#C86AAC]/20 ring-4 ring-[#C86AAC]/20 dark:ring-[#C86AAC]/30 ring-offset-2 dark:ring-offset-slate-950"
-                : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500"
+                ? "bg-[#C86AAC] text-white shadow-lg shadow-[#C86AAC]/20 ring-4 ring-[#C86AAC]/20 dark:ring-[#C86AAC]/30 ring-offset-2 dark:ring-offset-[#161616]"
+                : "bg-white dark:bg-[#1c1c1c] border-slate-200 dark:border-[#2e2e2e] text-slate-400 dark:text-slate-500"
                 }`}>
                 <Layers size={18} />
               </div>

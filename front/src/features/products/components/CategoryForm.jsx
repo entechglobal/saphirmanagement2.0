@@ -110,7 +110,7 @@ export const CategoryForm = ({
             error={errors.name}
             required
           />
-          <div className="rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/30 p-4 flex items-center">
+          <div className="rounded-xl border border-slate-100 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/30 p-4 flex items-center">
             <InputToggle
               label={t("visible")}
               description={t("visibility_description")}

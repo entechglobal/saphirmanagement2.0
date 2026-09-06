@@ -48,7 +48,7 @@ const formatPeriod = (period, granularity) => {
 const ChartTooltip = ({ active, payload, label, granularity }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg bg-slate-900 px-3 py-2 text-xs text-white shadow-lg">
+    <div className="rounded-lg bg-[#111111] px-3 py-2 text-xs text-white shadow-lg">
       {label && (
         <p className="mb-1 border-b border-slate-700 pb-1 font-semibold">
           {formatPeriod(label, granularity) || label}
@@ -64,7 +64,7 @@ const ChartTooltip = ({ active, payload, label, granularity }) => {
 };
 
 const KpiCard = ({ label, value, hint, icon: Icon, accent }) => (
-  <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+  <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-[#2e2e2e] dark:bg-[#222222]">
     <div className="mb-2 flex items-center justify-between">
       <p className="text-[11px] font-medium uppercase tracking-wide text-slate-400">{label}</p>
       <div className="rounded-lg p-1.5" style={{ backgroundColor: `${accent}22` }}>
@@ -77,7 +77,7 @@ const KpiCard = ({ label, value, hint, icon: Icon, accent }) => (
 );
 
 const SkeletonBlock = ({ className = "h-64" }) => (
-  <div className={`animate-pulse rounded-xl bg-slate-100 dark:bg-slate-700/50 ${className}`} />
+  <div className={`animate-pulse rounded-xl bg-slate-100 dark:bg-[#2e2e2e]/50 ${className}`} />
 );
 
 export const PartnerChartsSection = ({
@@ -104,7 +104,7 @@ export const PartnerChartsSection = ({
   const barHeight = Math.min(Math.max(byPartner.length * 32, 160), 420);
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-slate-50/50 p-4 dark:border-slate-700 dark:bg-slate-900/20 sm:p-5">
+    <section className="rounded-xl border border-slate-200 bg-slate-50/50 p-4 dark:border-[#2e2e2e] dark:bg-[#1c1c1c]/20 sm:p-5">
       <div className="mb-4 flex items-center gap-2">
         <span className="h-5 w-1 rounded-full" style={{ backgroundColor: accent }} />
         <h2 className="text-base font-bold text-slate-900 dark:text-slate-50">{t(`${ns}.title`)}</h2>
@@ -147,7 +147,7 @@ export const PartnerChartsSection = ({
       )}
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800 xl:col-span-2">
+        <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-[#2e2e2e] dark:bg-[#222222] xl:col-span-2">
           <h3 className="mb-3 text-sm font-semibold text-slate-800 dark:text-slate-100">
             {t(`${ns}.over_time`)}
           </h3>
@@ -188,7 +188,7 @@ export const PartnerChartsSection = ({
           )}
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+        <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-[#2e2e2e] dark:bg-[#222222]">
           <h3 className="mb-3 text-sm font-semibold text-slate-800 dark:text-slate-100">
             {t(`${ns}.by_mode`)}
           </h3>
@@ -237,7 +237,7 @@ export const PartnerChartsSection = ({
         </div>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
+      <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-[#2e2e2e] dark:bg-[#222222]">
         <h3 className="mb-3 text-sm font-semibold text-slate-800 dark:text-slate-100">
           {t(`${ns}.by_partner`)}
         </h3>
@@ -267,7 +267,7 @@ export const PartnerChartsSection = ({
                 <Tooltip
                   content={({ active, payload }) =>
                     active && payload?.length ? (
-                      <div className="rounded-lg bg-slate-900 px-3 py-2 text-xs text-white shadow-lg">
+                      <div className="rounded-lg bg-[#111111] px-3 py-2 text-xs text-white shadow-lg">
                         <p className="mb-1 font-semibold">{payload[0].payload.name}</p>
                         <p className="tabular-nums">
                           {formatMAD(payload[0].value)} MAD · {payload[0].payload.count} {t(`${ns}.payments`).toLowerCase()}

@@ -34,6 +34,10 @@
   "stock_description": "Track quantities",
   "visibility_description": "Show in point of sale",
   "save_family": "Save Family",
+  "quick_add_category": "Add a category",
+  "quick_create_title": "New family",
+  "quick_create_subtitle": "Create a family and select it",
+  "quick_created": "Family created",
   "upload_image": "Upload Image",
   "validation": {
     "name_required": "Name is required",

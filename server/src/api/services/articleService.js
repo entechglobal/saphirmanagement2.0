@@ -73,6 +73,12 @@ export const create = async (data) => {
   data.prixVente2 = parseFloat(data.prixVente2);
   data.prixVente3 = parseFloat(data.prixVente3);
 
+  if (data.commission !== undefined && data.commission !== null && data.commission !== "") {
+    data.commission = parseFloat(data.commission);
+  } else {
+    data.commission = 0;
+  }
+
   if (data.remise !== undefined && data.remise !== null) {
     data.remise = parseFloat(data.remise);
   }
@@ -168,6 +174,7 @@ export const getAll = async (query) => {
       prixVente1: true,
       prixVente2: true,
       prixVente3: true,
+      commission: true,
       conversionSecondaire: true,
       conversionComplementaire: true,
       gereEnStock: true,
@@ -530,6 +537,7 @@ export const getByFamily = async (familyId) => {
       prixVente1: true,
       prixVente2: true,
       prixVente3: true,
+      commission: true,
       gereEnStock: true,
       visible: true,
       remise: true,
@@ -727,6 +735,10 @@ export const update = async (id, data) => {
 
   if (data.prixVente3 !== undefined) {
     data.prixVente3 = parseFloat(data.prixVente3);
+  }
+
+  if (data.commission !== undefined && data.commission !== null && data.commission !== "") {
+    data.commission = parseFloat(data.commission);
   }
 
   if (data.remise !== undefined && data.remise !== null) {

@@ -44,10 +44,10 @@ export const SearchableFrsSelect = ({ societeId, value, onChange, placeholder })
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={`w-full flex items-center justify-between gap-2 px-3 h-10 rounded-md border text-sm transition-colors
-          bg-white dark:bg-slate-800/60 text-slate-700 dark:text-slate-200
+          bg-white dark:bg-[#222222]/60 text-slate-700 dark:text-slate-200
           ${open
             ? "border-[#B12B89] ring-2 ring-[#B12B89]/10"
-            : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
+            : "border-slate-200 dark:border-[#2e2e2e] hover:border-slate-300 dark:hover:border-[#3a3a3a]"
           }
         `}
       >
@@ -72,10 +72,10 @@ export const SearchableFrsSelect = ({ societeId, value, onChange, placeholder })
 
       {/* Dropdown panel */}
       {open && (
-        <div className="absolute z-[200] mt-1.5 w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden">
+        <div className="absolute z-[200] mt-1.5 w-full bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-xl shadow-xl overflow-hidden">
           {/* Search */}
-          <div className="p-2 border-b border-slate-100 dark:border-slate-800">
-            <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
+          <div className="p-2 border-b border-slate-100 dark:border-[#2e2e2e]">
+            <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-[#222222] rounded-lg">
               <Search className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
               <input
                 ref={searchRef}
@@ -108,11 +108,11 @@ export const SearchableFrsSelect = ({ societeId, value, onChange, placeholder })
                     className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors
                       ${selected
                         ? "bg-blue-50 dark:bg-blue-900/20"
-                        : "hover:bg-slate-50 dark:hover:bg-slate-800/60"
+                        : "hover:bg-slate-50 dark:hover:bg-[#222222]/60"
                       }
                     `}
                   >
-                    <div className="flex-shrink-0 w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                    <div className="flex-shrink-0 w-7 h-7 rounded-lg bg-slate-100 dark:bg-[#222222] flex items-center justify-center">
                       <Building2 className="w-3.5 h-3.5 text-slate-500" />
                     </div>
                     <div className="flex-1 min-w-0">

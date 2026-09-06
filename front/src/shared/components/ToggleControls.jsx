@@ -83,10 +83,10 @@ export default function ToggleControls() {
   return (
     <>
       {/* Desktop / tablet: pill overlay */}
-      <div className="hidden sm:flex absolute top-4 right-4 z-40 items-center gap-2 bg-white/60 dark:bg-gray-800/60 backdrop-blur rounded-md p-1.5 shadow-sm">
+      <div className="hidden sm:flex absolute top-4 right-4 z-40 items-center gap-2 bg-white/60 dark:bg-[#222222]/60 backdrop-blur rounded-md p-1.5 shadow-sm">
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+          className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#2e2e2e] transition-colors cursor-pointer"
           title={isDark ? "Light mode" : "Dark mode"}
         >
           {isDark ? (
@@ -98,7 +98,7 @@ export default function ToggleControls() {
 
         <button
           onClick={toggleFullscreen}
-          className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+          className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#2e2e2e] transition-colors cursor-pointer"
           title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
         >
           {isFullscreen ? (
@@ -121,17 +121,17 @@ export default function ToggleControls() {
       <div className="sm:hidden absolute top-3 right-3 z-40" ref={mobileRef}>
         <button
           onClick={() => setShowMobileMenu((s) => !s)}
-          className="p-2 rounded-md bg-white/60 dark:bg-gray-800/60 backdrop-blur hover:bg-white dark:hover:bg-gray-700 transition-colors"
+          className="p-2 rounded-md bg-white/60 dark:bg-[#222222]/60 backdrop-blur hover:bg-white dark:hover:bg-[#2e2e2e] transition-colors"
           aria-label="Open controls"
         >
           <MoreHorizontal className="w-5 h-5 text-gray-700 dark:text-gray-300" />
         </button>
 
         {showMobileMenu && (
-          <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-700 rounded-lg shadow-xl border border-gray-200 dark:border-gray-600 overflow-visible z-50 p-2">
+          <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-[#2e2e2e] rounded-lg shadow-xl border border-gray-200 dark:border-[#3a3a3a] overflow-visible z-50 p-2">
             <button
               onClick={toggleTheme}
-              className="w-full flex items-center gap-2 px-2 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
+              className="w-full flex items-center gap-2 px-2 py-2 rounded hover:bg-gray-100 dark:hover:bg-[#3a3a3a]"
             >
               {isDark ? (
                 <SunIcon className="w-4 h-4 text-yellow-500" />
@@ -142,7 +142,7 @@ export default function ToggleControls() {
             </button>
             <button
               onClick={toggleFullscreen}
-              className="w-full flex items-center gap-2 px-2 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
+              className="w-full flex items-center gap-2 px-2 py-2 rounded hover:bg-gray-100 dark:hover:bg-[#3a3a3a]"
             >
               {isFullscreen ? (
                 <Minimize2 className="w-4 h-4 text-gray-700 dark:text-white" />
@@ -153,7 +153,7 @@ export default function ToggleControls() {
                 {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
               </span>
             </button>
-            <div className="mt-1 border-t border-gray-100 dark:border-gray-600 pt-1" >
+            <div className="mt-1 border-t border-gray-100 dark:border-[#3a3a3a] pt-1" >
           <LanguageSelector
             selected={selected}
             setSelected={setSelected}

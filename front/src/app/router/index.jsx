@@ -86,11 +86,16 @@ import {
   PlanningLivraisonPage,
   SpahirMangmentDashboarPage,
   CommandsByStatusPage,
+  CommercialStatsPage,
   ColisTrackingPage,
+  DeliveryShiftsPage,
+  DeliveryShiftDetailPage,
 } from "../../features/saphirmanagement";
 import { DeliveryProviderConfigsPage, DeliveryProviderConfigForm } from "../../features/stracture/deliveryProviderConfigs";
 import { DefaultRedirect } from "./DefaultRedirect";
-import { GestionCaissePage, CaissesUsersPage } from "../../features/caisse";
+import { GestionCaissePage, CaissesUsersPage, MyWalletPage } from "../../features/caisse";
+import { NotificationsPage } from "@/pages/NotificationsPage";
+import { AttendancePage } from "../../features/attendance";
 
 // Convenience alias — reduces JSX verbosity in route definitions
 const PG = ({ p, children }) => (
@@ -593,6 +598,14 @@ export const router = createBrowserRouter([
               </PG>
             ),
           },
+          {
+            path: "statistiques-commerciaux",
+            element: (
+              <PG p={PERMISSIONS.VIEW_ADVANCED_BL}>
+                <CommercialStatsPage />
+              </PG>
+            ),
+          },
 
           // ── Saphir Management — Agences ───────────────────────────────────
           {
@@ -652,6 +665,34 @@ export const router = createBrowserRouter([
             element: <PG p={PERMISSIONS.VIEW_ADVANCED_BL}><PlanningLivraisonPage /></PG>,
           },
 
+          // ── Attendance (ZKTeco imports) ──────────────────────────────────
+          {
+            path: "attendance",
+            element: (
+              <PG p={[PERMISSIONS.VIEW_ATTENDANCE, PERMISSIONS.MANAGE_ATTENDANCE]}>
+                <AttendancePage />
+              </PG>
+            ),
+          },
+
+          // ── Saphir Management — Delivery Shifts ───────────────────────────
+          {
+            path: "delivery-shifts",
+            element: (
+              <PG p={[PERMISSIONS.VIEW_DELIVERY_SHIFTS, PERMISSIONS.MANAGE_DELIVERY_SHIFTS]}>
+                <DeliveryShiftsPage />
+              </PG>
+            ),
+          },
+          {
+            path: "delivery-shifts/:id",
+            element: (
+              <PG p={[PERMISSIONS.VIEW_DELIVERY_SHIFTS, PERMISSIONS.MANAGE_DELIVERY_SHIFTS]}>
+                <DeliveryShiftDetailPage />
+              </PG>
+            ),
+          },
+
           // ── POS (open to all authenticated — role redirect handles Caissier) ─
           {
             path: "pos",
@@ -690,7 +731,17 @@ export const router = createBrowserRouter([
             ),
           },
 
+          // ── Notifications ─────────────────────────────────────────────────
+          {
+            path: "notifications",
+            element: <NotificationsPage />,
+          },
+
           // ── Gestion de Caisse ─────────────────────────────────────────────
+          {
+            path: "my-wallet",
+            element: <MyWalletPage />,
+          },
           {
             path: "caisse",
             element: <PG p={PERMISSIONS.VIEW_CAISSE}><GestionCaissePage /></PG>,

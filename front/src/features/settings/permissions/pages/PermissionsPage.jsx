@@ -25,13 +25,13 @@ const formatName = (str) =>
 const PermissionRow = ({ permission, onRemove, isRemoving, disabled, badge }) => {
   const { t } = useTranslation("permissions")
   return (
-    <div className="flex items-center justify-between py-3 px-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/30 transition group">
+    <div className="flex items-center justify-between py-3 px-4 rounded-xl hover:bg-slate-50 dark:hover:bg-[#222222]/30 transition group">
       <div className="flex items-center gap-2 min-w-0">
         <span className="bg-blue-50 dark:bg-blue-900/20 text-[#B12B89] dark:text-blue-400 px-2.5 py-1 rounded-lg text-xs font-semibold truncate max-w-[260px]">
           {getPermissionLabel(permission.name)}
         </span>
         {badge && (
-          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full flex-shrink-0">
+          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-400 bg-slate-100 dark:bg-[#222222] px-2 py-0.5 rounded-full flex-shrink-0">
             <Lock size={8} />
             {badge}
           </span>
@@ -43,7 +43,7 @@ const PermissionRow = ({ permission, onRemove, isRemoving, disabled, badge }) =>
         title={disabled ? t("tooltip_inherited") : t("tooltip_remove")}
         className={`relative flex-shrink-0 w-11 h-6 rounded-full transition-colors duration-200 ${
           disabled
-            ? "bg-slate-300 dark:bg-slate-600 cursor-default"
+            ? "bg-slate-300 dark:bg-[#3a3a3a] cursor-default"
             : "bg-[#B12B89] hover:bg-[#B05596] cursor-pointer"
         } disabled:opacity-60`}
       >
@@ -62,8 +62,8 @@ const SkeletonPermRows = ({ count = 4 }) => (
   <>
     {Array.from({ length: count }).map((_, i) => (
       <div key={i} className="flex items-center justify-between py-3 px-4 animate-pulse">
-        <div className="h-6 w-44 bg-slate-100 dark:bg-slate-800 rounded-lg" />
-        <div className="h-6 w-11 bg-slate-100 dark:bg-slate-800 rounded-full" />
+        <div className="h-6 w-44 bg-slate-100 dark:bg-[#222222] rounded-lg" />
+        <div className="h-6 w-11 bg-slate-100 dark:bg-[#222222] rounded-full" />
       </div>
     ))}
   </>
@@ -187,25 +187,25 @@ export const PermissionsPage = () => {
   const labelClass =
     "block text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5 ml-1"
   const inputClass =
-    "w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-[#B12B89] outline-none transition dark:text-slate-100 text-sm"
+    "w-full px-4 py-2.5 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-xl focus:ring-2 focus:ring-[#B12B89] outline-none transition dark:text-slate-100 text-sm"
 
   return (
     <div>
       <div className="space-y-6">
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-[#1c1c1c] rounded-2xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm overflow-hidden">
 
           {/* Filter mode switcher + selector */}
-          <div className="px-6 pt-5 pb-5 border-b border-slate-100 dark:border-slate-800 space-y-4">
+          <div className="px-6 pt-5 pb-5 border-b border-slate-100 dark:border-[#2e2e2e] space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-slate-800 dark:text-slate-100 text-sm">
                 {t("card_title")}
               </h3>
-              <div className="flex items-center gap-0.5 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+              <div className="flex items-center gap-0.5 p-1 bg-slate-100 dark:bg-[#222222] rounded-xl">
                 <button
                   onClick={() => { setFilterMode("role"); setSelectedUser(null); setUserSearch("") }}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
                     filterMode === "role"
-                      ? "bg-white dark:bg-slate-700 text-[#B12B89] shadow-sm"
+                      ? "bg-white dark:bg-[#2e2e2e] text-[#B12B89] shadow-sm"
                       : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                   }`}
                 >
@@ -216,7 +216,7 @@ export const PermissionsPage = () => {
                   onClick={() => { setFilterMode("user"); setSelectedRole(null) }}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
                     filterMode === "user"
-                      ? "bg-white dark:bg-slate-700 text-[#B12B89] shadow-sm"
+                      ? "bg-white dark:bg-[#2e2e2e] text-[#B12B89] shadow-sm"
                       : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
                   }`}
                 >
@@ -248,7 +248,7 @@ export const PermissionsPage = () => {
               <div>
                 <label className={labelClass}>{t("label_target_user")}</label>
                 {selectedUser ? (
-                  <div className="flex items-center justify-between px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+                  <div className="flex items-center justify-between px-4 py-2.5 bg-slate-50 dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-xl">
                     <div className="flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
                         <User size={13} className="text-blue-500" />
@@ -285,13 +285,13 @@ export const PermissionsPage = () => {
                       className={inputClass}
                     />
                     {userDropdownOpen && userList.length > 0 && (
-                      <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl z-20 overflow-hidden max-h-52 overflow-y-auto">
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-2xl shadow-2xl z-20 overflow-hidden max-h-52 overflow-y-auto">
                         {userList.map((u) => (
                           <button
                             key={u.id}
                             onMouseDown={(e) => e.preventDefault()}
                             onClick={() => { setSelectedUser(u); setUserSearch(""); setUserDropdownOpen(false) }}
-                            className="w-full text-left px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition flex items-center justify-between gap-2"
+                            className="w-full text-left px-4 py-3 hover:bg-slate-50 dark:hover:bg-[#222222] transition flex items-center justify-between gap-2"
                           >
                             <div className="flex items-center gap-2.5 min-w-0">
                               <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
@@ -322,7 +322,7 @@ export const PermissionsPage = () => {
             <EmptyHint icon={<Users size={32} />} text={t("empty_user_text")} sub={t("empty_user_sub")} />
           ) : filterMode === "role" ? (
             <>
-              <div className="flex items-center justify-between px-6 py-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between px-6 py-3 border-b border-slate-100 dark:border-[#2e2e2e]">
                 <div>
                   <p className="text-sm font-bold text-slate-700 dark:text-slate-200">
                     {rolePermLoading ? "—" : t("role_perm_count", { count: rolePerms.length })}
@@ -359,9 +359,9 @@ export const PermissionsPage = () => {
             </>
           ) : (
             <>
-              <div className="flex items-center justify-between px-6 py-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between px-6 py-3 border-b border-slate-100 dark:border-[#2e2e2e]">
                 {userPermLoading || !userDetail ? (
-                  <div className="h-8 w-40 bg-slate-100 dark:bg-slate-800 rounded-lg animate-pulse" />
+                  <div className="h-8 w-40 bg-slate-100 dark:bg-[#222222] rounded-lg animate-pulse" />
                 ) : (
                   <div>
                     <p className="text-sm font-bold text-slate-700 dark:text-slate-200">

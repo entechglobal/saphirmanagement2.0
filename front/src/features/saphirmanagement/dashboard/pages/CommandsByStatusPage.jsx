@@ -100,14 +100,14 @@ const StatusDropdown = ({ status, onSelect, isLoading }) => {
         <div
             ref={dropRef}
             style={{ position: "absolute", top: pos.top, left: pos.left, minWidth: Math.max(pos.minWidth ?? 0, 160), zIndex: 99999 }}
-            className="py-1 px-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl"
+            className="py-1 px-1 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-xl shadow-2xl"
         >
             {targets.map((target, idx) => {
                 const tc = STATUS_CONFIG[target] ?? { label: target, dot: "bg-slate-400" };
                 const isCancel = target === "ANNULE";
                 return (
                     <div key={target}>
-                        {isCancel && idx > 0 && <div className="h-px bg-slate-100 dark:bg-slate-700 my-1" />}
+                        {isCancel && idx > 0 && <div className="h-px bg-slate-100 dark:bg-[#2e2e2e] my-1" />}
                         <button
                             type="button"
                             disabled={isLoading}
@@ -116,7 +116,7 @@ const StatusDropdown = ({ status, onSelect, isLoading }) => {
                                 "w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs font-semibold text-left transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
                                 isCancel
                                     ? "text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
-                                    : "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700/60",
+                                    : "text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2e2e2e]/60",
                             ].join(" ")}
                         >
                             <span className={`w-2 h-2 rounded-full flex-shrink-0 ${tc.dot}`} />
@@ -181,11 +181,11 @@ const ReportModal = ({ open, onClose, command, onConfirm, isLoading }) => {
             onClick={onClose}
         >
             <div
-                className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 w-full max-w-md shadow-2xl flex flex-col overflow-hidden"
+                className="bg-white dark:bg-[#1c1c1c] rounded-[2.5rem] border border-slate-200 dark:border-[#2e2e2e] w-full max-w-md shadow-2xl flex flex-col overflow-hidden"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="px-8 py-6 border-b border-slate-100 dark:border-slate-800 flex items-center gap-4">
+                <div className="px-8 py-6 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center gap-4">
                     <div className="w-11 h-11 rounded-2xl bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center flex-shrink-0">
                         <AlertTriangle size={18} className="text-orange-500" />
                     </div>
@@ -195,7 +195,7 @@ const ReportModal = ({ open, onClose, command, onConfirm, isLoading }) => {
                     </div>
                     <button
                         onClick={onClose}
-                        className="ml-auto p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition"
+                        className="ml-auto p-2 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-xl transition"
                     >
                         <X size={16} className="text-slate-400" />
                     </button>
@@ -205,7 +205,7 @@ const ReportModal = ({ open, onClose, command, onConfirm, isLoading }) => {
                 <div className="px-8 py-7 flex flex-col gap-6">
                     {/* Command info pill */}
                     {command && (
-                        <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                        <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-50 dark:bg-[#222222]/50 border border-slate-100 dark:border-[#2e2e2e]">
                             <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0">
                                 <User size={14} className="text-[#B12B89]" />
                             </div>
@@ -226,7 +226,7 @@ const ReportModal = ({ open, onClose, command, onConfirm, isLoading }) => {
                             value={reason}
                             onChange={(e) => setReason(e.target.value)}
                             placeholder={t("report_reason_placeholder")}
-                            className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm resize-none bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#B12B89]/20 focus:border-[#B12B89] transition-all"
+                            className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-[#2e2e2e] text-sm resize-none bg-white dark:bg-[#222222] text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#B12B89]/20 focus:border-[#B12B89] transition-all"
                         />
                     </div>
 
@@ -241,12 +241,12 @@ const ReportModal = ({ open, onClose, command, onConfirm, isLoading }) => {
                 </div>
 
                 {/* Footer */}
-                <div className="px-8 py-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+                <div className="px-8 py-5 border-t border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between gap-3">
                     <button
                         type="button"
                         onClick={onClose}
                         disabled={isLoading}
-                        className="px-6 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition disabled:opacity-50"
+                        className="px-6 py-2.5 rounded-2xl border border-slate-200 dark:border-[#2e2e2e] text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#222222] transition disabled:opacity-50"
                     >
                         {t("report_cancel")}
                     </button>
@@ -288,9 +288,9 @@ const BLCard = ({ bl, onStatusChange, isUpdating, onReport, onResume, isResumePe
     const isTerminal = ["PAYE", "ANNULE"].includes(bl.currentStatus);
 
     return (
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+        <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
             {/* Header */}
-            <div className="px-7 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/30">
+            <div className="px-7 py-5 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between bg-slate-50/50 dark:bg-[#222222]/30">
                 <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
                         <Hash size={18} className="text-[#B12B89]" />
@@ -341,7 +341,7 @@ const BLCard = ({ bl, onStatusChange, isUpdating, onReport, onResume, isResumePe
                 </div>
 
                 {/* Phone + WhatsApp */}
-                <div className="grid grid-cols-2 gap-5 py-5 border-y border-slate-100 dark:border-slate-800">
+                <div className="grid grid-cols-2 gap-5 py-5 border-y border-slate-100 dark:border-[#2e2e2e]">
                     <div>
                         <Label>{t("bl_telephone")}</Label>
                         <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
@@ -399,12 +399,12 @@ const BLCard = ({ bl, onStatusChange, isUpdating, onReport, onResume, isResumePe
                 </div>
 
                 {/* Financials */}
-                <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e]">
                     <div className="text-center">
                         <Label>{t("bl_total_due")}</Label>
                         <p className="text-sm font-black text-slate-900 dark:text-white">{fmt(bl.amountDue)} MAD</p>
                     </div>
-                    <div className="text-center border-x border-slate-200 dark:border-slate-700">
+                    <div className="text-center border-x border-slate-200 dark:border-[#2e2e2e]">
                         <Label>{t("bl_paid")}</Label>
                         <p className="text-sm font-black text-emerald-600 dark:text-emerald-400">{fmt(bl.amountPaid)} MAD</p>
                     </div>
@@ -435,7 +435,7 @@ const BLCard = ({ bl, onStatusChange, isUpdating, onReport, onResume, isResumePe
                         {showProducts && (
                             <div className="mt-3 space-y-2 animate-in fade-in slide-in-from-top-1">
                                 {bl.products.map((p, idx) => (
-                                    <div key={idx} className="flex justify-between items-start p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                                    <div key={idx} className="flex justify-between items-start p-3.5 rounded-2xl bg-slate-50 dark:bg-[#222222]/50 border border-slate-100 dark:border-[#2e2e2e]">
                                         <div className="space-y-1.5 min-w-0 flex-1">
                                             <div className="flex items-center gap-2 flex-wrap">
                                                 <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full border ${p.kind === "pack"
@@ -465,7 +465,7 @@ const BLCard = ({ bl, onStatusChange, isUpdating, onReport, onResume, isResumePe
             </div>
 
             {/* Footer */}
-            <div className="px-7 py-4 bg-slate-50 dark:bg-slate-800/30 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+            <div className="px-7 py-4 bg-slate-50 dark:bg-[#222222]/30 border-t border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between gap-3">
                 {/* Left side: Reporter  */}
                 <div className="flex items-center gap-2">
                     {!isTerminal && (
@@ -484,7 +484,7 @@ const BLCard = ({ bl, onStatusChange, isUpdating, onReport, onResume, isResumePe
                 {/* Right side: Détails */}
                 <button
                     onClick={() => navigate(`/commandes/${bl.id}`)}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-black text-[#B12B89] hover:bg-blue-50 dark:hover:bg-slate-800 transition-all shadow-sm"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-xl text-xs font-black text-[#B12B89] hover:bg-blue-50 dark:hover:bg-[#222222] transition-all shadow-sm"
                 >
                     <ClipboardList size={14} /> {t("bl_details_btn")}
                 </button>
@@ -502,7 +502,7 @@ const BLRow = ({ bl, onStatusChange, isUpdating }) => {
     const normalizedWa = whatsappNum.startsWith("0") ? "212" + whatsappNum.slice(1) : whatsappNum;
 
     return (
-        <tr className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors group">
+        <tr className="border-b border-slate-100 dark:border-[#2e2e2e] hover:bg-slate-50/60 dark:hover:bg-[#222222]/40 transition-colors group">
             {/* Ref */}
             <td className="px-5 py-4 whitespace-nowrap">
                 <div className="flex items-center gap-3">
@@ -581,7 +581,7 @@ const BLRow = ({ bl, onStatusChange, isUpdating }) => {
             <td className="px-5 py-4 whitespace-nowrap text-right">
                 <button
                     onClick={() => navigate(`/commandes/${bl.id}`)}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-[11px] font-black text-[#B12B89] hover:bg-blue-50 dark:hover:bg-slate-800 transition-all shadow-sm opacity-0 group-hover:opacity-100"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-xl text-[11px] font-black text-[#B12B89] hover:bg-blue-50 dark:hover:bg-[#222222] transition-all shadow-sm opacity-0 group-hover:opacity-100"
                 >
                     <ClipboardList size={13} /> {t("bl_details_btn")}
                 </button>
@@ -594,7 +594,7 @@ const BLRow = ({ bl, onStatusChange, isUpdating }) => {
 const ViewToggle = ({ view, onChange }) => {
     const { t } = useTranslation("dashboard");
     return (
-        <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+        <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-[#222222] rounded-xl">
             <button
                 type="button"
                 onClick={() => onChange("grid")}
@@ -602,7 +602,7 @@ const ViewToggle = ({ view, onChange }) => {
                 className={[
                     "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all",
                     view === "grid"
-                        ? "bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm"
+                        ? "bg-white dark:bg-[#2e2e2e] text-slate-800 dark:text-white shadow-sm"
                         : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300",
                 ].join(" ")}
             >
@@ -616,7 +616,7 @@ const ViewToggle = ({ view, onChange }) => {
                 className={[
                     "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all",
                     view === "list"
-                        ? "bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm"
+                        ? "bg-white dark:bg-[#2e2e2e] text-slate-800 dark:text-white shadow-sm"
                         : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300",
                 ].join(" ")}
             >
@@ -744,7 +744,7 @@ export const CommandsByStatusPage = () => {
     /* ─ Empty state ─ */
     const emptyState = (
         <div className="flex flex-col items-center justify-center py-28 text-center">
-            <div className="w-16 h-16 rounded-3xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4">
+            <div className="w-16 h-16 rounded-3xl bg-slate-100 dark:bg-[#222222] flex items-center justify-center mb-4">
                 <ClipboardList size={24} className="text-slate-400" />
             </div>
             <p className="text-base font-bold text-slate-500 dark:text-slate-400">{t("no_commands")}</p>
@@ -758,21 +758,21 @@ export const CommandsByStatusPage = () => {
     const skeleton = viewMode === "grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 items-start">
             {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-7 animate-pulse">
-                    <div className="h-5 bg-slate-200 dark:bg-slate-700 rounded w-1/3 mb-5" />
-                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-2/3 mb-3" />
-                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-3" />
-                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4" />
+                <div key={i} className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] p-7 animate-pulse">
+                    <div className="h-5 bg-slate-200 dark:bg-[#2e2e2e] rounded w-1/3 mb-5" />
+                    <div className="h-4 bg-slate-200 dark:bg-[#2e2e2e] rounded w-2/3 mb-3" />
+                    <div className="h-4 bg-slate-200 dark:bg-[#2e2e2e] rounded w-1/2 mb-3" />
+                    <div className="h-4 bg-slate-200 dark:bg-[#2e2e2e] rounded w-3/4" />
                 </div>
             ))}
         </div>
     ) : (
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-pulse">
+        <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] overflow-hidden animate-pulse">
             {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="flex gap-4 px-5 py-4 border-b border-slate-100 dark:border-slate-800">
-                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-24" />
-                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-32" />
-                    <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-20 ml-auto" />
+                <div key={i} className="flex gap-4 px-5 py-4 border-b border-slate-100 dark:border-[#2e2e2e]">
+                    <div className="h-4 bg-slate-200 dark:bg-[#2e2e2e] rounded w-24" />
+                    <div className="h-4 bg-slate-200 dark:bg-[#2e2e2e] rounded w-32" />
+                    <div className="h-4 bg-slate-200 dark:bg-[#2e2e2e] rounded w-20 ml-auto" />
                 </div>
             ))}
         </div>
@@ -800,7 +800,7 @@ export const CommandsByStatusPage = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-5">
 
                 {/* ── Filters bar ── */}
-                <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-5">
+                <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm p-5">
                     <div className="flex items-center justify-between mb-4">
                         <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                             {t("filters_label", { total, s: total !== 1 ? "s" : "" })}
@@ -853,11 +853,11 @@ export const CommandsByStatusPage = () => {
                         </div>
                     ) : (
                         /* TABLE */
-                        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+                        <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm overflow-hidden">
                             <div className="overflow-x-auto">
                                 <table className="w-full min-w-[700px]">
                                     <thead>
-                                        <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50">
+                                        <tr className="border-b border-slate-200 dark:border-[#2e2e2e] bg-slate-50/80 dark:bg-[#222222]/50">
                                             {[
                                                 t("table_ref"),
                                                 t("table_client"),

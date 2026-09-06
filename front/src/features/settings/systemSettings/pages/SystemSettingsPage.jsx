@@ -63,7 +63,7 @@ const TimePanel = ({ label, value, onChange, roundedClass = "" }) => {
     <div
       ref={triggerRef}
       onClick={handleOpen}
-      className={`flex flex-col gap-2 px-5 py-3 bg-white dark:bg-slate-900 cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors ${roundedClass}`}
+      className={`flex flex-col gap-2 px-5 py-3 bg-white dark:bg-[#1c1c1c] cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-[#222222]/60 transition-colors ${roundedClass}`}
     >
       <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 pointer-events-none">
         {label}
@@ -83,7 +83,7 @@ const TimePanel = ({ label, value, onChange, roundedClass = "" }) => {
         <div
           ref={dropdownRef}
           style={{ position: "fixed", top: pos.top, left: pos.left }}
-          className="z-[9999] w-24 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl overflow-hidden"
+          className="z-[9999] w-24 bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-xl shadow-xl overflow-hidden"
         >
           <div className="max-h-48 overflow-y-auto py-1">
             {hourOptions.map((o) => (
@@ -94,7 +94,7 @@ const TimePanel = ({ label, value, onChange, roundedClass = "" }) => {
                 className={`w-full px-4 py-2 text-sm text-start transition ${
                   o.value === value
                     ? "bg-blue-50 dark:bg-blue-900/30 text-[#B12B89] dark:text-blue-400 font-bold"
-                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium"
+                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#222222] font-medium"
                 }`}
               >
                 {o.label}
@@ -124,7 +124,7 @@ const Toggle = ({ checked, onChange, disabled }) => (
     onClick={onChange}
     disabled={disabled}
     className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
-      checked ? "bg-[#B12B89]" : "bg-slate-200 dark:bg-slate-700"
+      checked ? "bg-[#B12B89]" : "bg-slate-200 dark:bg-[#2e2e2e]"
     } ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
   >
     <span
@@ -136,7 +136,7 @@ const Toggle = ({ checked, onChange, disabled }) => (
 );
 
 const SectionHeader = ({ icon: Icon, iconBg, iconColor, title }) => (
-  <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center gap-3">
+  <div className="px-6 py-4 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center gap-3">
     <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${iconBg}`}>
       <Icon size={16} className={iconColor} />
     </div>
@@ -156,7 +156,7 @@ const ReasonInput = ({ value, onChange }) => {
         onChange={(e) => onChange(e.target.value)}
         rows={2}
         placeholder={t("form.reason_placeholder")}
-        className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none transition"
+        className="w-full rounded-xl border border-slate-200 dark:border-[#2e2e2e] bg-slate-50 dark:bg-[#222222]/50 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none transition"
       />
     </div>
   );
@@ -165,10 +165,10 @@ const ReasonInput = ({ value, onChange }) => {
 const SaveRow = ({ onCancel, onSave, isPending }) => {
   const { t } = useTranslation("system-settings");
   return (
-    <div className="flex items-center justify-end gap-3 pt-1 border-t border-slate-100 dark:border-slate-800">
+    <div className="flex items-center justify-end gap-3 pt-1 border-t border-slate-100 dark:border-[#2e2e2e]">
       <button
         onClick={onCancel}
-        className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+        className="px-4 py-2 rounded-xl border border-slate-200 dark:border-[#2e2e2e] text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#222222] transition"
       >
         {t("form.cancel")}
       </button>
@@ -199,7 +199,7 @@ const ValueBadge = ({ value, settingName, muted }) => {
     <span
       className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
         muted
-          ? "bg-slate-100 dark:bg-slate-800 text-slate-400"
+          ? "bg-slate-100 dark:bg-[#222222] text-slate-400"
           : value === true
           ? "bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400"
           : value === false
@@ -237,7 +237,7 @@ const WarningModal = ({ isOpen, onClose, onConfirm, validation, isLoading, title
             type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="px-6 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition disabled:opacity-50"
+            className="px-6 py-2.5 rounded-xl border border-slate-200 dark:border-[#2e2e2e] text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#222222] transition disabled:opacity-50"
           >
             {t("modal.cancel")}
           </button>
@@ -298,7 +298,7 @@ const WarningModal = ({ isOpen, onClose, onConfirm, validation, isLoading, title
               {t("modal.impacts_title")}
             </p>
             {impacts.map((imp, i) => (
-              <div key={i} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-3">
+              <div key={i} className="rounded-xl border border-slate-200 dark:border-[#2e2e2e] bg-slate-50 dark:bg-[#222222]/50 p-3">
                 <p className="font-semibold text-slate-700 dark:text-slate-300 text-xs">{imp.module}</p>
                 <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">{imp.impact}</p>
               </div>
@@ -465,7 +465,7 @@ export const SystemSettingsPage = () => {
         <button
           onClick={() => refetch()}
           disabled={isFetching}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition disabled:opacity-50"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#222222] rounded-xl transition disabled:opacity-50"
         >
           <RefreshCw size={13} className={isFetching ? "animate-spin" : ""} />
           {t("refresh")}
@@ -473,7 +473,7 @@ export const SystemSettingsPage = () => {
       </div>
 
       {/* ── Negative Stock ── */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-2xl overflow-hidden shadow-sm">
         <SectionHeader
           icon={ShieldAlert}
           iconBg="bg-red-50 dark:bg-red-900/20"
@@ -510,7 +510,7 @@ export const SystemSettingsPage = () => {
       </div>
 
       {/* ── Hour Range ── */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-2xl overflow-hidden shadow-sm">
         <SectionHeader
           icon={Clock}
           iconBg="bg-blue-50 dark:bg-blue-900/20"
@@ -530,7 +530,7 @@ export const SystemSettingsPage = () => {
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-semibold transition ${
                   hourMode === id
                     ? "border-blue-400 bg-blue-50 dark:bg-blue-900/20 text-[#B12B89] dark:text-blue-400"
-                    : "border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
+                    : "border-slate-200 dark:border-[#2e2e2e] text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#222222]"
                 }`}
               >
                 <Icon size={14} />
@@ -541,7 +541,7 @@ export const SystemSettingsPage = () => {
 
           {/* Hour selectors */}
           {hourMode === "custom" && (
-            <div className="inline-flex items-stretch border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm">
+            <div className="inline-flex items-stretch border border-slate-200 dark:border-[#2e2e2e] rounded-2xl shadow-sm">
               <TimePanel
                 label={t("hour_range.start")}
                 value={startHour}
@@ -550,7 +550,7 @@ export const SystemSettingsPage = () => {
               />
 
               {/* Separator */}
-              <div className="flex items-center px-3 border-s border-e border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60">
+              <div className="flex items-center px-3 border-s border-e border-slate-200 dark:border-[#2e2e2e] bg-slate-50 dark:bg-[#222222]/60">
                 {isRTL
                   ? <ArrowLeft  size={14} className="text-slate-300 dark:text-slate-600" />
                   : <ArrowRight size={14} className="text-slate-300 dark:text-slate-600" />}
@@ -577,11 +577,11 @@ export const SystemSettingsPage = () => {
       </div>
 
       {/* ── Change History ── */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-[#1c1c1c] border border-slate-200 dark:border-[#2e2e2e] rounded-2xl overflow-hidden shadow-sm">
         {/* History header */}
-        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+        <div className="px-6 py-4 border-b border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center flex-shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-[#222222] flex items-center justify-center flex-shrink-0">
               <History size={16} className="text-slate-500" />
             </div>
             <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-100">
@@ -592,7 +592,7 @@ export const SystemSettingsPage = () => {
             <select
               value={histFilter}
               onChange={(e) => changeFilter(e.target.value)}
-              className="appearance-none bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 pr-7 text-xs font-medium text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="appearance-none bg-slate-50 dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-xl px-3 py-1.5 pr-7 text-xs font-medium text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               <option value="all">{t("history.filter_all")}</option>
               <option value="allowNegativeStock">{t("history.filter_neg_stock")}</option>
@@ -615,10 +615,10 @@ export const SystemSettingsPage = () => {
             <p className="text-sm">{t("history.empty")}</p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-50 dark:divide-slate-800/60">
+          <div className="divide-y divide-slate-50 dark:divide-[#2e2e2e]/60">
             {history.map((entry) => (
               <div key={entry.id} className="px-5 py-3.5 flex items-center gap-3 flex-wrap">
-                <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-md flex-shrink-0">
+                <span className="text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-[#222222] text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-md flex-shrink-0">
                   {t(`setting_label.${entry.settingName}`, { defaultValue: entry.settingName })}
                 </span>
                 <div className="flex items-center gap-1.5 flex-shrink-0">
@@ -647,7 +647,7 @@ export const SystemSettingsPage = () => {
         )}
 
         {/* Pagination footer — always visible */}
-        <div className="px-5 py-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+        <div className="px-5 py-3 border-t border-slate-100 dark:border-[#2e2e2e] flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <p className="text-xs text-slate-400">
               {history.length > 0
@@ -662,7 +662,7 @@ export const SystemSettingsPage = () => {
                 value={histLimit}
                 onChange={(e) => changeLimit(e.target.value)}
                 disabled={histLoading}
-                className="appearance-none bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 pr-6 text-[11px] font-semibold text-slate-500 dark:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
+                className="appearance-none bg-slate-100 dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-lg px-2.5 py-1 pr-6 text-[11px] font-semibold text-slate-500 dark:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
               >
                 {[5, 10, 20, 50].map((n) => (
                   <option key={n} value={n}>{n} / page</option>
@@ -672,11 +672,11 @@ export const SystemSettingsPage = () => {
             </div>
           </div>
 
-          <div dir="ltr" className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+          <div dir="ltr" className="flex items-center gap-1 bg-slate-100 dark:bg-[#222222] p-1 rounded-xl">
             <button
               onClick={() => setHistPage((p) => Math.max(1, p - 1))}
               disabled={!hasPrev || histLoading}
-              className="p-1.5 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition disabled:opacity-30 text-slate-500 dark:text-slate-400"
+              className="p-1.5 hover:bg-white dark:hover:bg-[#2e2e2e] rounded-lg transition disabled:opacity-30 text-slate-500 dark:text-slate-400"
             >
               <ChevronLeft size={15} />
             </button>
@@ -686,7 +686,7 @@ export const SystemSettingsPage = () => {
             <button
               onClick={() => setHistPage((p) => p + 1)}
               disabled={!hasNext || histLoading}
-              className="p-1.5 hover:bg-white dark:hover:bg-slate-700 rounded-lg transition disabled:opacity-30 text-slate-500 dark:text-slate-400"
+              className="p-1.5 hover:bg-white dark:hover:bg-[#2e2e2e] rounded-lg transition disabled:opacity-30 text-slate-500 dark:text-slate-400"
             >
               <ChevronRight size={15} />
             </button>

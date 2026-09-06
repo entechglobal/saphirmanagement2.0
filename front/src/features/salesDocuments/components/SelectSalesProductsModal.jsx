@@ -44,10 +44,10 @@ const Checkbox = ({ checked, indeterminate = false, onChange, disabled = false }
     disabled={disabled}
     className={`flex-shrink-0 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
       disabled
-        ? "bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 cursor-not-allowed opacity-40"
+        ? "bg-slate-100 dark:bg-[#2e2e2e] border-slate-200 dark:border-[#3a3a3a] cursor-not-allowed opacity-40"
         : checked || indeterminate
           ? "bg-[#B12B89] border-[#B12B89]"
-          : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 hover:border-blue-400"
+          : "bg-white dark:bg-[#222222] border-slate-300 dark:border-[#3a3a3a] hover:border-blue-400"
     }`}
   >
     {!disabled && indeterminate && !checked ? (
@@ -146,7 +146,7 @@ export const SelectSalesProductsModal = ({
   };
 
   const inputClass =
-    "w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-[#B12B89] outline-none transition dark:text-slate-100 text-sm";
+    "w-full px-4 py-2.5 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-xl focus:ring-2 focus:ring-[#B12B89] outline-none transition dark:text-slate-100 text-sm";
 
   return (
     <BaseModal
@@ -169,7 +169,7 @@ export const SelectSalesProductsModal = ({
               type="button"
               onClick={() => setCurrentPage((p) => p - 1)}
               disabled={currentPage === 1}
-              className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40"
+              className="p-2 rounded-lg border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] disabled:opacity-40"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -180,7 +180,7 @@ export const SelectSalesProductsModal = ({
               type="button"
               onClick={() => setCurrentPage((p) => p + 1)}
               disabled={currentPage >= totalPages}
-              className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40"
+              className="p-2 rounded-lg border border-slate-200 dark:border-[#2e2e2e] hover:bg-slate-50 dark:hover:bg-[#222222] disabled:opacity-40"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -189,7 +189,7 @@ export const SelectSalesProductsModal = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-sm"
+              className="px-4 py-2.5 border border-slate-200 dark:border-[#2e2e2e] rounded-xl font-semibold text-sm"
             >
               Annuler
             </button>
@@ -206,7 +206,7 @@ export const SelectSalesProductsModal = ({
         </div>
       }
     >
-      <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 space-y-3 flex-shrink-0">
+      <div className="px-6 py-4 border-b border-slate-200 dark:border-[#2e2e2e] space-y-3 flex-shrink-0">
         <div className="relative">
           {isLoading || isFetching ? (
             <Loader2 className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 animate-spin" />
@@ -240,8 +240,8 @@ export const SelectSalesProductsModal = ({
             Aucun produit trouvé
           </div>
         ) : (
-          <ul className="divide-y divide-slate-100 dark:divide-slate-800">
-            <li className="px-6 py-2.5 bg-slate-50/80 dark:bg-slate-900/40 flex items-center gap-3">
+          <ul className="divide-y divide-slate-100 dark:divide-[#2e2e2e]">
+            <li className="px-6 py-2.5 bg-slate-50/80 dark:bg-[#1c1c1c]/40 flex items-center gap-3">
               <Checkbox
                 checked={allChecked}
                 indeterminate={someChecked}
@@ -262,7 +262,7 @@ export const SelectSalesProductsModal = ({
                   className={`px-6 py-3 flex items-center gap-3 cursor-pointer transition ${
                     disabled
                       ? "opacity-40 cursor-not-allowed"
-                      : "hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                      : "hover:bg-slate-50 dark:hover:bg-[#222222]/50"
                   }`}
                 >
                   <Checkbox

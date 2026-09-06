@@ -40,6 +40,11 @@ export const createValidator = [
     .isFloat({ min: 0.01 }).withMessage("prixVentePack must be > 0")
     .toFloat(),
 
+  body("commission")
+    .optional({ nullable: true })
+    .isFloat({ min: 0 }).withMessage("commission must be >= 0")
+    .toFloat(),
+
   body("components")
     .isArray({ min: 1 }).withMessage("components must be a non-empty array"),
 
@@ -102,6 +107,11 @@ export const updateValidator = [
   body("prixVentePack")
     .optional()
     .isFloat({ min: 0.01 }).withMessage("prixVentePack must be > 0")
+    .toFloat(),
+
+  body("commission")
+    .optional({ nullable: true })
+    .isFloat({ min: 0 }).withMessage("commission must be >= 0")
     .toFloat(),
 
   body("active")

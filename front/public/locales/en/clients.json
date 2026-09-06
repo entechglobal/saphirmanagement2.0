@@ -39,12 +39,16 @@
     "type": { "label": "Client Type", "placeholder": "Select type" },
     "email": { "label": "Email", "placeholder": "contact@client.com" },
     "address": {
-      "label": "Headquarters Address",
-      "placeholder": "e.g., Client-CASA-01"
+      "label": "Address / Location",
+      "placeholder": "Street, neighborhood..."
+    },
+    "city": {
+      "label": "City",
+      "placeholder": "Casablanca"
     },
     "region": {
-      "label": "Region / City",
-      "placeholder": "Enter region or city"
+      "label": "Region",
+      "placeholder": "Enter region"
     },
     "website": { "label": "Website", "placeholder": "https://example.com" },
     "ice": { "label": "ICE", "placeholder": "15-digit common identifier" },
@@ -91,6 +95,7 @@
     "phone": "Phone",
     "email": "Email",
     "address": "Address",
+    "city": "City",
     "region": "Region",
     "website": "Website",
     "ice": "ICE",

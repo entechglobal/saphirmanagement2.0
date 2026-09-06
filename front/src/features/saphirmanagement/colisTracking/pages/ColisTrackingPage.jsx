@@ -133,7 +133,7 @@ export const ColisTrackingPage = () => {
                 return (
                     <button
                         onClick={handleCopy}
-                        className="flex items-center justify-between w-full max-w-[180px] px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-[#B12B89] transition-all group"
+                        className="flex items-center justify-between w-full max-w-[180px] px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-[#222222]/50 border border-slate-200 dark:border-[#2e2e2e] hover:border-blue-400 dark:hover:border-[#B12B89] transition-all group"
                     >
                         <div className="flex items-center gap-2 overflow-hidden">
                             <ScanBarcode size={14} className="text-slate-400 shrink-0" />
@@ -181,7 +181,7 @@ export const ColisTrackingPage = () => {
                     <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide uppercase border ${
                         isAnnule 
                         ? "bg-red-50 text-red-600 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800" 
-                        : "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700"
+                        : "bg-slate-100 text-slate-600 border-slate-200 dark:bg-[#222222] dark:text-slate-400 dark:border-[#2e2e2e]"
                     }`}>
                         {status || "PENDING"}
                     </div>

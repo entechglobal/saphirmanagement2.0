@@ -135,6 +135,65 @@
   "stat_en_route": "In Transit",
   "stat_livre": "Delivered",
 
+  "saphir_home": {
+    "badge": "Saphir Management",
+    "subtitle": "Track assigned orders and delivery planning",
+    "all_orders": "All orders",
+    "new_order": "New order"
+  },
+  "saphir_stats": {
+    "total_period": "Orders in period",
+    "in_pipeline": "In pipeline",
+    "empty": "No orders for this period",
+    "a_preparer": "To prepare",
+    "a_collecter": "To collect",
+    "en_route": "Collected",
+    "a_livrer": "To deliver",
+    "a_payer": "To collect payment",
+    "hint_preparer": "Confirmed orders waiting",
+    "hint_collecter": "Ready for the driver",
+    "hint_en_route": "Picked up",
+    "hint_livrer": "Out for delivery",
+    "hint_payer": "Delivered, payment pending"
+  },
+  "saphir_planning": {
+    "title": "Planning",
+    "see_all": "See all",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "empty_today": "No deliveries scheduled today",
+    "empty_tomorrow": "No deliveries scheduled tomorrow",
+    "tomorrow_summary": "{{count}} order(s) tomorrow",
+    "cities": "Cities",
+    "unassigned": "Unassigned",
+    "orders_count": "{{count}} order(s)",
+    "more": "+{{count}} more"
+  },
+  "saphir_top_commercials": {
+    "title": "Top commercials",
+    "subtitle": "Orders & commissions",
+    "see_all": "See all",
+    "orders": "Orders",
+    "commission": "Commission",
+    "order_count": "{{count}} order(s)",
+    "empty": "No commercials for this period",
+    "error": "Unable to load ranking"
+  },
+  "saphir_commercial_stats": {
+    "badge": "Commissions",
+    "title": "Commercial statistics",
+    "subtitle": "Orders created and commissions owed per commercial",
+    "kpi_commercials": "Commercials",
+    "kpi_orders": "Orders",
+    "kpi_ca": "Revenue",
+    "kpi_commission": "Total commission",
+    "commission": "Commission",
+    "orders_label": "{{count}} order(s)",
+    "no_orders": "No orders",
+    "empty": "No data for this period",
+    "error": "Unable to load statistics"
+  },
+
   "status_label_CONFIRME": "Confirmed",
   "status_label_PREPARE": "Prepared",
   "status_label_COLLECTE": "Collected",

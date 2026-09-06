@@ -56,6 +56,8 @@
       "sale_amount": "Sale Amount (MAD)",
       "custom_price": "Pack Sale Price (MAD)",
       "custom_price_placeholder": "Ex: 712.50",
+      "commission": "Commercial commission (MAD)",
+      "commission_placeholder": "Ex: 10.00",
       "estimated_price": "Estimated sale price",
       "active_label": "Pack active",
       "active_desc": "An inactive pack will not appear in delivery notes"

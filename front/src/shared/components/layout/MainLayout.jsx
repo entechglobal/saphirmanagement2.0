@@ -51,7 +51,7 @@ export const MainLayout = () => {
   }, [isDesktop]);
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-slate-50 dark:bg-gray-900">
+    <div className="flex h-screen flex-col overflow-hidden bg-slate-50 dark:bg-[#161616]">
       <Header />
 
       <div className="flex min-h-0 flex-1">
@@ -60,12 +60,13 @@ export const MainLayout = () => {
           isCollapsed={isSidebarCollapsed}
           isDesktop={isDesktop}
           onClose={() => setSidebarOpen(false)}
+          onOpen={() => setSidebarOpen(true)}
         />
 
-        <main className="flex min-h-0 flex-1 flex-col overflow-hidden pb-20 md:pb-0">
+        <main className="flex min-h-0 flex-1 flex-col overflow-hidden pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-0">
           <div
             id="form-actions-slot"
-            className="order-2 shrink-0 empty:hidden w-full bg-white dark:bg-gray-800 border-t border-slate-200 dark:border-slate-700 px-4 py-3"
+            className="order-2 shrink-0 empty:hidden w-full bg-white dark:bg-[#1c1c1c] border-t border-slate-200 dark:border-[#2e2e2e] px-4 py-3"
           />
           <div
             className="
@@ -73,7 +74,7 @@ export const MainLayout = () => {
               [&::-webkit-scrollbar]:w-2
               [&::-webkit-scrollbar-track]:bg-transparent
               [&::-webkit-scrollbar-thumb]:bg-gray-300
-              dark:[&::-webkit-scrollbar-thumb]:bg-gray-700
+              dark:[&::-webkit-scrollbar-thumb]:bg-[#3a3a3a]
               [&::-webkit-scrollbar-thumb]:rounded-full
               hover:[&::-webkit-scrollbar-thumb]:bg-[#B12B89]
             "

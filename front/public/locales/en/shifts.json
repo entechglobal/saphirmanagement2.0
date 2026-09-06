@@ -1,0 +1,81 @@
+{
+  "title": "Delivery shifts",
+  "search_placeholder": "Search a driver…",
+  "not_found": "Shift not found",
+  "table": {
+    "id": "ID",
+    "livreur": "Driver",
+    "status": "Status",
+    "started": "Started",
+    "closed": "Closed",
+    "orders": "Orders",
+    "collected": "Collected",
+    "remitted": "Remitted"
+  },
+  "status": {
+    "open": "Open",
+    "closed": "Closed",
+    "pending": "Pending"
+  },
+  "filters": {
+    "status": "Status"
+  },
+  "banner": {
+    "active_title": "Shift in progress",
+    "active_desc": "Started {{since}}. You can deliver and collect payments.",
+    "inactive_title": "No active shift",
+    "inactive_desc": "Start a shift before marking orders as delivered or paid."
+  },
+  "actions": {
+    "start": "Start shift",
+    "close": "Close shift",
+    "view": "View",
+    "cancel": "Cancel"
+  },
+  "confirm": {
+    "close_title": "Close this shift?",
+    "close_message": "A summary of orders and amounts will be generated. You can then remit the balance."
+  },
+  "toast": {
+    "started": "Shift started",
+    "start_error": "Could not start shift",
+    "closed": "Shift closed",
+    "close_error": "Could not close shift",
+    "remitted": "Balance remitted successfully",
+    "remit_pending": "Remittance request sent (pending approval)",
+    "remit_error": "Remittance failed"
+  },
+  "detail": {
+    "title": "Shift #{{id}}",
+    "started": "Started",
+    "orders": "Orders",
+    "collected": "Total collected",
+    "wallet": "Wallet balance",
+    "summary": "Summary",
+    "opening_balance": "Opening balance",
+    "closing_balance": "Closing balance",
+    "delivered": "Delivered",
+    "paid": "Paid",
+    "remitted": "Remittance"
+  },
+  "orders": {
+    "title": "Orders history",
+    "document": "Document #",
+    "client": "Client",
+    "status": "Status",
+    "amount": "Amount",
+    "linked_at": "Timestamp"
+  },
+  "remit": {
+    "title": "Remit shift balance",
+    "subtitle": "Suggested amount: {{amount}} MAD — send to a user or bank account.",
+    "destination": "Destination (user / bank)",
+    "amount": "Amount",
+    "note": "Note (optional)",
+    "submit": "Send balance",
+    "loading": "Loading…",
+    "err_destination": "Choose a destination",
+    "err_amount": "Invalid amount"
+  },
+  "all": "All"
+}
