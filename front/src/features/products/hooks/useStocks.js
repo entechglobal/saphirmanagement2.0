@@ -3,7 +3,7 @@ import {
   useMutation,
   useQueryClient,
   keepPreviousData,
-} from "@tanstack/react-query";
+} from "@/shared/lib/query";
 import { stocksApi } from "../api/stocks.api";
 
 /**

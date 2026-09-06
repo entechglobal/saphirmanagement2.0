@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@/shared/lib/query";
 import { toast } from "@/shared/utils/toast";
 import { openPdfPreview } from "../../../shared/utils/pdfPreviewStore";
 import {

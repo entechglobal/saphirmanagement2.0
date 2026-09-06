@@ -1,19 +1,28 @@
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@/shared/lib/query";
+import { useAuth } from "@/features/auth";
 import { dashboardAPI } from "../api/dashboard.api";
 
 export const dashboardKeys = {
-  overview: (dateFrom, dateTo) => ["dashboard-overview", dateFrom, dateTo],
+  overview: (userId, dateFrom, dateTo) => [
+    "dashboard-overview",
+    userId,
+    dateFrom,
+    dateTo,
+  ],
   wallets: ["dashboard-wallets"],
 };
 
-export const useDashboardOverview = ({ dateFrom, dateTo } = {}) =>
-  useQuery({
-    queryKey: dashboardKeys.overview(dateFrom, dateTo),
+export const useDashboardOverview = ({ dateFrom, dateTo, enabled = true } = {}) => {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: dashboardKeys.overview(user?.id, dateFrom, dateTo),
     queryFn: () =>
       dashboardAPI.getOverview({ dateFrom, dateTo }).then((r) => r.data.data),
     placeholderData: keepPreviousData,
     staleTime: 60 * 1000,
+    enabled,
   });
+};
 
 export const useDashboardWallets = ({ enabled = false } = {}) =>
   useQuery({

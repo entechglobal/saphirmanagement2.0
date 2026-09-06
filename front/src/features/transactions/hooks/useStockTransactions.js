@@ -1,4 +1,4 @@
-import { useQuery, keepPreviousData, useMutation } from "@tanstack/react-query";
+import { useQuery, keepPreviousData, useMutation } from "@/shared/lib/query";
 import { stockTransactionsApi } from "../api/stockTransactions.api";
 import { openPdfPreview } from "../../../shared/utils/pdfPreviewStore";
 

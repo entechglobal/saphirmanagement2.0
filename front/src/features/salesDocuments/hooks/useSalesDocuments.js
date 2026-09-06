@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@/shared/lib/query";
 import { createSalesDocumentsApi, clientsApi } from "../api/salesDocuments.api";
 import { openPdfPreview } from "../../../shared/utils/pdfPreviewStore";
 

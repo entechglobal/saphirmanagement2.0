@@ -1,0 +1,9 @@
+{
+    "loading": "Loading...",
+    "select_option": "Select an option",
+    "search": "Search...",
+    "no_results": "No results found",
+    "all_selected": "All selected",
+    "selected_count": "{{count}} selected",
+    "use_value": "Use “{{value}}”"
+}

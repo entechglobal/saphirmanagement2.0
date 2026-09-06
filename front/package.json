@@ -19,7 +19,6 @@
     "@mui/icons-material": "7.3.8",
     "@mui/material": "7.3.8",
     "@mui/x-date-pickers": "^9.12.0",
-    "@tanstack/react-query": "5.90.20",
     "@tanstack/react-table": "^9.1.2",
     "axios": "1.13.2",
     "dayjs": "^1.11.19",
@@ -46,7 +45,6 @@
     "zustand": "^5.0.10"
   },
   "devDependencies": {
-    "@tanstack/react-query-devtools": "^5.90.1",
     "@types/node": "25.0.3",
     "@types/react": "19.2.7",
     "@vitejs/plugin-react": "5.1.2",

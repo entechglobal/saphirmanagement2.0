@@ -126,6 +126,7 @@ export const PhoneClientAutocomplete = ({
             </p>
             <p className="text-[11px] text-emerald-600 dark:text-emerald-400">
               {selectedClient.phone}
+              {selectedClient.city || selectedClient.region ? ` · ${selectedClient.city || selectedClient.region}` : ""}
               {selectedClient.type ? ` · ${selectedClient.type}` : ""}
             </p>
           </div>

@@ -4,7 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/shared/utils/toast";
 import {
-  Camera, CheckCircle2, UserCircle, KeyRound, X, Lock, ChevronLeft
+  Camera, KeyRound, X, Lock, Wallet, Package
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -25,6 +25,13 @@ import avatarDark from "../../../assets/avatar_dark.png";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { SectionLoader } from "../../../shared/components/loadersCollections/SectionLoader";
 import { NotFound } from "../../../shared/components/NotFound";
+import { useCreateCaisse } from "../../caisse/hooks/useCaisse";
+import { CreateUserStepper } from "./CreateUserStepper";
+import {
+  UserExtraRolesFields,
+  isPreparateurMainRole,
+  isLivreurMainRole,
+} from "./UserExtraRolesFields";
 
 const ALL_ROLES = [
   { id: 1, name: "Super_Admin" },
@@ -53,9 +60,15 @@ export const UserFormPage = () => {
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
   const updatePassword = useUpdatePassword();
+  const createCaisse = useCreateCaisse();
 
   const [imagePreview, setImagePreview] = useState(null);
   const [showPwdModal, setShowPwdModal] = useState(false);
+  const [wizardStep, setWizardStep] = useState(1);
+  const [createdUser, setCreatedUser] = useState(null);
+  const [walletBalance, setWalletBalance] = useState("");
+  const [canBePreparateur, setCanBePreparateur] = useState(false);
+  const [canBeLivreur, setCanBeLivreur] = useState(false);
 
   // ── Derived flags ──────────────────────────────────────────────
   const isSelfEdit = isEditMode && currentUserData?.data?.id === userData?.data?.id;
@@ -124,6 +137,8 @@ export const UserFormPage = () => {
         active: u.active ?? true,
         profile: null,
       });
+      setCanBePreparateur(!!u.canBePreparateur);
+      setCanBeLivreur(!!u.canBeLivreur);
       if (u.profile) setImagePreview(u.profile);
     }
   }, [isEditMode, userData, reset]);
@@ -160,6 +175,10 @@ export const UserFormPage = () => {
       active: data.active,
       ...(data.profile instanceof File && { profile: data.profile }),
       ...(!isEditMode && data.password && { password: data.password }),
+      ...(isEditMode && {
+        canBePreparateur: isPreparateurMainRole(roleIdNum) || canBePreparateur,
+        canBeLivreur: isLivreurMainRole(roleIdNum) || canBeLivreur,
+      }),
     };
 
     if (isEditMode) {
@@ -172,7 +191,14 @@ export const UserFormPage = () => {
       );
     } else {
       createUser.mutate(payload, {
-        onSuccess: () => { toast.success(t("toast.create_success")); navigate("/users"); },
+        onSuccess: (res) => {
+          const created = res?.data;
+          toast.success(t("toast.create_success"));
+          setCreatedUser(created);
+          setCanBePreparateur(!!created?.canBePreparateur);
+          setCanBeLivreur(!!created?.canBeLivreur);
+          setWizardStep(2);
+        },
         onError: (err) => toast.error(getApiError(err, t("toast.create_error"))),
       });
     }
@@ -197,6 +223,52 @@ export const UserFormPage = () => {
     setShowPwdModal(false);
     resetPwd(pwdDefaults);
   };
+
+  const finishWizard = () => navigate("/users");
+
+  const handleCreateWallet = () => {
+    if (!createdUser?.id) return;
+    createCaisse.mutate(
+      {
+        userId: createdUser.id,
+        initialBalance: walletBalance !== "" ? Number(walletBalance) : 0,
+      },
+      {
+        onSuccess: () => {
+          toast.success(t("wizard.wallet_created"));
+          setWizardStep(3);
+        },
+        onError: (err) => toast.error(getApiError(err, t("wizard.wallet_error"))),
+      }
+    );
+  };
+
+  const handleSaveExtraRoles = () => {
+    if (!createdUser?.id) return;
+    const mainRoleId = createdUser.roleId;
+    updateUser.mutate(
+      {
+        id: createdUser.id,
+        payload: {
+          canBePreparateur: isPreparateurMainRole(mainRoleId, createdUser.role?.name) || canBePreparateur,
+          canBeLivreur: isLivreurMainRole(mainRoleId, createdUser.role?.name) || canBeLivreur,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success(t("wizard.roles_saved"));
+          finishWizard();
+        },
+        onError: (err) => toast.error(getApiError(err, t("wizard.roles_error"))),
+      }
+    );
+  };
+
+  const extraRolesHasSociete = isEditMode
+    ? !!userData?.data?.societeId
+    : createdUser
+      ? !!createdUser.societeId
+      : Number(roleId) !== 1 && (!!watch("societeId") || !isSuperAdmin);
 
   // ── Société options ────────────────────────────────────────────
   const societeOptions = (societesResponse?.data ?? []).map((s) => ({
@@ -230,6 +302,85 @@ export const UserFormPage = () => {
       />
 
       <div className="w-full mt-3">
+        {!isEditMode && <CreateUserStepper step={wizardStep} />}
+
+        {!isEditMode && wizardStep === 2 && createdUser && (
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-[#2e2e2e] dark:bg-[#1c1c1c]">
+            <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4 dark:border-[#2e2e2e]">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-900/20">
+                <Wallet className="h-4 w-4 text-blue-500" />
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                  {t("wizard.wallet_title")}
+                </h2>
+                <p className="text-xs text-slate-500">
+                  {t("wizard.user_created", { name: createdUser.name })}
+                </p>
+              </div>
+            </div>
+            <div className="space-y-4 px-5 py-4">
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                {t("wizard.wallet_description")}
+              </p>
+              <Input
+                label={t("wizard.initial_balance")}
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="0"
+                value={walletBalance}
+                onChange={(e) => setWalletBalance(e.target.value)}
+                hint={t("wizard.initial_balance_hint")}
+              />
+              <FormActions
+                onCancel={() => setWizardStep(3)}
+                cancelLabel={t("wizard.wallet_skip")}
+                submitType="button"
+                onSubmit={handleCreateWallet}
+                isLoading={createCaisse.isPending}
+                submitLabel={t("wizard.wallet_yes")}
+              />
+            </div>
+          </div>
+        )}
+
+        {!isEditMode && wizardStep === 3 && createdUser && (
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-[#2e2e2e] dark:bg-[#1c1c1c]">
+            <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4 dark:border-[#2e2e2e]">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-50 dark:bg-violet-900/20">
+                <Package className="h-4 w-4 text-violet-500" />
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                  {t("wizard.roles_title")}
+                </h2>
+                <p className="text-xs text-slate-500">{t("wizard.roles_description")}</p>
+              </div>
+            </div>
+            <div className="space-y-4 px-5 py-4">
+              <UserExtraRolesFields
+                canBePreparateur={canBePreparateur}
+                canBeLivreur={canBeLivreur}
+                onChangePreparateur={setCanBePreparateur}
+                onChangeLivreur={setCanBeLivreur}
+                roleId={createdUser.roleId}
+                roleName={createdUser.role?.name}
+                hasSociete={extraRolesHasSociete}
+              />
+              <FormActions
+                onCancel={finishWizard}
+                cancelLabel={t("wizard.roles_skip")}
+                submitType="button"
+                onSubmit={handleSaveExtraRoles}
+                isLoading={updateUser.isPending}
+                submitLabel={t("wizard.roles_save")}
+              />
+            </div>
+          </div>
+        )}
+
+        {(isEditMode || wizardStep === 1) && (
         <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-12 gap-5">
 
           {/* ── LEFT SIDEBAR ──────────────────────────────────── */}
@@ -388,6 +539,28 @@ export const UserFormPage = () => {
               </FormFieldGrid>
             </FormCard>
 
+            {isEditMode && (
+              <FormCard>
+                <div className="mb-4">
+                  <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                    {t("extra_roles.title")}
+                  </h3>
+                  <p className="mt-1 text-xs text-slate-500">
+                    {t("wizard.roles_description")}
+                  </p>
+                </div>
+                <UserExtraRolesFields
+                  canBePreparateur={canBePreparateur}
+                  canBeLivreur={canBeLivreur}
+                  onChangePreparateur={setCanBePreparateur}
+                  onChangeLivreur={setCanBeLivreur}
+                  roleId={roleId}
+                  roleName={userData?.data?.role?.name}
+                  hasSociete={extraRolesHasSociete}
+                />
+              </FormCard>
+            )}
+
             <FormActions
               onCancel={() => navigate(-1)}
               cancelLabel={t("form.cancel")}
@@ -397,6 +570,7 @@ export const UserFormPage = () => {
             />
           </div>
         </form>
+        )}
       </div>
 
       {/* ── CHANGE PASSWORD MODAL ───────────────────────────────── */}

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/shared/lib/query";
 import { attendanceApi } from "../api/attendance.api";
 
 export const attendanceKeys = {

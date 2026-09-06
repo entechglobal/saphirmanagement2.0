@@ -1,0 +1,9 @@
+{
+    "loading": "جاري التحميل...",
+    "select_option": "اختر خياراً",
+    "search": "بحث...",
+    "no_results": "لا توجد نتائج",
+    "all_selected": "تم تحديد الكل",
+    "selected_count": "{{count}} محدد",
+    "use_value": "استخدم « {{value}} »"
+}

@@ -28,7 +28,6 @@ import {
   Package,
   Wallet,
   Globe2,
-  LayoutGrid,
   MapPin,
   ShoppingBag,
   Search,
@@ -192,7 +191,6 @@ export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose
         label: t("saphirManagement.label"),
         icon: Globe2,
         items: [
-          { key: "saphir-dashboard", label: t("saphirManagement.dashboard"), path: "/saphir-management-dashboard", icon: LayoutGrid, permission: [PERMISSIONS.VIEW_ADVANCED_BL, PERMISSIONS.VIEW_AGENCE, PERMISSIONS.VIEW_PACK] },
           { key: "commandes", label: t("saphirManagement.commandes"), path: "/commandes", icon: ShoppingBag, permission: PERMISSIONS.VIEW_ADVANCED_BL },
           { key: "statistiques-commerciaux", label: t("saphirManagement.commercialStats"), path: "/statistiques-commerciaux", icon: BarChart3, permission: PERMISSIONS.VIEW_ADVANCED_BL },
           { key: "colis-tracking", label: t("saphirManagement.colisTracking"), path: "/colis-tracking", icon: Search, permission: PERMISSIONS.VIEW_ADVANCED_BL },

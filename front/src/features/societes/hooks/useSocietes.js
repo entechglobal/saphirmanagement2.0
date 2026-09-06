@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@/shared/lib/query";
 import { societesApi } from "../api/societes.api";
 import { useAuth } from "../../auth/hooks/useAuth";
 

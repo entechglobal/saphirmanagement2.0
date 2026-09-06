@@ -194,11 +194,27 @@ export const UserDetailsPage = () => {
 
             <DetailSection title={t("details.organization_role")} icon={<Building2 size={14} />}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InfoCard label={t("details.access_level")} value={role?.name?.replace("_", " ") || t("details.no_role")} icon={<ShieldCheck size={14} />} />
+                <InfoCard label={t("details.access_level")} value={role?.name?.replace("_", " ") || u.role?.name?.replace("_", " ") || t("details.no_role")} icon={<ShieldCheck size={14} />} />
                 <InfoCard
                   label={t("details.assigned_societe")}
                   icon={<Building2 size={14} />}
                   value={u.societe?.raisonSocial || (u.isSuperAdmin ? t("details.global_access") : "—")}
+                />
+                <InfoCard
+                  label={t("extra_roles.preparateur")}
+                  value={
+                    u.canBePreparateur || u.role?.name === "Preparateur"
+                      ? t("details.status.active")
+                      : t("details.status.inactive")
+                  }
+                />
+                <InfoCard
+                  label={t("extra_roles.livreur")}
+                  value={
+                    u.canBeLivreur || u.role?.name === "Livreur"
+                      ? t("details.status.active")
+                      : t("details.status.inactive")
+                  }
                 />
               </div>
             </DetailSection>

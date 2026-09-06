@@ -1,5 +1,5 @@
 // src/features/agences/hooks/useAgences.js
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@/shared/lib/query";
 import { agencesApi } from "../api/agences.api";
 import { societesApi } from "../../../societes/api/societes.api";
 

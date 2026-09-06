@@ -7,9 +7,9 @@ import { useTheme } from "@/app/providers/ThemeProvider";
 import { MoonIcon, SunIcon, LanguageIcon } from "@heroicons/react/24/outline";
 import { Maximize2, Minimize2, MoreHorizontal } from "lucide-react";
 
-import Usa from "../../../public/lngIcons/usa.png";
-import Fr from "../../../public/lngIcons/fr.png";
-import Ar from "../../../public/lngIcons/ar.png";
+import Usa from "@/assets/lngIcons/usa.png";
+import Fr from "@/assets/lngIcons/fr.png";
+import Ar from "@/assets/lngIcons/ar.png";
 
 import { useTranslation } from "react-i18next";
 
@@ -32,17 +32,16 @@ export default function ToggleControls() {
   const mobileRef = useRef(null);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
-    const [selected, setSelected] = useState(() => {
-      const saved = localStorage.getItem("i18nextLng");
-      return languages.find((l) => l.code === saved) || languages[0];
-    });
-    useEffect(() => {
-      i18n.changeLanguage(selected.code);
-      localStorage.setItem("i18nextLng", selected.code);
-    }, [selected, i18n]);
-  
-    const isRTL = selected.code === "ar";
-  
+  const [selected, setSelected] = useState(() => {
+    const saved = localStorage.getItem("i18nextLng");
+    return languages.find((l) => l.code === saved) || languages[0];
+  });
+  useEffect(() => {
+    i18n.changeLanguage(selected.code);
+    localStorage.setItem("i18nextLng", selected.code);
+  }, [selected, i18n]);
+
+  const isRTL = selected.code === "ar";
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -108,7 +107,7 @@ export default function ToggleControls() {
           )}
         </button>
 
-         <div >
+        <div>
           <LanguageSelector
             selected={selected}
             setSelected={setSelected}
@@ -153,13 +152,13 @@ export default function ToggleControls() {
                 {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
               </span>
             </button>
-            <div className="mt-1 border-t border-gray-100 dark:border-[#3a3a3a] pt-1" >
-          <LanguageSelector
-            selected={selected}
-            setSelected={setSelected}
-            languages={languages}
-          />
-        </div>
+            <div className="mt-1 border-t border-gray-100 dark:border-[#3a3a3a] pt-1">
+              <LanguageSelector
+                selected={selected}
+                setSelected={setSelected}
+                languages={languages}
+              />
+            </div>
           </div>
         )}
       </div>

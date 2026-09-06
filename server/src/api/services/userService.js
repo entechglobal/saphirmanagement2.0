@@ -75,6 +75,76 @@ const validateSociete = async (societeId) => {
   return societe;
 };
 
+const isLivreurRole = (role) => role?.name === "Livreur";
+const isPreparateurRole = (role) => role?.name === "Preparateur";
+
+const toOptionalBoolean = (value) => {
+  if (value === undefined || value === null || value === "") return undefined;
+  if (typeof value === "boolean") return value;
+  if (value === true || value === "true" || value === "1" || value === 1) return true;
+  if (value === false || value === "false" || value === "0" || value === 0) return false;
+  return undefined;
+};
+
+const resolveExtraRoles = (role, canBePreparateur, canBeLivreur) => ({
+  canBePreparateur: isPreparateurRole(role) || Boolean(canBePreparateur),
+  canBeLivreur: isLivreurRole(role) || Boolean(canBeLivreur),
+});
+
+/**
+ * Ensure an INTERN Delivery exists when the user can act as livreur,
+ * and deactivate it when they no longer can.
+ */
+const syncLivreurDelivery = async (
+  tx,
+  { userId, name, societeId, active, enable },
+) => {
+  const existing = await tx.delivery.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+
+  if (enable) {
+    if (!societeId) {
+      throw new ApiError(
+        "A société is required to assign the livreur operational role",
+        400,
+      );
+    }
+
+    if (existing) {
+      await tx.delivery.update({
+        where: { id: existing.id },
+        data: {
+          name,
+          societeId,
+          type: "INTERN",
+          active: active ?? true,
+        },
+      });
+      return;
+    }
+
+    await tx.delivery.create({
+      data: {
+        societeId,
+        userId,
+        name,
+        type: "INTERN",
+        active: active ?? true,
+      },
+    });
+    return;
+  }
+
+  if (existing) {
+    await tx.delivery.update({
+      where: { id: existing.id },
+      data: { active: false },
+    });
+  }
+};
+
 /* ============================================================
    HELPER: Build User Includes
 ============================================================ */
@@ -141,6 +211,8 @@ export const create = async (data, currentUser) => {
     profile,
     active = true,
   } = data;
+  const requestedCanBePreparateur = toOptionalBoolean(data.canBePreparateur);
+  const requestedCanBeLivreur = toOptionalBoolean(data.canBeLivreur);
 
   // Authorization checks
   if (!currentUser.isSuperAdmin) {
@@ -189,7 +261,13 @@ export const create = async (data, currentUser) => {
   // Hash password
   const hashedPassword = await hashPassword(password);
 
-  // Create user (+ linked INTERN Delivery when role = Livreur) atomically
+  const extraRoles = resolveExtraRoles(
+    role,
+    requestedCanBePreparateur,
+    requestedCanBeLivreur,
+  );
+
+  // Create user (+ linked INTERN Delivery when they can act as Livreur)
   const user = await prisma.$transaction(async (tx) => {
     const created = await tx.user.create({
       data: {
@@ -201,25 +279,19 @@ export const create = async (data, currentUser) => {
         isSuperAdmin,
         profile,
         active,
+        canBePreparateur: extraRoles.canBePreparateur,
+        canBeLivreur: extraRoles.canBeLivreur,
       },
       include: USER_INCLUDES,
     });
 
-    if (role.name === "Livreur") {
-      if (!societeId) {
-        throw new ApiError(
-          "Livreur users must be assigned to a société to create a delivery record",
-          400,
-        );
-      }
-      await tx.delivery.create({
-        data: {
-          societeId,
-          userId: created.id,
-          name: created.name,
-          type: "INTERN",
-          active,
-        },
+    if (extraRoles.canBeLivreur) {
+      await syncLivreurDelivery(tx, {
+        userId: created.id,
+        name: created.name,
+        societeId,
+        active,
+        enable: true,
       });
     }
 
@@ -267,12 +339,14 @@ export const getAll = async (query, currentUser) => {
   }
 
   // Search by name or email
-  if (query.search) {
+  if (query.search || query.keyword) {
+    const term = query.search || query.keyword;
     where.OR = [
-      { name: { contains: query.search } },
-      { email: { contains: query.search } },
+      { name: { contains: term } },
+      { email: { contains: term } },
     ];
     delete query.search;
+    delete query.keyword;
   }
 
   const count = await prisma.user.count({ where });
@@ -358,17 +432,24 @@ export const getCurrentUser = async (userId) => {
 export const update = async (id, data, currentUser) => {
   const { name, email, roleId, societeId, isSuperAdmin, profile, active } =
     data;
+  const requestedCanBePreparateur = toOptionalBoolean(data.canBePreparateur);
+  const requestedCanBeLivreur = toOptionalBoolean(data.canBeLivreur);
 
   // Fetch existing user
   const existingUser = await prisma.user.findUnique({
     where: { id },
     select: {
       id: true,
+      name: true,
       societeId: true,
       isSuperAdmin: true,
       email: true,
       profile: true,
       active: true,
+      roleId: true,
+      canBePreparateur: true,
+      canBeLivreur: true,
+      role: { select: { id: true, name: true } },
     },
   });
 
@@ -428,9 +509,9 @@ export const update = async (id, data, currentUser) => {
   }
 
   // Validate role (if changing)
-  if (roleId) {
-    await validateRole(roleId);
-  }
+  const nextRole = roleId
+    ? await validateRole(roleId)
+    : existingUser.role;
 
   // Validate société (if changing)
   if (societeId !== undefined) {
@@ -441,6 +522,21 @@ export const update = async (id, data, currentUser) => {
     throw new ApiError("You cannot change your own account status", 400);
   }
 
+  const nextSocieteId =
+    societeId !== undefined ? societeId : existingUser.societeId;
+  const nextName = name || existingUser.name;
+  const nextActive = active !== undefined ? active : existingUser.active;
+
+  const extraRoles = resolveExtraRoles(
+    nextRole,
+    requestedCanBePreparateur !== undefined
+      ? requestedCanBePreparateur
+      : existingUser.canBePreparateur,
+    requestedCanBeLivreur !== undefined
+      ? requestedCanBeLivreur
+      : existingUser.canBeLivreur,
+  );
+
   // Build update data
   const updateData = {
     ...(name && { name }),
@@ -448,6 +544,8 @@ export const update = async (id, data, currentUser) => {
     ...(roleId && { roleId }),
     ...(profile !== undefined && { profile }),
     ...(active !== undefined && { active }),
+    canBePreparateur: extraRoles.canBePreparateur,
+    canBeLivreur: extraRoles.canBeLivreur,
   };
 
   // Handle société update
@@ -480,7 +578,7 @@ export const update = async (id, data, currentUser) => {
     }
   }
 
-  // Update user (+ sync linked Delivery name if it changed) atomically
+  // Update user (+ sync linked INTERN Delivery for livreur capability)
   const updatedUser = await prisma.$transaction(async (tx) => {
     const result = await tx.user.update({
       where: { id },
@@ -488,12 +586,13 @@ export const update = async (id, data, currentUser) => {
       include: USER_INCLUDES,
     });
 
-    if (name) {
-      await tx.delivery.updateMany({
-        where: { userId: id },
-        data: { name },
-      });
-    }
+    await syncLivreurDelivery(tx, {
+      userId: id,
+      name: nextName,
+      societeId: nextSocieteId,
+      active: nextActive,
+      enable: extraRoles.canBeLivreur,
+    });
 
     return result;
   });

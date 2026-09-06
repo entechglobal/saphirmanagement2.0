@@ -1,0 +1,287 @@
+{
+  "home_title": "Tableau de bord",
+  "period": {
+    "label": "Période",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "this_week": "Cette semaine",
+    "last_week": "Semaine dernière",
+    "this_month": "Ce mois",
+    "last_month": "Mois dernier",
+    "this_year": "Cette année",
+    "custom": "Personnalisé"
+  },
+  "date_from": "Du",
+  "date_to": "Au",
+  "summary": {
+    "income": "Encaissements",
+    "expense": "Décaissements",
+    "net": "Solde net"
+  },
+  "clients_section": {
+    "title": "Encaissements clients",
+    "collected": "Encaissé",
+    "payments": "Règlements",
+    "partners": "Clients",
+    "average": "Moyenne",
+    "by_partner": "Par client",
+    "over_time": "Évolution",
+    "by_mode": "Par mode de paiement",
+    "no_data": "Aucun encaissement sur cette période"
+  },
+  "fournisseurs_section": {
+    "title": "Paiements fournisseurs",
+    "collected": "Payé",
+    "payments": "Règlements",
+    "partners": "Fournisseurs",
+    "average": "Moyenne",
+    "by_partner": "Par fournisseur",
+    "over_time": "Évolution",
+    "by_mode": "Par mode de paiement",
+    "no_data": "Aucun paiement sur cette période"
+  },
+  "wallets_panel": {
+    "title": "Wallets",
+    "users": "Utilisateurs",
+    "banks": "Banques",
+    "caisses": "Caisses",
+    "cash": "Espèces",
+    "total": "Total",
+    "empty": "Aucun wallet",
+    "search": "Rechercher…",
+    "error": "Impossible de charger les wallets",
+    "see_all": "Voir tout"
+  },
+  "cashflow": {
+    "title": "Trésorerie",
+    "income": "Encaissements",
+    "expense": "Décaissements",
+    "no_data": "Aucun mouvement sur cette période",
+    "by_mode": "Répartition par mode",
+    "payments": "{{count}} règlement(s)"
+  },
+  "right_rail": {
+    "see_more": "Voir plus",
+    "see_less": "Réduire",
+    "see_more_count": "Voir plus ({{count}})",
+    "today_count": "{{count}} aujourd'hui",
+    "commercials_preview": "{{count}} cmd · {{amount}} MAD"
+  },
+  "modes": {
+    "ESPECE": "Espèces",
+    "CARTE_BANCAIRE": "Carte bancaire",
+    "CHEQUE": "Chèque",
+    "EFFET": "Effet",
+    "CARTE_FIDELITE": "Carte fidélité",
+    "BON_ACHAT": "Bon d'achat",
+    "REMISE": "Remise",
+    "VIREMENT": "Virement"
+  },
+  "greeting": {
+    "morning": "Bonjour",
+    "afternoon": "Bon après-midi",
+    "evening": "Bonsoir",
+    "default_user": "Utilisateur",
+    "subtitle": "Vue d'ensemble de l'activité de l'entreprise",
+    "subtitle_personal": "Vue d'ensemble de votre activité en temps réel"
+  },
+  "loading": "Chargement…",
+  "stats": {
+    "total_entries": "Total entrées stock",
+    "out_of_stock": "Rupture de stock",
+    "low_stock": "Alertes stock bas",
+    "active_clients": "Clients actifs",
+    "fournisseurs": "Fournisseurs",
+    "income": "Revenus (MAD)"
+  },
+  "depots": {
+    "title": "Dépôts",
+    "active_count": "{{count}} dépôts actifs"
+  },
+  "recent_articles": {
+    "title": "Articles Récents",
+    "total_count": "{{count}}+ articles au total",
+    "col_article": "Article",
+    "col_family": "Famille",
+    "col_buy_price": "Prix achat",
+    "col_sell_price": "Prix vente",
+    "col_stock": "Stock",
+    "managed": "Géré",
+    "not_managed": "Non géré"
+  },
+  "top_clients": {
+    "title": "Top Clients",
+    "subtitle": "{{active}} actifs sur {{total}} clients",
+    "orders": "{{count}} commande(s)"
+  },
+  "top_fournisseurs": {
+    "title": "Top Fournisseurs",
+    "subtitle": "{{active}} actifs — {{total}} MAD payés",
+    "orders": "{{count}} commande(s)"
+  },
+  "top_stocked": {
+    "title": "Articles les Plus Stockés",
+    "subtitle": "{{count}} unités disponibles au total"
+  },
+  "depot_chart": {
+    "title": "Stock par Dépôt",
+    "subtitle": "Nombre d'articles stockés par dépôt",
+    "articles": "Articles",
+    "reservations": "Réservations",
+    "no_data": "Aucun dépôt pour ce filtre"
+  },
+  "category_chart": {
+    "title": "Catégories",
+    "subtitle": "Répartition des catégories de produits"
+  },
+
+  "stock_overview": {
+    "title": "Aperçu du Stock",
+    "subtitle": "Quantités disponibles, réservées et en transit",
+    "available": "Disponible",
+    "reserved": "Réservé",
+    "in_transit": "En transit",
+    "no_data": "Aucune donnée de stock"
+  },
+
+  "stat_confirme": "Confirmé",
+  "stat_prepare": "Préparé",
+  "stat_collecte": "Collecté",
+  "stat_en_route": "En route",
+  "stat_livre": "Livré",
+
+  "saphir_home": {
+    "badge": "Saphir Gestion",
+    "subtitle": "Suivi des commandes affectées et planning des livraisons",
+    "all_orders": "Toutes les commandes",
+    "new_order": "Nouvelle commande"
+  },
+  "saphir_stats": {
+    "total_period": "Commandes sur la période",
+    "in_pipeline": "En cours de traitement",
+    "empty": "Aucune commande pour cette période",
+    "a_preparer": "À préparer",
+    "a_collecter": "À collecter",
+    "en_route": "Collecté",
+    "a_livrer": "À livrer",
+    "a_payer": "À encaisser",
+    "hint_preparer": "Commandes confirmées en attente",
+    "hint_collecter": "Prêtes pour le livreur",
+    "hint_en_route": "Prises en charge",
+    "hint_livrer": "En cours de livraison",
+    "hint_payer": "Livrées, paiement en attente"
+  },
+  "saphir_planning": {
+    "title": "Planning",
+    "see_all": "Voir tout",
+    "today": "Aujourd'hui",
+    "tomorrow": "Demain",
+    "empty_today": "Aucune livraison prévue aujourd'hui",
+    "empty_tomorrow": "Aucune livraison prévue demain",
+    "tomorrow_summary": "{{count}} commande(s) demain",
+    "cities": "Villes",
+    "unassigned": "Non assigné",
+    "orders_count": "{{count}} commande(s)",
+    "more": "+{{count}} autres"
+  },
+  "saphir_top_commercials": {
+    "title": "Top commerciaux",
+    "subtitle": "Commandes & commissions",
+    "see_all": "Voir tout",
+    "orders": "Commandes",
+    "commission": "Commission",
+    "order_count": "{{count}} commande(s)",
+    "empty": "Aucun commercial sur cette période",
+    "error": "Impossible de charger le classement"
+  },
+  "saphir_commercial_stats": {
+    "badge": "Commissions",
+    "title": "Statistique commercial",
+    "subtitle": "Commandes créées et commissions dues par commercial",
+    "kpi_commercials": "Commerciaux",
+    "kpi_orders": "Commandes",
+    "kpi_ca": "Chiffre d'affaires",
+    "kpi_commission": "Commission totale",
+    "commission": "Commission",
+    "orders_label": "{{count}} commande(s)",
+    "no_orders": "Aucune commande",
+    "empty": "Aucune donnée pour cette période",
+    "error": "Impossible de charger les statistiques"
+  },
+
+  "status_label_CONFIRME": "Confirmé",
+  "status_label_PREPARE": "Préparé",
+  "status_label_COLLECTE": "Collecté",
+  "status_label_EN_ROUTE": "En route",
+  "status_label_LIVRE": "Livré",
+  "status_label_PAYE": "Payé",
+  "status_label_ANNULE": "Annulé",
+
+  "filter_confirme": "Confirmé",
+  "filter_prepare": "Préparé",
+  "filter_collecte": "Collecté",
+  "filter_en_route": "En route",
+  "filter_livre": "Livré",
+
+  "view_cards": "Cartes",
+  "view_list": "Liste",
+  "view_cards_title": "Vue cartes",
+  "view_list_title": "Vue liste",
+
+  "entity_name": "Commandes",
+  "back_label": "Retour",
+  "page_title": "Commandes par statut",
+
+  "filters_label": "Filtres — {{total}} résultat{{s}}",
+  "filter_status": "Statut",
+  "filter_livreur": "Livreur",
+  "filter_all_livreurs": "Tous les livreurs",
+
+  "table_ref": "Référence",
+  "table_client": "Client",
+  "table_ville": "Ville",
+  "table_livreur": "Livreur",
+  "table_contact": "Contact",
+  "table_delivery_date": "Date Livraison",
+  "table_amount": "Montant",
+  "table_status": "Statut",
+
+  "toast_status_updated": "Statut mis à jour",
+  "toast_status_error": "Erreur lors de la mise à jour",
+  "toast_report_success": "Livraison reportée avec succès",
+  "toast_report_error": "Erreur lors du report",
+
+  "no_commands": "Aucune commande",
+  "no_commands_status": "Aucune commande avec le statut « {{label}} »",
+
+  "bl_ref": "Référence",
+  "bl_status": "Statut",
+  "bl_reported_at": "Reporté au",
+  "bl_client": "Client",
+  "bl_created_by": "Créé par",
+  "bl_telephone": "Téléphone",
+  "bl_whatsapp": "WhatsApp",
+  "bl_city": "Ville / Destination",
+  "bl_livreur": "Livreur",
+  "bl_doc_date": "Date Document",
+  "bl_delivery_date": "Date Livraison",
+  "bl_total_due": "Total Dû",
+  "bl_paid": "Payé",
+  "bl_reste": "Reste",
+  "bl_products": "Produits ({{count}})",
+  "bl_report_btn": "Reporter",
+  "bl_details_btn": "DÉTAILS",
+  "bl_reste_row": "Reste: {{amount}} MAD",
+  "bl_city_unknown": "Non spécifiée",
+  "bl_livreur_unassigned": "Non assigné",
+  "bl_colis": "{{count}} colis",
+
+  "report_title": "Reporter une livraison",
+  "report_subtitle": "Planifiez une nouvelle date de livraison",
+  "report_reason": "Raison",
+  "report_reason_placeholder": "Ex: Client indisponible, accès difficile…",
+  "report_next_date": "Prochaine date de livraison *",
+  "report_cancel": "Annuler",
+  "report_sending": "Envoi en cours...",
+  "report_confirm": "Confirmer le report"
+}

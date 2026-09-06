@@ -63,7 +63,7 @@ export const MainLayout = () => {
           onOpen={() => setSidebarOpen(true)}
         />
 
-        <main className="flex min-h-0 flex-1 flex-col overflow-hidden pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-0">
+        <main className="flex min-h-0 flex-1 flex-col overflow-hidden pb-[calc(6.25rem+env(safe-area-inset-bottom,0px))] md:pb-0">
           <div
             id="form-actions-slot"
             className="order-2 shrink-0 empty:hidden w-full bg-white dark:bg-[#1c1c1c] border-t border-slate-200 dark:border-[#2e2e2e] px-4 py-3"

@@ -5,9 +5,9 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import { supportedLangs } from "./supportedLngs";
 import { DEFAULT_LANG, RTL_LANGS } from "./config";
 
-// Bundle all locale JSON files at build time — no HTTP requests, no key flash on navigation
+// Bundle locale JSON at build time. Glob must be relative — Vite does not resolve @ here.
 const localeModules = import.meta.glob(
-  "../../../public/locales/**/*.json",
+  "../../assets/locales/**/*.json",
   { eager: true }
 );
 

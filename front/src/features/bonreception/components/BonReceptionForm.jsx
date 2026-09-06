@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@/shared/lib/query";
 import { toast } from "@/shared/utils/toast";
 import {
   Package,

@@ -20,18 +20,18 @@ export const CreateCoffreWalletModal = ({ isOpen, onClose }) => {
   const societes = societesData?.data ?? [];
 
   const { control, register, handleSubmit, reset, setError, formState: { errors } } = useForm({
-    defaultValues: { societeId: "", name: "Coffre Fort", initialBalance: "" },
+    defaultValues: { societeId: "", name: "Caisse", initialBalance: "" },
   });
 
   useEffect(() => {
-    if (!isOpen) reset({ societeId: "", name: "Coffre Fort", initialBalance: "" });
+    if (!isOpen) reset({ societeId: "", name: "Caisse", initialBalance: "" });
   }, [isOpen, reset]);
 
   const onSubmit = (values) => {
     createMutation.mutate(
       {
         ...(isSuperAdmin && values.societeId ? { societeId: Number(values.societeId) } : {}),
-        name: values.name?.trim() || "Coffre Fort",
+        name: values.name?.trim() || "Caisse",
         initialBalance: values.initialBalance !== "" ? Number(values.initialBalance) : 0,
       },
       {

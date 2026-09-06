@@ -183,7 +183,7 @@ export const getById = async (id, requestingUser = null) => {
  */
 export const getMySociete = async (societeId) => {
   if (!societeId) {
-    throw new ApiError("User does not belong to any société", 400);
+    return null;
   }
 
   return getById(societeId);

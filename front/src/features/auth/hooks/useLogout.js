@@ -1,5 +1,5 @@
 // src/features/auth/hooks/useLogout.js
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@/shared/lib/query";
 import { useNavigate } from "react-router-dom";
 import { authApi } from "../api/auth.api";
 import useAuthStore from "../store/authStore";
@@ -25,7 +25,7 @@ export const useLogout = () => {
       // Reset token manager
       tokenManager.reset();
 
-      // Clear all React Query cache
+      // Clear all query cache
       queryClient.clear();
 
       // Show backend message if provided

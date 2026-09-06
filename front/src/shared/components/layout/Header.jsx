@@ -46,8 +46,6 @@ import {
   Landmark,
   SearchCheck,
   CalendarRange,
-  LayoutGrid,
-  Globe2,
   Briefcase,
 } from "lucide-react";
 import { BuildingStorefrontIcon } from "@heroicons/react/24/outline";
@@ -111,7 +109,6 @@ const CommandPalette = ({ isOpen, onClose, isSuperAdmin, roleName, user }) => {
       { label: tSidebar("achatsManagement.bonReception"),      path: "/bon-receptions",               icon: Package,               category: cat("achats"),     permission: PERMISSIONS.VIEW_BON_RECEPTION },
       { label: tSidebar("achatsManagement.reglementFournisseur"), path: "/reglements-fournisseur",   icon: CreditCard,            category: cat("achats"),     permission: [PERMISSIONS.CREATE_REGLEMENTS_FOURNISSEUR, PERMISSIONS.DELETE_REGLEMENTS_FOURNISSEUR] },
       // Saphir
-      { label: tSidebar("saphirManagement.label"),             path: "/saphir-management-dashboard",  icon: Globe2,                category: cat("saphir"),     permission: [PERMISSIONS.VIEW_ADVANCED_BL, PERMISSIONS.VIEW_AGENCE, PERMISSIONS.VIEW_PACK] },
       { label: tSidebar("saphirManagement.agences"),           path: "/agences",                      icon: MapPin,                category: cat("saphir"),     permission: PERMISSIONS.VIEW_AGENCE },
       { label: tSidebar("saphirManagement.commandes"),         path: "/commandes",                    icon: ShoppingCart,          category: cat("saphir"),     permission: PERMISSIONS.VIEW_ADVANCED_BL },
       { label: tSidebar("saphirManagement.colisTracking"),     path: "/colis-tracking",               icon: SearchCheck,           category: cat("saphir"),     permission: PERMISSIONS.VIEW_ADVANCED_BL },

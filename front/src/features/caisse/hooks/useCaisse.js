@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@/shared/lib/query";
 import { caisseApi } from "../api/caisse.api";
 import { notificationKeys } from "../../../shared/hooks/useNotifications";
 

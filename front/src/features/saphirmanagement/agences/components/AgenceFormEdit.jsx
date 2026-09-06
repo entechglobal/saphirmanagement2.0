@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/shared/lib/query";
 import { agencesApi } from "../api/agences.api";
 import { AgenceForm } from "./AgenceForm";
 import { SectionLoader } from "@/shared/components/loadersCollections/SectionLoader";

@@ -1,5 +1,5 @@
 // src/features/auth/hooks/useLogin.js
-import { useMutation } from "@tanstack/react-query";
+import { useMutation } from "@/shared/lib/query";
 import { useNavigate } from "react-router-dom";
 import { authApi } from "../api/auth.api";
 import useAuthStore from "../store/authStore";

@@ -2,7 +2,7 @@ import ApiError from "../utils/apiError.js";
 
 const BANK_MODES = ["CARTE_BANCAIRE", "VIREMENT", "CHEQUE", "EFFET"];
 const CASH_MODES = ["ESPECE", "ESPECES"];
-const PERSONAL_CAISSE_TYPES = ["USER", "SOCIETE", "CENTRAL"];
+const PERSONAL_CAISSE_TYPES = ["USER"];
 
 const CAISSE_INCLUDE = {
   user: {
@@ -99,15 +99,15 @@ export async function resolveWalletForIncome(tx, {
       return bankWallet;
     }
 
-    // Chèque/Effet sans banque → coffre par défaut
-    const coffre = await tx.caisse.findFirst({
-      where: { societeId, caisseType: "COFFRE", active: true },
+    // Chèque/Effet sans banque → caisse par défaut
+    const caisseWallet = await tx.caisse.findFirst({
+      where: { societeId, caisseType: "CAISSE", active: true },
       orderBy: { createdAt: "asc" },
     });
-    if (coffre) return coffre;
+    if (caisseWallet) return caisseWallet;
 
     throw new ApiError(
-      `Aucun wallet disponible pour le mode ${modeReglement}. Créez un wallet banque ou coffre.`,
+      `Aucun wallet disponible pour le mode ${modeReglement}. Créez un wallet banque ou caisse.`,
       400,
     );
   }

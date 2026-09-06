@@ -47,6 +47,18 @@ export const createUserValidator = [
     .withMessage("active must be a boolean")
     .toBoolean(),
 
+  body("canBePreparateur")
+    .optional()
+    .isBoolean()
+    .withMessage("canBePreparateur must be a boolean")
+    .toBoolean(),
+
+  body("canBeLivreur")
+    .optional()
+    .isBoolean()
+    .withMessage("canBeLivreur must be a boolean")
+    .toBoolean(),
+
   body("extraPermissionIds")
     .optional()
     .isArray()
@@ -134,6 +146,18 @@ export const updateUserValidator = [
     .optional()
     .isBoolean()
     .withMessage("active must be a boolean")
+    .toBoolean(),
+
+  body("canBePreparateur")
+    .optional()
+    .isBoolean()
+    .withMessage("canBePreparateur must be a boolean")
+    .toBoolean(),
+
+  body("canBeLivreur")
+    .optional()
+    .isBoolean()
+    .withMessage("canBeLivreur must be a boolean")
     .toBoolean(),
 
   body("extraPermissionIds")
@@ -258,7 +282,7 @@ export const getUsersQueryValidator = [
     .withMessage("isSuperAdmin must be true or false"),
 
   query("search")
-    .optional()
+    .optional({ values: "falsy" })
     .isLength({ min: 1, max: 100 })
     .withMessage("search must be between 1 and 100 characters")
     .trim(),

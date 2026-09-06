@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/shared/lib/query";
 import { planningLivraisonApi } from "../api/planningLivraison.api";
 
 // ─── Query Keys ───────────────────────────────────────────────────────────────
@@ -8,11 +8,10 @@ export const planningKeys = {
 };
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
-export const usePlanningLivraison = ({ startDate, endDate, livreurId } = {}) =>
+export const usePlanningLivraison = ({ startDate, endDate, livreurId, enabled = true } = {}) =>
   useQuery({
     queryKey: planningKeys.filtered({ startDate, endDate, livreurId }),
     queryFn: () =>
       planningLivraisonApi.getPlanning({ startDate, endDate, livreurId }),
-    enabled: !!startDate && !!endDate,
-  
+    enabled: enabled && !!startDate && !!endDate,
   });

@@ -2,7 +2,7 @@ import prisma from "../../loaders/prisma.js";
 import ApiError from "../utils/apiError.js";
 import { CAISSE_INCLUDE } from "./caisseWalletHelper.js";
 
-const WALLET_TYPES = ["CENTRAL", "SOCIETE", "USER", "BANK", "COFFRE"];
+const WALLET_TYPES = ["USER", "BANK", "CAISSE"];
 
 const pad2 = (n) => String(n).padStart(2, "0");
 
@@ -136,15 +136,33 @@ const aggregatePayments = (rows, dateFrom, dateTo, granularity, partnerKey, part
   };
 };
 
-export const getOverview = async (query, societeId) => {
+const ADMIN_ROLE_NAMES = new Set(["Super_Admin", "Societe_Admin"]);
+
+const isAdminLevelUser = (user) =>
+  !!user?.isSuperAdmin || ADMIN_ROLE_NAMES.has(user?.roleName);
+
+/** Payments the user recorded or that landed in their personal wallet. */
+const personalPaymentScope = (user) => {
+  if (!user?.id || isAdminLevelUser(user)) return {};
+  return {
+    caisseTransactions: {
+      some: {
+        OR: [{ createdBy: user.id }, { caisse: { userId: user.id } }],
+      },
+    },
+  };
+};
+
+export const getOverview = async (query, societeId, user = null) => {
   const { dateFrom, dateTo } = parseRange(query);
   const granularity = resolveGranularity(dateFrom, dateTo);
   const dateFilter = { gte: dateFrom, lte: dateTo };
   const societeWhere = societeId ? { societeId } : {};
+  const ownerWhere = personalPaymentScope(user);
 
   const [clientRows, fournisseurRows] = await Promise.all([
     prisma.reglementClient.findMany({
-      where: { ...societeWhere, date: dateFilter },
+      where: { ...societeWhere, ...ownerWhere, date: dateFilter },
       select: {
         date: true,
         montantRegle: true,
@@ -155,7 +173,7 @@ export const getOverview = async (query, societeId) => {
       },
     }),
     prisma.reglementFournisseur.findMany({
-      where: { ...societeWhere, date: dateFilter },
+      where: { ...societeWhere, ...ownerWhere, date: dateFilter },
       select: {
         date: true,
         montantRegle: true,
@@ -212,38 +230,7 @@ export const getOverview = async (query, societeId) => {
   };
 };
 
-async function ensureCentralWallet() {
-  const existing = await prisma.caisse.findFirst({
-    where: { caisseType: "CENTRAL" },
-  });
-  if (existing) return existing;
-
-  const superAdmin = await prisma.user.findFirst({
-    where: { isSuperAdmin: true },
-    select: { id: true },
-  });
-  if (!superAdmin) return null;
-
-  const alreadyLinked = await prisma.caisse.findUnique({
-    where: { userId: superAdmin.id },
-  });
-  if (alreadyLinked) return alreadyLinked;
-
-  return prisma.caisse.create({
-    data: {
-      userId: superAdmin.id,
-      caisseType: "CENTRAL",
-      name: "Caisse Centrale",
-      initialBalance: 0,
-      currentBalance: 0,
-      active: true,
-    },
-  });
-}
-
 export const getWalletsOverview = async () => {
-  await ensureCentralWallet();
-
   const caisses = await prisma.caisse.findMany({
     where: { caisseType: { in: WALLET_TYPES } },
     include: CAISSE_INCLUDE,
@@ -261,27 +248,21 @@ export const getWalletsOverview = async () => {
     societe: c.societe,
   });
 
-  const central = caisses.filter((c) => c.caisseType === "CENTRAL").map(mapWallet);
-  const societe = caisses.filter((c) => c.caisseType === "SOCIETE").map(mapWallet);
   const users = caisses.filter((c) => c.caisseType === "USER").map(mapWallet);
   const banks = caisses.filter((c) => c.caisseType === "BANK").map(mapWallet);
-  const coffres = caisses.filter((c) => c.caisseType === "COFFRE").map(mapWallet);
+  const caissesList = caisses.filter((c) => c.caisseType === "CAISSE").map(mapWallet);
 
   const sum = (list) => list.reduce((acc, w) => acc + w.currentBalance, 0);
-  const all = [...central, ...societe, ...users, ...banks, ...coffres];
+  const all = [...users, ...banks, ...caissesList];
 
   return {
-    central,
-    societe,
     users,
     banks,
-    coffres,
+    caisses: caissesList,
     totals: {
-      central: sum(central),
-      societe: sum(societe),
       users: sum(users),
       banks: sum(banks),
-      coffres: sum(coffres),
+      caisses: sum(caissesList),
       grand: sum(all),
     },
   };

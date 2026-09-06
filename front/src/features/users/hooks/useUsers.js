@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@/shared/lib/query";
 import { usersApi } from "../api/users.api";
 
 export const userKeys = {
@@ -49,7 +49,12 @@ export const useCreateUser = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: usersApi.create,
-    onSuccess: () => qc.invalidateQueries({ queryKey: userKeys.all }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: userKeys.all });
+      qc.invalidateQueries({ queryKey: ["users"] });
+      qc.invalidateQueries({ queryKey: ["preparateurs"] });
+      qc.invalidateQueries({ queryKey: ["livreurs"] });
+    },
   });
 };
 
@@ -59,8 +64,11 @@ export const useUpdateUser = () => {
     mutationFn: ({ id, payload }) => usersApi.update(id, payload),
     onSuccess: (_data, { id }) => {
       qc.invalidateQueries({ queryKey: userKeys.all });
+      qc.invalidateQueries({ queryKey: ["users"] });
       qc.invalidateQueries({ queryKey: userKeys.detail(id) });
       qc.invalidateQueries({ queryKey: ["currentUser"] });
+      qc.invalidateQueries({ queryKey: ["preparateurs"] });
+      qc.invalidateQueries({ queryKey: ["livreurs"] });
     },
   });
 };

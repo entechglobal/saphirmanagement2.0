@@ -286,6 +286,17 @@ export const isSuperAdmin = (user) =>
   SUPER_ADMIN_ROLES.has(user?.role) ||
   SUPER_ADMIN_ROLES.has(user?.roleName);
 
+export const getUserRoleName = (user) => {
+  if (!user) return "";
+  if (user.roleName) return String(user.roleName);
+  if (typeof user.role === "string") return user.role;
+  return user.role?.name ?? "";
+};
+
+export const isSocieteAdmin = (user) => getUserRoleName(user) === "Societe_Admin";
+
+export const isAdminUser = (user) => isSuperAdmin(user) || isSocieteAdmin(user);
+
 export const getPermissions = (user) => user?.permissions || [];
 
 export const hasPermission = (user, permission) => {

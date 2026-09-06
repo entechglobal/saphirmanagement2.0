@@ -1,14 +1,11 @@
 import { useState, useRef, useCallback, useEffect, useMemo, memo } from "react";
-import {
-  Box,
-  Autocomplete,
-  TextField,
-  InputAdornment,
-  Chip,
-} from "@mui/material";
+import { Box, TextField, InputAdornment } from "@mui/material";
 import { X, Package, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import DateTimeRangePicker from "../DateTimeRangePicker";
+import { SelectUI } from "../ui/SelectUI";
+
+const ALL_VALUE = "__all__";
 
 // ── SearchFilter ───────────────────────────────────────────────────────────────
 const SearchFilter = memo(({ config, t }) => {
@@ -57,38 +54,29 @@ SearchFilter.displayName = "SearchFilter";
 
 // ── SimpleSelectFilter ─────────────────────────────────────────────────────────
 const SimpleSelectFilter = memo(({ config, t }) => {
-  const { label, icon: Icon, options = [], value, onChange } = config;
-  const allOption = useMemo(() => ({ value: null, label: t?.("all") ?? "Tous" }), [t]);
-  const finalOptions = useMemo(() => [allOption, ...options], [options, allOption]);
+  const { label, icon: Icon, options = [], value, onChange, searchable = false } = config;
+  const allLabel = t?.("all") ?? "Tous";
+
+  const selectOptions = useMemo(
+    () => [{ value: ALL_VALUE, label: allLabel }, ...options.map((o) => ({ value: o.value, label: o.label }))],
+    [options, allLabel],
+  );
 
   return (
-    <Autocomplete
-      size="small"
-      options={finalOptions}
-      value={value || allOption}
-      onChange={(_, newVal) => onChange(newVal?.value === null ? null : newVal)}
-      getOptionLabel={(o) => o?.label ?? ""}
-      disableClearable
-      isOptionEqualToValue={(opt, val) => opt?.value === val?.value}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label={label}
-          variant="outlined"
-          size="small"
-          inputProps={{ ...params.inputProps, readOnly: true }}
-          InputProps={{
-            ...params.InputProps,
-            ...(Icon && {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Icon className="w-4 h-4 text-slate-400" />
-                </InputAdornment>
-              ),
-            }),
-          }}
-        />
-      )}
+    <SelectUI
+      label={label}
+      icon={Icon ? <Icon className="w-4 h-4" /> : undefined}
+      options={selectOptions}
+      value={value?.value ?? ALL_VALUE}
+      searchable={searchable}
+      onChange={(e) => {
+        const next = e.target.value;
+        if (next === ALL_VALUE || next == null || next === "") {
+          onChange(null);
+          return;
+        }
+        onChange(options.find((o) => String(o.value) === String(next)) ?? null);
+      }}
     />
   );
 });
@@ -107,66 +95,57 @@ const AsyncSelectFilter = memo(({ config, t }) => {
     onInputChange,
     debounceMs = 300,
     allLabel,
+    searchable,
   } = config;
 
   const timerRef = useRef(null);
-  const allOption = useMemo(
-    () => ({ id: null, label: allLabel ?? t?.("all") ?? "Tous" }),
-    [allLabel, t]
-  );
-  const allOptions = useMemo(() => [allOption, ...options], [options, allOption]);
+  const resolvedAllLabel = allLabel ?? t?.("all") ?? "Tous";
 
-  const handleChange = useCallback(
-    (_, newVal) => onChange(newVal?.id === null ? null : newVal),
-    [onChange]
+  const resolveLabel = useCallback(
+    (opt) => opt?.label ?? getOptionLabel?.(opt) ?? opt?.name ?? opt?.raisonSocial ?? "",
+    [getOptionLabel],
   );
 
-  const handleInputChange = useCallback(
-    (_, newInput, reason) => {
-      if (reason === "input") {
-        if (!onInputChange) return;
-        clearTimeout(timerRef.current);
-        timerRef.current = setTimeout(() => onInputChange(newInput), debounceMs);
-      }
-      if (reason === "reset" && onInputChange) onInputChange("");
-      if (reason === "clear" && onInputChange) onInputChange("");
+  const selectOptions = useMemo(() => {
+    const mapped = options.map((o) => ({ value: o.id, label: resolveLabel(o) }));
+    if (value?.id != null && !mapped.some((o) => String(o.value) === String(value.id))) {
+      mapped.unshift({ value: value.id, label: resolveLabel(value) });
+    }
+    return [{ value: ALL_VALUE, label: resolvedAllLabel }, ...mapped];
+  }, [options, resolveLabel, resolvedAllLabel, value]);
+
+  const handleSearch = useCallback(
+    (query) => {
+      if (!onInputChange) return;
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => onInputChange(query), debounceMs);
     },
-    [onInputChange, debounceMs]
+    [onInputChange, debounceMs],
   );
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
   return (
-    <Autocomplete
-      size="small"
-      options={allOptions}
-      value={value || allOption}
-      onChange={handleChange}
-      onInputChange={handleInputChange}
-      loading={loading}
-      getOptionLabel={(opt) => opt?.label ?? getOptionLabel?.(opt) ?? ""}
-      isOptionEqualToValue={(opt, val) => opt?.id === val?.id}
-      filterOptions={onInputChange ? (opts) => opts : undefined}
-      disableClearable
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label={label}
-          variant="outlined"
-          size="small"
-          placeholder={t?.("search") ?? "Rechercher…"}
-          InputProps={{
-            ...params.InputProps,
-            ...(Icon && {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Icon className="w-4 h-4 text-slate-400" />
-                </InputAdornment>
-              ),
-            }),
-          }}
-        />
-      )}
+    <SelectUI
+      label={label}
+      icon={Icon ? <Icon className="w-4 h-4" /> : undefined}
+      options={selectOptions}
+      value={value?.id ?? ALL_VALUE}
+      searchable={searchable ?? (Boolean(onInputChange) || options.length > 8)}
+      isLoading={loading}
+      searchPlaceholder={t?.("search") ?? "Rechercher…"}
+      onSearch={onInputChange ? handleSearch : undefined}
+      onChange={(e) => {
+        const next = e.target.value;
+        if (next === ALL_VALUE || next == null || next === "") {
+          onChange(null);
+          return;
+        }
+        const match =
+          options.find((o) => String(o.id) === String(next)) ||
+          (value && String(value.id) === String(next) ? value : null);
+        onChange(match);
+      }}
     />
   );
 });
@@ -174,65 +153,80 @@ AsyncSelectFilter.displayName = "AsyncSelectFilter";
 
 // ── ProductSelectFilter ────────────────────────────────────────────────────────
 const ProductSelectFilter = memo(({ config, t }) => {
-  const { options = [], value, onChange, loading, onInputChange, debounceMs = 300 } = config;
-  const [inputValue, setInputValue] = useState("");
+  const { options = [], value, onChange, loading, onInputChange, debounceMs = 300, searchable = true } = config;
   const timerRef = useRef(null);
 
-  const handleInputChange = useCallback(
-    (_, newInput) => {
-      setInputValue(newInput);
+  const optionKey = (o) => (o ? `${o.type}-${o.id}` : "");
+
+  const selectOptions = useMemo(() => {
+    const mapped = options.map((o) => ({
+      value: optionKey(o),
+      label: o.name,
+      subLabel: o.barcode,
+      type: o.type,
+    }));
+    if (value && !mapped.some((o) => o.value === optionKey(value))) {
+      mapped.unshift({
+        value: optionKey(value),
+        label: value.name,
+        subLabel: value.barcode,
+        type: value.type,
+      });
+    }
+    return mapped;
+  }, [options, value]);
+
+  const handleSearch = useCallback(
+    (query) => {
+      if (!onInputChange) return;
       clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => onInputChange?.(newInput), debounceMs);
+      timerRef.current = setTimeout(() => onInputChange(query), debounceMs);
     },
-    [onInputChange, debounceMs]
+    [onInputChange, debounceMs],
   );
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
   return (
-    <Autocomplete
-      size="small"
-      options={options}
-      value={value}
-      onChange={(_, newVal) => onChange(newVal)}
-      inputValue={inputValue}
-      onInputChange={handleInputChange}
-      loading={loading}
-      getOptionLabel={(o) => o?.name ?? ""}
-      isOptionEqualToValue={(opt, val) => opt?.id === val?.id && opt?.type === val?.type}
-      clearOnEscape
-      renderOption={(props, option) => (
-        <li {...props} key={`${option.type}-${option.id}`}>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 0.2 }}>
-            <span style={{ fontSize: "0.875rem", fontWeight: 500 }}>{option.name}</span>
-            <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
-              <Chip
-                label={option.type === "variant" ? (t?.("variant") ?? "Variant") : (t?.("article") ?? "Article")}
-                size="small"
-                color={option.type === "variant" ? "primary" : "default"}
-                sx={{ height: 18, fontSize: "0.65rem" }}
-              />
-              <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>{option.barcode}</span>
-            </Box>
-          </Box>
-        </li>
-      )}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label={
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <Package className="w-3.5 h-3.5" />
-              <span>
-                {t?.("product") ?? "Produit"}{" "}
-                <span style={{ color: "#ef4444" }}>*</span>
-              </span>
-            </Box>
-          }
-          variant="outlined"
-          size="small"
-          inputProps={{ ...params.inputProps, readOnly: true }}
-        />
+    <SelectUI
+      label={t?.("product") ?? "Produit"}
+      icon={<Package className="w-4 h-4" />}
+      required
+      options={selectOptions}
+      value={value ? optionKey(value) : ""}
+      searchable={searchable}
+      clearable
+      isLoading={loading}
+      onSearch={onInputChange ? handleSearch : undefined}
+      onChange={(e) => {
+        const next = e.target.value;
+        if (!next) {
+          onChange(null);
+          return;
+        }
+        const match =
+          options.find((o) => optionKey(o) === next) ||
+          (value && optionKey(value) === next ? value : null);
+        onChange(match);
+      }}
+      renderOption={(option) => (
+        <div className="flex flex-col min-w-0 gap-0.5">
+          <span className="truncate">{option.label}</span>
+          <span className="flex items-center gap-1.5">
+            <span
+              className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded ${
+                option.type === "variant"
+                  ? "bg-[#B12B89]/10 text-[#B12B89]"
+                  : "bg-slate-100 dark:bg-[#2e2e2e] text-slate-500"
+              }`}
+            >
+              {option.type === "variant" ? (t?.("variant") ?? "Variant") : (t?.("article") ?? "Article")}
+            </span>
+            {option.subLabel && (
+              <span className="text-[11px] text-slate-400">{option.subLabel}</span>
+            )}
+          </span>
+        </div>
       )}
     />
   );

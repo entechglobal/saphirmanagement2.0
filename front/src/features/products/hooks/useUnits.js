@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@/shared/lib/query";
 import { unitsApi } from '../api/units.api'; 
 
 export const useUnits = () => {

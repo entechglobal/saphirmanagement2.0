@@ -118,7 +118,7 @@ export const TransferModal = ({ isOpen, onClose, mode = "retrait" }) => {
         const label =
           c.caisseType === "BANK"
             ? c.banque?.name || c.name
-            : c.caisseType === "COFFRE"
+            : c.caisseType === "CAISSE"
               ? c.name
               : c.user?.name || c.name;
         return {

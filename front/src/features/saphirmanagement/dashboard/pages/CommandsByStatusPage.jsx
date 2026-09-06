@@ -9,7 +9,7 @@ import {
     ClipboardList, ChevronLeft, ChevronRight, LayoutGrid, List,
     AlertTriangle, X, CalendarClock, PlayCircle,
 } from "lucide-react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@/shared/lib/query";
 import { commandsApi, livreurApi } from "../../commandes/api/commands.api";
 import {
     useUpdateCommandStatus,
@@ -782,7 +782,7 @@ export const CommandsByStatusPage = () => {
         <div className="min-h-screen pb-24 lg:pb-12">
             <FormPageHeader
                 entityName={t("entity_name")}
-                backPath="/saphir-management-dashboard"
+                backPath="/dashboard"
                 isView={true}
                 viewTitle={activeFilterOption ? t(`status_label_${activeFilterOption.status}`, activeFilterOption.label) : activeStatus}
                 viewTitleMain={t("page_title")}

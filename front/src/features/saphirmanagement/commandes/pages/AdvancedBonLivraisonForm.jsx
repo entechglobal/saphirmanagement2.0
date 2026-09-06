@@ -18,6 +18,7 @@ import {
   Clock,
   AlertTriangle,
   Users,
+  Wallet,
 } from "lucide-react";
 import dayjs from "dayjs";
 
@@ -49,11 +50,14 @@ import { useDeliveryProviderConfigs } from "../../../stracture/deliveryProviderC
 const BRAND = "#B12B89";
 
 const STEPS = [
-  { id: 1, labelKey: "step_1", icon: Building2 },
+  { id: 1, labelKey: "step_1", icon: Truck },
   { id: 2, labelKey: "step_2", icon: User },
   { id: 3, labelKey: "step_3", icon: ShoppingCart },
-  { id: 4, labelKey: "step_4", icon: Truck },
+  { id: 4, labelKey: "step_4", icon: Wallet },
 ];
+
+const modeLabel = (value) =>
+  MODE_REGLEMENT_OPTIONS.find((o) => o.value === value)?.label || value || "—";
 
 const fmt = (n) =>
   Number(n ?? 0).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -151,8 +155,47 @@ const statusMeta = {
   ANNULE: { label: "Annulé", color: "bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400" },
 };
 
+/* ─── LivreurTypeSwitch ─── */
+const LivreurTypeSwitch = ({ value, onChange }) => {
+  const { t } = useTranslation("commands");
+  const options = [
+    { id: "intern", icon: User, title: t("form_livreur_intern"), hint: t("form_livreur_intern_hint") },
+    { id: "extern", icon: Building2, title: t("form_livreur_societe"), hint: t("form_livreur_societe_hint") },
+  ];
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {options.map((opt) => {
+        const Icon = opt.icon;
+        const active = value === opt.id;
+        return (
+          <button
+            key={opt.id}
+            type="button"
+            onClick={() => onChange(opt.id)}
+            className={`text-left p-4 rounded-lg border-2 transition-all ${
+              active
+                ? "border-[#B12B89] bg-[#B12B89]/5 dark:bg-[#B12B89]/10 shadow-sm"
+                : "border-slate-200 dark:border-[#2e2e2e] hover:border-slate-300 dark:hover:border-[#3a3a3a]"
+            }`}
+          >
+            <div className="flex items-center gap-2.5 mb-1.5">
+              <div className={`w-8 h-8 rounded-md flex items-center justify-center ${active ? "bg-[#B12B89] text-white" : "bg-slate-100 dark:bg-[#2e2e2e] text-slate-400"}`}>
+                <Icon size={15} />
+              </div>
+              <span className={`text-sm font-semibold ${active ? "text-[#B12B89]" : "text-slate-700 dark:text-slate-200"}`}>
+                {opt.title}
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">{opt.hint}</p>
+          </button>
+        );
+      })}
+    </div>
+  );
+};
+
 /* ─── ConfirmModal ─── */
-const ConfirmModal = ({ form, lines, packLines, agences, depots, livreurs, preparateurs, selectedClient, onConfirm, onCancel, isSubmitting }) => {
+const ConfirmModal = ({ form, lines, packLines, agences, depots, livreurs, preparateurs, banques = [], selectedClient, onConfirm, onCancel, isSubmitting }) => {
   const { t } = useTranslation("commands");
   const totalLines = lines.reduce((s, l) => s + l.quantity * l.unitPrice, 0);
   const totalPacks = packLines.reduce((s, p) => s + p.quantity * p.prixVente, 0);
@@ -311,21 +354,29 @@ const ConfirmModal = ({ form, lines, packLines, agences, depots, livreurs, prepa
             </div>
             <div className="flex items-center justify-between pt-2">
               <span className="text-xs text-slate-400">{t("confirm_financial_mode")}</span>
-              <span className="text-xs font-bold text-slate-600 dark:text-slate-300">{form.modeReglement}</span>
+              <span className="text-xs font-bold text-slate-600 dark:text-slate-300">{modeLabel(form.modeReglement)}</span>
             </div>
-            {form.banqueId && (
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-400">{t("form_banque")}</span>
-                <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
-                  {banques.find((b) => String(b.id) === String(form.banqueId))?.name || form.banqueId}
-                </span>
-              </div>
-            )}
-            {form.montantPaid && (
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-400">{t("confirm_financial_paid")}</span>
-                <span className="text-xs font-bold text-emerald-600">{fmt(form.montantPaid)} MAD</span>
-              </div>
+            {Number(form.montantPaid) > 0 && (
+              <>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-slate-400">{t("confirm_financial_paid")}</span>
+                  <span className="text-xs font-bold text-emerald-600">{fmt(form.montantPaid)} MAD</span>
+                </div>
+                {form.modeReglementAvance && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-slate-400">{t("confirm_financial_mode_avance")}</span>
+                    <span className="text-xs font-bold text-slate-600 dark:text-slate-300">{modeLabel(form.modeReglementAvance)}</span>
+                  </div>
+                )}
+                {form.banqueId && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-slate-400">{t("form_banque")}</span>
+                    <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                      {banques.find((b) => String(b.id) === String(form.banqueId))?.name || form.banqueId}
+                    </span>
+                  </div>
+                )}
+              </>
             )}
             <div className="flex items-center justify-between pt-2">
               <span className="text-xs text-slate-400">{t("confirm_financial_status")}</span>
@@ -503,7 +554,8 @@ export const AdvancedBonLivraisonForm = () => {
     ice: "",
     raisonSocial: "",
     siegeSocial: "",
-    modeReglement: "VIREMENT",
+    modeReglement: "ESPECE",
+    modeReglementAvance: "",
     banqueId: "",
     montantPaid: "",
     livreurId: "",
@@ -548,7 +600,11 @@ export const AdvancedBonLivraisonForm = () => {
   const preparateurs = preparateursData?.data ?? [];
   const { data: banquesData, isLoading: banquesLoading } = useBanques();
   const banques = banquesData?.data ?? [];
-  const needsBanque = MODES_WITH_BANQUE.includes(form.modeReglement);
+  const paidAmount = Number(form.montantPaid) || 0;
+  const needsBanque = paidAmount > 0 && MODES_WITH_BANQUE.includes(form.modeReglementAvance);
+  const displayedLivreurs = livreurType === "extern"
+    ? livreurs.filter((l) => l.entityType === "SOCIETE")
+    : livreurs;
 
   // ─────────────────────────────────────────────────────────────
 
@@ -600,11 +656,19 @@ export const AdvancedBonLivraisonForm = () => {
     if (name === "clientName") {
       setSaveAsClientDecision(null);
     }
-    if (name === "modeReglement") {
+    if (name === "modeReglementAvance") {
       setForm((prev) => ({
         ...prev,
-        modeReglement: value,
+        modeReglementAvance: value,
         banqueId: MODES_WITH_BANQUE.includes(value) ? prev.banqueId : "",
+      }));
+      return;
+    }
+    if (name === "montantPaid") {
+      setForm((prev) => ({
+        ...prev,
+        montantPaid: value,
+        ...(Number(value) > 0 ? {} : { modeReglementAvance: "", banqueId: "" }),
       }));
       return;
     }
@@ -712,7 +776,13 @@ export const AdvancedBonLivraisonForm = () => {
   const removePack = (idx) => setPackLines((prev) => prev.filter((_, i) => i !== idx));
 
   const canGoNext = useCallback(() => {
-    if (step === 1) return !!form.agenceId && !!form.dateLivraison && !!form.depotId;
+    if (step === 1) {
+      const selLiv = displayedLivreurs.find((l) => String(l.id) === String(form.livreurId));
+      const needsConfig = livreurType === "extern" && selLiv?.entityType === "SOCIETE";
+      return !!form.agenceId && !!form.dateLivraison && !!form.depotId
+        && !!form.livreurId && !!form.preparateurId
+        && (!needsConfig || !!form.providerConfigId);
+    }
     if (step === 2) return (
       !!form.clientName.trim() &&
       !!form.telephone.trim() && isMoroccoPhone(form.telephone) &&
@@ -721,18 +791,13 @@ export const AdvancedBonLivraisonForm = () => {
       !!form.localisation.trim() &&
       (!selectedClient || !!expeditionMode)
     );
-    if (step === 3) {
-      return (lines.length + packLines.length) > 0
-        && !!form.modeReglement
-        && (!needsBanque || !!form.banqueId);
-    }
+    if (step === 3) return (lines.length + packLines.length) > 0;
     if (step === 4) {
-      const selLiv = livreurs.find((l) => String(l.id) === String(form.livreurId));
-      const needsConfig = livreurType === "extern" && selLiv?.entityType === "SOCIETE";
-      return !!form.livreurId && !!form.preparateurId && !!form.commandStatus && (!needsConfig || !!form.providerConfigId);
+      return !!form.modeReglement && !!form.commandStatus
+        && (paidAmount <= 0 || (!!form.modeReglementAvance && (!needsBanque || !!form.banqueId)));
     }
     return false;
-  }, [step, form, lines, packLines, livreurs, livreurType, selectedClient, expeditionMode, needsBanque]);
+  }, [step, form, lines, packLines, displayedLivreurs, livreurType, selectedClient, expeditionMode, needsBanque, paidAmount]);
 
   const handleSubmit = async () => {
     const payload = {
@@ -747,11 +812,12 @@ export const AdvancedBonLivraisonForm = () => {
       withFacture: !!form.withFacture,
       nombreDeColis: Number(form.nombreDeColis),
       modeReglement: form.modeReglement,
+      modeReglementAvance: paidAmount > 0 && form.modeReglementAvance ? form.modeReglementAvance : undefined,
       banqueId: form.banqueId ? Number(form.banqueId) : undefined,
       observation: form.observation.trim() || undefined,
       livreurId: Number(form.livreurId),
       preparateurId: Number(form.preparateurId),
-      montantPaid: form.montantPaid ? Number(form.montantPaid) : undefined,
+      montantPaid: paidAmount > 0 ? paidAmount : undefined,
       commandStatus: form.commandStatus, // ← NEW
       lines: lines.map((l) => ({
         variantId: l.variantId ?? undefined,
@@ -800,74 +866,131 @@ export const AdvancedBonLivraisonForm = () => {
   };
 
   const renderStep1 = () => (
-    <OrderSection title={t("card_agency_delivery")}>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <SelectDropDown
-          label={t("form_agence")}
-          name="agenceId"
-          value={form.agenceId}
-          options={agences.map((a) => ({ value: a.id, label: a.name, subLabel: a.localisation }))}
-          isLoading={agencesLoading}
-          onChange={handleChange}
-          required
-        />
+    <div className="space-y-5">
+      <OrderSection title={t("card_agency_delivery")}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <SelectDropDown
+            label={t("form_agence")}
+            name="agenceId"
+            value={form.agenceId}
+            options={agences.map((a) => ({ value: a.id, label: a.name, subLabel: a.localisation }))}
+            isLoading={agencesLoading}
+            onChange={handleChange}
+            required
+          />
 
-        <SelectDropDown
-          label={t("form_depot")}
-          name="depotId"
-          value={form.depotId}
-          options={filteredDepots.map((d) => ({ value: d.id, label: d.name, subLabel: d.societe?.raisonSocial }))}
-          isLoading={depotsLoading}
-          onChange={handleChange}
-          disabled={!form.agenceId}
-          placeholder={!form.agenceId ? t("form_select_agence_first") : filteredDepots.length === 0 ? t("form_no_depot") : t("form_select_depot")}
-          required
-        />
+          <SelectDropDown
+            label={t("form_depot")}
+            name="depotId"
+            value={form.depotId}
+            options={filteredDepots.map((d) => ({ value: d.id, label: d.name, subLabel: d.societe?.raisonSocial }))}
+            isLoading={depotsLoading}
+            onChange={handleChange}
+            disabled={!form.agenceId}
+            placeholder={!form.agenceId ? t("form_select_agence_first") : filteredDepots.length === 0 ? t("form_no_depot") : t("form_select_depot")}
+            required
+          />
 
-        <FormDatePicker
-          label={t("form_date_livraison")}
-          name="dateLivraison"
-          value={form.dateLivraison}
-          onChange={handleChange}
-          required
-        />
+          <FormDatePicker
+            label={t("form_date_livraison")}
+            name="dateLivraison"
+            value={form.dateLivraison}
+            onChange={handleChange}
+            required
+          />
 
-        {/* Heure optional toggle */}
-        <div className="flex flex-col">
-          <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5 ml-1">
-            {t("form_heure_livraison")}
-          </label>
-          {!showHeureInput ? (
-            <button
-              type="button"
-              onClick={() => setShowHeureInput(true)}
-              className="flex items-center gap-2 h-10 px-4 rounded-md border-2 border-dashed border-slate-200 dark:border-[#2e2e2e] text-sm font-medium text-slate-400 dark:text-slate-500 hover:border-blue-300 hover:text-blue-500 transition-all w-full"
-            >
-              <Clock size={15} />
-              {t("form_add_heure")}
-            </button>
-          ) : (
-            <div className="relative">
-              <input
-                type="time"
-                name="heureLivraison"
-                value={form.heureLivraison}
-                onChange={handleChange}
-                autoFocus
-                className="w-full h-10 px-4 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-md text-sm font-semibold text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-[#B12B89] outline-none transition pr-10"
-              />
+          <div className="flex flex-col">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5 ml-1">
+              {t("form_heure_livraison")}
+            </label>
+            {!showHeureInput ? (
               <button
                 type="button"
-                onClick={() => { setShowHeureInput(false); set("heureLivraison", ""); }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-400 transition"
+                onClick={() => setShowHeureInput(true)}
+                className="flex items-center gap-2 h-10 px-4 rounded-md border-2 border-dashed border-slate-200 dark:border-[#2e2e2e] text-sm font-medium text-slate-400 dark:text-slate-500 hover:border-blue-300 hover:text-blue-500 transition-all w-full"
               >
-                <X size={14} />
+                <Clock size={15} />
+                {t("form_add_heure")}
               </button>
-            </div>
-          )}
+            ) : (
+              <div className="relative">
+                <input
+                  type="time"
+                  name="heureLivraison"
+                  value={form.heureLivraison}
+                  onChange={handleChange}
+                  autoFocus
+                  className="w-full h-10 px-4 bg-white dark:bg-[#222222] border border-slate-200 dark:border-[#2e2e2e] rounded-md text-sm font-semibold text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-[#B12B89] outline-none transition pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => { setShowHeureInput(false); set("heureLivraison", ""); }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-400 transition"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </OrderSection>
+      </OrderSection>
+
+      <OrderSection title={t("card_livreur")}>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{t("form_livreur_type_hint")}</p>
+        <LivreurTypeSwitch
+          value={livreurType}
+          onChange={(ltype) => {
+            setLivreurType(ltype);
+            setForm((prev) => ({ ...prev, livreurId: "", providerConfigId: "" }));
+          }}
+        />
+        <div className="mt-6">
+          <SelectDropDown
+            label={livreurType === "extern" ? t("form_livreur_societe") : t("form_livreur_label")}
+            name="livreurId"
+            value={form.livreurId}
+            options={displayedLivreurs.map((l) => ({
+              value: l.id,
+              label: l.name,
+              subLabel: l.entityType === "SOCIETE" ? t("form_livreur_entity_societe") : t("form_livreur_entity_interne"),
+            }))}
+            isLoading={livreursLoading}
+            onChange={handleChange}
+            disabled={!form.agenceId}
+            placeholder={!form.agenceId ? t("form_select_agence_first") : t("form_select_livreur")}
+            required
+          />
+        </div>
+        {showBusinessConfig && (
+          <div className="mt-6">
+            <SelectDropDown
+              label={t("form_business_config")}
+              name="providerConfigId"
+              value={form.providerConfigId}
+              options={providerConfigs.map((c) => ({ value: c.id, label: c.name }))}
+              isLoading={providerConfigsLoading}
+              onChange={handleChange}
+              placeholder={providerConfigsLoading ? t("form_loading") : providerConfigs.length === 0 ? t("form_no_config") : t("form_select_config")}
+              required
+            />
+          </div>
+        )}
+      </OrderSection>
+
+      <OrderSection title={t("card_preparateur")}>
+        <SelectDropDown
+          label={t("form_preparateur")}
+          name="preparateurId"
+          value={form.preparateurId}
+          options={preparateurs.map((p) => ({ value: p.id, label: p.name, subLabel: p.entityType }))}
+          isLoading={preparateursLoading}
+          onChange={handleChange}
+          disabled={!form.agenceId}
+          placeholder={!form.agenceId ? t("form_select_agence_first") : t("form_select_preparateur")}
+          required
+        />
+      </OrderSection>
+    </div>
   );
 
   const expeditionLocked = !!selectedClient && expeditionMode === "same";
@@ -882,24 +1005,80 @@ export const AdvancedBonLivraisonForm = () => {
 
   const renderStep2 = () => (
     <div className="space-y-5">
+      <OrderSection title={t("card_client_search")}>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{t("card_client_search_hint")}</p>
+        <PhoneClientAutocomplete
+          label={t("form_telephone")}
+          value={form.telephone}
+          onChange={handleChange}
+          onSelectClient={applySelectedClient}
+          selectedClient={selectedClient}
+          onClearClient={clearSelectedClient}
+          societeId={selectedAgence?.societeId}
+          placeholder="0612345678"
+          error={form.telephone && !isMoroccoPhone(form.telephone) ? t("form_telephone_error") : undefined}
+          required
+          disabled={expeditionLocked}
+        />
+      </OrderSection>
+
+      {selectedClient && (
+        <OrderSection title={t("expedition_ask_title")}>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{t("section_hint_expedition")}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => applyExpeditionMode("same")}
+              className={`text-left p-4 rounded-lg border-2 transition-all ${
+                expeditionMode === "same"
+                  ? "border-[#B12B89] bg-[#B12B89]/5 dark:bg-[#B12B89]/10 shadow-sm"
+                  : "border-slate-200 dark:border-[#2e2e2e] hover:border-slate-300"
+              }`}
+            >
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <div className={`w-8 h-8 rounded-md flex items-center justify-center ${expeditionMode === "same" ? "bg-[#B12B89] text-white" : "bg-slate-100 dark:bg-[#2e2e2e] text-slate-400"}`}>
+                  <User size={15} />
+                </div>
+                <span className={`text-sm font-semibold ${expeditionMode === "same" ? "text-[#B12B89]" : "text-slate-700 dark:text-slate-200"}`}>
+                  {t("expedition_same")}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                {t("expedition_same_hint")}
+              </p>
+            </button>
+            <button
+              type="button"
+              onClick={() => applyExpeditionMode("other")}
+              className={`text-left p-4 rounded-lg border-2 transition-all ${
+                expeditionMode === "other"
+                  ? "border-[#B12B89] bg-[#B12B89]/5 dark:bg-[#B12B89]/10 shadow-sm"
+                  : "border-slate-200 dark:border-[#2e2e2e] hover:border-slate-300"
+              }`}
+            >
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <div className={`w-8 h-8 rounded-md flex items-center justify-center ${expeditionMode === "other" ? "bg-[#B12B89] text-white" : "bg-slate-100 dark:bg-[#2e2e2e] text-slate-400"}`}>
+                  <Users size={15} />
+                </div>
+                <span className={`text-sm font-semibold ${expeditionMode === "other" ? "text-[#B12B89]" : "text-slate-700 dark:text-slate-200"}`}>
+                  {t("expedition_other")}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                {t("expedition_other_hint")}
+              </p>
+            </button>
+          </div>
+          {expeditionMode === "other" && (
+            <p className="mt-3 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-[#222222]/50 rounded-md px-3 py-2">
+              {t("expedition_other_note")}
+            </p>
+          )}
+        </OrderSection>
+      )}
+
       <OrderSection title={t("card_client_info")}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="sm:col-span-2">
-            <PhoneClientAutocomplete
-              label={t("form_telephone")}
-              value={form.telephone}
-              onChange={handleChange}
-              onSelectClient={applySelectedClient}
-              selectedClient={selectedClient}
-              onClearClient={clearSelectedClient}
-              societeId={selectedAgence?.societeId}
-              placeholder="0612345678"
-              error={form.telephone && !isMoroccoPhone(form.telephone) ? t("form_telephone_error") : undefined}
-              required
-              disabled={expeditionLocked}
-            />
-          </div>
-
           <Input
             label={selectedClient && expeditionMode === "other" ? t("form_recipient_name") : t("form_client_name")}
             name="clientName"
@@ -912,7 +1091,7 @@ export const AdvancedBonLivraisonForm = () => {
 
           <div className="flex flex-col">
             <div className="flex items-center justify-between mb-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 ml-1">
+              <label className="text-[13px] font-medium text-slate-700 dark:text-slate-300">
                 WhatsApp
               </label>
               <label className="flex items-center gap-2 cursor-pointer select-none group">
@@ -936,56 +1115,6 @@ export const AdvancedBonLivraisonForm = () => {
           </div>
         </div>
       </OrderSection>
-
-      {selectedClient && (
-        <OrderSection title={t("expedition_ask_title")}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => applyExpeditionMode("same")}
-              className={`text-left p-4 rounded-lg border-2 transition-all ${
-                expeditionMode === "same"
-                  ? "border-[#B12B89] bg-[#B12B89]/5 dark:bg-[#B12B89]/10"
-                  : "border-slate-200 dark:border-[#2e2e2e] hover:border-slate-300"
-              }`}
-            >
-              <div className="flex items-center gap-2 mb-1.5">
-                <User size={16} className={expeditionMode === "same" ? "text-[#B12B89]" : "text-slate-400"} />
-                <span className={`text-sm font-semibold ${expeditionMode === "same" ? "text-[#B12B89]" : "text-slate-700 dark:text-slate-200"}`}>
-                  {t("expedition_same")}
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                {t("expedition_same_hint")}
-              </p>
-            </button>
-            <button
-              type="button"
-              onClick={() => applyExpeditionMode("other")}
-              className={`text-left p-4 rounded-lg border-2 transition-all ${
-                expeditionMode === "other"
-                  ? "border-[#B12B89] bg-[#B12B89]/5 dark:bg-[#B12B89]/10"
-                  : "border-slate-200 dark:border-[#2e2e2e] hover:border-slate-300"
-              }`}
-            >
-              <div className="flex items-center gap-2 mb-1.5">
-                <Users size={16} className={expeditionMode === "other" ? "text-[#B12B89]" : "text-slate-400"} />
-                <span className={`text-sm font-semibold ${expeditionMode === "other" ? "text-[#B12B89]" : "text-slate-700 dark:text-slate-200"}`}>
-                  {t("expedition_other")}
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                {t("expedition_other_hint")}
-              </p>
-            </button>
-          </div>
-          {expeditionMode === "other" && (
-            <p className="mt-3 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-[#222222]/50 rounded-md px-3 py-2">
-              {t("expedition_other_note")}
-            </p>
-          )}
-        </OrderSection>
-      )}
 
       <OrderSection title={t("card_delivery_address")}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -1077,108 +1206,103 @@ export const AdvancedBonLivraisonForm = () => {
         )}
       </OrderSection>
 
-      <OrderSection title={t("card_amount_reglement")}>
-        <div className="flex items-center justify-between p-5 rounded-lg bg-slate-50 dark:bg-[#222222]/50 border border-slate-200 dark:border-[#2e2e2e] mb-6">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{t("form_total_order")}</p>
-            <p className="text-2xl font-black text-slate-800 dark:text-slate-100 mt-0.5">{fmt(totalCommande)} MAD</p>
-          </div>
-          <div className="text-end text-xs text-slate-400 space-y-1">
-            <p>{t("form_articles_amount", { amount: fmt(totalLines) })}</p>
-            <p>{t("form_packs_amount", { amount: fmt(totalPacks) })}</p>
-            <p>{t("form_commission_amount", { amount: fmt(totalCommission) })}</p>
-          </div>
+      <div className="flex items-center justify-between p-5 rounded-lg bg-slate-50 dark:bg-[#222222]/50 border border-slate-200 dark:border-[#2e2e2e]">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{t("form_total_order")}</p>
+          <p className="text-2xl font-black text-slate-800 dark:text-slate-100 mt-0.5">{fmt(totalCommande)} MAD</p>
         </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <SelectDropDown
-            label={t("form_mode_reglement")}
-            name="modeReglement"
-            value={form.modeReglement}
-            options={MODE_REGLEMENT_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
-            onChange={handleChange}
-            required
-          />
-          <Input label={t("form_montant_regle")} name="montantPaid" type="number" value={form.montantPaid} onChange={handleChange} placeholder="0.00" />
+        <div className="text-end text-xs text-slate-400 space-y-1">
+          <p>{t("form_articles_amount", { amount: fmt(totalLines) })}</p>
+          <p>{t("form_packs_amount", { amount: fmt(totalPacks) })}</p>
+          <p>{t("form_commission_amount", { amount: fmt(totalCommission) })}</p>
         </div>
-        {needsBanque && (
-          <div className="mt-6">
-            <SelectDropDown
-              label={t("form_banque")}
-              name="banqueId"
-              value={form.banqueId}
-              options={banques.map((b) => ({
-                value: b.id,
-                label: b.name,
-                subLabel: b.RIB,
-              }))}
-              isLoading={banquesLoading}
-              onChange={handleChange}
-              placeholder={t("form_select_banque")}
-              required
-            />
-            <p className="mt-2 text-[11px] font-medium text-sky-600 dark:text-sky-400">
-              {t("form_banque_hint")}
-            </p>
-          </div>
-        )}
-      </OrderSection>
+      </div>
     </div>
   );
 
+  const remainingAtDelivery = Math.max(0, totalCommande - paidAmount);
+
   const renderStep4 = () => (
     <div className="space-y-5">
-      <OrderSection title={t("card_livreur")}>
-        <div className="flex gap-2 mb-6">
-          {["intern", "extern"].map((ltype) => (
-            <button key={ltype} type="button"
-              onClick={() => { setLivreurType(ltype); setForm((prev) => ({ ...prev, livreurId: "", providerConfigId: "" })); }}
-              className={`px-4 h-10 rounded-md text-xs font-semibold border transition-all ${livreurType === ltype}
-                ? "border-[#B12B89] text-[#B12B89] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
-                : "border-slate-200 dark:border-[#2e2e2e] text-slate-500 dark:text-slate-400 hover:border-slate-300"
-                }`}>
-              {ltype === "intern" ? t("form_livreur_intern") : t("form_livreur_extern")}
-            </button>
-          ))}
+      <OrderSection title={t("card_amount_reglement")}>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+          <div className="p-4 rounded-lg bg-slate-50 dark:bg-[#222222]/50 border border-slate-200 dark:border-[#2e2e2e]">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{t("form_total_order")}</p>
+            <p className="text-xl font-black text-slate-800 dark:text-slate-100 mt-1">{fmt(totalCommande)} MAD</p>
+          </div>
+          <div className="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-900/15 border border-emerald-100 dark:border-emerald-800/40">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-500">{t("form_montant_regle")}</p>
+            <p className="text-xl font-black text-emerald-700 dark:text-emerald-400 mt-1">{fmt(paidAmount)} MAD</p>
+          </div>
+          <div className="p-4 rounded-lg bg-[#B12B89]/5 border border-[#B12B89]/15">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[#B12B89]">{t("form_reste_livreur")}</p>
+            <p className="text-xl font-black text-[#B12B89] mt-1">{fmt(remainingAtDelivery)} MAD</p>
+          </div>
         </div>
-        <SelectDropDown
-          label={t("form_livreur_label")}
-          name="livreurId"
-          value={form.livreurId}
-          options={livreurs.map((l) => ({ value: l.id, label: l.name, subLabel: l.entityType }))}
-          isLoading={livreursLoading}
-          onChange={handleChange}
-          required
-        />
-        {showBusinessConfig && (
-          <div className="mt-6">
+
+        <div className="space-y-6">
+          <div>
             <SelectDropDown
-              label={t("form_business_config")}
-              name="providerConfigId"
-              value={form.providerConfigId}
-              options={providerConfigs.map((c) => ({ value: c.id, label: c.name }))}
-              isLoading={providerConfigsLoading}
+              label={t("form_mode_reglement")}
+              name="modeReglement"
+              value={form.modeReglement}
+              options={MODE_REGLEMENT_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
               onChange={handleChange}
-              placeholder={providerConfigsLoading ? t("form_loading") : providerConfigs.length === 0 ? t("form_no_config") : t("form_select_config")}
               required
             />
+            <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">{t("form_mode_reglement_hint")}</p>
           </div>
-        )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <Input
+              label={t("form_montant_regle")}
+              name="montantPaid"
+              type="number"
+              min={0}
+              step="0.01"
+              value={form.montantPaid}
+              onChange={handleChange}
+              placeholder="0.00"
+              hint={t("form_montant_regle_hint")}
+            />
+            <SelectDropDown
+              label={t("form_mode_reglement_avance")}
+              name="modeReglementAvance"
+              value={form.modeReglementAvance}
+              options={MODE_REGLEMENT_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
+              onChange={handleChange}
+              disabled={paidAmount <= 0}
+              placeholder={t("form_avance_select_placeholder")}
+              required={paidAmount > 0}
+            />
+          </div>
+
+          {needsBanque && (
+            <div>
+              <SelectDropDown
+                label={t("form_banque")}
+                name="banqueId"
+                value={form.banqueId}
+                options={banques.map((b) => ({
+                  value: b.id,
+                  label: b.name,
+                  subLabel: b.RIB,
+                }))}
+                isLoading={banquesLoading}
+                onChange={handleChange}
+                placeholder={t("form_select_banque")}
+                required
+              />
+              <p className="mt-2 text-[11px] font-medium text-sky-600 dark:text-sky-400">
+                {t("form_banque_hint")}
+              </p>
+            </div>
+          )}
+        </div>
       </OrderSection>
 
-      <OrderSection title={t("card_preparateur_status_obs")}>
+      <OrderSection title={t("card_status_obs")}>
         <div className="space-y-6">
-          <SelectDropDown
-            label={t("form_preparateur")}
-            name="preparateurId"
-            value={form.preparateurId}
-            options={preparateurs.map((p) => ({ value: p.id, label: p.name, subLabel: p.entityType }))}
-            isLoading={preparateursLoading}
-            onChange={handleChange}
-            required
-          />
-
-          {/* ── Statut de la commande ── */}
           <SelectDropDown
             label={t("form_status_commande")}
             name="commandStatus"
@@ -1187,7 +1311,6 @@ export const AdvancedBonLivraisonForm = () => {
             onChange={handleChange}
             required
           />
-
           <div>
             <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5 ml-1">
               {t("form_observation")}
@@ -1256,6 +1379,7 @@ export const AdvancedBonLivraisonForm = () => {
           depots={depots}
           livreurs={livreurs}
           preparateurs={preparateurs}
+          banques={banques}
           selectedClient={selectedClient}
           onConfirm={handleSubmit}
           onCancel={() => setShowConfirm(false)}

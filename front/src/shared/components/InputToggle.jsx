@@ -1,6 +1,6 @@
 
-export const InputToggle = ({ label, description, name, checked, onChange }) => (
-  <label className="flex items-center justify-between cursor-pointer group">
+export const InputToggle = ({ label, description, name, checked, onChange, disabled }) => (
+  <label className={`flex items-center justify-between group ${disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}>
     <div className="flex flex-col pr-4">
       <span className="text-sm font-medium text-slate-800 dark:text-slate-200">
         {label}
@@ -12,6 +12,7 @@ export const InputToggle = ({ label, description, name, checked, onChange }) => 
         type="checkbox"
         name={name}
         checked={checked}
+        disabled={disabled}
         onChange={onChange}
         className="sr-only peer"
       />

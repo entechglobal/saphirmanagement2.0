@@ -18,6 +18,50 @@ import {
 } from "./deliveryShiftService.js";
 
 const MODES_REQUIRING_BANK = ["CARTE_BANCAIRE", "VIREMENT"];
+const ADMIN_ROLE_NAMES = new Set(["Super_Admin", "Societe_Admin"]);
+
+const isAdminLevelUser = (user) =>
+  !!user?.isSuperAdmin || ADMIN_ROLE_NAMES.has(user?.roleName);
+
+const resolveLivreurDeliveryId = async (userId) => {
+  const delivery = await prisma.delivery.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+  return delivery?.id ?? -1;
+};
+
+/**
+ * Restrict Advanced BL queries to the caller's own orders.
+ * Super_Admin / Societe_Admin keep société (or global) visibility.
+ */
+const applyPersonalOrderScope = async (where, user) => {
+  if (isAdminLevelUser(user)) return where;
+
+  if (user.roleName === "Livreur") {
+    where.livreurId = await resolveLivreurDeliveryId(user.id);
+    return where;
+  }
+  if (user.roleName === "Preparateur") {
+    where.preparateurId = user.id;
+    return where;
+  }
+  if (user.roleName === "Commercial") {
+    where.commercialId = user.id;
+    return where;
+  }
+
+  where.AND = [
+    ...(where.AND || []),
+    {
+      OR: [
+        { document: { createdBy: user.id } },
+        { commercialId: user.id },
+      ],
+    },
+  ];
+  return where;
+};
 
 const resolveVilleName = (ville) => {
   if (ville == null || ville === "") return null;
@@ -451,6 +495,7 @@ export const create = async (data, user) => {
     nombreDeColis,
     observation,
     modeReglement,
+    modeReglementAvance,
     banqueId,
     commercialId,
     preparateurId,
@@ -459,9 +504,16 @@ export const create = async (data, user) => {
     providerConfigId,
   } = data;
 
-  if (MODES_REQUIRING_BANK.includes(modeReglement) && !banqueId) {
+  const requestedPaid = parseFloat(montantPaid || 0);
+  const creditMode =
+    requestedPaid > 0 ? (modeReglementAvance || modeReglement) : null;
+  if (
+    requestedPaid > 0 &&
+    MODES_REQUIRING_BANK.includes(creditMode) &&
+    !banqueId
+  ) {
     throw new ApiError(
-      `banqueId is required for ${modeReglement}. Select a bank to credit its wallet.`,
+      `banqueId is required for ${creditMode}. Select a bank to credit its wallet.`,
       400,
     );
   }
@@ -822,7 +874,7 @@ export const create = async (data, user) => {
         if (amountPaid > 0) {
           await creditOrderPayment(tx, {
             societeId: docSocieteId,
-            modeReglement,
+            modeReglement: creditMode,
             banqueId,
             amount: amountPaid,
             userId: user.id,
@@ -1295,20 +1347,18 @@ export const getAll = async (query, user) => {
   } = query;
 
   // ── Role-based scope ───────────────────────────────────────────
+  // Admins      → société (or global) visibility
   // Livreur     → only BLs assigned to their Delivery.id, restricted to
   //               execution-phase statuses
   //               (PREPARE, COLLECTE, EN_ROUTE, LIVRE).
   // Preparateur → only BLs assigned to themselves, restricted to
   //               commandStatus = CONFIRME (ready to prepare).
   // Commercial  → only BLs they own (commercialId = user.id).
+  // Other roles → orders they created or own as commercial.
   const roleScope = {};
-  if (!user.isSuperAdmin) {
+  if (!isAdminLevelUser(user)) {
     if (user.roleName === "Livreur") {
-      const delivery = await prisma.delivery.findUnique({
-        where: { userId: user.id },
-        select: { id: true },
-      });
-      roleScope.livreurId = delivery?.id ?? -1;
+      roleScope.livreurId = await resolveLivreurDeliveryId(user.id);
       roleScope.commandStatus = {
         in: ["PREPARE", "COLLECTE", "EN_ROUTE", "LIVRE"],
       };
@@ -1317,6 +1367,15 @@ export const getAll = async (query, user) => {
       roleScope.commandStatus = "CONFIRME";
     } else if (user.roleName === "Commercial") {
       roleScope.commercialId = user.id;
+    } else {
+      roleScope.AND = [
+        {
+          OR: [
+            { document: { createdBy: user.id } },
+            { commercialId: user.id },
+          ],
+        },
+      ];
     }
   }
 
@@ -2467,14 +2526,25 @@ export const getPreparateurs = async (query, user) => {
     : { societeId: user.societeId };
 
   const where = {
-    role: { name: "Preparateur" },
     ...societeScope,
     ...(active !== undefined && {
       active: active === true || active === "true",
     }),
-    ...(search && {
-      OR: [{ name: { contains: search } }, { email: { contains: search } }],
-    }),
+    AND: [
+      {
+        OR: [{ role: { name: "Preparateur" } }, { canBePreparateur: true }],
+      },
+      ...(search
+        ? [
+            {
+              OR: [
+                { name: { contains: search } },
+                { email: { contains: search } },
+              ],
+            },
+          ]
+        : []),
+    ],
   };
 
   const [total, users] = await Promise.all([
@@ -2537,7 +2607,7 @@ const buildCommercialStatsWhere = (user, query = {}) => {
     ...(user.isSuperAdmin ? {} : { document: { societeId: user.societeId } }),
   };
 
-  if (user.roleName === "Commercial") {
+  if (user.roleName === "Commercial" || !isAdminLevelUser(user)) {
     where.commercialId = user.id;
   } else if (commercialId) {
     where.commercialId = parseInt(commercialId);
@@ -2708,27 +2778,8 @@ export const getBLsByStatus = async (query, user) => {
     ...(user.isSuperAdmin ? {} : { document: { societeId: user.societeId } }),
   };
 
-  if (!user.isSuperAdmin) {
-    if (user.roleName === "Livreur") {
-      const delivery = await prisma.delivery.findUnique({
-        where: { userId: user.id },
-        select: { id: true },
-      });
-      where.livreurId = delivery?.id ?? -1;
-    } else if (user.roleName === "Preparateur") {
-      where.preparateurId = user.id;
-      if (livreurId) {
-        where.livreurId = parseInt(livreurId);
-      }
-    } else if (user.roleName === "Commercial") {
-      where.commercialId = user.id;
-      if (livreurId) {
-        where.livreurId = parseInt(livreurId);
-      }
-    } else if (livreurId) {
-      where.livreurId = parseInt(livreurId);
-    }
-  } else if (livreurId) {
+  await applyPersonalOrderScope(where, user);
+  if (livreurId && user.roleName !== "Livreur") {
     where.livreurId = parseInt(livreurId);
   }
 
@@ -2854,8 +2905,10 @@ export const getBLsByStatus = async (query, user) => {
    labels reflect what the user has to do next.
 
    Role visibility:
-     - Super_Admin / Societe_Admin / Caissier / Gerant / Commercial
-         → 5 counters: aPreparer, aCollecter, enRoute, aLivrer, aPayer
+     - Super_Admin / Societe_Admin
+         → 5 counters: aPreparer, aCollecter, enRoute, aLivrer, aPayer (société/global)
+     - Commercial / Gerant / Caissier / other non-admins
+         → 5 counters on their own orders
      - Livreur     → only aCollecter, enRoute, aLivrer, aPayer (own BLs)
      - Preparateur → only aPreparer (own BLs)
 ============================================================ */
@@ -2889,20 +2942,7 @@ export const getWorkflowCounts = async (user, query = {}) => {
     }
   }
 
-  // Role scoping — affected orders only for operational roles
-  if (!user.isSuperAdmin) {
-    if (user.roleName === "Livreur") {
-      const delivery = await prisma.delivery.findUnique({
-        where: { userId: user.id },
-        select: { id: true },
-      });
-      where.livreurId = delivery?.id ?? -1;
-    } else if (user.roleName === "Preparateur") {
-      where.preparateurId = user.id;
-    } else if (user.roleName === "Commercial") {
-      where.commercialId = user.id;
-    }
-  }
+  await applyPersonalOrderScope(where, user);
 
   // Single roundtrip — group by status, count rows.
   const groups = await prisma.bonLivraison.groupBy({
@@ -2982,19 +3022,7 @@ export const getPlanning = async (query, user) => {
   };
 
   // Role scoping — same as workflow counts / list
-  if (!user.isSuperAdmin && !livreurId) {
-    if (user.roleName === "Livreur") {
-      const delivery = await prisma.delivery.findUnique({
-        where: { userId: user.id },
-        select: { id: true },
-      });
-      where.livreurId = delivery?.id ?? -1;
-    } else if (user.roleName === "Preparateur") {
-      where.preparateurId = user.id;
-    } else if (user.roleName === "Commercial") {
-      where.commercialId = user.id;
-    }
-  }
+  await applyPersonalOrderScope(where, user);
 
   const rows = await prisma.bonLivraison.findMany({
     where,
@@ -3143,12 +3171,22 @@ export const getLivreurs = async (query, user) => {
     ...societeScope,
     ...activeFilter,
     type: deliveryType,
-    ...(search && {
+    ...(type === "intern" && {
       OR: [
-        { name: { contains: search } },
-        ...(type === "intern"
-          ? [{ user: { email: { contains: search } } }]
-          : []),
+        { user: { role: { name: "Livreur" } } },
+        { user: { canBeLivreur: true } },
+      ],
+    }),
+    ...(search && {
+      AND: [
+        {
+          OR: [
+            { name: { contains: search } },
+            ...(type === "intern"
+              ? [{ user: { email: { contains: search } } }]
+              : []),
+          ],
+        },
       ],
     }),
   };

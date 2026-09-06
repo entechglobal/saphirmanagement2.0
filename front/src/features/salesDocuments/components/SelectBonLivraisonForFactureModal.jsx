@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/shared/lib/query";
 import dayjs from "dayjs";
 import { Check, ChevronLeft, ChevronRight, Loader2, Truck } from "lucide-react";
 import { MagnifyingGlassIcon as SearchIcon } from "@heroicons/react/24/outline";

@@ -9,7 +9,7 @@ import {
   Select, MenuItem, Checkbox, ListItemText, OutlinedInput,
 } from "@mui/material";
 import { useDepots } from "../../../../repositories/hooks/useRepositories";
-import { useQueries } from "@tanstack/react-query";
+import { useQueries } from "@/shared/lib/query";
 import { useCreateStock, stockKeys } from "../../../hooks/useStocks";
 import { stocksApi } from "../../../api/stocks.api";
 

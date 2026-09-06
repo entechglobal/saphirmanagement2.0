@@ -26,21 +26,17 @@ const formatMAD = (val) =>
     maximumFractionDigits: 2,
   });
 
-const TYPE_ORDER = ["USER", "SOCIETE", "CENTRAL", "BANK", "COFFRE"];
+const TYPE_ORDER = ["USER", "BANK", "CAISSE"];
 
 const TYPE_LABEL_KEYS = {
   USER: "wallet_group_users",
-  SOCIETE: "wallet_group_societe",
-  CENTRAL: "wallet_group_central",
   BANK: "wallet_group_banks",
-  COFFRE: "wallet_group_coffres",
+  CAISSE: "wallet_group_caisses",
 };
 
 const walletLabel = (c) => {
   if (c.caisseType === "BANK") return c.banque?.name || c.name;
-  if (c.caisseType === "COFFRE") return c.name;
-  if (c.caisseType === "CENTRAL") return c.name || "Caisse Centrale";
-  if (c.caisseType === "SOCIETE") return c.name || c.societe?.raisonSocial;
+  if (c.caisseType === "CAISSE") return c.name;
   return c.user?.name || c.name;
 };
 

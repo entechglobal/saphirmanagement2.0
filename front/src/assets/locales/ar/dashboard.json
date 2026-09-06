@@ -1,0 +1,286 @@
+{
+  "home_title": "لوحة التحكم",
+  "period": {
+    "label": "الفترة",
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "this_week": "هذا الأسبوع",
+    "last_week": "الأسبوع الماضي",
+    "this_month": "هذا الشهر",
+    "last_month": "الشهر الماضي",
+    "this_year": "هذه السنة",
+    "custom": "مخصص"
+  },
+  "date_from": "من",
+  "date_to": "إلى",
+  "summary": {
+    "income": "المداخيل",
+    "expense": "المصاريف",
+    "net": "الرصيد الصافي"
+  },
+  "clients_section": {
+    "title": "مداخيل العملاء",
+    "collected": "المحصّل",
+    "payments": "الدفعات",
+    "partners": "العملاء",
+    "average": "المتوسط",
+    "by_partner": "حسب العميل",
+    "over_time": "التطور",
+    "by_mode": "حسب طريقة الدفع",
+    "no_data": "لا توجد مداخيل في هذه الفترة"
+  },
+  "fournisseurs_section": {
+    "title": "مدفوعات الموردين",
+    "collected": "المدفوع",
+    "payments": "الدفعات",
+    "partners": "الموردون",
+    "average": "المتوسط",
+    "by_partner": "حسب المورد",
+    "over_time": "التطور",
+    "by_mode": "حسب طريقة الدفع",
+    "no_data": "لا توجد مدفوعات في هذه الفترة"
+  },
+  "wallets_panel": {
+    "title": "المحافظ",
+    "users": "المستخدمون",
+    "banks": "البنوك",
+    "caisses": "الصناديق",
+    "cash": "نقداً",
+    "total": "المجموع",
+    "empty": "لا توجد محافظ",
+    "search": "بحث…",
+    "error": "تعذّر تحميل المحافظ",
+    "see_all": "عرض الكل"
+  },
+  "cashflow": {
+    "title": "التدفق النقدي",
+    "income": "المداخيل",
+    "expense": "المصاريف",
+    "no_data": "لا توجد حركات في هذه الفترة",
+    "by_mode": "حسب طريقة الدفع",
+    "payments": "{{count}} دفعة"
+  },
+  "right_rail": {
+    "see_more": "عرض المزيد",
+    "see_less": "إخفاء",
+    "see_more_count": "عرض المزيد ({{count}})",
+    "today_count": "{{count}} اليوم",
+    "commercials_preview": "{{count}} طلب · {{amount}} MAD"
+  },
+  "modes": {
+    "ESPECE": "نقداً",
+    "CARTE_BANCAIRE": "بطاقة بنكية",
+    "CHEQUE": "شيك",
+    "EFFET": "كمبيالة",
+    "CARTE_FIDELITE": "بطاقة ولاء",
+    "BON_ACHAT": "قسيمة شراء",
+    "REMISE": "خصم",
+    "VIREMENT": "تحويل"
+  },
+  "greeting": {
+    "morning": "صباح الخير",
+    "afternoon": "مساء الخير",
+    "evening": "مساء النور",
+    "default_user": "مستخدم",
+    "subtitle": "نظرة عامة على نشاط الشركة في الوقت الفعلي",
+    "subtitle_personal": "نظرة عامة على نشاطك في الوقت الفعلي"
+  },
+  "loading": "جارٍ التحميل…",
+  "stats": {
+    "total_entries": "إجمالي إدخالات المخزون",
+    "out_of_stock": "نفاد المخزون",
+    "low_stock": "تنبيهات المخزون المنخفض",
+    "active_clients": "العملاء النشطون",
+    "fournisseurs": "الموردون",
+    "income": "الإيرادات (MAD)"
+  },
+  "depots": {
+    "title": "المستودعات",
+    "active_count": "{{count}} مستودع نشط"
+  },
+  "recent_articles": {
+    "title": "المقالات الأخيرة",
+    "total_count": "{{count}}+ مقال إجمالاً",
+    "col_article": "المقال",
+    "col_family": "العائلة",
+    "col_buy_price": "سعر الشراء",
+    "col_sell_price": "سعر البيع",
+    "col_stock": "المخزون",
+    "managed": "مُدار",
+    "not_managed": "غير مُدار"
+  },
+  "top_clients": {
+    "title": "أفضل العملاء",
+    "subtitle": "{{active}} نشط من أصل {{total}} عميل",
+    "orders": "{{count}} طلب"
+  },
+  "top_fournisseurs": {
+    "title": "أفضل الموردين",
+    "subtitle": "{{active}} نشط — {{total}} MAD مدفوع",
+    "orders": "{{count}} طلب"
+  },
+  "top_stocked": {
+    "title": "المقالات الأكثر تخزيناً",
+    "subtitle": "{{count}} وحدة متاحة إجمالاً"
+  },
+  "depot_chart": {
+    "title": "المخزون حسب المستودع",
+    "subtitle": "عدد المقالات المخزّنة لكل مستودع",
+    "articles": "المقالات",
+    "reservations": "الحجوزات",
+    "no_data": "لا توجد مستودعات تطابق هذا الفلتر"
+  },
+  "stock_overview": {
+    "title": "نظرة عامة على المخزون",
+    "subtitle": "الكميات المتاحة والمحجوزة وفي العبور",
+    "available": "متاح",
+    "reserved": "محجوز",
+    "in_transit": "في العبور",
+    "no_data": "لا توجد بيانات مخزون"
+  },
+  "category_chart": {
+    "title": "الفئات",
+    "subtitle": "توزيع فئات المنتجات"
+  },
+
+  "stat_confirme": "مؤكد",
+  "stat_prepare": "مُحضَّر",
+  "stat_collecte": "محصَّل",
+  "stat_en_route": "في الطريق",
+  "stat_livre": "تم التسليم",
+
+  "saphir_home": {
+    "badge": "إدارة سفير",
+    "subtitle": "متابعة الطلبات المعينة وتخطيط التسليم",
+    "all_orders": "كل الطلبات",
+    "new_order": "طلب جديد"
+  },
+  "saphir_stats": {
+    "total_period": "الطلبات في الفترة",
+    "in_pipeline": "قيد المعالجة",
+    "empty": "لا توجد طلبات لهذه الفترة",
+    "a_preparer": "للتحضير",
+    "a_collecter": "للاستلام",
+    "en_route": "تم الاستلام",
+    "a_livrer": "للتسليم",
+    "a_payer": "للتحصيل",
+    "hint_preparer": "طلبات مؤكدة في الانتظار",
+    "hint_collecter": "جاهزة للمُوَصِّل",
+    "hint_en_route": "تم أخذها",
+    "hint_livrer": "قيد التسليم",
+    "hint_payer": "تم التسليم، الدفع معلّق"
+  },
+  "saphir_planning": {
+    "title": "التخطيط",
+    "see_all": "عرض الكل",
+    "today": "اليوم",
+    "tomorrow": "غداً",
+    "empty_today": "لا توجد توصيلات اليوم",
+    "empty_tomorrow": "لا توجد توصيلات غداً",
+    "tomorrow_summary": "{{count}} طلب غداً",
+    "cities": "المدن",
+    "unassigned": "غير معيّن",
+    "orders_count": "{{count}} طلب",
+    "more": "+{{count}} أخرى"
+  },
+  "saphir_top_commercials": {
+    "title": "أفضل التجاريين",
+    "subtitle": "الطلبات والعمولات",
+    "see_all": "عرض الكل",
+    "orders": "الطلبات",
+    "commission": "العمولة",
+    "order_count": "{{count}} طلب",
+    "empty": "لا يوجد تجاريون في هذه الفترة",
+    "error": "تعذر تحميل الترتيب"
+  },
+  "saphir_commercial_stats": {
+    "badge": "العمولات",
+    "title": "إحصائيات التجاريين",
+    "subtitle": "الطلبات المنشأة والعمولات المستحقة لكل تجاري",
+    "kpi_commercials": "التجاريون",
+    "kpi_orders": "الطلبات",
+    "kpi_ca": "رقم المعاملات",
+    "kpi_commission": "إجمالي العمولة",
+    "commission": "العمولة",
+    "orders_label": "{{count}} طلب",
+    "no_orders": "لا توجد طلبات",
+    "empty": "لا توجد بيانات لهذه الفترة",
+    "error": "تعذر تحميل الإحصائيات"
+  },
+
+  "status_label_CONFIRME": "مؤكد",
+  "status_label_PREPARE": "مُحضَّر",
+  "status_label_COLLECTE": "محصَّل",
+  "status_label_EN_ROUTE": "في الطريق",
+  "status_label_LIVRE": "تم التسليم",
+  "status_label_PAYE": "مدفوع",
+  "status_label_ANNULE": "ملغى",
+
+  "filter_confirme": "مؤكد",
+  "filter_prepare": "مُحضَّر",
+  "filter_collecte": "محصَّل",
+  "filter_en_route": "في الطريق",
+  "filter_livre": "تم التسليم",
+
+  "view_cards": "بطاقات",
+  "view_list": "قائمة",
+  "view_cards_title": "عرض البطاقات",
+  "view_list_title": "عرض القائمة",
+
+  "entity_name": "الطلبات",
+  "back_label": "رجوع",
+  "page_title": "الطلبات حسب الحالة",
+
+  "filters_label": "الفلاتر — {{total}} نتيجة",
+  "filter_status": "الحالة",
+  "filter_livreur": "الموصّل",
+  "filter_all_livreurs": "كل الموصّلين",
+
+  "table_ref": "المرجع",
+  "table_client": "العميل",
+  "table_ville": "المدينة",
+  "table_livreur": "الموصّل",
+  "table_contact": "التواصل",
+  "table_delivery_date": "تاريخ التسليم",
+  "table_amount": "المبلغ",
+  "table_status": "الحالة",
+
+  "toast_status_updated": "تم تحديث الحالة",
+  "toast_status_error": "خطأ أثناء تحديث الحالة",
+  "toast_report_success": "تم تأجيل التسليم بنجاح",
+  "toast_report_error": "خطأ أثناء تأجيل التسليم",
+
+  "no_commands": "لا توجد طلبات",
+  "no_commands_status": "لا توجد طلبات بالحالة « {{label}} »",
+
+  "bl_ref": "المرجع",
+  "bl_status": "الحالة",
+  "bl_reported_at": "مؤجل إلى",
+  "bl_client": "العميل",
+  "bl_created_by": "أُنشئ بواسطة",
+  "bl_telephone": "الهاتف",
+  "bl_whatsapp": "واتساب",
+  "bl_city": "المدينة / الوجهة",
+  "bl_livreur": "الموصّل",
+  "bl_doc_date": "تاريخ الوثيقة",
+  "bl_delivery_date": "تاريخ التسليم",
+  "bl_total_due": "إجمالي المستحق",
+  "bl_paid": "المدفوع",
+  "bl_reste": "المتبقي",
+  "bl_products": "المنتجات ({{count}})",
+  "bl_report_btn": "تأجيل",
+  "bl_details_btn": "التفاصيل",
+  "bl_reste_row": "المتبقي: {{amount}} درهم",
+  "bl_city_unknown": "غير محددة",
+  "bl_livreur_unassigned": "غير معيّن",
+  "bl_colis": "{{count}} طرد",
+
+  "report_title": "تأجيل التسليم",
+  "report_subtitle": "حدد تاريخ تسليم جديد",
+  "report_reason": "السبب",
+  "report_reason_placeholder": "مثال: العميل غير متاح، صعوبة الوصول…",
+  "report_next_date": "تاريخ التسليم التالي *",
+  "report_cancel": "إلغاء",
+  "report_sending": "جارٍ الإرسال...",
+  "report_confirm": "تأكيد التأجيل"
+}

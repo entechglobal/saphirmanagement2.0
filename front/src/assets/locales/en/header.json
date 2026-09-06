@@ -1,0 +1,95 @@
+{
+  "branding": {
+    "system_level": "System Level",
+    "global_mgmt": "Global Management",
+    "current_company": "Current Company",
+    "loading": "Loading..."
+  },
+  "profile": {
+    "access_level": "Access Level",
+    "connected_to": "Connected to",
+    "super_admin": "Super Administrator",
+    "my_profile": "My Profile",
+    "logout": "Logout",
+    "my_company": "My Company"
+  },
+  "preferences": {
+    "title": "Preferences",
+    "subtitle": "Language and app appearance",
+    "language": "Language",
+    "theme": "Theme",
+    "theme_light": "Light",
+    "theme_dark": "Dark",
+    "switching_language": "Switching language...",
+    "switching_theme": "Switching theme..."
+  },
+  "menu": "Menu",
+  "confirmation": {
+    "logout_title": "Confirm logout",
+    "logout_message": "Are you sure you want to log out?",
+    "logout_confirm": "Log out",
+    "logout_cancel": "Cancel"
+  },
+  "tooltips": {
+    "theme_toggle": "Toggle Theme",
+    "fullscreen": "Fullscreen"
+  },
+  "wallet": {
+    "tooltip": "Your wallet balance"
+  },
+  "fullscreen": "Fullscreen",
+  "fullscreen_exit": "Exit fullscreen",
+  "notifications": {
+    "title": "Notifications",
+    "unread": "{{count}} unread",
+    "empty": "No notifications",
+    "loading": "Loading...",
+    "mark_all_read": "Mark all as read",
+    "view_all": "More notifications",
+    "back": "Back",
+    "someone": "Someone",
+    "time": {
+      "just_now": "Just now",
+      "minutes_ago": "{{count}}m ago",
+      "hours_ago": "{{count}}h ago",
+      "days_ago": "{{count}}d ago"
+    },
+    "transfer": {
+      "incoming_title": "Incoming transfer",
+      "incoming_desc": "{{senderName}} sent you {{amount}} MAD",
+      "incoming_admin_title": "Transfer to bank / cash register",
+      "incoming_admin_desc": "{{senderName}} sent {{amount}} MAD to {{destinationName}}",
+      "accepted_title": "Transfer accepted",
+      "accepted_desc": "{{responderName}} accepted your transfer of {{amount}} MAD to {{destinationName}}",
+      "declined_title": "Transfer declined",
+      "declined_desc": "{{responderName}} declined your transfer of {{amount}} MAD to {{destinationName}}",
+      "accept": "Accept",
+      "decline": "Decline",
+      "processing": "Processing...",
+      "accepted_toast": "Transfer accepted",
+      "declined_toast": "Transfer declined",
+      "action_error": "Unable to process this transfer"
+    }
+  },
+  "palette": {
+    "placeholder": "Search for a page or action...",
+    "no_results": "No results for",
+    "hint_navigate": "navigate",
+    "hint_open": "open",
+    "hint_close": "close",
+    "result": "result",
+    "results": "results",
+    "escape_key": "Esc",
+    "categories": {
+      "navigation": "Navigation",
+      "catalogue": "Catalogue",
+      "contacts": "Contacts",
+      "stock": "Stock",
+      "saphir": "Saphir",
+      "achats": "Purchases",
+      "admin": "Administration",
+      "system": "System",
+      "account": "Account"
+    }
+  }
+}

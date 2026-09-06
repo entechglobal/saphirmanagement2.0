@@ -142,6 +142,11 @@ export const createValidator = [
     .isIn(VALID_MODES)
     .withMessage(`modeReglement must be one of: ${VALID_MODES.join(", ")}`),
 
+  body("modeReglementAvance")
+    .optional()
+    .isIn(VALID_MODES)
+    .withMessage(`modeReglementAvance must be one of: ${VALID_MODES.join(", ")}`),
+
   body("banqueId")
     .optional({ nullable: true })
     .isInt({ min: 1 })

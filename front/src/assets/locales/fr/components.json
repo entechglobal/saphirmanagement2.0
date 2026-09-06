@@ -1,0 +1,9 @@
+{
+    "loading": "Chargement...",
+    "select_option": "Sélectionnez une option",
+    "search": "Rechercher...",
+    "no_results": "Aucun résultat",
+    "all_selected": "Tous sélectionnés",
+    "selected_count": "{{count}} sélectionné(s)",
+    "use_value": "Utiliser « {{value}} »"
+}

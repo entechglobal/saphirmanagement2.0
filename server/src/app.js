@@ -4,15 +4,18 @@ import cors from "cors";
 import path from "path";
 
 const app = express();
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",")
-      .map((o) => o.trim())
-      .filter(Boolean)
-  : ["http://localhost:5173", "http://localhost:4173"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:4173",
+  "http://localhost:8002",
+  "http://localhost:8003",
+  "http://192.168.1.143:8002",
+  "http://192.168.1.143:8003",
+];
 
 const LAN_HOST =
   /^(localhost|127\.0\.0\.1|10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})$/;
-const LAN_PORTS = new Set(["", "80", "443", "3000", "4173", "5173", "5174"]);
+const LAN_PORTS = new Set(["", "80", "443", "3000", "4173", "5173", "5174", "8002", "8003"]);
 
 const isAllowedOrigin = (origin) => {
   if (!origin || origin === "null" || origin === "file://") return true;

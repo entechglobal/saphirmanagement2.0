@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@/shared/lib/query";
 import { labelsApi } from "../api/labels.api";
 
 export const useLabelProducts = ({ page = 1, search, priceField, enabled = true } = {}) => {

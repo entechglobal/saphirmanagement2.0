@@ -13,10 +13,6 @@ import { useAuth } from "../../auth/hooks/useAuth";
 
 const getCaisseNamePreview = (selectedUser) => {
   if (!selectedUser) return null;
-  const roleName = selectedUser.role?.name ?? "";
-  if (selectedUser.isSuperAdmin) return "Caisse Centrale";
-  if (roleName === "Societe_Admin")
-    return `Wallet Société - ${selectedUser.societe?.raisonSocial ?? selectedUser.name}`;
   return `Wallet Utilisateur - ${selectedUser.name}`;
 };
 

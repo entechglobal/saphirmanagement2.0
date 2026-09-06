@@ -15,7 +15,7 @@ import { createNotifications } from "./notificationService.js";
 const SUPER_ADMIN_ROLES = ["Super_Admin", "SUPERADMIN"];
 
 const isInstitutionalWallet = (caisse) =>
-  caisse.caisseType === "BANK" || caisse.caisseType === "COFFRE";
+  caisse.caisseType === "BANK" || caisse.caisseType === "CAISSE";
 
 const isSuperAdminUser = (user) =>
   !!user?.isSuperAdmin || SUPER_ADMIN_ROLES.includes(user?.roleName);
@@ -47,7 +47,7 @@ const TRANSFER_REQUEST_INCLUDE = {
 const walletDisplayName = (caisse) => {
   if (!caisse) return "";
   if (caisse.caisseType === "BANK") return caisse.banque?.name || caisse.name;
-  if (caisse.caisseType === "COFFRE") return caisse.name;
+  if (caisse.caisseType === "CAISSE") return caisse.name;
   return caisse.user?.name || caisse.name;
 };
 
@@ -247,13 +247,13 @@ async function createInstitutionalWallet(data, currentUser, caisseType) {
     });
   }
 
-  if (caisseType === "COFFRE") {
-    const walletName = name?.trim() || "Coffre Fort";
+  if (caisseType === "CAISSE") {
+    const walletName = name?.trim() || "Caisse";
     return prisma.$transaction(async (tx) => {
       const caisse = await tx.caisse.create({
         data: {
           societeId: targetSocieteId,
-          caisseType: "COFFRE",
+          caisseType: "CAISSE",
           name: walletName,
           initialBalance: balance,
           currentBalance: balance,
@@ -288,22 +288,9 @@ export const createBankWallet = (data, currentUser) =>
   createInstitutionalWallet(data, currentUser, "BANK");
 
 export const createCoffreWallet = (data, currentUser) =>
-  createInstitutionalWallet(data, currentUser, "COFFRE");
+  createInstitutionalWallet(data, currentUser, "CAISSE");
 
-function determineCaisseType(targetUser) {
-  if (targetUser.isSuperAdmin) return "CENTRAL";
-  if (targetUser.role?.name === "Societe_Admin") return "SOCIETE";
-  return "USER";
-}
-
-// -----------------------------------------------
-// CAISSE CRUD
-// -----------------------------------------------
-
-function generateCaisseName(targetUser, caisseType) {
-  if (caisseType === "CENTRAL") return "Caisse Centrale";
-  if (caisseType === "SOCIETE")
-    return `Wallet Société - ${targetUser.societe?.raisonSocial || targetUser.name}`;
+function generateCaisseName(targetUser) {
   return `Wallet Utilisateur - ${targetUser.name}`;
 }
 
@@ -337,17 +324,16 @@ export const create = async (data, currentUser) => {
   if (existing)
     throw new ApiError("Cet utilisateur possède déjà une caisse", 409);
 
-  const caisseType = determineCaisseType(targetUser);
   const societeId = targetUser.societeId || null;
   const balance = parseFloat(initialBalance) || 0;
-  const name = generateCaisseName(targetUser, caisseType);
+  const name = generateCaisseName(targetUser);
 
   return prisma.$transaction(async (tx) => {
     const caisse = await tx.caisse.create({
       data: {
         userId: parseInt(userId),
         societeId,
-        caisseType,
+        caisseType: "USER",
         name,
         initialBalance: balance,
         currentBalance: balance,
@@ -447,8 +433,9 @@ export const getMyCaisse = async (currentUser) => {
   const created = await prisma.caisse.create({
     data: {
       userId: currentUser.id,
-      caisseType: "CENTRAL",
-      name: "Caisse Centrale",
+      societeId: currentUser.societeId || null,
+      caisseType: "USER",
+      name: generateCaisseName(currentUser),
       initialBalance: 0,
       currentBalance: 0,
       active: true,
@@ -583,12 +570,7 @@ export const getTransferableCaisses = async (query, currentUser) => {
 
   if (currentUser.isSuperAdmin) {
     if (societeId) {
-      and.push({
-        OR: [
-          { societeId: parseInt(societeId) },
-          { caisseType: "CENTRAL", societeId: null },
-        ],
-      });
+      and.push({ societeId: parseInt(societeId) });
     }
   } else {
     if (!currentUser.societeId) {
@@ -614,7 +596,7 @@ export const getTransferableCaisses = async (query, currentUser) => {
   }
 
   const where = { AND: and };
-  const TYPE_ORDER = ["USER", "SOCIETE", "CENTRAL", "BANK", "COFFRE"];
+  const TYPE_ORDER = ["USER", "BANK", "CAISSE"];
 
   const [caisses, total] = await Promise.all([
     prisma.caisse.findMany({

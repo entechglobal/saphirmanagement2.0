@@ -6,9 +6,9 @@ import { Loader2 } from "lucide-react";
 import { useTheme } from "@/app/providers/ThemeProvider";
 import { BaseModal } from "../BaseModal";
 
-import Usa from "../../../../public/lngIcons/usa.png";
-import Fr from "../../../../public/lngIcons/fr.png";
-import Ar from "../../../../public/lngIcons/ar.png";
+import Usa from "@/assets/lngIcons/usa.png";
+import Fr from "@/assets/lngIcons/fr.png";
+import Ar from "@/assets/lngIcons/ar.png";
 
 const languages = [
   { name: "Français", image: Fr, code: "fr" },
@@ -35,19 +35,22 @@ export const PreferencesModal = ({ isOpen, onClose }) => {
     setSelected(languages.find((l) => l.code === current) || languages[0]);
   }, [isOpen, i18n.language]);
 
-  const runSwitch = useCallback(async (type, action) => {
-    if (switching) return;
-    setSwitching(type);
-    const start = Date.now();
+  const runSwitch = useCallback(
+    async (type, action) => {
+      if (switching) return;
+      setSwitching(type);
+      const start = Date.now();
 
-    try {
-      await action();
-    } finally {
-      const remaining = Math.max(0, MIN_SWITCH_MS - (Date.now() - start));
-      await wait(remaining);
-      setSwitching(null);
-    }
-  }, [switching]);
+      try {
+        await action();
+      } finally {
+        const remaining = Math.max(0, MIN_SWITCH_MS - (Date.now() - start));
+        await wait(remaining);
+        setSwitching(null);
+      }
+    },
+    [switching],
+  );
 
   const handleLanguage = (lang) => {
     if (lang.code === selected.code || switching) return;
@@ -135,7 +138,9 @@ export const PreferencesModal = ({ isOpen, onClose }) => {
                   whileTap={!switching ? { scale: 0.98 } : {}}
                   animate={{
                     borderColor: isActive ? "#B12B89" : undefined,
-                    backgroundColor: isActive ? "rgba(15, 131, 239, 0.08)" : undefined,
+                    backgroundColor: isActive
+                      ? "rgba(15, 131, 239, 0.08)"
+                      : undefined,
                   }}
                   transition={{ duration: 0.2 }}
                   className={`flex items-center gap-3 rounded-xl border px-3 py-3 text-left transition-colors disabled:cursor-not-allowed ${
@@ -144,10 +149,18 @@ export const PreferencesModal = ({ isOpen, onClose }) => {
                       : "border-gray-200 bg-white hover:border-gray-300 dark:border-[#2e2e2e] dark:bg-[#1c1c1c] dark:hover:border-[#3a3a3a]"
                   }`}
                 >
-                  <img src={lang.image} alt={lang.name} className="h-6 w-6 rounded-full object-cover" />
+                  <img
+                    src={lang.image}
+                    alt={lang.name}
+                    className="h-6 w-6 rounded-full object-cover"
+                  />
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{lang.name}</p>
-                    <p className="text-xs uppercase text-slate-400">{lang.code}</p>
+                    <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                      {lang.name}
+                    </p>
+                    <p className="text-xs uppercase text-slate-400">
+                      {lang.code}
+                    </p>
                   </div>
                 </motion.button>
               );

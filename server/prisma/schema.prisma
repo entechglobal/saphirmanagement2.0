@@ -201,11 +201,9 @@ enum BonLivraisonStatus {
 }
 
 enum CaisseType {
-  CENTRAL
-  SOCIETE
   USER
   BANK
-  COFFRE
+  CAISSE
 }
 
 enum DeliveryShiftStatus {
@@ -413,6 +411,10 @@ model User {
   profile      String?
   active       Boolean @default(true)
 
+  // Extra operational roles for order assignment (independent of main roleId)
+  canBePreparateur Boolean @default(false) @map("can_be_preparateur")
+  canBeLivreur     Boolean @default(false) @map("can_be_livreur")
+
   roleId Int  @map("role_id")
   role   Role @relation(fields: [roleId], references: [id], onDelete: Restrict)
 
@@ -461,6 +463,8 @@ model User {
   @@index([email])
   @@index([societeId])
   @@index([isSuperAdmin])
+  @@index([canBePreparateur])
+  @@index([canBeLivreur])
   @@map("users")
 }
 

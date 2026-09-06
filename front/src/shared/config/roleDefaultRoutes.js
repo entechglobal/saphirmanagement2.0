@@ -4,7 +4,7 @@ export const ROLE_DEFAULT_ROUTES = {
   Societe_Admin: "/dashboard",
   Gerant: "/dashboard",
   Caissier: "/pos",
-  Commercial: "/saphir-management-dashboard",
-  Preparateur: "/saphir-management-dashboard",
-  Livreur: "/saphir-management-dashboard",
+  Commercial: "/dashboard",
+  Preparateur: "/dashboard",
+  Livreur: "/dashboard",
 };

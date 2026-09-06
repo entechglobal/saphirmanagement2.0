@@ -84,7 +84,6 @@ import {
   CommandDetailsPage,
   PackForm,
   PlanningLivraisonPage,
-  SpahirMangmentDashboarPage,
   CommandsByStatusPage,
   CommercialStatsPage,
   ColisTrackingPage,
@@ -102,15 +101,6 @@ const PG = ({ p, children }) => (
   <PermissionGate permission={p}>{children}</PermissionGate>
 );
 
-// Roles that can only access /saphir-management-dashboard
-const RESTRICTED_ROLES = ["Livreur", "Preparateur", "Commercial"];
-const AdminOnlyRoute = ({ children }) => {
-  const { user } = useAuth();
-  if (RESTRICTED_ROLES.includes(user?.role)) {
-    return <Navigate to="/saphir-management-dashboard" replace />;
-  }
-  return children;
-};
 
 // Only Super Admin can access
 const SuperAdminRoute = ({ children }) => {
@@ -149,14 +139,10 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <DefaultRedirect /> },
 
-          // ── Dashboard (admin / gerant only) ──────────────────────────────
+          // ── Dashboard ────────────────────────────────────────────────────
           {
             path: "dashboard",
-            element: (
-              <AdminOnlyRoute>
-                <DashboardPage />
-              </AdminOnlyRoute>
-            ),
+            element: <DashboardPage />,
           },
 
           // ── Categories ───────────────────────────────────────────────────
@@ -588,7 +574,7 @@ export const router = createBrowserRouter([
           // ── Saphir Management — Dashboard ─────────────────────────────────
           {
             path: "saphir-management-dashboard",
-            element: <SpahirMangmentDashboarPage />,
+            element: <Navigate to="/dashboard" replace />,
           },
           {
             path: "/saphir-management-dashboard/commandes-par-statut",

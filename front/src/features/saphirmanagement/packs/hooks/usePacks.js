@@ -1,5 +1,5 @@
 // src/features/packs/hooks/usePacks.js
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@/shared/lib/query";
 import { packsApi } from "../api/packs.api";
 import { societesApi } from "../../../societes/api/societes.api";
 

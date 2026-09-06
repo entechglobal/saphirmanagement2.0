@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@/shared/lib/query";
 import { documentHeaderApi } from "../api/documentHeader.api";
 import { societeKeys } from "@/features/societes/hooks/useSocietes";
 

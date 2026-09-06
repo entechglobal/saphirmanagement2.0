@@ -113,7 +113,7 @@ export const UsersPage = () => {
         {
             accessorKey: "role.name",
             header: t("role"),
-            Cell: ({ cell }) => {
+            Cell: ({ cell, row }) => {
                 const role = cell.getValue();
                 const roleConfig = {
                     Super_Admin: {
@@ -143,11 +143,28 @@ export const UsersPage = () => {
                     label: role?.replace("_", " "),
                 };
                 return (
+                    <div className="flex flex-col gap-1.5">
                     <div className="flex items-center gap-2">
                         {config.icon}
                         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${config.color}`}>
                             {config.label}
                         </span>
+                    </div>
+                    {((row.original.canBePreparateur && role !== "Preparateur") ||
+                    (row.original.canBeLivreur && role !== "Livreur")) ? (
+                        <div className="flex flex-wrap gap-1 pl-6">
+                            {row.original.canBePreparateur && role !== "Preparateur" && (
+                                <span className="rounded bg-violet-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-violet-600 dark:bg-violet-900/20 dark:text-violet-400">
+                                    {t("extra_roles.badge_preparateur")}
+                                </span>
+                            )}
+                            {row.original.canBeLivreur && role !== "Livreur" && (
+                                <span className="rounded bg-sky-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-sky-600 dark:bg-sky-900/20 dark:text-sky-400">
+                                    {t("extra_roles.badge_livreur")}
+                                </span>
+                            )}
+                        </div>
+                    ) : null}
                     </div>
                 );
             },

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@/shared/lib/query";
 import { situationApi } from "../api/situation.api";
 
 export const situationKeys = {

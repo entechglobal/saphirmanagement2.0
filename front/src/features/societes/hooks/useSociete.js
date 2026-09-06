@@ -1,5 +1,6 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@/shared/lib/query";
 import { societeApi } from "../api/societe.api";
+import { useAuth } from "../../auth/hooks/useAuth";
 
 /**
  * Query keys
@@ -11,18 +12,16 @@ export const societeKeys = {
 };
 
 export const useSocieteMe = (options = {}) => {
+  const { user } = useAuth();
+  const { enabled: enabledOption, ...rest } = options;
+  const hasSociete = !!user?.societeId && !user?.isSuperAdmin;
+
   return useQuery({
-    // 1. Use a unique key for "me" to avoid cache collisions with specific IDs
     queryKey: societeKeys.me(),
-
-    // 2. Call your new API method
     queryFn: () => societeApi.getByme(),
-
-    // 3. allow callers to pass enabled, etc.
-    ...options,
-
-    // 4. Standard React Query 5+ option (replaces keepPreviousData)
     placeholderData: (previousData) => previousData,
+    ...rest,
+    enabled: (enabledOption ?? true) && hasSociete,
   });
 };
 

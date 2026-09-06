@@ -10,10 +10,6 @@ import { useAuth } from "../../auth/hooks/useAuth";
 
 const getMyPreviewName = (user) => {
   if (!user) return "";
-  if (user.isSuperAdmin) return "Caisse Centrale";
-  const roleName = user.roleName ?? user.role?.name ?? user.role ?? "";
-  if (roleName === "Societe_Admin")
-    return `Wallet Société - ${user.societe?.raisonSocial ?? user.name}`;
   return `Wallet Utilisateur - ${user.name}`;
 };
 

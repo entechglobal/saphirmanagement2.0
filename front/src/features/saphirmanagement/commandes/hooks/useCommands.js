@@ -1,4 +1,5 @@
-import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@/shared/lib/query";
+import { useAuth } from "@/features/auth";
 import {
   commandsApi,
   livreurApi,
@@ -366,8 +367,9 @@ export const useCommandDetails = (id, options = {}) =>
 
 export const useWorkflowCounts = (filters = {}) => {
   const { dateFrom, dateTo } = filters;
+  const { user } = useAuth();
   return useQuery({
-    queryKey: workflowCountsKeys.filtered({ dateFrom, dateTo }),
+    queryKey: workflowCountsKeys.filtered({ userId: user?.id, dateFrom, dateTo }),
     queryFn: () => commandsApi.getWorkflowCounts({ dateFrom, dateTo }),
     placeholderData: keepPreviousData,
     staleTime: 30_000,
@@ -385,8 +387,14 @@ export const useBLsByStatus = (filters = {}) => {
 
 export const useCommercialStats = (filters = {}) => {
   const { dateFrom, dateTo, commercialId } = filters;
+  const { user } = useAuth();
   return useQuery({
-    queryKey: commercialStatsKeys.filtered({ dateFrom, dateTo, commercialId }),
+    queryKey: commercialStatsKeys.filtered({
+      userId: user?.id,
+      dateFrom,
+      dateTo,
+      commercialId,
+    }),
     queryFn: () =>
       commandsApi.getCommercialStats({ dateFrom, dateTo, commercialId }),
     placeholderData: keepPreviousData,
@@ -395,12 +403,19 @@ export const useCommercialStats = (filters = {}) => {
 };
 
 export const useTopCommercials = (filters = {}) => {
-  const { dateFrom, dateTo, limit = 5 } = filters;
+  const { dateFrom, dateTo, limit = 5, enabled = true } = filters;
+  const { user } = useAuth();
   return useQuery({
-    queryKey: topCommercialsKeys.filtered({ dateFrom, dateTo, limit }),
+    queryKey: topCommercialsKeys.filtered({
+      userId: user?.id,
+      dateFrom,
+      dateTo,
+      limit,
+    }),
     queryFn: () =>
       commandsApi.getTopCommercials({ dateFrom, dateTo, limit }),
     placeholderData: keepPreviousData,
     staleTime: 30_000,
+    enabled,
   });
 };

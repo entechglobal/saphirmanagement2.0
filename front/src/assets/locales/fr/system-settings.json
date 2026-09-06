@@ -1,0 +1,90 @@
+{
+  "refresh": "Actualiser",
+  "loading": "Chargement des paramètres…",
+  "loading_short": "Chargement…",
+
+  "neg_stock": {
+    "title": "Stock négatif",
+    "allow_label": "Autoriser le stock négatif",
+    "enabled": "Activé",
+    "disabled": "Désactivé"
+  },
+
+  "hour_range": {
+    "title": "Plage horaire d'opération",
+    "mode_none": "Aucune restriction",
+    "mode_custom": "Heures définies",
+    "start": "Heure début",
+    "end": "Heure fin",
+    "preview_none": "Aucune restriction horaire — système actif 24h/7j",
+    "preview_range": "Horaires : {{start}} → {{end}} ({{duration}}h/jour)"
+  },
+
+  "history": {
+    "title": "Historique des modifications",
+    "filter_all": "Tous",
+    "filter_neg_stock": "Stock négatif",
+    "filter_start_hour": "Heure début",
+    "filter_end_hour": "Heure fin",
+    "empty": "Aucun historique disponible",
+    "no_results": "Aucun résultat",
+    "results": "{{from}}–{{to}} résultats",
+    "col_setting": "Paramètre",
+    "col_change": "Modification",
+    "col_user": "Modifié par",
+    "col_date": "Date"
+  },
+
+  "form": {
+    "reason_label": "Raison (optionnel)",
+    "reason_placeholder": "Motif de la modification pour la piste d'audit…",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…"
+  },
+
+  "toast": {
+    "already_up_to_date": "Déjà à jour",
+    "setting_updated": "Paramètre mis à jour",
+    "hour_updated": "Plage horaire mise à jour",
+    "error": "Erreur lors de la mise à jour"
+  },
+
+  "modal": {
+    "subtitle": "Confirmation requise",
+    "cancel": "Annuler",
+    "processing": "Traitement…",
+    "force_update": "Forcer la mise à jour",
+    "warnings_title": "Avertissements",
+    "more_items": "+ {{count}} autre(s)…",
+    "impacts_title": "Impacts",
+    "confirm_question": "Voulez-vous quand même appliquer cette modification ?",
+    "neg_stock_title": "Risque : stock négatif existant",
+    "hour_title": "Transactions hors plage horaire"
+  },
+
+  "setting_label": {
+    "allowNegativeStock": "Stock négatif",
+    "systemStartHour": "Heure début",
+    "systemEndHour": "Heure fin"
+  },
+
+  "value": {
+    "null_value": "null",
+    "enabled": "Activé",
+    "disabled": "Désactivé"
+  },
+
+  "extra_roles": {
+    "title": "Rôles opérationnels des utilisateurs",
+    "description": "Autoriser un utilisateur (ex. admin) à apparaître dans la sélection préparateur ou livreur des commandes.",
+    "search_placeholder": "Rechercher un utilisateur…",
+    "col_user": "Utilisateur",
+    "col_main_role": "Rôle principal",
+    "col_preparateur": "Préparateur",
+    "col_livreur": "Livreur",
+    "empty": "Aucun utilisateur",
+    "updated": "Rôles mis à jour",
+    "error": "Erreur lors de la mise à jour"
+  }
+}

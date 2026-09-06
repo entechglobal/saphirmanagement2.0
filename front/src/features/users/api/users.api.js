@@ -5,7 +5,14 @@ const api = apiClient;
 export const usersApi = {
   // ── LIST / READ ────────────────────────────────────────────────
   getAll: async ({ page, limit, keyword } = {}) => {
-    const res = await api.get("/users", { params: { page, limit, keyword } });
+    const term = typeof keyword === "string" ? keyword.trim() : "";
+    const res = await api.get("/users", {
+      params: {
+        page,
+        limit,
+        ...(term && { keyword: term, search: term }),
+      },
+    });
     return res.data;
   },
 

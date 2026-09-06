@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "@/shared/utils/toast";
-import { Wallet, Shield, Building2, TrendingUp, TrendingDown, PlusCircle, Landmark, Vault } from "lucide-react";
+import { Wallet, Building2, TrendingUp, TrendingDown, PlusCircle, Landmark, Vault } from "lucide-react";
 import { useCaisses, useUpdateCaisse, useDeleteCaisse, useMyCaisse } from "../hooks/useCaisse";
 import { useAuth } from "../../auth/hooks/useAuth";
 import { ReusableTable } from "../../../shared/components/ReusableTable";
@@ -16,16 +16,6 @@ const formatMAD = (val) =>
   Number(val ?? 0).toLocaleString("fr-MA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const TYPE_CONFIG = {
-  CENTRAL: {
-    label: "Centrale",
-    cls: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-    icon: <Shield className="w-3 h-3" />,
-  },
-  SOCIETE: {
-    label: "Société",
-    cls: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
-    icon: <Building2 className="w-3 h-3" />,
-  },
   USER: {
     label: "Utilisateur",
     cls: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
@@ -36,8 +26,8 @@ const TYPE_CONFIG = {
     cls: "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
     icon: <Landmark className="w-3 h-3" />,
   },
-  COFFRE: {
-    label: "Coffre Fort",
+  CAISSE: {
+    label: "Caisse",
     cls: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
     icon: <Vault className="w-3 h-3" />,
   },
@@ -164,8 +154,8 @@ export const CaissesUsersPage = () => {
             </div>
           );
         }
-        if (type === "COFFRE") {
-          return <span className="text-sm text-slate-500 italic">{t("coffre_cash_label")}</span>;
+        if (type === "CAISSE") {
+          return <span className="text-sm text-slate-500 italic">{t("caisse_cash_label")}</span>;
         }
         return (
           <div>
@@ -179,10 +169,7 @@ export const CaissesUsersPage = () => {
       {
         accessorKey: "societe.raisonSocial",
         header: t("col_societe"),
-        Cell: ({ cell, row }) =>
-          row.original.caisseType === "CENTRAL" ? (
-            <span className="text-xs italic text-slate-400">{t("global_access")}</span>
-          ) : (
+        Cell: ({ cell }) => (
             <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
               <Building2 className="w-3.5 h-3.5 text-[#B12B89] flex-shrink-0" />
               <span className="text-sm font-medium">{cell.getValue() ?? "—"}</span>
