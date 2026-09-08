@@ -15,7 +15,20 @@ import {
   getPresetRange,
 } from "@/features/dashboard/components/DashboardDateFilter";
 import { useCommercialStats } from "../../commandes/hooks/useCommands";
+import { HeaderTable } from "@/shared/components/HeaderTable";
+import { SelectUI } from "@/shared/ui/SelectUI";
 
+const ORDER_STATUSES = [
+  "EN_COURS",
+  "CONFIRME",
+  "PREPARE",
+  "COLLECTE",
+  "EN_ROUTE",
+  "LIVRE",
+  "PAYE",
+  "ANNULE",
+];
+  
 const fmt = (n) =>
   Number(n || 0).toLocaleString("fr-MA", {
     minimumFractionDigits: 2,
@@ -108,7 +121,12 @@ const CommercialRow = ({ commercial, rank, t }) => {
                         {order.clientName || "—"}
                       </p>
                       <p className="truncate text-[10px] text-slate-400">
-                        {[order.documentNumber, order.commandStatus]
+                        {[
+                          order.documentNumber,
+                          order.commandStatus
+                            ? t(`status_label_${order.commandStatus}`, order.commandStatus)
+                            : null,
+                        ]
                           .filter(Boolean)
                           .join(" · ")}
                       </p>
@@ -138,11 +156,17 @@ export const CommercialStatsPage = () => {
     const [from, to] = getPresetRange(DEFAULT_PRESET);
     return { from, to };
   });
+  const [selectedStatuses, setSelectedStatuses] = useState([]);
 
   const dateFrom = range.from?.format("YYYY-MM-DDTHH:mm:ss");
   const dateTo = range.to?.format("YYYY-MM-DDTHH:mm:ss");
+  const commandStatus = selectedStatuses.length ? selectedStatuses.join(",") : undefined;
 
-  const { data, isLoading, isError } = useCommercialStats({ dateFrom, dateTo });
+  const { data, isLoading, isError } = useCommercialStats({
+    dateFrom,
+    dateTo,
+    commandStatus,
+  });
   const payload = data?.data ?? data ?? {};
   const summary = payload.summary ?? {};
   const commercials = useMemo(
@@ -150,26 +174,37 @@ export const CommercialStatsPage = () => {
     [payload.commercials],
   );
 
+  const statusOptions = useMemo(
+    () =>
+      ORDER_STATUSES.map((value) => ({
+        value,
+        label: t(`status_label_${value}`, value),
+      })),
+    [t],
+  );
+
   return (
     <div className="min-h-screen p-4 md:p-8 transition-colors duration-300">
-      <div className="mb-6">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-[#B12B89]">
-          {t("saphir_commercial_stats.badge")}
-        </p>
-        <h1 className="mt-1 text-xl font-bold tracking-tight text-slate-900 dark:text-slate-50 md:text-2xl">
-          {t("saphir_commercial_stats.title")}
-        </h1>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          {t("saphir_commercial_stats.subtitle")}
-        </p>
-      </div>
+      <HeaderTable title={t("saphir_commercial_stats.title")} />
 
-      <div className="mb-5">
+      <div className="mb-5 grid grid-cols-1 gap-3 xl:grid-cols-[1fr_280px] xl:items-start">
         <DashboardDateFilter
           from={range.from}
           to={range.to}
           onChange={(from, to) => setRange({ from, to })}
         />
+        <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-[#2e2e2e] dark:bg-[#222222] sm:p-4">
+          <SelectUI
+            label={t("saphir_commercial_stats.filter_status")}
+            multiple
+            clearable
+            searchable
+            value={selectedStatuses}
+            options={statusOptions}
+            placeholder={t("saphir_commercial_stats.filter_all_statuses")}
+            onChange={(e) => setSelectedStatuses(e.target.value || [])}
+          />
+        </div>
       </div>
 
       <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -222,12 +257,7 @@ export const CommercialStatsPage = () => {
       ) : (
         <div className="space-y-3">
           {commercials.map((c, idx) => (
-            <CommercialRow
-              key={c.id}
-              commercial={c}
-              rank={idx + 1}
-              t={t}
-            />
+            <CommercialRow key={c.id} commercial={c} rank={idx + 1} t={t} />
           ))}
         </div>
       )}

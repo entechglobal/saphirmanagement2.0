@@ -24,7 +24,8 @@ router.get(
 /**
  * POST /api/advanced-bon-livraisons
  * Creates a new ADVANCED bon livraison with workflow status EN_COURS.
- * No stock impact at creation — stock deducted at LIVRE status.
+ * No stock impact at creation — stock deducted at PREPARE status,
+ * which also creates a STANDARD BonLivraison linked to the order.
  */
 router.post(
   "/",
@@ -82,7 +83,7 @@ router.get(
 /**
  * GET /api/advanced-bon-livraisons/commercial-stats
  * Commission & order stats grouped by commercial.
- * Query: dateFrom?, dateTo?, commercialId?
+ * Query: dateFrom?, dateTo?, commercialId?, commandStatus? (repeatable / comma-separated)
  */
 router.get(
   "/commercial-stats",

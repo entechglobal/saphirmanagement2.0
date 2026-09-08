@@ -1,6 +1,13 @@
 import ApiError from "../utils/apiError.js";
 import prisma from "../../loaders/prisma.js";
 
+const isSuperAdminUser = (user) =>
+  !!user?.isSuperAdmin ||
+  String(user?.roleName || user?.role?.name || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_-]+/g, "") === "superadmin";
+
 /**
  * ========================================
  * RBAC MIDDLEWARE (UPDATED for Multi-Société)
@@ -30,7 +37,7 @@ export const hasPermission = (permissionName) => {
       }
 
       // Super admin has all permissions
-      if (user.isSuperAdmin) {
+      if (isSuperAdminUser(user)) {
         return next();
       }
       // if (user.roleName === "Societe_Admin") {
@@ -72,7 +79,7 @@ export const hasAnyPermission = (permissionNames) => {
         throw new ApiError("User not authenticated", 401);
       }
       // Super admin has all permissions
-      if (user.isSuperAdmin) {
+      if (isSuperAdminUser(user)) {
         return next();
       }
 
@@ -114,7 +121,7 @@ export const hasAllPermissions = (permissionNames) => {
       }
 
       // Super admin has all permissions
-      if (user.isSuperAdmin) {
+      if (isSuperAdminUser(user)) {
         return next();
       }
 
@@ -156,7 +163,7 @@ export const hasRole = (roleNames) => {
       }
 
       // Super admin bypasses role check
-      if (user.isSuperAdmin) {
+      if (isSuperAdminUser(user)) {
         return next();
       }
 
@@ -207,7 +214,7 @@ export const isResourceOwner = (resourceIdParam = "id") => {
       }
 
       // Super admin can access any resource
-      if (user.isSuperAdmin) {
+      if (isSuperAdminUser(user)) {
         return next();
       }
 
@@ -240,7 +247,7 @@ export const societyScoped = async (req, res, next) => {
     }
 
     // Super admin can access any société
-    if (user.isSuperAdmin) {
+    if (isSuperAdminUser(user)) {
       return next();
     }
 
@@ -336,6 +343,7 @@ export async function canAccessSocieteResource(userId, resourceSocieteId) {
     select: {
       isSuperAdmin: true,
       societeId: true,
+      role: { select: { name: true } },
     },
   });
 
@@ -344,7 +352,7 @@ export async function canAccessSocieteResource(userId, resourceSocieteId) {
   }
 
   // Super admin can access any société
-  if (user.isSuperAdmin) {
+  if (isSuperAdminUser(user)) {
     return true;
   }
 

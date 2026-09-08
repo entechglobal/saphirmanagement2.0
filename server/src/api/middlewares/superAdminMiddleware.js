@@ -22,8 +22,16 @@ import prisma from "../../loaders/prisma.js";
  */
 const SUPER_ADMIN_ROLES = new Set(["Super_Admin", "SUPERADMIN"]);
 
+const roleKey = (user) =>
+  String(user?.roleName || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_-]+/g, "");
+
 const isSuperAdminUser = (user) =>
-  !!user?.isSuperAdmin || SUPER_ADMIN_ROLES.has(user?.roleName);
+  !!user?.isSuperAdmin ||
+  SUPER_ADMIN_ROLES.has(user?.roleName) ||
+  roleKey(user) === "superadmin";
 
 export const superAdminOnly = (req, res, next) => {
   try {

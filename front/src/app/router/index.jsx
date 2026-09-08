@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate, useSearchParams } from "react-router-dom";
 import { RouterSetup } from "./RouterSetup";
 import { ProtectedRoute, PermissionGate } from "@/features/auth";
 import { useAuth } from "@/features/auth";
@@ -84,11 +84,8 @@ import {
   CommandDetailsPage,
   PackForm,
   PlanningLivraisonPage,
-  CommandsByStatusPage,
   CommercialStatsPage,
   ColisTrackingPage,
-  DeliveryShiftsPage,
-  DeliveryShiftDetailPage,
 } from "../../features/saphirmanagement";
 import { DeliveryProviderConfigsPage, DeliveryProviderConfigForm } from "../../features/stracture/deliveryProviderConfigs";
 import { DefaultRedirect } from "./DefaultRedirect";
@@ -116,6 +113,17 @@ const CaisseAdminRoute = ({ children }) => {
   const isAdmin = !!user?.isSuperAdmin || roleName === "Societe_Admin";
   if (!isAdmin) return <Navigate to="/unauthorized" replace />;
   return children;
+};
+
+const RedirectToCommandesWithStatus = () => {
+  const [params] = useSearchParams();
+  const status = params.get("status");
+  return (
+    <Navigate
+      to={status ? `/commandes?status=${encodeURIComponent(status)}` : "/commandes"}
+      replace
+    />
+  );
 };
 
 export const router = createBrowserRouter([
@@ -578,11 +586,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "/saphir-management-dashboard/commandes-par-statut",
-            element: (
-              <PG p={PERMISSIONS.VIEW_ADVANCED_BL}>
-                <CommandsByStatusPage />
-              </PG>
-            ),
+            element: <RedirectToCommandesWithStatus />,
           },
           {
             path: "statistiques-commerciaux",
@@ -657,24 +661,6 @@ export const router = createBrowserRouter([
             element: (
               <PG p={[PERMISSIONS.VIEW_ATTENDANCE, PERMISSIONS.MANAGE_ATTENDANCE]}>
                 <AttendancePage />
-              </PG>
-            ),
-          },
-
-          // ── Saphir Management — Delivery Shifts ───────────────────────────
-          {
-            path: "delivery-shifts",
-            element: (
-              <PG p={[PERMISSIONS.VIEW_DELIVERY_SHIFTS, PERMISSIONS.MANAGE_DELIVERY_SHIFTS]}>
-                <DeliveryShiftsPage />
-              </PG>
-            ),
-          },
-          {
-            path: "delivery-shifts/:id",
-            element: (
-              <PG p={[PERMISSIONS.VIEW_DELIVERY_SHIFTS, PERMISSIONS.MANAGE_DELIVERY_SHIFTS]}>
-                <DeliveryShiftDetailPage />
               </PG>
             ),
           },

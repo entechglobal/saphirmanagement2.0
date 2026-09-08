@@ -45,7 +45,8 @@
     "report_error": "Erreur lors du signalement",
     "create_error": "Erreur lors de la création.",
     "packs_error": "Erreur lors de la vérification du stock des packs.",
-    "update_error": "Erreur lors de la mise à jour."
+    "update_error": "Erreur lors de la mise à jour.",
+    "cash_remittance": "Espèces créditées sur votre wallet. Le super-admin doit valider le versement."
   },
   "status_label_EN_COURS": "En cours",
   "status_label_CONFIRME": "Confirmé",
@@ -72,6 +73,9 @@
   "report_sending": "Envoi en cours...",
   "report_confirm": "Confirmer le report",
   "action_edit": "Modifier",
+  "see_order": "Voir la commande",
+  "paid_yes": "Oui",
+  "paid_no": "Non",
   "action_delete": "Supprimer",
   "action_print": "Imprimer",
   "action_report": "Reporter",
@@ -126,6 +130,8 @@
   "history_reported": "Reportée",
   "history_suspended": "Suspendue",
   "history_resumed": "Reprise",
+  "history_cancelled": "Annulée",
+  "history_updated": "Mise à jour",
   "history_transition": "Statut → {{label}}",
   "city_placeholder": "Rechercher une ville...",
   "city_manual_badge": "Manuel",
@@ -392,5 +398,22 @@
   "form_mode_reglement_avance": "Mode de règlement d'avance",
   "form_avance_select_placeholder": "Saisir un montant d'abord",
   "form_reste_livreur": "Reste chez le client",
-  "confirm_financial_mode_avance": "Mode d'avance"
+  "confirm_financial_mode_avance": "Mode d'avance",
+
+  "pay_modal": {
+    "title": "Enregistrer le paiement",
+    "remaining": "Reste à payer",
+    "full_same": "Tout payer, même mode",
+    "change_split": "Changer ou fractionner",
+    "change_split_hint": "Plusieurs modes (espèces, virement…)",
+    "line": "Paiement {{n}}",
+    "amount": "Montant",
+    "select_bank": "Choisir une banque",
+    "add_line": "Ajouter un paiement",
+    "split_total": "Réparti {{total}} MAD / {{remaining}} MAD restants",
+    "cancel": "Annuler",
+    "confirm": "Confirmer le paiement",
+    "saving": "Enregistrement...",
+    "cash_hint": "Les espèces sont créditées sur votre wallet. Un versement vers la caisse société est envoyé pour validation super-admin."
+  }
 }

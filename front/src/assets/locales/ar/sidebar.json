@@ -63,13 +63,12 @@
     "factureFournisseur": "فاتورة المورد"
   },
   "saphirManagement": {
-    "label": "إدارة سفير",
+    "label": "إدارة التجارة الإلكترونية",
     "dashboard": "لوحة التحكم",
     "agences": "الوكالات",
     "commandes": "الطلبات",
     "colisTracking": "تتبع الشحنة",
     "planningLivraison": "تخطيط التسليم",
-    "deliveryShifts": "ورديات التوصيل",
     "commercialStats": "إحصائيات التجاريين"
   },
   "gestion": {

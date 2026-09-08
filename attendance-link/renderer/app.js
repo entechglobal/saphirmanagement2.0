@@ -1,5 +1,7 @@
 const $ = (id) => document.getElementById(id);
 
+const REMEMBER_KEY = "saphir-attendance-link";
+
 const state = {
   user: null,
   roleLabel: "",
@@ -8,6 +10,44 @@ const state = {
   logs: [],
   selectedUser: null,
 };
+
+function readRemembered() {
+  try {
+    return JSON.parse(localStorage.getItem(REMEMBER_KEY) || "{}") || {};
+  } catch {
+    return {};
+  }
+}
+
+function writeRemembered(partial) {
+  const next = { ...readRemembered() };
+  Object.entries(partial || {}).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+    if (typeof value === "string" && value.trim() === "" && next[key]) return;
+    next[key] = value;
+  });
+  localStorage.setItem(REMEMBER_KEY, JSON.stringify(next));
+  return next;
+}
+
+function currentFormRemembered() {
+  return {
+    apiUrl: $("api-url").value.trim(),
+    email: $("email").value.trim(),
+    password: $("password").value,
+    deviceIp: $("device-ip").value.trim(),
+    devicePort: Number($("device-port").value) || 4370,
+  };
+}
+
+function applyRemembered(extra = {}) {
+  const saved = { ...readRemembered(), ...extra };
+  if (saved.apiUrl) $("api-url").value = saved.apiUrl;
+  if (saved.email) $("email").value = saved.email;
+  if (saved.password) $("password").value = saved.password;
+  if (saved.deviceIp) $("device-ip").value = saved.deviceIp;
+  if (saved.devicePort) $("device-port").value = saved.devicePort;
+}
 
 function toast(message, isError = false) {
   const el = $("toast");
@@ -172,13 +212,14 @@ function openWorkspace(status) {
 }
 
 async function logout() {
+  writeRemembered(currentFormRemembered());
   await window.attendance.logout();
   state.user = null;
   state.cloudUsers = [];
   state.deviceUsers = [];
   state.logs = [];
-  $("password").value = "";
   $("login-error").classList.add("hidden");
+  applyRemembered();
   showPage("login");
 }
 
@@ -188,7 +229,11 @@ $("login-form").addEventListener("submit", async (event) => {
   errorEl.classList.add("hidden");
   setBusy(["btn-login"], true);
   try {
-    await window.attendance.setConfig({ apiUrl: $("api-url").value.trim() });
+    writeRemembered(currentFormRemembered());
+    await window.attendance.setConfig({
+      apiUrl: $("api-url").value.trim(),
+      email: $("email").value.trim(),
+    });
     const result = unwrap(
       await window.attendance.login({
         apiUrl: $("api-url").value.trim(),
@@ -196,7 +241,6 @@ $("login-form").addEventListener("submit", async (event) => {
         password: $("password").value,
       }),
     );
-    $("password").value = "";
     state.user = result.user;
     state.roleLabel = result.roleLabel;
     toast("Connexion réussie");
@@ -214,6 +258,14 @@ $("btn-connect").addEventListener("click", async () => {
   errorEl.classList.add("hidden");
   setBusy(["btn-connect"], true);
   try {
+    writeRemembered({
+      deviceIp: $("device-ip").value.trim(),
+      devicePort: Number($("device-port").value) || 4370,
+    });
+    await window.attendance.setConfig({
+      deviceIp: $("device-ip").value.trim(),
+      devicePort: Number($("device-port").value) || 4370,
+    });
     const status = unwrap(
       await window.attendance.connectDevice({
         ip: $("device-ip").value.trim(),
@@ -378,12 +430,27 @@ $("btn-import").addEventListener("click", async () => {
   }
 });
 
+["api-url", "email", "password", "device-ip", "device-port"].forEach((id) => {
+  $(id).addEventListener("change", () => writeRemembered(currentFormRemembered()));
+  $(id).addEventListener("blur", () => writeRemembered(currentFormRemembered()));
+});
+
 async function boot() {
-  const cfg = unwrap(await window.attendance.getConfig());
-  $("api-url").value = cfg.apiUrl || "";
-  $("email").value = cfg.email || "";
-  $("device-ip").value = cfg.deviceIp || "";
-  $("device-port").value = cfg.devicePort || 4370;
+  applyRemembered();
+
+  let cfg = {};
+  try {
+    cfg = unwrap(await window.attendance.getConfig());
+  } catch {
+    cfg = {};
+  }
+
+  applyRemembered({
+    apiUrl: cfg.apiUrl || readRemembered().apiUrl,
+    email: cfg.email || readRemembered().email,
+    deviceIp: cfg.deviceIp || readRemembered().deviceIp,
+    devicePort: cfg.devicePort || readRemembered().devicePort,
+  });
 
   if (cfg.hasToken && cfg.user) {
     state.user = cfg.user;

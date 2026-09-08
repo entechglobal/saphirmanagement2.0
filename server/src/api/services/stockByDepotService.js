@@ -2,6 +2,7 @@ import prisma from "../../loaders/prisma.js";
 import ApiError from "../utils/apiError.js";
 import ApiFeatures from "../utils/apiFeatures.js";
 import { buildImageUrl } from "../utils/buildImageUrl.js";
+import { attachStockValues } from "./stockValuationService.js";
 
 /* ============================================================
    INTERNAL HELPERS
@@ -318,6 +319,7 @@ export const getAll = async (query, user) => {
           id: true,
           barcode: true,
           name: true,
+          prixAchat: true,
           familyId: true,
           // _count lets us know if this article has variants without a 2nd query
           _count: { select: { variants: true } },
@@ -337,6 +339,7 @@ export const getAll = async (query, user) => {
               barcode: true,
               name: true,
               familyId: true,
+              prixAchat: true,
               unitePrincipale: {
                 select: { id: true, name: true, symbol: true },
               },
@@ -443,11 +446,12 @@ export const getAll = async (query, user) => {
   const { skip, take } = apiFeatures.build();
 
   const paginated = stocks.slice(skip, skip + take);
+  const withValue = await attachStockValues(paginated.map(withFlags));
 
   return {
-    results: paginated.length,
+    results: withValue.length,
     pagination: apiFeatures.paginationResult,
-    data: paginated.map(withFlags),
+    data: withValue,
   };
 };
 
@@ -885,6 +889,7 @@ export const create = async (data, user) => {
         variantId: variantId || null,
         quantityChange: quantityAvailable,
         quantityAfter: quantityAvailable,
+        unitCost: prixAchat,
         transactionType: "ADJUSTMENT",
         referenceId: inventory.inventoryNumber,
         reason: "Initial stock entry",

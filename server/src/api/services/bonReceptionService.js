@@ -930,6 +930,7 @@ export const create = async (data, user) => {
               reason: `Reception from ${fournisseur.name}: ${documentNumber}`,
               userId: user.id,
               bonReceptionId: bonReception.id,
+              unitCost: parseFloat(line.unitPrice),
             })),
           );
         }
@@ -1087,6 +1088,7 @@ export const validate = async (id, targetStatus, user) => {
               reason: `Reception from ${fournisseurName}: ${documentNumber}`,
               userId: user.id,
               bonReceptionId: id,
+              unitCost: parseFloat(line.unitPrice),
             })),
           );
 

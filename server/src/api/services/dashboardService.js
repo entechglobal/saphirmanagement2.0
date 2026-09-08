@@ -1,6 +1,8 @@
 import prisma from "../../loaders/prisma.js";
 import ApiError from "../utils/apiError.js";
 import { CAISSE_INCLUDE } from "./caisseWalletHelper.js";
+import { getStockValuationOverview } from "./stockValuationService.js";
+import { getDebtCreditExposure } from "./debtCreditExposureService.js";
 
 const WALLET_TYPES = ["USER", "BANK", "CAISSE"];
 
@@ -136,10 +138,20 @@ const aggregatePayments = (rows, dateFrom, dateTo, granularity, partnerKey, part
   };
 };
 
-const ADMIN_ROLE_NAMES = new Set(["Super_Admin", "Societe_Admin"]);
+const getRoleName = (user) =>
+  String(user?.roleName || (typeof user?.role === "string" ? user.role : user?.role?.name) || "")
+    .trim()
+    .toLowerCase();
+
+const roleKey = (user) => getRoleName(user).replace(/[\s_-]+/g, "");
 
 const isAdminLevelUser = (user) =>
-  !!user?.isSuperAdmin || ADMIN_ROLE_NAMES.has(user?.roleName);
+  !!user?.isSuperAdmin ||
+  roleKey(user) === "superadmin" ||
+  roleKey(user) === "societeadmin";
+
+const isSuperAdminUser = (user) =>
+  !!user?.isSuperAdmin || roleKey(user) === "superadmin";
 
 /** Payments the user recorded or that landed in their personal wallet. */
 const personalPaymentScope = (user) => {
@@ -160,7 +172,7 @@ export const getOverview = async (query, societeId, user = null) => {
   const societeWhere = societeId ? { societeId } : {};
   const ownerWhere = personalPaymentScope(user);
 
-  const [clientRows, fournisseurRows] = await Promise.all([
+  const [clientRows, fournisseurRows, stockValue, exposure] = await Promise.all([
     prisma.reglementClient.findMany({
       where: { ...societeWhere, ...ownerWhere, date: dateFilter },
       select: {
@@ -183,6 +195,24 @@ export const getOverview = async (query, societeId, user = null) => {
         fournisseur: { select: { name: true } },
       },
     }),
+    getStockValuationOverview({
+      societeId,
+      dateFrom,
+      dateTo,
+      granularity,
+      fillSeries,
+      periodKey,
+    }),
+    isSuperAdminUser(user)
+      ? getDebtCreditExposure({
+          societeId,
+          dateFrom,
+          dateTo,
+          granularity,
+          fillSeries,
+          periodKey,
+        })
+      : Promise.resolve(null),
   ]);
 
   const clientMapped = clientRows.map((r) => ({
@@ -227,6 +257,8 @@ export const getOverview = async (query, societeId, user = null) => {
     clients,
     fournisseurs,
     net: (clients.totals.collected || 0) - (fournisseurs.totals.collected || 0),
+    stockValue,
+    ...(exposure ? { exposure } : {}),
   };
 };
 

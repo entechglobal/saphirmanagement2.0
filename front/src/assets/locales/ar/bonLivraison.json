@@ -1,6 +1,7 @@
 {
   "title": "سندات التسليم",
   "bl_number": "رقم السند",
+  "linked_order": "الطلب",
   "document_date": "تاريخ المستند",
   "created_at": "تاريخ الإنشاء",
   "delivery_date": "تاريخ التسليم",
@@ -31,13 +32,16 @@
   "completed": "مكتمل",
   "status_badge": {
     "draft": "قيد التنفيذ",
-    "completed": "مكتمل"
+    "completed": "مكتمل",
+    "cancelled": "ملغى",
+    "paid": "مدفوع"
   },
   "toast": {
     "delete_success": "تم حذف سند التسليم بنجاح",
     "delete_error": "فشل في حذف سند التسليم",
     "validate_success_completed": "تم تأكيد سند التسليم بنجاح",
     "validate_success_draft": "تم إعادة سند التسليم إلى قيد التنفيذ",
+    "linked_order_locked": "سند التسليم مرتبط بطلب. قم بإلغاء الطلب بدلاً من ذلك.",
     "validate_error": "خطأ أثناء التحديث",
     "print_success": "تم إنشاء PDF بنجاح",
     "print_error": "خطأ في إنشاء PDF",

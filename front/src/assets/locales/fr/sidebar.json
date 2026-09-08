@@ -63,13 +63,12 @@
     "factureFournisseur": "Facture fournisseur"
   },
   "saphirManagement": {
-    "label": "Gestion Saphir",
+    "label": "Gestion ecommerce",
     "dashboard": "Tableau de bord",
     "agences": "Agences",
     "commandes": "Commandes",
     "colisTracking": "Suivi colis",
     "planningLivraison": "Planning Livraison",
-    "deliveryShifts": "Shifts livreurs",
     "commercialStats": "Statistique commercial"
   },
   "gestion": {

@@ -152,8 +152,12 @@ export const useDeleteCommand = () => {
 export const useUpdateCommandStatus = () => {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ commandId, targetStatus }) =>
-      updateCommandStatus(commandId, targetStatus),
+    mutationFn: ({ commandId, targetStatus, payments }) =>
+      updateCommandStatus(
+        commandId,
+        targetStatus,
+        Array.isArray(payments) && payments.length > 0 ? { payments } : {},
+      ),
     onSuccess: (_, { commandId }) => {
       qc.invalidateQueries({ queryKey: commandKeys.all });
       qc.invalidateQueries({ queryKey: commandKeys.one(commandId) });
@@ -162,6 +166,9 @@ export const useUpdateCommandStatus = () => {
       qc.invalidateQueries({ queryKey: ["planning-livraison"] });
       qc.invalidateQueries({ queryKey: ["my-caisse"] });
       qc.invalidateQueries({ queryKey: ["dashboard-wallets"] });
+      qc.invalidateQueries({ queryKey: ["bon-livraisons"] });
+      qc.invalidateQueries({ queryKey: ["notifications"] });
+      qc.invalidateQueries({ queryKey: ["bls-by-status"] });
     },
   });
 };
@@ -386,19 +393,27 @@ export const useBLsByStatus = (filters = {}) => {
 };
 
 export const useCommercialStats = (filters = {}) => {
-  const { dateFrom, dateTo, commercialId } = filters;
+  const { dateFrom, dateTo, commercialId, commandStatus } = filters;
   const { user } = useAuth();
   return useQuery({
     queryKey: commercialStatsKeys.filtered({
       userId: user?.id,
       dateFrom,
       dateTo,
-      commercialId,
+      commercialId: commercialId || null,
+      commandStatus: commandStatus || null,
     }),
     queryFn: () =>
-      commandsApi.getCommercialStats({ dateFrom, dateTo, commercialId }),
+      commandsApi.getCommercialStats({
+        dateFrom,
+        dateTo,
+        commercialId,
+        commandStatus,
+      }),
     placeholderData: keepPreviousData,
-    staleTime: 30_000,
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 };
 

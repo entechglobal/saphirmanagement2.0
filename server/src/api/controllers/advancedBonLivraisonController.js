@@ -43,6 +43,7 @@ export const transitionStatus = asyncHandler(async (req, res) => {
     parseInt(req.params.id),
     req.body.targetStatus,
     req.user,
+    req.body,
   );
   res.status(200).json({
     success: true,

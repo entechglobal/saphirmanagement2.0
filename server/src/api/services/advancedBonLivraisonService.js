@@ -8,20 +8,36 @@ import { generateDocumentPDF, formatDate } from "../utils/pdfGenerator.js";
 import { enqueueCreateColis } from "./colisSyncService.js";
 import { PROVIDER_BY_NAME } from "../../providers/index.js";
 import { getPhoneSearchVariants } from "../utils/phoneUtils.js";
+import { createNotifications } from "./notificationService.js";
 import {
   resolveWalletForIncome,
   creditWallet,
 } from "./caisseWalletHelper.js";
-import {
-  requireActiveShiftForLivreur,
-  linkOrderToActiveShift,
-} from "./deliveryShiftService.js";
 
 const MODES_REQUIRING_BANK = ["CARTE_BANCAIRE", "VIREMENT"];
-const ADMIN_ROLE_NAMES = new Set(["Super_Admin", "Societe_Admin"]);
+const CASH_MODES = new Set(["ESPECE", "ESPECES"]);
+const VALID_PAYMENT_MODES = [
+  "ESPECE",
+  "CARTE_BANCAIRE",
+  "CHEQUE",
+  "EFFET",
+  "CARTE_FIDELITE",
+  "BON_ACHAT",
+  "REMISE",
+  "VIREMENT",
+];
+const getRoleName = (user) =>
+  String(user?.roleName || (typeof user?.role === "string" ? user.role : user?.role?.name) || "")
+    .trim()
+    .toLowerCase();
+
+const roleKey = (user) => getRoleName(user).replace(/[\s_-]+/g, "");
+
+const isSuperAdminUser = (user) =>
+  !!user?.isSuperAdmin || roleKey(user) === "superadmin";
 
 const isAdminLevelUser = (user) =>
-  !!user?.isSuperAdmin || ADMIN_ROLE_NAMES.has(user?.roleName);
+  isSuperAdminUser(user) || roleKey(user) === "societeadmin";
 
 const resolveLivreurDeliveryId = async (userId) => {
   const delivery = await prisma.delivery.findUnique({
@@ -37,16 +53,17 @@ const resolveLivreurDeliveryId = async (userId) => {
  */
 const applyPersonalOrderScope = async (where, user) => {
   if (isAdminLevelUser(user)) return where;
+  const role = getRoleName(user);
 
-  if (user.roleName === "Livreur") {
+  if (role === "livreur") {
     where.livreurId = await resolveLivreurDeliveryId(user.id);
     return where;
   }
-  if (user.roleName === "Preparateur") {
+  if (role === "preparateur") {
     where.preparateurId = user.id;
     return where;
   }
-  if (user.roleName === "Commercial") {
+  if (role === "commercial") {
     where.commercialId = user.id;
     return where;
   }
@@ -145,7 +162,171 @@ async function creditOrderPayment(tx, {
       reglementClientId: reglementId,
     });
   }
+
+  return { reglementId, wallet: targetWallet, modeReglement, amount: creditAmount };
 }
+
+async function requestCashRemittanceApproval(tx, {
+  societeId,
+  user,
+  amount,
+  documentNumber,
+}) {
+  if (!user?.id || isSuperAdminUser(user)) {
+    return null;
+  }
+
+  const source = await tx.caisse.findUnique({
+    where: { userId: user.id },
+  });
+  if (!source?.active) return null;
+
+  const destination = await tx.caisse.findFirst({
+    where: { societeId, caisseType: "CAISSE", active: true },
+    select: { id: true, name: true },
+  });
+  if (!destination) return null;
+
+  const transferAmount = parseFloat(amount);
+  if (!transferAmount || transferAmount <= 0) return null;
+
+  const created = await tx.caisseTransferRequest.create({
+    data: {
+      sourceCaisseId: source.id,
+      destinationCaisseId: destination.id,
+      amount: transferAmount,
+      note: documentNumber
+        ? `Encaissement espèces commande ${documentNumber}`
+        : "Encaissement espèces commande",
+      requiresSuperAdmin: true,
+      createdById: user.id,
+    },
+  });
+
+  const admins = await tx.user.findMany({
+    where: {
+      active: true,
+      OR: [
+        { isSuperAdmin: true },
+        { role: { name: { in: ["Super_Admin", "SUPERADMIN"] } } },
+      ],
+    },
+    select: { id: true },
+  });
+  const notifyIds = [...new Set(admins.map((a) => a.id))].filter(
+    (id) => id !== user.id,
+  );
+  if (notifyIds.length > 0) {
+    await createNotifications(tx, {
+      userIds: notifyIds,
+      type: "WALLET_TRANSFER_REQUEST",
+      payload: {
+        amount: transferAmount,
+        senderName: user.name,
+        destinationName: destination.name || "Caisse",
+        requiresSuperAdmin: true,
+        note: created.note,
+      },
+      transferRequestId: created.id,
+    });
+  }
+
+  return created.id;
+}
+
+const normalizePayments = (payments, remaining, fallback) => {
+  if (!Array.isArray(payments) || payments.length === 0) {
+    if (!fallback?.modeReglement) {
+      throw new ApiError(
+        "payments are required to mark the order as paid",
+        400,
+      );
+    }
+    return [
+      {
+        amount: remaining,
+        modeReglement: fallback.modeReglement,
+        banqueId: fallback.banqueId || null,
+      },
+    ];
+  }
+
+  const lines = payments.map((p, i) => {
+    const amount = parseFloat(p.amount);
+    const modeReglement = p.modeReglement;
+    if (!amount || amount <= 0) {
+      throw new ApiError(`Payment line ${i + 1}: amount must be > 0`, 400);
+    }
+    if (!VALID_PAYMENT_MODES.includes(modeReglement)) {
+      throw new ApiError(
+        `Payment line ${i + 1}: invalid modeReglement`,
+        400,
+      );
+    }
+    const banqueId = p.banqueId ? parseInt(p.banqueId) : null;
+    if (MODES_REQUIRING_BANK.includes(modeReglement) && !banqueId) {
+      throw new ApiError(
+        `Payment line ${i + 1}: banqueId is required for ${modeReglement}`,
+        400,
+      );
+    }
+    return { amount: parseFloat(amount.toFixed(2)), modeReglement, banqueId };
+  });
+
+  const sum = parseFloat(
+    lines.reduce((acc, l) => acc + l.amount, 0).toFixed(2),
+  );
+  if (Math.abs(sum - remaining) > 0.01) {
+    throw new ApiError(
+      `Payment total (${sum}) must equal remaining amount (${remaining})`,
+      400,
+    );
+  }
+  return lines;
+};
+
+const serializeHistoryPayments = (payments) => {
+  if (!Array.isArray(payments) || payments.length === 0) return null;
+  return JSON.stringify({
+    payments: payments.map((p) => ({
+      amount: parseFloat(p.amount),
+      modeReglement: p.modeReglement,
+      banqueId: p.banqueId || null,
+    })),
+  });
+};
+
+const parseHistoryPayments = (note) => {
+  if (!note || typeof note !== "string" || !note.trim().startsWith("{")) {
+    return null;
+  }
+  try {
+    const parsed = JSON.parse(note);
+    if (!Array.isArray(parsed?.payments) || parsed.payments.length === 0) {
+      return null;
+    }
+    return parsed.payments.map((p) => ({
+      amount: parseFloat(p.amount),
+      modeReglement: p.modeReglement,
+      banqueId: p.banqueId || null,
+    }));
+  } catch {
+    return null;
+  }
+};
+
+const paymentsFromReglements = (reglements, documentNumber) =>
+  (reglements || [])
+    .filter((r) => {
+      const nums = Array.isArray(r.documentNumbers) ? r.documentNumbers : [];
+      return nums.includes(documentNumber);
+    })
+    .map((r) => ({
+      amount: parseFloat(r.montantRegle),
+      modeReglement: r.modeReglement,
+      banqueName: r.banque?.name || null,
+      createdAt: r.createdAt,
+    }));
 
 /* ============================================================
    STATUS TRANSITION MAP
@@ -153,7 +334,7 @@ async function creditOrderPayment(tx, {
    Stock impact happens ONLY at LIVRE.
 ============================================================ */
 const ALLOWED_TRANSITIONS = {
-  EN_COURS: ["CONFIRME"], //supprimer
+  EN_COURS: ["CONFIRME", "PREPARE", "ANNULE"],
   CONFIRME: ["PREPARE", "ANNULE"],
   PREPARE: ["COLLECTE", "ANNULE"], //stock change
   COLLECTE: ["EN_ROUTE", "ANNULE"], //stock change
@@ -166,7 +347,11 @@ const ALLOWED_TRANSITIONS = {
 // Role-based transition gate. SuperAdmin bypasses; roles not listed
 // here fall back to the RBAC permission check on the route.
 const ROLE_TRANSITIONS = {
-  Preparateur: new Set(["CONFIRME->PREPARE", "PREPARE->ANNULE"]),
+  Preparateur: new Set([
+    "EN_COURS->PREPARE",
+    "CONFIRME->PREPARE",
+    "PREPARE->ANNULE",
+  ]),
   Livreur: new Set([
     "PREPARE->COLLECTE",
     "PREPARE->ANNULE",
@@ -182,11 +367,11 @@ const ROLE_TRANSITIONS = {
    HELPER: Generate Document Number (shared with standard BL)
    Format: BL-{YEAR}-{6-digit-sequence}
 ============================================================ */
-const generateDocumentNumber = async (societeId) => {
+const generateDocumentNumber = async (societeId, db = prisma) => {
   const year = new Date().getFullYear();
   const prefix = `BL-${year}`;
 
-  const lastDoc = await prisma.clientDocument.findFirst({
+  const lastDoc = await db.clientDocument.findFirst({
     where: {
       societeId,
       documentNumber: { startsWith: prefix },
@@ -202,6 +387,131 @@ const generateDocumentNumber = async (societeId) => {
   }
 
   return `${prefix}-${String(nextNumber).padStart(6, "0")}`;
+};
+
+/**
+ * Materialize a STANDARD BonLivraison from an ADVANCED order at PREPARE.
+ * Linked via sourceOrderId. Stock is applied on the ADVANCED document,
+ * so this STANDARD copy is created already COMPLETED with no extra stock ops.
+ */
+const createStandardBlFromPreparedOrder = async (tx, bl, user) => {
+  const existing = await tx.bonLivraison.findFirst({
+    where: { sourceOrderId: bl.id, type: "STANDARD" },
+    select: { id: true },
+  });
+  if (existing) return existing.id;
+
+  const societeId = bl.document.societeId;
+  const documentNumber = await generateDocumentNumber(societeId, tx);
+  const orderNumber = bl.document.documentNumber;
+  const now = new Date();
+
+  const standardDoc = await tx.clientDocument.create({
+    data: {
+      societeId,
+      clientId: bl.document.clientId || null,
+      clientName: bl.document.clientName || bl.document.client?.name || null,
+      documentNumber,
+      status: "COMPLETED",
+      totalHT: bl.document.totalHT,
+      totalTVA: bl.document.totalTVA,
+      totalTTC: bl.document.totalTTC,
+      discount: bl.document.discount || 0,
+      amountPaid: bl.document.amountPaid || 0,
+      amountDue: bl.document.amountDue,
+      notes: `Order ${orderNumber}`,
+      internalNotes: `Created from order ${orderNumber} (id=${bl.id}) on PREPARE`,
+      createdBy: user.id,
+    },
+  });
+
+  await tx.bonLivraison.create({
+    data: {
+      id: standardDoc.id,
+      documentDate: bl.documentDate || now,
+      dateLivraison: bl.dateLivraison || bl.documentDate || now,
+      depotId: bl.depotId || null,
+      deliveryId: bl.livreurId || bl.deliveryId || null,
+      commandeId: bl.commandeId || null,
+      sourceOrderId: bl.id,
+      type: "STANDARD",
+    },
+  });
+
+  const lines = bl.document.lines || [];
+  if (lines.length > 0) {
+    await tx.clientDocumentLine.createMany({
+      data: lines.map((line, index) => ({
+        documentId: standardDoc.id,
+        articleId: line.articleId || null,
+        variantId: line.variantId || null,
+        lineNumber: line.lineNumber || index + 1,
+        description: line.description,
+        quantity: line.quantity,
+        unitPrice: line.unitPrice,
+        remise: line.remise ?? 0,
+        priceField: line.priceField || null,
+        commission: line.commission || 0,
+        totalHT: line.totalHT,
+        tvaRate: line.tvaRate,
+        totalTVA: line.totalTVA,
+        totalTTC: line.totalTTC,
+      })),
+    });
+  }
+
+  const packLines = bl.packLines || [];
+  if (packLines.length > 0) {
+    await tx.bonLivraisonPackLine.createMany({
+      data: packLines.map((pl) => ({
+        bonLivraisonId: standardDoc.id,
+        packId: pl.packId,
+        quantity: pl.quantity,
+        prixVente: pl.prixVente,
+        commission: pl.commission || 0,
+      })),
+    });
+  }
+
+  return standardDoc.id;
+};
+
+const findLinkedStandardBlIds = async (tx, advancedBlId) => {
+  const linked = await tx.bonLivraison.findMany({
+    where: { sourceOrderId: advancedBlId, type: "STANDARD" },
+    select: { id: true },
+  });
+  return linked.map((row) => row.id);
+};
+
+const syncLinkedStandardBlFinancials = async (tx, advancedBlId, data) => {
+  const ids = await findLinkedStandardBlIds(tx, advancedBlId);
+  if (ids.length === 0) return;
+  await tx.clientDocument.updateMany({
+    where: { id: { in: ids } },
+    data,
+  });
+};
+
+const cancelLinkedStandardBls = async (tx, advancedBlId) => {
+  await syncLinkedStandardBlFinancials(tx, advancedBlId, {
+    status: "CANCELLED",
+    amountPaid: 0,
+  });
+};
+
+const deleteLinkedStandardBls = async (tx, advancedBlId) => {
+  const linked = await tx.bonLivraison.findMany({
+    where: { sourceOrderId: advancedBlId, type: "STANDARD" },
+    select: { id: true },
+  });
+  for (const row of linked) {
+    await tx.bonLivraisonPackLine.deleteMany({ where: { bonLivraisonId: row.id } });
+    await tx.clientDocumentLine.deleteMany({ where: { documentId: row.id } });
+    await tx.stockTransaction.deleteMany({ where: { bonLivraisonId: row.id } });
+    await tx.bonLivraison.delete({ where: { id: row.id } });
+    await tx.clientDocument.delete({ where: { id: row.id } });
+  }
 };
 
 /* ============================================================
@@ -465,7 +775,8 @@ const FULL_ADVANCED_BL_INCLUDE = {
    Creates a ClientDocument + BonLivraison with type = ADVANCED
    and commandStatus = EN_COURS.
 
-   Stock is NOT deducted at creation — only at status LIVRE.
+   Stock is NOT deducted at creation — only at status PREPARE,
+   which also materializes a STANDARD BonLivraison linked to this order.
 ============================================================ */
 export const create = async (data, user) => {
   const {
@@ -546,7 +857,7 @@ export const create = async (data, user) => {
   const depot = await prisma.depot.findFirst({
     where: {
       id: depotId,
-      ...(user.isSuperAdmin ? {} : { societeId: user.societeId }),
+      ...(isSuperAdminUser(user) ? {} : { societeId: user.societeId }),
     },
     select: { id: true, societeId: true, active: true },
   });
@@ -868,6 +1179,17 @@ export const create = async (data, user) => {
             bonId: clientDocument.id,
             status: initialStatus,
             userId: user.id,
+            ...(amountPaid > 0
+              ? {
+                  note: serializeHistoryPayments([
+                    {
+                      amount: amountPaid,
+                      modeReglement: creditMode,
+                      banqueId,
+                    },
+                  ]),
+                }
+              : {}),
           },
         });
 
@@ -944,10 +1266,11 @@ export const create = async (data, user) => {
    TRANSITION STATUS
 
    Enforces the workflow state machine.
-   Stock deduction (OUTBOUND) happens ONLY on transition to LIVRE.
+   Stock deduction (OUTBOUND) happens on transition to PREPARE.
+   A STANDARD BonLivraison is created and linked via sourceOrderId.
    Pack components are exploded into individual stock transactions.
 ============================================================ */
-export const transitionStatus = async (id, targetStatus, user) => {
+export const transitionStatus = async (id, targetStatus, user, extra = {}) => {
   await timeRangeUtility.validateSystemHours(
     new Date(),
     "advanced BL status transition",
@@ -986,7 +1309,7 @@ export const transitionStatus = async (id, targetStatus, user) => {
       400,
     );
   }
-  if (!user.isSuperAdmin && bl.document.societeId !== user.societeId) {
+  if (!isSuperAdminUser(user) && bl.document.societeId !== user.societeId) {
     throw new ApiError("Access denied", 403);
   }
 
@@ -1010,7 +1333,7 @@ export const transitionStatus = async (id, targetStatus, user) => {
   }
 
   // Role-based gate (SuperAdmin bypasses)
-  if (!user.isSuperAdmin) {
+  if (!isSuperAdminUser(user)) {
     const allowedForRole = ROLE_TRANSITIONS[user.roleName];
     if (
       allowedForRole &&
@@ -1023,14 +1346,6 @@ export const transitionStatus = async (id, targetStatus, user) => {
     }
   }
 
-  // Livreur must have an open shift before LIVRE / PAYE
-  if (
-    user.roleName === "Livreur" &&
-    (targetStatus === "LIVRE" || targetStatus === "PAYE")
-  ) {
-    await requireActiveShiftForLivreur(user);
-  }
-
   // Stock impact:
   //   PREPARE                                 → OUTBOUND (apply)
   //   ANNULE from {PREPARE, COLLECTE, EN_ROUTE} → INBOUND  (rollback)
@@ -1038,6 +1353,13 @@ export const transitionStatus = async (id, targetStatus, user) => {
   const isStockRollback =
     targetStatus === "ANNULE" &&
     ["PREPARE", "COLLECTE", "EN_ROUTE"].includes(currentStatus);
+
+  if ((isStockApply || isStockRollback) && !bl.depotId) {
+    throw new ApiError(
+      "Depot is required before preparing an order (stock movement)",
+      400,
+    );
+  }
 
   let stockItems = [];
   if (isStockApply || isStockRollback) {
@@ -1059,6 +1381,21 @@ export const transitionStatus = async (id, targetStatus, user) => {
       `advanced BL ${bl.document.documentNumber}`,
       bl.id,
     );
+  }
+
+  let payLines = [];
+  if (targetStatus === "PAYE") {
+    const totalTTC = parseFloat(bl.document.totalTTC);
+    const previousPaid = parseFloat(bl.document.amountPaid || 0);
+    const remaining = parseFloat((totalTTC - previousPaid).toFixed(2));
+    if (remaining <= 0) {
+      payLines = [];
+    } else {
+      payLines = normalizePayments(extra.payments, remaining, {
+        modeReglement: bl.modeReglement,
+        banqueId: bl.banqueId,
+      });
+    }
   }
 
   const result = await prisma.$transaction(
@@ -1092,55 +1429,82 @@ export const transitionStatus = async (id, targetStatus, user) => {
         data: { commandStatus: targetStatus },
       });
 
+      if (isStockApply) {
+        await createStandardBlFromPreparedOrder(tx, bl, user);
+      }
+
       if (targetStatus === "ANNULE") {
         await tx.clientDocument.update({
           where: { id },
           data: { status: "CANCELLED", amountPaid: 0 },
         });
+        await cancelLinkedStandardBls(tx, id);
       } else if (targetStatus === "LIVRE") {
         await tx.clientDocument.update({
           where: { id },
           data: { status: "COMPLETED" },
         });
-        await linkOrderToActiveShift(tx, {
-          user,
-          bonLivraisonId: id,
-          status: "LIVRE",
-          amount: parseFloat(bl.document.totalTTC || 0),
+        await syncLinkedStandardBlFinancials(tx, id, {
+          status: "COMPLETED",
         });
       } else if (targetStatus === "PAYE") {
-        // Payment settled: amountPaid = total due, amountDue → 0.
         const totalTTC = parseFloat(bl.document.totalTTC);
-        const previousPaid = parseFloat(bl.document.amountPaid || 0);
-        const remaining = parseFloat((totalTTC - previousPaid).toFixed(2));
         await tx.clientDocument.update({
           where: { id },
           data: {
             amountPaid: totalTTC,
+            amountDue: totalTTC,
+            status: "PAID",
           },
         });
-        if (remaining > 0) {
+        await syncLinkedStandardBlFinancials(tx, id, {
+          amountPaid: totalTTC,
+          amountDue: totalTTC,
+          totalTTC,
+          totalHT: bl.document.totalHT,
+          totalTVA: bl.document.totalTVA,
+          status: "PAID",
+        });
+        for (const line of payLines) {
           await creditOrderPayment(tx, {
             societeId: bl.document.societeId,
-            modeReglement: bl.modeReglement,
-            banqueId: bl.banqueId,
-            amount: remaining,
+            modeReglement: line.modeReglement,
+            banqueId: line.banqueId,
+            amount: line.amount,
             userId: user.id,
             clientId: bl.document.clientId,
             documentNumber: bl.document.documentNumber,
             documentDue: totalTTC,
           });
+          if (CASH_MODES.has(line.modeReglement)) {
+            await requestCashRemittanceApproval(tx, {
+              societeId: bl.document.societeId,
+              user,
+              amount: line.amount,
+              documentNumber: bl.document.documentNumber,
+            });
+          }
         }
-        await linkOrderToActiveShift(tx, {
-          user,
-          bonLivraisonId: id,
-          status: "PAYE",
-          amount: totalTTC,
-        });
+        if (payLines[0]?.modeReglement) {
+          await tx.bonLivraison.update({
+            where: { id },
+            data: {
+              modeReglement: payLines[0].modeReglement,
+              banqueId: payLines[0].banqueId,
+            },
+          });
+        }
       }
 
       await tx.bonLivraisonStatusHistory.create({
-        data: { bonId: id, status: targetStatus, userId: user.id },
+        data: {
+          bonId: id,
+          status: targetStatus,
+          userId: user.id,
+          ...(targetStatus === "PAYE" && payLines.length
+            ? { note: serializeHistoryPayments(payLines) }
+            : {}),
+        },
       });
 
       return tx.bonLivraison.findUnique({
@@ -1199,7 +1563,7 @@ export const reportBL = async (id, data, user) => {
       400,
     );
   }
-  if (!user.isSuperAdmin && bl.document.societeId !== user.societeId) {
+  if (!isSuperAdminUser(user) && bl.document.societeId !== user.societeId) {
     throw new ApiError("Access denied", 403);
   }
 
@@ -1263,7 +1627,7 @@ export const resumeReportedBL = async (id, user) => {
       400,
     );
   }
-  if (!user.isSuperAdmin && bl.document.societeId !== user.societeId) {
+  if (!isSuperAdminUser(user) && bl.document.societeId !== user.societeId) {
     throw new ApiError("Access denied", 403);
   }
   if (!bl.isReported) {
@@ -1307,7 +1671,7 @@ export const suspended = async (id, user) => {
   if (bl.type !== "ADVANCED") {
     throw new ApiError("This is not an advanced bon livraison", 400);
   }
-  if (!user.isSuperAdmin && bl.document.societeId !== user.societeId) {
+  if (!isSuperAdminUser(user) && bl.document.societeId !== user.societeId) {
     throw new ApiError("Access denied", 403);
   }
 
@@ -1364,7 +1728,7 @@ export const getAll = async (query, user) => {
       };
     } else if (user.roleName === "Preparateur") {
       roleScope.preparateurId = user.id;
-      roleScope.commandStatus = "CONFIRME";
+      roleScope.commandStatus = { in: ["EN_COURS", "CONFIRME"] };
     } else if (user.roleName === "Commercial") {
       roleScope.commercialId = user.id;
     } else {
@@ -1381,7 +1745,7 @@ export const getAll = async (query, user) => {
 
   const where = {
     type: "ADVANCED",
-    document: user.isSuperAdmin ? undefined : { societeId: user.societeId },
+    document: isSuperAdminUser(user) ? undefined : { societeId: user.societeId },
     ...(search && {
       OR: [
         { document: { clientName: { contains: search } } },
@@ -1418,8 +1782,11 @@ export const getAll = async (query, user) => {
         ice: true,
         raisonSocial: true,
         siegeSocial: true,
+        modeReglement: true,
+        banqueId: true,
+        totalCommission: true,
         document: {
-          select: { clientName: true, amountDue: true, amountPaid: true },
+          select: { clientName: true, amountDue: true, amountPaid: true, documentNumber: true },
         },
         agence: { select: { name: true } },
       },
@@ -1451,11 +1818,15 @@ export const getAll = async (query, user) => {
       ? parseFloat(bl.document.amountPaid)
       : 0,
     commandStatus: bl.commandStatus,
+    modeReglement: bl.modeReglement ?? null,
+    banqueId: bl.banqueId ?? null,
+    documentNumber: bl.document?.documentNumber ?? null,
     isReported: bl.isReported,
     isSuspended: bl.isSuspended,
     colisTrackingNumber: bl.colisTrackingNumber,
     nextDeliveryDate: fmt(bl.nextDeliveryDate),
     isFacture: bl.withFacture === true || !!(bl.ice || bl.raisonSocial || bl.siegeSocial),
+    totalCommission: parseFloat(bl.totalCommission || 0),
   }));
 
   return {
@@ -1502,7 +1873,7 @@ export const getById = async (id, user) => {
   if (bl.type !== "ADVANCED") {
     throw new ApiError("This is not an advanced bon livraison", 400);
   }
-  if (!user.isSuperAdmin && bl.document.societe.id !== user.societeId) {
+  if (!isSuperAdminUser(user) && bl.document.societe.id !== user.societeId) {
     throw new ApiError("Access denied", 403);
   }
 
@@ -1596,6 +1967,7 @@ export const getAdvancedBLDetails = async (id, user) => {
           societeId: true,
           clientId: true,
           clientName: true,
+          documentNumber: true,
           client: { select: { id: true, name: true, phone: true } },
           amountDue: true,
           amountPaid: true,
@@ -1643,7 +2015,7 @@ export const getAdvancedBLDetails = async (id, user) => {
   if (bl.type !== "ADVANCED") {
     throw new ApiError("This is not an advanced bon livraison", 400);
   }
-  if (!user.isSuperAdmin && bl.document.societeId !== user.societeId) {
+  if (!isSuperAdminUser(user) && bl.document.societeId !== user.societeId) {
     throw new ApiError("Access denied", 403);
   }
 
@@ -1734,17 +2106,102 @@ export const getAdvancedBLDetails = async (id, user) => {
       includeStatus = false;
     } else type = "transitionStatus";
 
+    const payments = parseHistoryPayments(entry.note);
     events.push({
       type,
       ...(includeStatus && { status: entry.status }),
       user: entry.user?.name ?? "—",
       datetime: formatStepDateTime(entry.createdAt),
-      ...(entry.note ? { note: entry.note } : {}),
+      ...(payments
+        ? { payments }
+        : entry.note
+          ? { note: entry.note }
+          : {}),
       _ts: entry.createdAt,
     });
   }
 
   events.sort((a, b) => new Date(a._ts).getTime() - new Date(b._ts).getTime());
+
+  const creationEvent = events.find((e) => e.type === "creation");
+  const firstStatusEvent = events.find(
+    (e) =>
+      e.type === "transitionStatus" &&
+      (e.status === "EN_COURS" || e.status === "CONFIRME"),
+  );
+  if (creationEvent && firstStatusEvent?.payments && !creationEvent.payments) {
+    creationEvent.payments = firstStatusEvent.payments;
+    delete firstStatusEvent.payments;
+  }
+
+  const documentNumber = bl.document.documentNumber;
+  if (documentNumber && bl.document.societeId) {
+    const reglements = await prisma.reglementClient.findMany({
+      where: {
+        societeId: bl.document.societeId,
+        ...(bl.document.clientId ? { clientId: bl.document.clientId } : {}),
+      },
+      select: {
+        montantRegle: true,
+        modeReglement: true,
+        documentNumbers: true,
+        createdAt: true,
+        banque: { select: { name: true } },
+      },
+      orderBy: { createdAt: "asc" },
+    });
+    const related = paymentsFromReglements(reglements, documentNumber);
+    const used = new Set();
+    for (const event of events) {
+      if (event.payments?.length) continue;
+      const ts = new Date(event._ts).getTime();
+      if (Number.isNaN(ts)) continue;
+      const nearby = [];
+      related.forEach((p, i) => {
+        if (used.has(i)) return;
+        const delta = Math.abs(new Date(p.createdAt).getTime() - ts);
+        if (delta < 120000) {
+          used.add(i);
+          nearby.push(p);
+        }
+      });
+      if (!nearby.length) continue;
+      event.payments = nearby.map(({ createdAt, ...rest }) => rest);
+    }
+    const leftover = related.filter((_, i) => !used.has(i));
+    if (leftover.length) {
+      const payeEvent = events.find(
+        (e) => e.type === "transitionStatus" && e.status === "PAYE",
+      );
+      const target = payeEvent || creationEvent;
+      if (target && !target.payments?.length) {
+        target.payments = leftover.map(({ createdAt, ...rest }) => rest);
+      }
+    }
+  }
+
+  const bankIds = [
+    ...new Set(
+      events.flatMap((e) =>
+        (e.payments || []).map((p) => p.banqueId).filter(Boolean),
+      ),
+    ),
+  ];
+  if (bankIds.length) {
+    const banks = await prisma.banque.findMany({
+      where: { id: { in: bankIds } },
+      select: { id: true, name: true },
+    });
+    const bankNameById = Object.fromEntries(banks.map((b) => [b.id, b.name]));
+    for (const event of events) {
+      for (const payment of event.payments || []) {
+        if (payment.banqueId && bankNameById[payment.banqueId]) {
+          payment.banqueName = bankNameById[payment.banqueId];
+        }
+      }
+    }
+  }
+
   const history = events.map(({ _ts, ...rest }) => rest);
 
   return { timeline, destinataire, blInfo, propos, history };
@@ -1805,7 +2262,7 @@ export const update = async (id, data, user) => {
   if (existing.type !== "ADVANCED") {
     throw new ApiError("This is not an advanced bon livraison", 400);
   }
-  if (!user.isSuperAdmin && existing.document.societeId !== user.societeId) {
+  if (!isSuperAdminUser(user) && existing.document.societeId !== user.societeId) {
     throw new ApiError("Access denied", 403);
   }
   if (FROZEN_STATUSES.includes(existing.commandStatus)) {
@@ -2140,6 +2597,14 @@ export const update = async (id, data, user) => {
         data: { totalCommission },
       });
 
+      await syncLinkedStandardBlFinancials(tx, id, {
+        amountPaid,
+        amountDue,
+        totalTTC,
+        totalHT: totalTTC,
+        totalTVA: 0,
+      });
+
       const paymentDelta = parseFloat((amountPaid - previousPaid).toFixed(2));
       if (paymentDelta > 0) {
         await creditOrderPayment(tx, {
@@ -2200,7 +2665,7 @@ export const remove = async (id, user) => {
   if (bl.type !== "ADVANCED") {
     throw new ApiError("This is not an advanced bon livraison", 400);
   }
-  if (!user.isSuperAdmin && bl.document.societeId !== user.societeId) {
+  if (!isSuperAdminUser(user) && bl.document.societeId !== user.societeId) {
     throw new ApiError("Access denied", 403);
   }
   if (!["EN_COURS", "ANNULE"].includes(bl.commandStatus)) {
@@ -2216,6 +2681,8 @@ export const remove = async (id, user) => {
 
   await prisma.$transaction(
     async (tx) => {
+      await deleteLinkedStandardBls(tx, id);
+
       await tx.bonLivraisonPackLine.deleteMany({
         where: { bonLivraisonId: id },
       });
@@ -2297,7 +2764,7 @@ export const getProductsOrPacks = async (query, user) => {
   if (pack) {
     const where = {
       active: true,
-      ...(user.isSuperAdmin ? {} : { societeId: user.societeId }),
+      ...(isSuperAdminUser(user) ? {} : { societeId: user.societeId }),
       ...(search && { name: { contains: search } }),
     };
 
@@ -2352,7 +2819,7 @@ export const getProductsOrPacks = async (query, user) => {
     const depot = await prisma.depot.findFirst({
       where: {
         id: parseInt(depotId),
-        ...(user.isSuperAdmin ? {} : { societeId: user.societeId }),
+        ...(isSuperAdminUser(user) ? {} : { societeId: user.societeId }),
       },
       select: { id: true, active: true },
     });
@@ -2519,7 +2986,7 @@ export const getPreparateurs = async (query, user) => {
 
   // SuperAdmin sees all by default; can filter by societeId.
   // Regular users are always scoped to their own société.
-  const societeScope = user.isSuperAdmin
+  const societeScope = isSuperAdminUser(user)
     ? societeId
       ? { societeId: parseInt(societeId) }
       : {}
@@ -2585,7 +3052,7 @@ export const getCommercials = async (user) => {
   return prisma.user.findMany({
     where: {
       role: { name: "Commercial" },
-      ...(user.isSuperAdmin ? {} : { societeId: user.societeId }),
+      ...(isSuperAdminUser(user) ? {} : { societeId: user.societeId }),
     },
     select: { id: true, name: true },
     orderBy: { name: "asc" },
@@ -2595,81 +3062,151 @@ export const getCommercials = async (user) => {
 /* ============================================================
    COMMERCIAL STATS / TOP COMMERCIALS
 
-   Aggregates Advanced BLs by commercialId for a date range
-   (filters on dateLivraison). Returns order counts, CA, and
-   commission owed to each commercial.
+   Aggregates Advanced BLs by commercial (or the user who launched
+   the order when no commercial is set). Filters on documentDate.
+   Admins see every commercial even with zero orders.
 ============================================================ */
-const buildCommercialStatsWhere = (user, query = {}) => {
-  const { dateFrom, dateTo, commercialId } = query;
+const COMMERCIAL_STATS_STATUSES = new Set([
+  "EN_COURS",
+  "CONFIRME",
+  "PREPARE",
+  "COLLECTE",
+  "EN_ROUTE",
+  "LIVRE",
+  "PAYE",
+  "ANNULE",
+]);
+
+const parseCommandStatuses = (raw) => {
+  const values = Array.isArray(raw)
+    ? raw.flatMap((item) => String(item ?? "").split(","))
+    : String(raw ?? "").split(",");
+  return [
+    ...new Set(
+      values.map((s) => s.trim()).filter((s) => COMMERCIAL_STATS_STATUSES.has(s)),
+    ),
+  ];
+};
+
+const buildCommercialStatsWhere = async (user, query = {}) => {
+  const { dateFrom, dateTo } = query;
   const where = {
     type: "ADVANCED",
-    commercialId: { not: null },
-    ...(user.isSuperAdmin ? {} : { document: { societeId: user.societeId } }),
+    ...(isSuperAdminUser(user) ? {} : { document: { societeId: user.societeId } }),
   };
 
-  if (user.roleName === "Commercial" || !isAdminLevelUser(user)) {
-    where.commercialId = user.id;
-  } else if (commercialId) {
-    where.commercialId = parseInt(commercialId);
-  }
+  const statuses = parseCommandStatuses(query.commandStatus);
+  if (statuses.length) where.commandStatus = { in: statuses };
 
   if (dateFrom || dateTo) {
-    where.dateLivraison = {};
-    if (dateFrom) where.dateLivraison.gte = new Date(dateFrom);
-    if (dateTo) where.dateLivraison.lte = new Date(dateTo);
+    const range = {};
+    if (dateFrom) {
+      const from = new Date(dateFrom);
+      if (!Number.isNaN(from.getTime())) {
+        from.setHours(0, 0, 0, 0);
+        range.gte = from;
+      }
+    }
+    if (dateTo) {
+      const to = new Date(dateTo);
+      if (!Number.isNaN(to.getTime())) {
+        to.setHours(23, 59, 59, 999);
+        range.lte = to;
+      }
+    }
+    if (Object.keys(range).length) where.documentDate = range;
+  }
+
+  if (!isAdminLevelUser(user)) {
+    await applyPersonalOrderScope(where, user);
   }
 
   return where;
 };
 
-export const getCommercialStats = async (user, query = {}) => {
-  const where = buildCommercialStatsWhere(user, query);
+const emptyOwnerStats = (id, name, roleName) => ({
+  id,
+  name: name || "—",
+  roleName: roleName || null,
+  orderCount: 0,
+  totalCommission: 0,
+  totalCA: 0,
+  totalPaid: 0,
+  orders: [],
+});
 
-  const rows = await prisma.bonLivraison.findMany({
-    where,
-    select: {
-      id: true,
-      commercialId: true,
-      totalCommission: true,
-      commandStatus: true,
-      dateLivraison: true,
-      commercial: { select: { id: true, name: true } },
-      document: {
-        select: {
-          documentNumber: true,
-          clientName: true,
-          amountDue: true,
-          amountPaid: true,
-          createdAt: true,
+export const getCommercialStats = async (user, query = {}) => {
+  const where = await buildCommercialStatsWhere(user, query);
+  const parsedOwnerId = parseInt(query.commercialId, 10);
+  const filterOwnerId = Number.isFinite(parsedOwnerId) ? parsedOwnerId : null;
+
+  const [rows, allCommercials] = await Promise.all([
+    prisma.bonLivraison.findMany({
+      where,
+      select: {
+        id: true,
+        commercialId: true,
+        totalCommission: true,
+        commandStatus: true,
+        dateLivraison: true,
+        commercial: {
+          select: { id: true, name: true, role: { select: { name: true } } },
+        },
+        document: {
+          select: {
+            createdBy: true,
+            documentNumber: true,
+            clientName: true,
+            amountDue: true,
+            amountPaid: true,
+            createdAt: true,
+            user: {
+              select: { id: true, name: true, role: { select: { name: true } } },
+            },
+          },
         },
       },
-    },
-    orderBy: { dateLivraison: "desc" },
-  });
+      orderBy: { documentDate: "desc" },
+    }),
+    isAdminLevelUser(user)
+      ? prisma.user.findMany({
+          where: {
+            role: { name: "Commercial" },
+            ...(isSuperAdminUser(user) ? {} : { societeId: user.societeId }),
+          },
+          select: { id: true, name: true, role: { select: { name: true } } },
+          orderBy: { name: "asc" },
+        })
+      : Promise.resolve([]),
+  ]);
 
-  const byCommercial = new Map();
-  let totalOrders = 0;
-  let totalCommission = 0;
-  let totalCA = 0;
-  let totalPaid = 0;
+  const byOwner = new Map();
+  for (const c of allCommercials) {
+    byOwner.set(
+      c.id,
+      emptyOwnerStats(c.id, c.name, c.role?.name || "Commercial"),
+    );
+  }
 
   for (const bl of rows) {
-    const cid = bl.commercialId;
-    if (!cid) continue;
+    const ownerId = bl.commercialId || bl.document?.createdBy;
+    if (!ownerId) continue;
 
-    if (!byCommercial.has(cid)) {
-      byCommercial.set(cid, {
-        id: cid,
-        name: bl.commercial?.name || "—",
-        orderCount: 0,
-        totalCommission: 0,
-        totalCA: 0,
-        totalPaid: 0,
-        orders: [],
-      });
+    const ownerName = bl.commercialId
+      ? bl.commercial?.name
+      : bl.document?.user?.name;
+    const roleName = bl.commercialId
+      ? bl.commercial?.role?.name || "Commercial"
+      : bl.document?.user?.role?.name || null;
+
+    if (!byOwner.has(ownerId)) {
+      byOwner.set(ownerId, emptyOwnerStats(ownerId, ownerName, roleName));
     }
 
-    const entry = byCommercial.get(cid);
+    const entry = byOwner.get(ownerId);
+    if (!entry.name || entry.name === "—") entry.name = ownerName || "—";
+    if (!entry.roleName) entry.roleName = roleName;
+
     const commission = parseFloat(bl.totalCommission || 0);
     const ca = parseFloat(bl.document?.amountDue || 0);
     const paid = parseFloat(bl.document?.amountPaid || 0);
@@ -2687,41 +3224,85 @@ export const getCommercialStats = async (user, query = {}) => {
       amountDue: ca,
       amountPaid: paid,
       totalCommission: commission,
+      createdByName: bl.document?.user?.name ?? null,
     });
-
-    totalOrders += 1;
-    totalCommission += commission;
-    totalCA += ca;
-    totalPaid += paid;
   }
 
-  const commercials = Array.from(byCommercial.values())
+  const allOwners = Array.from(byOwner.values())
     .map((c) => ({
       ...c,
       totalCommission: parseFloat(c.totalCommission.toFixed(2)),
       totalCA: parseFloat(c.totalCA.toFixed(2)),
       totalPaid: parseFloat(c.totalPaid.toFixed(2)),
     }))
-    .sort((a, b) => b.totalCommission - a.totalCommission || b.orderCount - a.orderCount);
+    .sort(
+      (a, b) =>
+        b.totalCommission - a.totalCommission ||
+        b.orderCount - a.orderCount ||
+        String(a.name).localeCompare(String(b.name)),
+    );
+
+  const filterOptions = allOwners.map(({ id, name, roleName }) => ({
+    id,
+    name,
+    roleName,
+  }));
+
+  let commercials = allOwners;
+  if (filterOwnerId) {
+    commercials = allOwners.filter((c) => c.id === filterOwnerId);
+    if (commercials.length === 0) {
+      const known = allCommercials.find((c) => c.id === filterOwnerId);
+      commercials = [
+        emptyOwnerStats(
+          filterOwnerId,
+          known?.name,
+          known?.role?.name || "Commercial",
+        ),
+      ];
+    }
+  }
+
+  if (parseCommandStatuses(query.commandStatus).length && !filterOwnerId) {
+    commercials = commercials.filter((c) => c.orderCount > 0);
+  }
+
+  const totals = commercials.reduce(
+    (acc, c) => {
+      acc.orderCount += c.orderCount;
+      acc.totalCommission += c.totalCommission;
+      acc.totalCA += c.totalCA;
+      acc.totalPaid += c.totalPaid;
+      return acc;
+    },
+    { orderCount: 0, totalCommission: 0, totalCA: 0, totalPaid: 0 },
+  );
 
   return {
     summary: {
-      orderCount: totalOrders,
-      totalCommission: parseFloat(totalCommission.toFixed(2)),
-      totalCA: parseFloat(totalCA.toFixed(2)),
-      totalPaid: parseFloat(totalPaid.toFixed(2)),
+      orderCount: totals.orderCount,
+      totalCommission: parseFloat(totals.totalCommission.toFixed(2)),
+      totalCA: parseFloat(totals.totalCA.toFixed(2)),
+      totalPaid: parseFloat(totals.totalPaid.toFixed(2)),
       commercialCount: commercials.length,
     },
     commercials,
+    filterOptions,
   };
 };
 
 export const getTopCommercials = async (user, query = {}) => {
   const limit = Math.min(Math.max(parseInt(query.limit || 5), 1), 20);
-  const stats = await getCommercialStats(user, query);
+  const stats = await getCommercialStats(user, {
+    dateFrom: query.dateFrom,
+    dateTo: query.dateTo,
+  });
   return {
     summary: stats.summary,
-    commercials: stats.commercials.slice(0, limit).map(({ orders, ...rest }) => rest),
+    commercials: stats.commercials
+      .filter((c) => c.orderCount > 0)
+      .slice(0, limit)
+      .map(({ orders, ...rest }) => rest),
   };
 };
 
@@ -2761,7 +3342,7 @@ export const getBLsByStatus = async (query, user) => {
   }
 
   // Role-based status gate
-  if (!user.isSuperAdmin) {
+  if (!isSuperAdminUser(user)) {
     const allowedForRole = STATUS_BY_ROLE[user.roleName];
     if (allowedForRole && !allowedForRole.has(status)) {
       throw new ApiError(
@@ -2774,11 +3355,14 @@ export const getBLsByStatus = async (query, user) => {
   // Role-based row scoping
   const where = {
     type: "ADVANCED",
-    commandStatus: status,
-    ...(user.isSuperAdmin ? {} : { document: { societeId: user.societeId } }),
+    commandStatus:
+      status === "CONFIRME" ? { in: ["EN_COURS", "CONFIRME"] } : status,
+    ...(isSuperAdminUser(user) ? {} : { document: { societeId: user.societeId } }),
   };
 
-  await applyPersonalOrderScope(where, user);
+  if (!isAdminLevelUser(user)) {
+    await applyPersonalOrderScope(where, user);
+  }
   if (livreurId && user.roleName !== "Livreur") {
     where.livreurId = parseInt(livreurId);
   }
@@ -2799,6 +3383,9 @@ export const getBLsByStatus = async (query, user) => {
         whatsapp: true,
         isReported: true,
         nextDeliveryDate: true,
+        commandStatus: true,
+        modeReglement: true,
+        banqueId: true,
         document: {
           select: {
             documentNumber: true,
@@ -2881,6 +3468,9 @@ export const getBLsByStatus = async (query, user) => {
       nextDeliveryDate: fmt(bl.nextDeliveryDate),
       amountPaid: parseFloat(bl.document?.amountPaid || 0),
       amountDue: parseFloat(bl.document?.amountDue || 0),
+      currentStatus: bl.commandStatus,
+      modeReglement: bl.modeReglement ?? null,
+      banqueId: bl.banqueId ?? null,
       products,
     };
   });
@@ -2905,8 +3495,9 @@ export const getBLsByStatus = async (query, user) => {
    labels reflect what the user has to do next.
 
    Role visibility:
-     - Super_Admin / Societe_Admin
-         → 5 counters: aPreparer, aCollecter, enRoute, aLivrer, aPayer (société/global)
+     - Super_Admin → pipeline counters plus Livré and Payé, for every user's orders
+     - Societe_Admin
+         → 5 counters: aPreparer, aCollecter, enRoute, aLivrer, aPayer (société)
      - Commercial / Gerant / Caissier / other non-admins
          → 5 counters on their own orders
      - Livreur     → only aCollecter, enRoute, aLivrer, aPayer (own BLs)
@@ -2917,10 +3508,10 @@ export const getWorkflowCounts = async (user, query = {}) => {
 
   const where = {
     type: "ADVANCED",
-    ...(user.isSuperAdmin ? {} : { document: { societeId: user.societeId } }),
+    ...(isSuperAdminUser(user) ? {} : { document: { societeId: user.societeId } }),
   };
 
-  // Optional period filter on delivery date (same spirit as main dashboard)
+  // Optional period filter on order document date (not delivery date)
   if (dateFrom || dateTo) {
     const range = {};
     if (dateFrom) {
@@ -2938,26 +3529,29 @@ export const getWorkflowCounts = async (user, query = {}) => {
       }
     }
     if (Object.keys(range).length) {
-      where.dateLivraison = range;
+      where.documentDate = range;
     }
   }
 
-  await applyPersonalOrderScope(where, user);
+  if (!isAdminLevelUser(user)) {
+    await applyPersonalOrderScope(where, user);
+  }
 
-  // Single roundtrip — group by status, count rows.
-  const groups = await prisma.bonLivraison.groupBy({
-    by: ["commandStatus"],
+  // findMany (not groupBy) so relation filters (société, commercial, …) work.
+  const rows = await prisma.bonLivraison.findMany({
     where,
-    _count: { _all: true },
+    select: { commandStatus: true },
   });
 
-  const byStatus = Object.fromEntries(
-    groups.map((g) => [g.commandStatus, g._count._all]),
-  );
+  const byStatus = {};
+  for (const row of rows) {
+    if (!row.commandStatus) continue;
+    byStatus[row.commandStatus] = (byStatus[row.commandStatus] || 0) + 1;
+  }
 
   // Counter map: current status → next-step label
   const allCounts = {
-    aPreparer: byStatus.CONFIRME ?? 0,
+    aPreparer: (byStatus.EN_COURS ?? 0) + (byStatus.CONFIRME ?? 0),
     aCollecter: byStatus.PREPARE ?? 0,
     enRoute: byStatus.COLLECTE ?? 0,
     aLivrer: byStatus.EN_ROUTE ?? 0,
@@ -2966,7 +3560,7 @@ export const getWorkflowCounts = async (user, query = {}) => {
 
   const total = Object.values(byStatus).reduce((s, n) => s + n, 0);
 
-  if (user.roleName === "Livreur") {
+  if (getRoleName(user) === "livreur") {
     return {
       aCollecter: allCounts.aCollecter,
       enRoute: allCounts.enRoute,
@@ -2975,8 +3569,16 @@ export const getWorkflowCounts = async (user, query = {}) => {
       total,
     };
   }
-  if (user.roleName === "Preparateur") {
+  if (getRoleName(user) === "preparateur") {
     return { aPreparer: allCounts.aPreparer, total };
+  }
+  if (isSuperAdminUser(user)) {
+    return {
+      ...allCounts,
+      livre: byStatus.LIVRE ?? 0,
+      paye: byStatus.PAYE ?? 0,
+      total,
+    };
   }
   return { ...allCounts, total };
 };
@@ -3018,11 +3620,13 @@ export const getPlanning = async (query, user) => {
     type: "ADVANCED",
     dateLivraison: { gte: start, lte: end },
     ...(livreurId && { livreurId: parseInt(livreurId) }),
-    document: user.isSuperAdmin ? undefined : { societeId: user.societeId },
+    document: isSuperAdminUser(user) ? undefined : { societeId: user.societeId },
   };
 
-  // Role scoping — same as workflow counts / list
-  await applyPersonalOrderScope(where, user);
+  // Role scoping — Super Admin sees every user's orders
+  if (!isAdminLevelUser(user)) {
+    await applyPersonalOrderScope(where, user);
+  }
 
   const rows = await prisma.bonLivraison.findMany({
     where,
@@ -3155,7 +3759,7 @@ export const getLivreurs = async (query, user) => {
 
   // SuperAdmin sees all by default; can filter by societeId.
   // Regular users are always scoped to their own société.
-  const societeScope = user.isSuperAdmin
+  const societeScope = isSuperAdminUser(user)
     ? societeId
       ? { societeId: parseInt(societeId) }
       : {}

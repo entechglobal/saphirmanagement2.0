@@ -45,7 +45,8 @@
     "report_error": "Error postponing delivery",
     "create_error": "Error during creation.",
     "packs_error": "Error checking pack stock availability.",
-    "update_error": "Error updating order."
+    "update_error": "Error updating order.",
+    "cash_remittance": "Cash credited to your wallet. Super admin must approve the remittance."
   },
   "status_label_EN_COURS": "In Progress",
   "status_label_CONFIRME": "Confirmed",
@@ -72,6 +73,9 @@
   "report_sending": "Sending...",
   "report_confirm": "Confirm postponement",
   "action_edit": "Edit",
+  "see_order": "See order",
+  "paid_yes": "Yes",
+  "paid_no": "No",
   "action_delete": "Delete",
   "action_print": "Print",
   "action_report": "Postpone",
@@ -126,6 +130,8 @@
   "history_reported": "Postponed",
   "history_suspended": "Suspended",
   "history_resumed": "Resumed",
+  "history_cancelled": "Cancelled",
+  "history_updated": "Updated",
   "history_transition": "Status → {{label}}",
   "city_placeholder": "Search for a city...",
   "city_manual_badge": "Manual",
@@ -392,5 +398,22 @@
   "form_mode_reglement_avance": "Advance payment method",
   "form_avance_select_placeholder": "Enter an amount first",
   "form_reste_livreur": "Due on delivery",
-  "confirm_financial_mode_avance": "Advance method"
+  "confirm_financial_mode_avance": "Advance method",
+
+  "pay_modal": {
+    "title": "Record payment",
+    "remaining": "Amount remaining",
+    "full_same": "Pay in full, same method",
+    "change_split": "Change or split",
+    "change_split_hint": "Several methods (cash, transfer…)",
+    "line": "Payment {{n}}",
+    "amount": "Amount",
+    "select_bank": "Select a bank",
+    "add_line": "Add a payment",
+    "split_total": "Allocated {{total}} MAD / {{remaining}} MAD remaining",
+    "cancel": "Cancel",
+    "confirm": "Confirm payment",
+    "saving": "Saving...",
+    "cash_hint": "Cash is credited to your wallet. A remittance to the company cashbox is sent for super-admin approval."
+  }
 }

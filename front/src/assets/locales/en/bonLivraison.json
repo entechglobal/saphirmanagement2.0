@@ -1,6 +1,7 @@
 {
   "title": "Delivery Notes",
   "bl_number": "DN Number",
+  "linked_order": "Order",
   "document_date": "Document Date",
   "created_at": "Created At",
   "delivery_date": "Delivery Date",
@@ -31,13 +32,16 @@
   "completed": "Completed",
   "status_badge": {
     "draft": "Draft",
-    "completed": "Completed"
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "paid": "Paid"
   },
   "toast": {
     "delete_success": "Delivery note deleted successfully",
     "delete_error": "Failed to delete delivery note",
     "validate_success_completed": "Delivery note validated successfully",
     "validate_success_draft": "Delivery note reverted to draft",
+    "linked_order_locked": "This delivery note is linked to an order. Cancel the order instead.",
     "validate_error": "Error during update",
     "print_success": "PDF generated successfully",
     "print_error": "Error generating PDF",

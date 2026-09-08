@@ -16,9 +16,12 @@ function requireAdmin() {
 }
 
 function iconPath() {
-  const ico = path.join(__dirname, "../build/icon.ico");
-  const png = path.join(__dirname, "../build/icon.png");
-  return require("fs").existsSync(ico) ? ico : png;
+  const fs = require("fs");
+  const ico = path.join(__dirname, "../assets/icon.ico");
+  const png = path.join(__dirname, "../assets/icon.png");
+  if (fs.existsSync(ico)) return ico;
+  if (fs.existsSync(png)) return png;
+  return undefined;
 }
 
 function createWindow() {

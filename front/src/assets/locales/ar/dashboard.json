@@ -16,7 +16,8 @@
   "summary": {
     "income": "المداخيل",
     "expense": "المصاريف",
-    "net": "الرصيد الصافي"
+    "net": "الرصيد الصافي",
+    "stock_value": "القيمة الإجمالية للمخزون"
   },
   "clients_section": {
     "title": "مداخيل العملاء",
@@ -138,6 +139,29 @@
     "in_transit": "في العبور",
     "no_data": "لا توجد بيانات مخزون"
   },
+  "stock_value": {
+    "title": "قيمة المخزون",
+    "subtitle": "مُقيَّمة بسعر شراء كل إدخال",
+    "inbound": "الإدخالات (سعر الشراء × الكمية)",
+    "by_depot": "حسب المستودع",
+    "no_data": "لا توجد قيمة مخزون في هذه الفترة"
+  },
+
+  "debt_credit": {
+    "title": "مستحقات العملاء وائتمان الموردين",
+    "subtitle": "المتبقي عند العملاء مقابل المتبقي للموردين",
+    "clients": "مستحقات العملاء",
+    "fournisseurs": "ائتمان الموردين",
+    "gap": "الفارق",
+    "gap_positive": "أكثر للتحصيل مما يجب دفعه",
+    "gap_negative": "أكثر للدفع مما يمكن تحصيله",
+    "gap_even": "الأرصدة متوازنة",
+    "by_clients": "أبرز العملاء (المتبقي)",
+    "by_fournisseurs": "أبرز الموردين (المتبقي)",
+    "documents": "{{count}} مستند",
+    "no_data": "لا يوجد رصيد متبقٍ",
+    "over_time": "المتبقي الموثّق خلال الفترة"
+  },
   "category_chart": {
     "title": "الفئات",
     "subtitle": "توزيع فئات المنتجات"
@@ -150,7 +174,7 @@
   "stat_livre": "تم التسليم",
 
   "saphir_home": {
-    "badge": "إدارة سفير",
+    "badge": "إدارة التجارة الإلكترونية",
     "subtitle": "متابعة الطلبات المعينة وتخطيط التسليم",
     "all_orders": "كل الطلبات",
     "new_order": "طلب جديد"
@@ -164,11 +188,15 @@
     "en_route": "تم الاستلام",
     "a_livrer": "للتسليم",
     "a_payer": "للتحصيل",
-    "hint_preparer": "طلبات مؤكدة في الانتظار",
-    "hint_collecter": "جاهزة للمُوَصِّل",
+    "livre": "تم التسليم",
+    "paye": "مدفوع",
+    "hint_preparer": "الطلبات الجديدة والمؤكدة في انتظار التحضير",
+    "hint_collecter": "الطلبات المحضّرة جاهزة للمُوَصِّل",
     "hint_en_route": "تم أخذها",
     "hint_livrer": "قيد التسليم",
-    "hint_payer": "تم التسليم، الدفع معلّق"
+    "hint_payer": "تم التسليم، الدفع معلّق",
+    "hint_livre": "الطلبات المُسلَّمة",
+    "hint_paye": "الطلبات المدفوعة"
   },
   "saphir_planning": {
     "title": "التخطيط",
@@ -196,6 +224,7 @@
   "saphir_commercial_stats": {
     "badge": "العمولات",
     "title": "إحصائيات التجاريين",
+    "title_personal": "إحصائياتي",
     "subtitle": "الطلبات المنشأة والعمولات المستحقة لكل تجاري",
     "kpi_commercials": "التجاريون",
     "kpi_orders": "الطلبات",
@@ -205,9 +234,34 @@
     "orders_label": "{{count}} طلب",
     "no_orders": "لا توجد طلبات",
     "empty": "لا توجد بيانات لهذه الفترة",
-    "error": "تعذر تحميل الإحصائيات"
+    "error": "تعذر تحميل الإحصائيات",
+    "filter_commercial": "التجاري",
+    "filter_all_commercials": "كل التجاريين",
+    "filter_status": "حالة الطلب",
+    "filter_all_statuses": "كل الحالات",
+    "launched_by": "أُنشئ بواسطة {{name}}",
+    "see_orders": "عرض الطلبات",
+    "see_order": "عرض الطلب",
+    "col_actions": "إجراءات",
+    "orders_of": "طلبات — {{name}}",
+    "search_commercials": "البحث عن تجاري",
+    "search_orders": "البحث عن طلب",
+    "col_commercial": "التجاري",
+    "col_role": "الدور",
+    "col_orders": "الطلبات",
+    "col_paid": "المدفوع",
+    "col_client": "العميل",
+    "col_document": "المستند",
+    "col_status": "الحالة",
+    "col_amount": "المبلغ",
+    "col_date": "التاريخ",
+    "col_launched_by": "أُنشئ بواسطة",
+    "role_Commercial": "تجاري",
+    "role_Super_Admin": "مدير عام",
+    "role_Societe_Admin": "مدير الشركة"
   },
 
+  "status_label_EN_COURS": "قيد التنفيذ",
   "status_label_CONFIRME": "مؤكد",
   "status_label_PREPARE": "مُحضَّر",
   "status_label_COLLECTE": "محصَّل",
@@ -247,6 +301,7 @@
 
   "toast_status_updated": "تم تحديث الحالة",
   "toast_status_error": "خطأ أثناء تحديث الحالة",
+  "toast_cash_remittance": "تم إضافة النقد إلى محفظتك. يجب على المشرف الموافقة على التحويل.",
   "toast_report_success": "تم تأجيل التسليم بنجاح",
   "toast_report_error": "خطأ أثناء تأجيل التسليم",
 
@@ -274,6 +329,13 @@
   "bl_city_unknown": "غير محددة",
   "bl_livreur_unassigned": "غير معيّن",
   "bl_colis": "{{count}} طرد",
+
+  "action_PREPARE": "تحضير",
+  "action_COLLECTE": "استلام",
+  "action_EN_ROUTE": "في الطريق",
+  "action_LIVRE": "تم التسليم",
+  "action_PAYE": "دفع",
+  "action_ANNULE": "إلغاء",
 
   "report_title": "تأجيل التسليم",
   "report_subtitle": "حدد تاريخ تسليم جديد",

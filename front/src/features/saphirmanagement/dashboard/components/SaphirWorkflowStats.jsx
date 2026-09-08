@@ -1,57 +1,71 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
-  ClipboardDocumentCheckIcon,
-  ArchiveBoxArrowDownIcon,
-  TruckIcon,
-  MapPinIcon,
-  CheckBadgeIcon,
-} from "@heroicons/react/24/outline";
-import { Package } from "lucide-react";
+  BadgeCheck,
+  CheckCircle2,
+  ClipboardCheck,
+  Package,
+  PackageCheck,
+  Truck,
+  Wallet,
+  ChevronRight,
+} from "lucide-react";
+import { useAuth } from "@/features/auth";
+import { isSuperAdmin } from "@/shared/utils/permissions";
 import { useWorkflowCounts } from "../../commandes/hooks/useCommands";
 
 const CARD_ORDER = ["aPreparer", "aCollecter", "enRoute", "aLivrer", "aPayer"];
+const SUPER_ADMIN_CARD_ORDER = [
+  "aPreparer",
+  "aCollecter",
+  "enRoute",
+  "aLivrer",
+  "livre",
+  "paye",
+];
 
 const CARD_META = {
   aPreparer: {
     titleKey: "saphir_stats.a_preparer",
     hintKey: "saphir_stats.hint_preparer",
-    icon: CheckBadgeIcon,
-    accent: "#1F72FF",
-    border: "border-l-[#1F72FF] dark:border-l-[#3D8BFF]",
-    bg: "bg-blue-50/80 dark:bg-blue-950/30",
+    icon: Package,
+    accent: "#B12B89",
   },
   aCollecter: {
     titleKey: "saphir_stats.a_collecter",
     hintKey: "saphir_stats.hint_collecter",
-    icon: ClipboardDocumentCheckIcon,
-    accent: "#6B44FF",
-    border: "border-l-[#6B44FF] dark:border-l-[#8B6FFF]",
-    bg: "bg-violet-50/80 dark:bg-violet-950/30",
+    icon: ClipboardCheck,
+    accent: "#7C5CFC",
   },
   enRoute: {
     titleKey: "saphir_stats.en_route",
     hintKey: "saphir_stats.hint_en_route",
-    icon: ArchiveBoxArrowDownIcon,
-    accent: "#FF3D8A",
-    border: "border-l-[#FF3D8A] dark:border-l-[#FF5EA0]",
-    bg: "bg-pink-50/80 dark:bg-pink-950/30",
+    icon: PackageCheck,
+    accent: "#2563EB",
   },
   aLivrer: {
     titleKey: "saphir_stats.a_livrer",
     hintKey: "saphir_stats.hint_livrer",
-    icon: TruckIcon,
-    accent: "#F5BC00",
-    border: "border-l-[#F5BC00] dark:border-l-[#FFCC00]",
-    bg: "bg-amber-50/80 dark:bg-amber-950/30",
+    icon: Truck,
+    accent: "#D97706",
   },
   aPayer: {
     titleKey: "saphir_stats.a_payer",
     hintKey: "saphir_stats.hint_payer",
-    icon: MapPinIcon,
-    accent: "#38C41A",
-    border: "border-l-[#38C41A] dark:border-l-[#4ECC2A]",
-    bg: "bg-emerald-50/80 dark:bg-emerald-950/30",
+    icon: Wallet,
+    accent: "#059669",
+  },
+  livre: {
+    titleKey: "saphir_stats.livre",
+    hintKey: "saphir_stats.hint_livre",
+    icon: CheckCircle2,
+    accent: "#059669",
+  },
+  paye: {
+    titleKey: "saphir_stats.paye",
+    hintKey: "saphir_stats.hint_paye",
+    icon: BadgeCheck,
+    accent: "#0F766E",
   },
 };
 
@@ -61,18 +75,28 @@ const CARD_TO_STATUS = {
   enRoute: "COLLECTE",
   aLivrer: "EN_ROUTE",
   aPayer: "LIVRE",
+  livre: "LIVRE",
+  paye: "PAYE",
+};
+
+const hexToRgba = (hex, alpha) => {
+  const h = hex.replace("#", "");
+  const n = parseInt(h, 16);
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
 };
 
 export const SaphirWorkflowStats = ({ dateFrom, dateTo }) => {
   const navigate = useNavigate();
   const { t } = useTranslation("dashboard");
+  const { user } = useAuth();
+  const superAdmin = isSuperAdmin(user);
   const { data, isLoading, isFetching } = useWorkflowCounts({ dateFrom, dateTo });
   const counts = data?.data ?? {};
 
-  // Respect backend role scoping: only render keys the API returns
-  const visibleKeys = CARD_ORDER.filter((key) => counts[key] !== undefined);
+  const cardOrder = superAdmin ? SUPER_ADMIN_CARD_ORDER : CARD_ORDER;
+  const visibleKeys = cardOrder.filter((key) => counts[key] !== undefined);
   const total = Number(counts.total ?? 0);
-  const pipelineTotal = visibleKeys.reduce(
+  const pipelineTotal = ["aPreparer", "aCollecter", "enRoute", "aLivrer", "aPayer"].reduce(
     (sum, key) => sum + Number(counts[key] ?? 0),
     0,
   );
@@ -80,20 +104,17 @@ export const SaphirWorkflowStats = ({ dateFrom, dateTo }) => {
   const handleCardClick = (cardKey) => {
     const status = CARD_TO_STATUS[cardKey];
     if (status) {
-      navigate(`/saphir-management-dashboard/commandes-par-statut?status=${status}`);
+      navigate(`/commandes?status=${status}`);
     }
   };
 
   if (isLoading && !data) {
     return (
-      <div className="space-y-4">
-        <div className="h-20 animate-pulse rounded-xl bg-slate-100 dark:bg-[#222222]" />
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-28 animate-pulse rounded-xl bg-slate-100 dark:bg-[#222222]"
-            />
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-[#2e2e2e] dark:bg-[#1c1c1c]">
+        <div className="h-14 animate-pulse bg-slate-50 dark:bg-[#222222]" />
+        <div className={`grid grid-cols-1 gap-px bg-slate-100 dark:bg-[#2e2e2e] md:grid-cols-3 ${superAdmin ? "xl:grid-cols-6" : "xl:grid-cols-5"}`}>
+          {Array.from({ length: superAdmin ? 6 : 5 }).map((_, i) => (
+            <div key={i} className="h-14 animate-pulse bg-white dark:bg-[#1c1c1c] md:h-28" />
           ))}
         </div>
       </div>
@@ -101,81 +122,95 @@ export const SaphirWorkflowStats = ({ dateFrom, dateTo }) => {
   }
 
   return (
-    <div className={`space-y-4 transition-opacity ${isFetching ? "opacity-80" : ""}`}>
-      {/* Period summary */}
-      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3.5 dark:border-[#2e2e2e] dark:bg-[#1c1c1c]">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#B12B89]/10">
-          <Package className="h-5 w-5 text-[#B12B89]" />
+    <div
+      className={`overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-[#2e2e2e] dark:bg-[#1c1c1c] transition-opacity ${
+        isFetching ? "opacity-80" : ""
+      }`}
+    >
+      <div className="flex items-center gap-3 px-4 py-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#B12B89]/10">
+          <Package className="h-4 w-4 text-[#B12B89]" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+          <p className="text-[13px] font-semibold text-slate-800 dark:text-slate-100">
             {t("saphir_stats.total_period")}
           </p>
-          <p className="text-2xl font-bold tabular-nums tracking-tight text-slate-900 dark:text-slate-50">
-            {total.toLocaleString()}
+          <p className="text-[11px] text-slate-400">
+            {t("saphir_stats.in_pipeline")} · {pipelineTotal.toLocaleString()}
           </p>
         </div>
-        <div className="rounded-lg bg-slate-50 px-3 py-2 text-end dark:bg-[#222222]">
-          <p className="text-[10px] font-medium uppercase tracking-wide text-slate-400">
-            {t("saphir_stats.in_pipeline")}
-          </p>
-          <p className="text-sm font-bold tabular-nums text-slate-700 dark:text-slate-200">
-            {pipelineTotal.toLocaleString()}
-          </p>
-        </div>
+        <p className="text-xl font-bold tabular-nums tracking-tight text-slate-900 dark:text-slate-50">
+          {total.toLocaleString()}
+        </p>
       </div>
 
       {visibleKeys.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-400 dark:border-[#2e2e2e]">
+        <div className="border-t border-slate-100 px-4 py-8 text-center text-sm text-slate-400 dark:border-[#2e2e2e]">
           {t("saphir_stats.empty")}
         </div>
       ) : (
         <div
-          className={`grid grid-cols-1 gap-3 sm:grid-cols-2 ${
-            visibleKeys.length >= 4 ? "xl:grid-cols-3" : "xl:grid-cols-2"
-          } ${visibleKeys.length === 1 ? "sm:grid-cols-1 xl:grid-cols-1 max-w-md" : ""}`}
+          className={`grid gap-px border-t border-slate-100 bg-slate-100 dark:border-[#2e2e2e] dark:bg-[#2e2e2e] ${
+            visibleKeys.length <= 2
+              ? "grid-cols-1 md:grid-cols-2"
+              : visibleKeys.length >= 6
+                ? "grid-cols-1 md:grid-cols-3 xl:grid-cols-6"
+                : "grid-cols-1 md:grid-cols-3 xl:grid-cols-5"
+          }`}
         >
           {visibleKeys.map((key) => {
             const meta = CARD_META[key];
             const Icon = meta.icon;
             const value = Number(counts[key] ?? 0);
+            const share = pipelineTotal > 0 ? (value / pipelineTotal) * 100 : 0;
+            const idle = value === 0;
 
             return (
               <button
                 key={key}
                 type="button"
                 onClick={() => handleCardClick(key)}
-                className={`
-                  group relative overflow-hidden rounded-xl border border-slate-200
-                  border-l-[5px] bg-white p-4 text-start shadow-sm
-                  transition-all duration-200
-                  hover:-translate-y-0.5 hover:shadow-md
-                  active:scale-[0.98]
-                  dark:border-[#2e2e2e] dark:bg-[#1c1c1c]
-                  ${meta.border}
-                `}
+                title={t(meta.hintKey)}
+                className="group flex items-center gap-3 bg-white px-4 py-3 text-start transition-colors hover:bg-slate-50 active:bg-slate-100 dark:bg-[#1c1c1c] dark:hover:bg-[#222222] dark:active:bg-[#262626] md:flex-col md:items-stretch md:gap-0 md:px-3.5 md:py-3.5"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-                      {t(meta.titleKey)}
-                    </p>
-                    <p className="mt-1.5 text-3xl font-bold tabular-nums tracking-tight text-slate-900 dark:text-slate-50">
-                      {value.toLocaleString()}
-                    </p>
-                    <p className="mt-1 text-[11px] text-slate-400">
-                      {t(meta.hintKey)}
-                    </p>
-                  </div>
+                <div className="flex items-center justify-between md:mb-3">
                   <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${meta.bg}`}
+                    className="flex h-8 w-8 items-center justify-center rounded-full"
+                    style={{ backgroundColor: hexToRgba(meta.accent, idle ? 0.08 : 0.14) }}
                   >
                     <Icon
-                      className="h-5 w-5"
-                      style={{ color: meta.accent }}
-                      strokeWidth={1.5}
+                      className="h-4 w-4"
+                      style={{ color: idle ? "#94a3b8" : meta.accent }}
+                      strokeWidth={1.75}
                     />
                   </div>
+                  <ChevronRight className="hidden h-3.5 w-3.5 text-slate-300 opacity-0 transition-opacity group-hover:opacity-100 md:block dark:text-slate-600" />
+                </div>
+
+                <p className="min-w-0 flex-1 truncate text-[13px] font-medium text-slate-600 dark:text-slate-300 md:order-3 md:mt-0.5 md:flex-none md:text-[12px] md:text-slate-500 md:dark:text-slate-400">
+                  {t(meta.titleKey)}
+                </p>
+
+                <p
+                  className={`text-[15px] font-bold tabular-nums tracking-tight md:order-2 md:text-2xl ${
+                    idle
+                      ? "text-slate-300 dark:text-slate-600"
+                      : "text-slate-900 dark:text-slate-50"
+                  }`}
+                >
+                  {value.toLocaleString()}
+                </p>
+
+                <ChevronRight className="h-4 w-4 shrink-0 text-slate-300 md:hidden dark:text-slate-600" />
+
+                <div className="mt-2.5 hidden h-1 overflow-hidden rounded-full bg-slate-100 md:order-4 md:block dark:bg-[#2a2a2a]">
+                  <div
+                    className="h-full rounded-full transition-all duration-300"
+                    style={{
+                      width: `${Math.max(idle ? 0 : 6, share)}%`,
+                      backgroundColor: idle ? "transparent" : meta.accent,
+                    }}
+                  />
                 </div>
               </button>
             );

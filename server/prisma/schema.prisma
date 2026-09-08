@@ -206,11 +206,6 @@ enum CaisseType {
   CAISSE
 }
 
-enum DeliveryShiftStatus {
-  OPEN
-  CLOSED
-}
-
 enum CaisseTransactionType {
   INITIAL_BALANCE
   CHARGE
@@ -273,7 +268,6 @@ model Societe {
   packs                Pack[]
   deliveryProviderConfigs DeliveryProviderConfig[]
   caisses                 Caisse[]
-  deliveryShifts          DeliveryShift[]
   attendanceRecords       AttendanceRecord[]
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -443,9 +437,6 @@ model User {
 
   // Linked Delivery (operational identity) for INTERN livreur users
   delivery Delivery?
-
-  // Delivery shifts (livreur work sessions)
-  deliveryShifts DeliveryShift[]
 
   // Caisse (cash register)
   caisse             Caisse?
@@ -874,7 +865,6 @@ model Delivery {
   user          User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
   bonLivraisons BonLivraison[]
   livreurBLs    BonLivraison[] @relation("BLLivreur")
-  shifts        DeliveryShift[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -1295,6 +1285,11 @@ model BonLivraison {
   commandeId Int?      @map("commande_id")
   commande   Commande? @relation(fields: [commandeId], references: [id], onDelete: SetNull)
 
+  // STANDARD BL created when an ADVANCED order is marked PREPARE
+  sourceOrderId Int?          @map("source_order_id")
+  sourceOrder   BonLivraison? @relation("BLFromOrder", fields: [sourceOrderId], references: [id], onDelete: SetNull)
+  preparedBls   BonLivraison[] @relation("BLFromOrder")
+
   // ── Advanced BonLivraison (workflow-driven) fields ──────────────
   type            BonLivraisonType   @default(STANDARD)
   commandStatus   BonLivraisonStatus? @map("command_status")
@@ -1354,7 +1349,6 @@ model BonLivraison {
   stockTransactions StockTransaction[]
   packLines        BonLivraisonPackLine[]
   statusHistory    BonLivraisonStatusHistory[]
-  shiftOrders      DeliveryShiftOrder[]
 
   // Many-to-many link to advances (avances) that pay this BL
   advances BonLivraisonAdvance[]
@@ -1364,6 +1358,7 @@ model BonLivraison {
 
   @@index([documentDate])
   @@index([commandeId])
+  @@index([sourceOrderId])
   @@index([depotId])
   @@index([deliveryId])
   @@index([type])
@@ -1731,6 +1726,9 @@ model StockTransaction {
   transactionType TransactionType @map("transaction_type")
   quantityChange  Decimal         @map("quantity_change") @db.Decimal(10, 3)
   quantityAfter   Decimal         @map("quantity_after") @db.Decimal(10, 3)
+  // Purchase cost of this movement (BR line unitPrice, inventory PA, …).
+  // Remaining stock is valued from these lots, not the catalog Article.prixAchat.
+  unitCost        Decimal?        @map("unit_cost") @db.Decimal(10, 2)
   reason          String?         @db.Text
   referenceId     String?         @map("reference_id") @db.VarChar(100)
   createdBy       Int?            @map("created_by")
@@ -2090,7 +2088,6 @@ model Caisse {
   referencedTransactions CaisseTransaction[] @relation("ReferenceCaisse")
   outgoingTransferRequests CaisseTransferRequest[] @relation("TransferRequestSource")
   incomingTransferRequests CaisseTransferRequest[] @relation("TransferRequestDest")
-  shiftRemittances       DeliveryShift[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -2164,65 +2161,6 @@ model CaisseTransferRequest {
   @@index([createdById])
   @@index([requiresSuperAdmin])
   @@map("caisse_transfer_requests")
-}
-
-// ========================================
-// DELIVERY SHIFTS (Livreur work sessions)
-// ========================================
-
-model DeliveryShift {
-  id                     Int                 @id @default(autoincrement())
-  societeId              Int                 @map("societe_id")
-  userId                 Int                 @map("user_id")
-  deliveryId             Int?                @map("delivery_id")
-  status                 DeliveryShiftStatus @default(OPEN)
-  startedAt              DateTime            @default(now()) @map("started_at")
-  closedAt               DateTime?           @map("closed_at")
-  openingBalance         Decimal             @default(0) @map("opening_balance") @db.Decimal(10, 2)
-  closingBalance         Decimal?            @map("closing_balance") @db.Decimal(10, 2)
-  totalCollected         Decimal             @default(0) @map("total_collected") @db.Decimal(10, 2)
-  totalOrders            Int                 @default(0) @map("total_orders")
-  deliveredCount         Int                 @default(0) @map("delivered_count")
-  paidCount              Int                 @default(0) @map("paid_count")
-  remittedAmount         Decimal?            @map("remitted_amount") @db.Decimal(10, 2)
-  remittanceNote         String?             @map("remittance_note") @db.Text
-  remittanceCaisseId     Int?                @map("remittance_caisse_id")
-  transferRequestId      Int?                @map("transfer_request_id")
-  remittanceCompletedAt  DateTime?           @map("remittance_completed_at")
-
-  societe          Societe               @relation(fields: [societeId], references: [id], onDelete: Cascade)
-  user             User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  delivery         Delivery?             @relation(fields: [deliveryId], references: [id], onDelete: SetNull)
-  remittanceCaisse Caisse?               @relation(fields: [remittanceCaisseId], references: [id], onDelete: SetNull)
-  orders           DeliveryShiftOrder[]
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@index([societeId])
-  @@index([userId])
-  @@index([deliveryId])
-  @@index([status])
-  @@index([startedAt])
-  @@index([remittanceCaisseId])
-  @@map("delivery_shifts")
-}
-
-model DeliveryShiftOrder {
-  id             Int                @id @default(autoincrement())
-  shiftId        Int                @map("shift_id")
-  bonLivraisonId Int                @map("bon_livraison_id")
-  linkedStatus   BonLivraisonStatus @map("linked_status")
-  amount         Decimal            @default(0) @db.Decimal(10, 2)
-  linkedAt       DateTime           @default(now()) @map("linked_at")
-
-  shift        DeliveryShift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
-  bonLivraison BonLivraison  @relation(fields: [bonLivraisonId], references: [id], onDelete: Cascade)
-
-  @@unique([shiftId, bonLivraisonId])
-  @@index([bonLivraisonId])
-  @@index([linkedAt])
-  @@map("delivery_shift_orders")
 }
 
 model Notification {

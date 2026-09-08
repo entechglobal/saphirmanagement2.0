@@ -16,7 +16,8 @@
   "summary": {
     "income": "Encaissements",
     "expense": "Décaissements",
-    "net": "Solde net"
+    "net": "Solde net",
+    "stock_value": "Valeur totale du stock"
   },
   "clients_section": {
     "title": "Encaissements clients",
@@ -144,6 +145,30 @@
     "no_data": "Aucune donnée de stock"
   },
 
+  "stock_value": {
+    "title": "Valeur du stock",
+    "subtitle": "Valorisé au prix d'achat de chaque entrée",
+    "inbound": "Entrées (PA × qté)",
+    "by_depot": "Par dépôt",
+    "no_data": "Aucune valeur de stock sur cette période"
+  },
+
+  "debt_credit": {
+    "title": "Créances et crédit fournisseurs",
+    "subtitle": "Reste à encaisser chez les clients vs reste à payer aux fournisseurs",
+    "clients": "Créances clients",
+    "fournisseurs": "Crédit fournisseurs",
+    "gap": "Écart",
+    "gap_positive": "Plus à encaisser qu'à payer",
+    "gap_negative": "Plus à payer qu'à encaisser",
+    "gap_even": "Soldes équilibrés",
+    "by_clients": "Top clients (reste)",
+    "by_fournisseurs": "Top fournisseurs (reste)",
+    "documents": "{{count}} document(s)",
+    "no_data": "Aucun solde restant",
+    "over_time": "Reste documenté sur la période"
+  },
+
   "stat_confirme": "Confirmé",
   "stat_prepare": "Préparé",
   "stat_collecte": "Collecté",
@@ -151,7 +176,7 @@
   "stat_livre": "Livré",
 
   "saphir_home": {
-    "badge": "Saphir Gestion",
+    "badge": "Gestion ecommerce",
     "subtitle": "Suivi des commandes affectées et planning des livraisons",
     "all_orders": "Toutes les commandes",
     "new_order": "Nouvelle commande"
@@ -165,11 +190,15 @@
     "en_route": "Collecté",
     "a_livrer": "À livrer",
     "a_payer": "À encaisser",
-    "hint_preparer": "Commandes confirmées en attente",
-    "hint_collecter": "Prêtes pour le livreur",
+    "livre": "Livré",
+    "paye": "Payé",
+    "hint_preparer": "Nouvelles commandes et commandes confirmées à préparer",
+    "hint_collecter": "Commandes préparées prêtes pour le livreur",
     "hint_en_route": "Prises en charge",
     "hint_livrer": "En cours de livraison",
-    "hint_payer": "Livrées, paiement en attente"
+    "hint_payer": "Livrées, paiement en attente",
+    "hint_livre": "Commandes livrées",
+    "hint_paye": "Commandes payées"
   },
   "saphir_planning": {
     "title": "Planning",
@@ -197,6 +226,7 @@
   "saphir_commercial_stats": {
     "badge": "Commissions",
     "title": "Statistique commercial",
+    "title_personal": "Mes statistiques",
     "subtitle": "Commandes créées et commissions dues par commercial",
     "kpi_commercials": "Commerciaux",
     "kpi_orders": "Commandes",
@@ -206,9 +236,34 @@
     "orders_label": "{{count}} commande(s)",
     "no_orders": "Aucune commande",
     "empty": "Aucune donnée pour cette période",
-    "error": "Impossible de charger les statistiques"
+    "error": "Impossible de charger les statistiques",
+    "filter_commercial": "Commercial",
+    "filter_all_commercials": "Tous les commerciaux",
+    "filter_status": "Statut des commandes",
+    "filter_all_statuses": "Tous les statuts",
+    "launched_by": "Lancée par {{name}}",
+    "role_Commercial": "Commercial",
+    "role_Super_Admin": "Super admin",
+    "role_Societe_Admin": "Admin société",
+    "col_commercial": "Commercial",
+    "col_role": "Rôle",
+    "col_orders": "Commandes",
+    "col_paid": "Payé",
+    "col_client": "Client",
+    "col_document": "Document",
+    "col_status": "Statut",
+    "col_amount": "Montant",
+    "col_date": "Date",
+    "col_launched_by": "Lancée par",
+    "see_orders": "Voir les commandes",
+    "see_order": "Voir la commande",
+    "col_actions": "Actions",
+    "orders_of": "Commandes — {{name}}",
+    "search_commercials": "Rechercher un commercial",
+    "search_orders": "Rechercher une commande"
   },
 
+  "status_label_EN_COURS": "En cours",
   "status_label_CONFIRME": "Confirmé",
   "status_label_PREPARE": "Préparé",
   "status_label_COLLECTE": "Collecté",
@@ -248,6 +303,7 @@
 
   "toast_status_updated": "Statut mis à jour",
   "toast_status_error": "Erreur lors de la mise à jour",
+  "toast_cash_remittance": "Espèces créditées sur votre wallet. Le super-admin doit valider le versement.",
   "toast_report_success": "Livraison reportée avec succès",
   "toast_report_error": "Erreur lors du report",
 
@@ -270,11 +326,18 @@
   "bl_reste": "Reste",
   "bl_products": "Produits ({{count}})",
   "bl_report_btn": "Reporter",
-  "bl_details_btn": "DÉTAILS",
+  "bl_details_btn": "Détails",
   "bl_reste_row": "Reste: {{amount}} MAD",
   "bl_city_unknown": "Non spécifiée",
   "bl_livreur_unassigned": "Non assigné",
   "bl_colis": "{{count}} colis",
+
+  "action_PREPARE": "Préparer",
+  "action_COLLECTE": "Collecter",
+  "action_EN_ROUTE": "En route",
+  "action_LIVRE": "Livré",
+  "action_PAYE": "Payer",
+  "action_ANNULE": "Annuler",
 
   "report_title": "Reporter une livraison",
   "report_subtitle": "Planifiez une nouvelle date de livraison",

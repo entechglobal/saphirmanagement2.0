@@ -1140,6 +1140,12 @@ export const validate = async (id, targetStatus, user) => {
       400,
     );
   }
+  if (bonLivraison.sourceOrderId) {
+    throw new ApiError(
+      "This delivery note is linked to an order. Change status from the orders page.",
+      400,
+    );
+  }
 
   // 3. Authorization
   if (
@@ -1455,20 +1461,29 @@ export const getAll = async (query, user) => {
     depotId: true,
     deliveryId: true,
     commandeId: true,
+    sourceOrderId: true,
     type: true,
     createdAt: true,
     updatedAt: true,
     document: {
       select: {
         documentNumber: true,
+        clientName: true,
         status: true,
         totalTTC: true,
         totalHT: true,
         totalTVA: true,
         amountPaid: true,
         amountDue: true,
+        notes: true,
         client: { select: { id: true, name: true, type: true } },
         _count: { select: { lines: true } },
+      },
+    },
+    sourceOrder: {
+      select: {
+        id: true,
+        document: { select: { documentNumber: true, clientName: true } },
       },
     },
     depot: { select: { id: true, code: true, name: true } },
@@ -1926,6 +1941,12 @@ export const update = async (id, data, user) => {
   if (existingBL.type === "ADVANCED") {
     throw new ApiError(
       "Use the advanced bon livraison endpoint for ADVANCED type",
+      400,
+    );
+  }
+  if (existingBL.sourceOrderId) {
+    throw new ApiError(
+      "Cannot edit a delivery note linked to an order. Edit the order instead.",
       400,
     );
   }
@@ -2434,6 +2455,13 @@ export const remove = async (id, user) => {
   if (bonLivraison.type === "ADVANCED") {
     throw new ApiError(
       "Use the advanced bon livraison endpoint for ADVANCED type",
+      400,
+    );
+  }
+
+  if (bonLivraison.sourceOrderId) {
+    throw new ApiError(
+      "Cannot delete a delivery note linked to an order. Cancel the order instead.",
       400,
     );
   }

@@ -51,7 +51,6 @@ import bonRetourFournisseurRoutes from "../api/routes/bonRetourFournisseurRoutes
 import situationRoutes from "../api/routes/situationRoutes.js";
 import dashboardRoutes from "../api/routes/dashboardRoutes.js";
 import notificationRoutes from "../api/routes/notificationRoutes.js";
-import deliveryShiftRoutes from "../api/routes/deliveryShiftRoutes.js";
 import attendanceRoutes from "../api/routes/attendanceRoutes.js";
 
 export default function expressLoader(app) {
@@ -103,7 +102,6 @@ export default function expressLoader(app) {
   app.use("/api/caisse-labels", caisseLabelRoutes);
   app.use("/api/dashboard", dashboardRoutes);
   app.use("/api/notifications", notificationRoutes);
-  app.use("/api/delivery-shifts", deliveryShiftRoutes);
   app.use("/api/attendance", attendanceRoutes);
 
   if (process.env.NODE_ENV === "production") {

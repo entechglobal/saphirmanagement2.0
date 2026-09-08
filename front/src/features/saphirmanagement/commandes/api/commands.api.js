@@ -118,9 +118,10 @@ export const commandsApi = {
   },
 };
 
-export const updateCommandStatus = async (commandId, targetStatus) => {
+export const updateCommandStatus = async (commandId, targetStatus, extra = {}) => {
   const res = await api.put(`/advanced-bon-livraisons/${commandId}/status`, {
     targetStatus,
+    ...extra,
   });
   return res.data;
 };

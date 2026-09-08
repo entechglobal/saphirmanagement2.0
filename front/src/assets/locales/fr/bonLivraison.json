@@ -1,6 +1,7 @@
 {
   "title": "Bons de Livraison",
   "bl_number": "N° BL",
+  "linked_order": "Commande",
   "document_date": "Date Document",
   "created_at": "Créé le",
   "delivery_date": "Date Livraison",
@@ -31,13 +32,16 @@
   "completed": "Complété",
   "status_badge": {
     "draft": "En cours",
-    "completed": "Complété"
+    "completed": "Complété",
+    "cancelled": "Annulé",
+    "paid": "Payé"
   },
   "toast": {
     "delete_success": "BL supprimé avec succès",
     "delete_error": "Échec de la suppression",
     "validate_success_completed": "BL validé avec succès",
     "validate_success_draft": "BL remis en En cours",
+    "linked_order_locked": "Ce bon de livraison est lié à une commande. Annulez la commande à la place.",
     "validate_error": "Erreur lors de la mise à jour",
     "print_success": "PDF généré avec succès",
     "print_error": "Erreur lors de la génération du PDF",

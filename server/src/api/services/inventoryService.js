@@ -297,6 +297,7 @@ export const create = async (data, user) => {
               variantId: line.variantId,
               quantityDifference,
               inventoryId: inventory.id,
+              unitCost: prixAchat,
             });
           }
         }
@@ -326,6 +327,8 @@ export const create = async (data, user) => {
                   : `Inventory shortage: ${Math.abs(adjustment.quantityDifference)} units missing`,
               userId: user.id,
               inventoryId: adjustment.inventoryId,
+              unitCost:
+                adjustment.quantityDifference > 0 ? adjustment.unitCost : null,
             },
           ]);
 
@@ -799,6 +802,7 @@ export const appendLines = async (inventoryId, data, user) => {
               articleId: line.articleId,
               variantId: line.variantId,
               quantityDifference,
+              unitCost: prixAchat,
             });
           }
         }
@@ -824,6 +828,8 @@ export const appendLines = async (inventoryId, data, user) => {
                   : `Inventory shortage: ${Math.abs(adjustment.quantityDifference)} units missing (appended)`,
               userId: user.id,
               inventoryId: inventory.id,
+              unitCost:
+                adjustment.quantityDifference > 0 ? adjustment.unitCost : null,
             },
           ]);
 

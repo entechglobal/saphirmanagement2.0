@@ -16,7 +16,8 @@
   "summary": {
     "income": "Income",
     "expense": "Expenses",
-    "net": "Net balance"
+    "net": "Net balance",
+    "stock_value": "Total stock value"
   },
   "clients_section": {
     "title": "Client income",
@@ -138,6 +139,29 @@
     "in_transit": "In Transit",
     "no_data": "No stock data"
   },
+  "stock_value": {
+    "title": "Stock value",
+    "subtitle": "Valued at each inbound purchase price",
+    "inbound": "Inbound (cost × qty)",
+    "by_depot": "By depot",
+    "no_data": "No stock value in this period"
+  },
+
+  "debt_credit": {
+    "title": "Receivables and supplier credit",
+    "subtitle": "What clients still owe vs what is still due to suppliers",
+    "clients": "Client receivables",
+    "fournisseurs": "Supplier payables",
+    "gap": "Gap",
+    "gap_positive": "More to collect than to pay",
+    "gap_negative": "More to pay than to collect",
+    "gap_even": "Balances are even",
+    "by_clients": "Top clients (remaining)",
+    "by_fournisseurs": "Top suppliers (remaining)",
+    "documents": "{{count}} document(s)",
+    "no_data": "No outstanding balance",
+    "over_time": "Remaining amounts dated in this period"
+  },
   "category_chart": {
     "title": "Categories",
     "subtitle": "Product category distribution"
@@ -150,7 +174,7 @@
   "stat_livre": "Delivered",
 
   "saphir_home": {
-    "badge": "Saphir Management",
+    "badge": "Ecommerce management",
     "subtitle": "Track assigned orders and delivery planning",
     "all_orders": "All orders",
     "new_order": "New order"
@@ -164,11 +188,15 @@
     "en_route": "Collected",
     "a_livrer": "To deliver",
     "a_payer": "To collect payment",
-    "hint_preparer": "Confirmed orders waiting",
-    "hint_collecter": "Ready for the driver",
+    "livre": "Delivered",
+    "paye": "Paid",
+    "hint_preparer": "New and confirmed orders waiting to be prepared",
+    "hint_collecter": "Prepared orders ready for the driver",
     "hint_en_route": "Picked up",
     "hint_livrer": "Out for delivery",
-    "hint_payer": "Delivered, payment pending"
+    "hint_payer": "Delivered, payment pending",
+    "hint_livre": "Delivered orders",
+    "hint_paye": "Paid orders"
   },
   "saphir_planning": {
     "title": "Planning",
@@ -196,6 +224,7 @@
   "saphir_commercial_stats": {
     "badge": "Commissions",
     "title": "Commercial statistics",
+    "title_personal": "My statistics",
     "subtitle": "Orders created and commissions owed per commercial",
     "kpi_commercials": "Commercials",
     "kpi_orders": "Orders",
@@ -205,9 +234,34 @@
     "orders_label": "{{count}} order(s)",
     "no_orders": "No orders",
     "empty": "No data for this period",
-    "error": "Unable to load statistics"
+    "error": "Unable to load statistics",
+    "filter_commercial": "Commercial",
+    "filter_all_commercials": "All commercials",
+    "filter_status": "Order status",
+    "filter_all_statuses": "All statuses",
+    "launched_by": "Launched by {{name}}",
+    "role_Commercial": "Commercial",
+    "role_Super_Admin": "Super admin",
+    "role_Societe_Admin": "Company admin",
+    "col_commercial": "Commercial",
+    "col_role": "Role",
+    "col_orders": "Orders",
+    "col_paid": "Paid",
+    "col_client": "Client",
+    "col_document": "Document",
+    "col_status": "Status",
+    "col_amount": "Amount",
+    "col_date": "Date",
+    "col_launched_by": "Launched by",
+    "see_orders": "See orders",
+    "see_order": "See order",
+    "col_actions": "Actions",
+    "orders_of": "Orders — {{name}}",
+    "search_commercials": "Search a commercial",
+    "search_orders": "Search an order"
   },
 
+  "status_label_EN_COURS": "In Progress",
   "status_label_CONFIRME": "Confirmed",
   "status_label_PREPARE": "Prepared",
   "status_label_COLLECTE": "Collected",
@@ -247,6 +301,7 @@
 
   "toast_status_updated": "Status updated",
   "toast_status_error": "Error updating status",
+  "toast_cash_remittance": "Cash credited to your wallet. Super admin must approve the remittance.",
   "toast_report_success": "Delivery postponed successfully",
   "toast_report_error": "Error postponing delivery",
 
@@ -269,11 +324,18 @@
   "bl_reste": "Remaining",
   "bl_products": "Products ({{count}})",
   "bl_report_btn": "Postpone",
-  "bl_details_btn": "DETAILS",
+  "bl_details_btn": "Details",
   "bl_reste_row": "Remaining: {{amount}} MAD",
   "bl_city_unknown": "Unknown",
   "bl_livreur_unassigned": "Unassigned",
   "bl_colis": "{{count}} parcel(s)",
+
+  "action_PREPARE": "Prepare",
+  "action_COLLECTE": "Collect",
+  "action_EN_ROUTE": "Start route",
+  "action_LIVRE": "Delivered",
+  "action_PAYE": "Pay",
+  "action_ANNULE": "Cancel",
 
   "report_title": "Postpone delivery",
   "report_subtitle": "Schedule a new delivery date",

@@ -269,6 +269,25 @@ export const transitionStatusValidator = [
     .isIn(VALID_STATUSES)
     .withMessage(`targetStatus must be one of: ${VALID_STATUSES.join(", ")}`),
 
+  body("payments")
+    .optional()
+    .isArray({ min: 1 })
+    .withMessage("payments must be a non-empty array"),
+  body("payments.*.amount")
+    .optional()
+    .isFloat({ gt: 0 })
+    .withMessage("each payment amount must be > 0")
+    .toFloat(),
+  body("payments.*.modeReglement")
+    .optional()
+    .isIn(VALID_MODES)
+    .withMessage(`modeReglement must be one of: ${VALID_MODES.join(", ")}`),
+  body("payments.*.banqueId")
+    .optional({ nullable: true })
+    .isInt({ min: 1 })
+    .withMessage("banqueId must be a positive integer")
+    .toInt(),
+
   validatorMiddleware,
 ];
 

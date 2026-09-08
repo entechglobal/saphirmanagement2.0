@@ -119,10 +119,6 @@ export const PERMISSIONS = {
   UPDATE_AGENCE: "update_agence", // Modifier une agence
   DELETE_AGENCE: "delete_agence", // Supprimer une agence
 
-  // ── Delivery shifts ──────────────────────────────────────────────────────
-  VIEW_DELIVERY_SHIFTS: "view_delivery_shifts", // Voir les shifts livreurs
-  MANAGE_DELIVERY_SHIFTS: "manage_delivery_shifts", // Démarrer / fermer / verser un shift
-
   // ── Attendance (ZKTeco) ──────────────────────────────────────────────────
   VIEW_ATTENDANCE: "view_attendance",
   MANAGE_ATTENDANCE: "manage_attendance",
@@ -247,9 +243,6 @@ export const PERMISSION_LABELS = {
   update_agence: "Modifier une agence",
   delete_agence: "Supprimer une agence",
 
-  view_delivery_shifts: "Voir les shifts livreurs",
-  manage_delivery_shifts: "Gérer les shifts livreurs",
-
   view_attendance: "Voir le pointage",
   manage_attendance: "Gérer le pointage",
 
@@ -279,13 +272,6 @@ export const getPermissionLabel = (name) =>
 export const isAuthenticated = (status, accessToken) =>
   status === "authenticated" && !!accessToken;
 
-const SUPER_ADMIN_ROLES = new Set(["Super_Admin", "SUPERADMIN"]);
-
-export const isSuperAdmin = (user) =>
-  !!user?.isSuperAdmin ||
-  SUPER_ADMIN_ROLES.has(user?.role) ||
-  SUPER_ADMIN_ROLES.has(user?.roleName);
-
 export const getUserRoleName = (user) => {
   if (!user) return "";
   if (user.roleName) return String(user.roleName);
@@ -293,7 +279,13 @@ export const getUserRoleName = (user) => {
   return user.role?.name ?? "";
 };
 
-export const isSocieteAdmin = (user) => getUserRoleName(user) === "Societe_Admin";
+const roleKey = (user) =>
+  getUserRoleName(user).trim().toLowerCase().replace(/[\s_-]+/g, "");
+
+export const isSuperAdmin = (user) =>
+  !!user?.isSuperAdmin || roleKey(user) === "superadmin";
+
+export const isSocieteAdmin = (user) => roleKey(user) === "societeadmin";
 
 export const isAdminUser = (user) => isSuperAdmin(user) || isSocieteAdmin(user);
 

@@ -34,6 +34,14 @@ const StatusBadge = ({ status, t }) => {
       label: t("status_badge.completed"),
       className: "bg-emerald-500",
     },
+    CANCELLED: {
+      label: t("status_badge.cancelled"),
+      className: "bg-rose-500",
+    },
+    PAID: {
+      label: t("status_badge.paid"),
+      className: "bg-emerald-600",
+    },
   };
 
   const { label, className } = config[status] ?? {
@@ -254,6 +262,26 @@ export const BonLivraisonsPage = () => {
         ),
       },
       {
+        id: "linkedOrder",
+        header: t("linked_order"),
+        Cell: ({ row }) => {
+          const orderId = row.original.sourceOrderId;
+          const orderNumber =
+            row.original.sourceOrder?.document?.documentNumber ||
+            (orderId ? `#${orderId}` : null);
+          if (!orderId) return <span>—</span>;
+          return (
+            <Link
+              to={`/commandes/${orderId}`}
+              className="text-[#B12B89] hover:underline"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {orderNumber}
+            </Link>
+          );
+        },
+      },
+      {
         accessorKey: "documentDate",
         header: t("document_date"),
         Cell: ({ cell }) => (
@@ -272,7 +300,7 @@ export const BonLivraisonsPage = () => {
         header: t("client"),
         Cell: ({ row }) => {
           const client = row.original.document?.client;
-          const name = client?.name || "—";
+          const name = client?.name || row.original.document?.clientName || "—";
           return client?.id ? (
             <Link
               to={`/clients/${client.id}`}
@@ -303,6 +331,10 @@ export const BonLivraisonsPage = () => {
         header: t("status"),
         Cell: ({ row }) => {
           const status = row.original.document?.status;
+          const isLinkedOrder = !!row.original.sourceOrderId;
+          if (isLinkedOrder) {
+            return <StatusBadge status={status} t={t} />;
+          }
           return (
             <button
               type="button"
@@ -474,10 +506,20 @@ export const BonLivraisonsPage = () => {
         isFetching={isFetching}
         isError={isError}
 
-        onEdit={(row) => navigate(`/bon-livraisons/${row.id}/edit`)}
+        onEdit={(row) =>
+          row.sourceOrderId
+            ? navigate(`/commandes/${row.sourceOrderId}`)
+            : navigate(`/bon-livraisons/${row.id}/edit`)
+        }
         onPreview={(row) => navigate(`/bon-livraisons/${row.id}/preview`)}
         enableRowActions={true}
-        onDelete={handleDeleteClick}
+        onDelete={(row) => {
+          if (row.sourceOrderId) {
+            toast.error(t("toast.linked_order_locked"));
+            return;
+          }
+          handleDeleteClick(row);
+        }}
         tableId="bon-livraisons-table"
       />
 

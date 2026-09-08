@@ -245,10 +245,7 @@ async function main() {
     "create_deliveries",
     "update_deliveries",
     "delete_deliveries",
-    // ── Delivery shifts ──────────────────────────────────
-    "view_delivery_shifts",
-    "manage_delivery_shifts",
-    // ── Attendance (ZKTeco) ──────────────────────────────
+    // ── Attendance (ZKTeco) ──────────────────────────────────────────────
     "view_attendance",
     "manage_attendance",
     // ── Users & Settings ─────────────────────────────────

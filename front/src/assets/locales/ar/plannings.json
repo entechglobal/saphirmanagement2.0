@@ -1,9 +1,21 @@
 {
   "page_title": "جدول التسليم",
+  "page_subtitle": "التسليمات مجمّعة حسب اليوم",
+  "all": "الكل",
+  "reset": "إعادة تعيين",
+  "search": "بحث",
+  "search_placeholder": "العميل، رقم الوثيقة، المدينة، الهاتف…",
 
   "status_paye": "مدفوع",
   "status_en_attente": "قيد الانتظار",
   "status_annule": "ملغى",
+  "status_label_CONFIRME": "مؤكد",
+  "status_label_PREPARE": "مُحضَّر",
+  "status_label_COLLECTE": "تم الاستلام",
+  "status_label_EN_ROUTE": "في الطريق",
+  "status_label_LIVRE": "تم التسليم",
+  "status_label_PAYE": "مدفوع",
+  "status_label_ANNULE": "ملغى",
 
   "mode_VIREMENT": "تحويل بنكي",
   "mode_ESPECES": "نقداً",
@@ -27,11 +39,30 @@
   "filter_end_date": "تاريخ النهاية",
   "filter_livreur": "الموصّل",
   "filter_all_livreurs": "كل الموصّلين",
+  "filter_status": "الحالة",
+  "filter_city": "المدينة",
+  "filter_flags": "التنبيهات",
 
-  "stat_bl": "وثائق التسليم",
-  "stat_colis": "إجمالي الطرود",
-  "stat_montant": "المبلغ الإجمالي",
-  "stat_jours": "الأيام المجدولة",
+  "period_today": "اليوم",
+  "period_tomorrow": "غداً",
+  "period_this_week": "هذا الأسبوع",
+  "period_next_week": "الأسبوع القادم",
+  "period_this_month": "هذا الشهر",
+  "period_custom": "مخصص",
+
+  "flag_all": "الكل",
+  "flag_reported": "مؤجلة",
+  "flag_suspended": "معلقة",
+  "hide_empty_days": "إخفاء الأيام الفارغة",
+  "show_empty_days": "إظهار الأيام الفارغة",
+  "today_badge": "اليوم",
+  "tomorrow_badge": "غداً",
+  "open_details": "التفاصيل",
+
+  "stat_bl": "التسليمات",
+  "stat_colis": "الطرود",
+  "stat_montant": "المبلغ المتبقي",
+  "stat_jours": "الأيام",
 
   "detail_document": "الوثيقة",
   "detail_created_by": "أُنشئ بواسطة",
@@ -53,5 +84,6 @@
   "no_delivery": "لا توجد تسليمات",
   "day_no_delivery": "لا توجد تسليمات هذا اليوم",
   "empty_period": "لا توجد تسليمات لهذه الفترة",
-  "back_all_days": "← عرض كل الأيام"
+  "empty_filters": "لا توجد نتائج بهذه الفلاتر",
+  "back_all_days": "كل الأيام"
 }

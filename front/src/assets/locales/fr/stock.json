@@ -10,6 +10,7 @@
   "product_type": "Type de produit",
   "barcode": "Code-barres",
   "available": "Disponible",
+  "stock_value": "Valeur de stock",
   "stock_alert": "Alerte stock",
   "low_stock": "Stock faible",
   "out_of_stock": "Rupture",

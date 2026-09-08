@@ -251,6 +251,53 @@ export const StockPage = () => {
             ),
         },
         {
+            accessorKey: "valeurStock",
+            header: t("stock_value"),
+            Cell: ({ row }) => {
+                const value = Number(row.original.valeurStock ?? 0);
+                const layers = row.original.costLayers ?? [];
+                const breakdown = layers
+                    .slice(0, 3)
+                    .map(
+                        (layer) =>
+                            `${Number(layer.quantity).toLocaleString("fr-MA", {
+                                maximumFractionDigits: 3,
+                            })} × ${Number(layer.unitCost).toLocaleString("fr-MA", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}`,
+                    )
+                    .join(" + ");
+                const extra = layers.length > 3 ? "…" : "";
+
+                return (
+                    <div className="min-w-[140px]">
+                        <span className="font-semibold text-slate-800 dark:text-slate-100 tabular-nums">
+                            {value.toLocaleString("fr-MA", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}{" "}
+                            <small className="font-medium text-slate-400">MAD</small>
+                        </span>
+                        {layers.length > 0 && (
+                            <p
+                                className="mt-0.5 text-[10px] leading-tight text-slate-400 tabular-nums"
+                                title={layers
+                                    .map(
+                                        (layer) =>
+                                            `${layer.quantity} × ${Number(layer.unitCost).toFixed(2)} DH`,
+                                    )
+                                    .join(" + ")}
+                            >
+                                {breakdown}
+                                {extra}
+                            </p>
+                        )}
+                    </div>
+                );
+            },
+        },
+        {
             accessorKey: "alertThreshold",
             header: t("stock_alert"),
             Cell: ({ cell }) => (

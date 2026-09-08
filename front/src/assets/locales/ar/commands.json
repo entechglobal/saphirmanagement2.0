@@ -45,7 +45,8 @@
     "report_error": "خطأ أثناء تأجيل التسليم",
     "create_error": "خطأ أثناء الإنشاء.",
     "packs_error": "خطأ أثناء التحقق من مخزون الباقات.",
-    "update_error": "خطأ أثناء التحديث."
+    "update_error": "خطأ أثناء التحديث.",
+    "cash_remittance": "تم إضافة النقد إلى محفظتك. يجب على المشرف الموافقة على التحويل."
   },
   "status_label_EN_COURS": "قيد التنفيذ",
   "status_label_CONFIRME": "مؤكد",
@@ -72,6 +73,9 @@
   "report_sending": "جارٍ الإرسال...",
   "report_confirm": "تأكيد التأجيل",
   "action_edit": "تعديل",
+  "see_order": "عرض الطلب",
+  "paid_yes": "نعم",
+  "paid_no": "لا",
   "action_delete": "حذف",
   "action_print": "طباعة",
   "action_report": "تأجيل",
@@ -126,6 +130,8 @@
   "history_reported": "مؤجل",
   "history_suspended": "معلق",
   "history_resumed": "مستأنف",
+  "history_cancelled": "ملغى",
+  "history_updated": "محدّث",
   "history_transition": "الحالة → {{label}}",
   "city_placeholder": "ابحث عن مدينة...",
   "city_manual_badge": "يدوي",
@@ -392,5 +398,22 @@
   "form_mode_reglement_avance": "طريقة دفع الدفعة المقدمة",
   "form_avance_select_placeholder": "أدخل المبلغ أولاً",
   "form_reste_livreur": "المتبقي عند التسليم",
-  "confirm_financial_mode_avance": "طريقة الدفعة المقدمة"
+  "confirm_financial_mode_avance": "طريقة الدفعة المقدمة",
+
+  "pay_modal": {
+    "title": "تسجيل الدفع",
+    "remaining": "المبلغ المتبقي",
+    "full_same": "دفع الكل بنفس الطريقة",
+    "change_split": "تغيير أو تقسيم",
+    "change_split_hint": "عدة طرق (نقداً، تحويل…)",
+    "line": "دفعة {{n}}",
+    "amount": "المبلغ",
+    "select_bank": "اختر بنكاً",
+    "add_line": "إضافة دفعة",
+    "split_total": "الموزع {{total}} MAD / المتبقي {{remaining}} MAD",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد الدفع",
+    "saving": "جاري الحفظ...",
+    "cash_hint": "يُضاف النقد إلى محفظتك. يُرسل تحويل إلى صندوق الشركة لموافقة المشرف."
+  }
 }

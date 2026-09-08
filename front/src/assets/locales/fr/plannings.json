@@ -1,9 +1,21 @@
 {
   "page_title": "Planning de Livraison",
+  "page_subtitle": "Livraisons groupées par jour",
+  "all": "Tous",
+  "reset": "Réinitialiser",
+  "search": "Recherche",
+  "search_placeholder": "Client, n° BL, ville, téléphone…",
 
   "status_paye": "Payé",
   "status_en_attente": "En attente",
   "status_annule": "Annulé",
+  "status_label_CONFIRME": "Confirmé",
+  "status_label_PREPARE": "Préparé",
+  "status_label_COLLECTE": "Collecté",
+  "status_label_EN_ROUTE": "En route",
+  "status_label_LIVRE": "Livré",
+  "status_label_PAYE": "Payé",
+  "status_label_ANNULE": "Annulé",
 
   "mode_VIREMENT": "Virement",
   "mode_ESPECES": "Espèces",
@@ -27,11 +39,30 @@
   "filter_end_date": "Date fin",
   "filter_livreur": "Livreur",
   "filter_all_livreurs": "Tous les livreurs",
+  "filter_status": "Statut",
+  "filter_city": "Ville",
+  "filter_flags": "Signalement",
 
-  "stat_bl": "Bon de livraisons",
-  "stat_colis": "Total colis",
-  "stat_montant": "Montant total",
-  "stat_jours": "Jours planifiés",
+  "period_today": "Aujourd'hui",
+  "period_tomorrow": "Demain",
+  "period_this_week": "Cette semaine",
+  "period_next_week": "Semaine pro.",
+  "period_this_month": "Ce mois",
+  "period_custom": "Personnalisé",
+
+  "flag_all": "Tous",
+  "flag_reported": "Reportés",
+  "flag_suspended": "Suspendus",
+  "hide_empty_days": "Masquer les jours vides",
+  "show_empty_days": "Afficher les jours vides",
+  "today_badge": "Aujourd'hui",
+  "tomorrow_badge": "Demain",
+  "open_details": "Détails",
+
+  "stat_bl": "Livraisons",
+  "stat_colis": "Colis",
+  "stat_montant": "Reste à encaisser",
+  "stat_jours": "Jours",
 
   "detail_document": "Document",
   "detail_created_by": "Créé par",
@@ -53,5 +84,6 @@
   "no_delivery": "Aucune livraison",
   "day_no_delivery": "Journée sans livraison",
   "empty_period": "Aucune livraison pour cette période",
-  "back_all_days": "← Afficher tous les jours"
+  "empty_filters": "Aucun résultat avec ces filtres",
+  "back_all_days": "Tous les jours"
 }

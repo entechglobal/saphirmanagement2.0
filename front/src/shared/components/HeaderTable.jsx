@@ -29,19 +29,15 @@ export const HeaderTable = ({
       className={`mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 ${className}`}
     >
       <div className="flex min-w-0 items-center gap-2">
-        {showBack && (
-          <button
-            type="button"
-            onClick={handleBack}
-            aria-label={backLabel}
-            className="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-[#222222] dark:hover:text-slate-100"
-          >
-            <ArrowLeft className="h-4 w-4 rtl:hidden" />
-            <ArrowRight className="h-4 w-4 ltr:hidden" />
-          </button>
-        )}
-
-        {icon ? <span className="flex-shrink-0">{icon}</span> : null}
+        <button
+          type="button"
+          onClick={handleBack}
+          aria-label={backLabel}
+          className="inline-flex p-1 flex-shrink-0 items-center justify-center rounded-lg text-primary"
+        >
+          <ArrowLeft className="h-4 w-4 rtl:hidden" />
+          <ArrowRight className="h-4 w-4 ltr:hidden" />
+        </button>
 
         <div className="min-w-0">
           <div className="flex items-center gap-2">
@@ -56,11 +52,11 @@ export const HeaderTable = ({
             )}
           </div>
 
-          {subtitle && (
+          {/* {subtitle && (
             <p className="mt-0.5 truncate text-[13px] leading-5 text-slate-500 dark:text-slate-400">
               {subtitle}
             </p>
-          )}
+          )} */}
         </div>
       </div>
 

@@ -28,7 +28,8 @@ export const NotificationsPage = () => {
   const acceptTransfer = useAcceptTransferRequest();
   const declineTransfer = useDeclineTransferRequest();
 
-  const actingId = acceptTransfer.variables || declineTransfer.variables || null;
+  const actingId =
+    acceptTransfer.variables || declineTransfer.variables || null;
   const isActing = acceptTransfer.isPending || declineTransfer.isPending;
 
   const handleAccept = (event, notification) => {
@@ -38,12 +39,15 @@ export const NotificationsPage = () => {
     if (!requestId) return;
     acceptTransfer.mutate(requestId, {
       onSuccess: (res) => {
-        toast.success(res?.message || t("notifications.transfer.accepted_toast"));
+        toast.success(
+          res?.message || t("notifications.transfer.accepted_toast"),
+        );
         if (!notification.read) markRead.mutate(notification.id);
       },
       onError: (err) => {
         toast.error(
-          err?.response?.data?.message || t("notifications.transfer.action_error")
+          err?.response?.data?.message ||
+            t("notifications.transfer.action_error"),
         );
       },
     });
@@ -56,19 +60,22 @@ export const NotificationsPage = () => {
     if (!requestId) return;
     declineTransfer.mutate(requestId, {
       onSuccess: (res) => {
-        toast.success(res?.message || t("notifications.transfer.declined_toast"));
+        toast.success(
+          res?.message || t("notifications.transfer.declined_toast"),
+        );
         if (!notification.read) markRead.mutate(notification.id);
       },
       onError: (err) => {
         toast.error(
-          err?.response?.data?.message || t("notifications.transfer.action_error")
+          err?.response?.data?.message ||
+            t("notifications.transfer.action_error"),
         );
       },
     });
   };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 pb-10">
+    <div>
       <FormPageHeader
         createTitle={t("notifications.title")}
         backPath="/"
@@ -86,14 +93,13 @@ export const NotificationsPage = () => {
           ) : null
         }
       />
-
       {unreadCount > 0 && (
         <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">
           {t("notifications.unread", { count: unreadCount })}
         </p>
       )}
 
-      <div className="overflow-hidden rounded-xl border border-gray-200/80 bg-white dark:border-[#2e2e2e] dark:bg-[#1c1c1c]">
+      <div className="mx-auto max-w-3xl px-4 pb-10 overflow-hidden rounded-xl border border-gray-200/80 bg-white dark:border-[#2e2e2e] dark:bg-[#1c1c1c]">
         {isLoading ? (
           <div className="px-4 py-12 text-center text-sm text-slate-500 dark:text-slate-400">
             {t("notifications.loading")}
@@ -117,7 +123,9 @@ export const NotificationsPage = () => {
                     if (!notification.read) markRead.mutate(notification.id);
                   }}
                   className={`cursor-pointer px-4 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-white/5 ${
-                    notification.read ? "" : "bg-fuchsia-50/60 dark:bg-[#B12B89]/10"
+                    notification.read
+                      ? ""
+                      : "bg-fuchsia-50/60 dark:bg-[#B12B89]/10"
                   }`}
                 >
                   <div className="flex items-start gap-3">
@@ -150,7 +158,9 @@ export const NotificationsPage = () => {
                           <button
                             type="button"
                             disabled={isActing}
-                            onClick={(event) => handleAccept(event, notification)}
+                            onClick={(event) =>
+                              handleAccept(event, notification)
+                            }
                             className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50"
                           >
                             {thisActing && acceptTransfer.isPending
@@ -160,7 +170,9 @@ export const NotificationsPage = () => {
                           <button
                             type="button"
                             disabled={isActing}
-                            onClick={(event) => handleDecline(event, notification)}
+                            onClick={(event) =>
+                              handleDecline(event, notification)
+                            }
                             className="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-100 disabled:opacity-50 dark:bg-red-950/40 dark:text-red-400 dark:hover:bg-red-950/70"
                           >
                             {thisActing && declineTransfer.isPending

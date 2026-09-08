@@ -132,8 +132,6 @@ const SAPHIR_PERMS = {
     "update_pack",
     "delete_pack",
     "view_agence",
-    "view_delivery_shifts",
-    "manage_delivery_shifts",
     "view_caisse",
     "create_caisse",
     "create_user",
@@ -148,7 +146,6 @@ const SAPHIR_PERMS = {
     "report_advanced_bl",
     "view_pack",
     "view_agence",
-    "view_delivery_shifts",
     "view_caisse",
   ],
   Commercial: [
@@ -168,8 +165,6 @@ const SAPHIR_PERMS = {
   Livreur: [
     "view_advanced_bl",
     "update_status_advanced_bl",
-    "view_delivery_shifts",
-    "manage_delivery_shifts",
     "view_caisse",
   ],
 };
@@ -657,42 +652,6 @@ async function run() {
         await transition(sessions.livreur.token, happyId, "PREPARE");
       });
 
-      // Start shift (required before LIVRE/PAYE)
-      try {
-        const started = await api("POST", "/delivery-shifts/start", {
-          token: sessions.livreur.token,
-          body: {},
-        });
-        if (started.status === 201 || started.status === 200) {
-          ok("happy.livreur.shiftStart");
-        } else if (
-          started.status === 409 ||
-          String(started.data?.message || "").includes("déjà")
-        ) {
-          ok("happy.livreur.shiftStart", "already open");
-        } else {
-          fail(
-            "happy.livreur.shiftStart",
-            started.data?.message || `HTTP ${started.status}`,
-          );
-        }
-      } catch (e) {
-        fail("happy.livreur.shiftStart", e.message);
-      }
-
-      // Confirm active shift before LIVRE
-      const active = await api("GET", "/delivery-shifts/me/active", {
-        token: sessions.livreur.token,
-      });
-      if (active.status >= 400 || !(active.data?.data?.shift || active.data?.shift)) {
-        fail(
-          "happy.livreur.shiftActive",
-          active.data?.message || "no open shift",
-        );
-      } else {
-        ok("happy.livreur.shiftActive");
-      }
-
       await transition(sessions.livreur.token, happyId, "COLLECTE");
       ok("happy.livreur.COLLECTE");
       await transition(sessions.livreur.token, happyId, "EN_ROUTE");
@@ -902,24 +861,6 @@ async function run() {
       }
     } catch (e) {
       fail("details.fetch", e.message);
-    }
-  }
-
-  // ── Shifts list ──
-  if (sessions.livreur) {
-    try {
-      await api("GET", "/delivery-shifts", {
-        token: sessions.livreur.token,
-        expectStatus: 200,
-      });
-      ok("shifts.list.livreur");
-      await api("GET", "/delivery-shifts/me/active", {
-        token: sessions.livreur.token,
-        expectStatus: 200,
-      });
-      ok("shifts.meActive.livreur");
-    } catch (e) {
-      fail("shifts.livreur", e.message);
     }
   }
 

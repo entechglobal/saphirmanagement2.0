@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowDownRight, ArrowUpRight, ClipboardList, Plus, Scale } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, ClipboardList, Plus, Scale, Warehouse } from "lucide-react";
 import { useAuth } from "@/features/auth";
 import { useCurrentUser } from "@/features/users/hooks/useUsers";
 import {
@@ -11,7 +11,6 @@ import {
   isSuperAdmin as checkSuperAdmin,
   PERMISSIONS,
 } from "@/shared/utils/permissions";
-import { ShiftStatusBanner } from "@/features/saphirmanagement/shifts/components/ShiftStatusBanner";
 import { SaphirWorkflowStats } from "@/features/saphirmanagement/dashboard/components/SaphirWorkflowStats";
 import { useDashboardOverview } from "../hooks/useDashboard";
 import {
@@ -20,6 +19,8 @@ import {
   getPresetRange,
 } from "../components/DashboardDateFilter";
 import { CashflowOverview } from "../components/CashflowOverview";
+import { StockValueOverview } from "../components/StockValueOverview";
+import { DebtCreditOverview } from "../components/DebtCreditOverview";
 import { DashboardRightRail } from "../components/DashboardRightRail";
 import { formatMAD } from "../utils/formatMoney";
 
@@ -39,7 +40,7 @@ export const DashboardPage = () => {
   const showSaphir =
     hasAnyPermission(user, [PERMISSIONS.VIEW_ADVANCED_BL]) || isOperational;
   const showWallets = isSuperAdmin;
-  const showCommercials = showSaphir && isAdmin;
+  const showCommercials = showSaphir;
   const showPlanning = showSaphir;
   const showRail = showWallets || showCommercials || showPlanning;
 
@@ -59,7 +60,7 @@ export const DashboardPage = () => {
   const { data, isLoading } = useDashboardOverview({
     dateFrom,
     dateTo,
-    enabled: showFinance,
+    enabled: showFinance || showWallets,
   });
 
   const hour = new Date().getHours();
@@ -96,14 +97,20 @@ export const DashboardPage = () => {
             : "text-red-600 dark:text-red-400",
         bg: "bg-fuchsia-50 dark:bg-fuchsia-900/20",
       },
+      {
+        label: t("summary.stock_value"),
+        value: data?.stockValue?.total,
+        digits: 2,
+        icon: Warehouse,
+        cls: "text-sky-600 dark:text-sky-400",
+        bg: "bg-sky-50 dark:bg-sky-900/20",
+      },
     ],
     [data, t],
   );
 
   return (
     <div className="min-h-screen p-4 transition-colors duration-300 md:p-8">
-      <ShiftStatusBanner />
-
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-50 md:text-2xl">
@@ -145,7 +152,7 @@ export const DashboardPage = () => {
           />
 
           {showFinance && (
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {summaryCards.map((card) => {
                 const Icon = card.icon;
                 return (
@@ -161,7 +168,9 @@ export const DashboardPage = () => {
                         {card.label}
                       </p>
                       <p className={`truncate text-lg font-bold tabular-nums ${card.cls}`}>
-                        {isLoading && data == null ? "—" : `${formatMAD(card.value)} MAD`}
+                        {isLoading && data == null
+                          ? "—"
+                          : `${formatMAD(card.value, card.digits ?? 0)} MAD`}
                       </p>
                     </div>
                   </div>
@@ -171,6 +180,22 @@ export const DashboardPage = () => {
           )}
 
           {showSaphir && <SaphirWorkflowStats dateFrom={dateFrom} dateTo={dateTo} />}
+
+          {showWallets && (
+            <DebtCreditOverview
+              data={data}
+              isLoading={isLoading}
+              granularity={data?.granularity}
+            />
+          )}
+
+          {showFinance && (
+            <StockValueOverview
+              data={data}
+              isLoading={isLoading}
+              granularity={data?.granularity}
+            />
+          )}
 
           {showFinance && (
             <CashflowOverview

@@ -121,6 +121,8 @@ export const updateStockIfManaged = async ({
      bonRetourClientId:      Int?  (RETURN_IN — client returns goods to us)
      bonReceptionId:         Int?  (INBOUND — goods received from supplier)
      bonRetourFournisseurId: Int?  (RETURN_OUT — we return goods to supplier)
+
+     unitCost:         Float? (purchase cost of this layer — BR unitPrice, etc.)
    }
 ============================================================ */
 
@@ -147,6 +149,12 @@ const processStockOperation = async (tx, op) => {
       variantId: op.variantId || null,
       quantityChange: op.quantityChange,
       quantityAfter,
+      unitCost:
+        op.unitCost !== undefined &&
+        op.unitCost !== null &&
+        !Number.isNaN(parseFloat(op.unitCost))
+          ? parseFloat(op.unitCost)
+          : null,
       transactionType: op.transactionType,
       referenceId: op.referenceId || null,
       reason: op.reason || null,

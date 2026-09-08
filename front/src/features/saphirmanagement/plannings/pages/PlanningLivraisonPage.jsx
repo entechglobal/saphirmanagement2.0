@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import {
   Package,
   Truck,
@@ -16,71 +17,119 @@ import {
   ChevronUp,
   Hash,
   ClipboardList,
-  MessageCircle
+  MessageCircle,
+  Search,
 } from "lucide-react";
-import { FormDatePicker } from "../../../../shared/FormDatePicker";
-import { SelectDropDown as Select } from "../../../../shared/components/SelectDropDown";
+import { FiltersBar } from "../../../../shared/components/FiltersBar";
+import {
+  DashboardDateFilter,
+  getPresetRange,
+} from "@/features/dashboard/components/DashboardDateFilter";
 import { usePlanningLivraison } from "../hooks/usePlanningLivraison";
 import { useDeliveriesList as useDeliveries } from "../../../stracture/delivries/hooks/useDeliveries";
 import { useAuth } from "../../../auth/hooks/useAuth";
+import { getUserRoleName } from "../../../../shared/utils/permissions";
 import { SectionLoader } from "../../../../shared/components/loadersCollections/SectionLoader";
 import { HeaderTable } from "../../../../shared/components/HeaderTable";
+
 const BRAND_COLOR = "#B12B89";
 
-// ─── Status badge config ───────────────────────────────────────────────────
 const STATUS_MAP = {
-  PAYE: {
-    labelKey: "status_paye",
-    bg: "bg-emerald-50 dark:bg-emerald-950/40",
-    text: "text-emerald-700 dark:text-emerald-400",
-    dot: "bg-emerald-500",
-  },
-  EN_ATTENTE: {
-    labelKey: "status_en_attente",
+  CONFIRME: {
+    labelKey: "status_label_CONFIRME",
     bg: "bg-amber-50 dark:bg-amber-950/40",
     text: "text-amber-700 dark:text-amber-400",
     dot: "bg-amber-400",
   },
+  PREPARE: {
+    labelKey: "status_label_PREPARE",
+    bg: "bg-emerald-50 dark:bg-emerald-950/40",
+    text: "text-emerald-700 dark:text-emerald-400",
+    dot: "bg-emerald-500",
+  },
+  COLLECTE: {
+    labelKey: "status_label_COLLECTE",
+    bg: "bg-violet-50 dark:bg-violet-950/40",
+    text: "text-violet-700 dark:text-violet-400",
+    dot: "bg-violet-500",
+  },
+  EN_ROUTE: {
+    labelKey: "status_label_EN_ROUTE",
+    bg: "bg-indigo-50 dark:bg-indigo-950/40",
+    text: "text-indigo-700 dark:text-indigo-400",
+    dot: "bg-indigo-500",
+  },
+  LIVRE: {
+    labelKey: "status_label_LIVRE",
+    bg: "bg-green-50 dark:bg-green-950/40",
+    text: "text-green-700 dark:text-green-400",
+    dot: "bg-green-500",
+  },
+  PAYE: {
+    labelKey: "status_label_PAYE",
+    bg: "bg-teal-50 dark:bg-teal-950/40",
+    text: "text-teal-700 dark:text-teal-400",
+    dot: "bg-teal-500",
+  },
   ANNULE: {
-    labelKey: "status_annule",
+    labelKey: "status_label_ANNULE",
     bg: "bg-red-50 dark:bg-red-950/40",
     text: "text-red-700 dark:text-red-400",
     dot: "bg-red-500",
   },
 };
 
-// ─── Stat Card ─────────────────────────────────────────────────────────────
+const STATUS_FILTER_VALUES = [
+  "CONFIRME",
+  "PREPARE",
+  "COLLECTE",
+  "EN_ROUTE",
+  "LIVRE",
+  "PAYE",
+  "ANNULE",
+];
+
+const PLANNING_PRESET = "this_week";
+
+const toDayKey = (d) => d.format("DD/MM/YYYY");
+
+const parseDayKey = (dateStr) => {
+  if (!dateStr || typeof dateStr !== "string") return null;
+  const [dd, mm, yyyy] = dateStr.split("/");
+  if (!dd || !mm || !yyyy) return null;
+  return dayjs(`${yyyy}-${mm}-${dd}`);
+};
+
+const fmtMad = (n) =>
+  Number(n ?? 0).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 const StatCard = ({ icon: Icon, label, value, color }) => (
-  <div className="bg-white dark:bg-[#1c1c1c] rounded-2xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm px-3 sm:px-5 py-3 sm:py-4 flex items-center gap-3 sm:gap-4">
+  <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 dark:border-[#2e2e2e] dark:bg-[#1c1c1c] sm:px-4">
     <div
-      className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0"
+      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
       style={{ backgroundColor: `${color}18` }}
     >
       <Icon size={16} style={{ color }} />
     </div>
     <div className="min-w-0">
-      <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 leading-none mb-0.5">
-        {label}
-      </p>
-      <p className="text-base sm:text-xl font-bold text-slate-800 dark:text-slate-100 leading-tight truncate">
+      <p className="text-[11px] font-medium text-slate-400 leading-none">{label}</p>
+      <p className="mt-1 truncate text-base font-bold tabular-nums text-slate-800 dark:text-slate-100 sm:text-lg">
         {value ?? "—"}
       </p>
     </div>
   </div>
 );
 
-// ─── BL Card (expandable) ──────────────────────────────────────────────────
 const BLCard = ({ bl }) => {
   const { t } = useTranslation("plannings");
+  const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
   const whatsappRaw = (bl.whatsapp ?? bl.telephone ?? "").toString();
   const cleanedWhatsapp = whatsappRaw.replace(/\D/g, "");
   const normalizedWhatsapp = cleanedWhatsapp.startsWith("0")
     ? `212${cleanedWhatsapp.slice(1)}`
     : cleanedWhatsapp;
-  const whatsappUrl = normalizedWhatsapp
-    ? `https://wa.me/${normalizedWhatsapp}`
-    : null;
+  const whatsappUrl = normalizedWhatsapp ? `https://wa.me/${normalizedWhatsapp}` : null;
 
   const statusCfg = STATUS_MAP[bl.commandStatus] ?? {
     labelKey: null,
@@ -88,56 +137,55 @@ const BLCard = ({ bl }) => {
     text: "text-slate-600 dark:text-slate-300",
     dot: "bg-slate-400",
   };
-  const status = { ...statusCfg, label: statusCfg.labelKey ? t(statusCfg.labelKey) : bl.commandStatus };
+  const status = {
+    ...statusCfg,
+    label: statusCfg.labelKey ? t(statusCfg.labelKey) : bl.commandStatus,
+  };
 
   return (
-    <div className="bg-white dark:bg-[#1c1c1c] rounded-2xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm overflow-hidden transition-all">
-      {/* Collapsed header – always visible */}
+    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-[#2e2e2e] dark:bg-[#1c1c1c]">
       <button
         type="button"
         onClick={() => setExpanded((p) => !p)}
-        className="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-[#222222]/60 transition"
+        className="flex w-full items-center gap-3 px-3.5 py-2.5 text-left transition hover:bg-slate-50 dark:hover:bg-[#222222]/60"
       >
-        {/* Status dot */}
-        <span className={`w-2 h-2 rounded-full shrink-0 ${status.dot}`} />
+        <span className={`h-2 w-2 shrink-0 rounded-full ${status.dot}`} />
 
-        {/* Client + doc number */}
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-slate-800 dark:text-slate-100 truncate">
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-slate-800 dark:text-slate-100">
             {bl.clientName}
           </p>
-          <p className="text-[11px] text-slate-400 font-mono">{bl.documentNumber}</p>
+          <p className="truncate text-[11px] text-slate-400">
+            {[bl.documentNumber, bl.ville, bl.livreurName].filter(Boolean).join(" · ")}
+          </p>
         </div>
 
-        {/* Colis badge */}
-        <span className="shrink-0 text-[11px] font-bold bg-blue-50 dark:bg-blue-950/50 text-[#B12B89] dark:text-blue-400 px-2 py-0.5 rounded-lg">
-          {t("bl_colis", { count: bl.nombreDeColis })}
+        <span className={`hidden shrink-0 items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-semibold sm:inline-flex ${status.bg} ${status.text}`}>
+          <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />
+          {status.label}
         </span>
 
-        {/* Time */}
         {bl.heureLivraison && (
-          <span className="shrink-0 text-[11px] text-slate-400 flex items-center gap-1">
+          <span className="hidden shrink-0 items-center gap-1 text-[11px] text-slate-400 sm:flex">
             <Clock size={11} />
             {bl.heureLivraison}
           </span>
         )}
 
-        {/* Expand toggle */}
+        <span className="shrink-0 rounded-md bg-[#B12B89]/10 px-2 py-0.5 text-[11px] font-bold text-[#B12B89]">
+          {t("bl_colis", { count: bl.nombreDeColis })}
+        </span>
+
         <span className="shrink-0 text-slate-400">
           {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         </span>
       </button>
 
-      {/* Expanded details */}
       {expanded && (
-        <div className="border-t border-slate-100 dark:border-[#2e2e2e] px-4 pb-4 pt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5">
+        <div className="grid grid-cols-1 gap-x-4 gap-y-2.5 border-t border-slate-100 px-4 pb-4 pt-3 dark:border-[#2e2e2e] sm:grid-cols-2">
           <DetailRow icon={Hash} label={t("detail_document")} value={bl.documentNumber} />
           <DetailRow icon={User} label={t("detail_created_by")} value={bl.createdBy ?? "—"} />
-          <DetailRow
-            icon={Truck}
-            label={t("detail_livreur")}
-            value={bl.livreurName ?? "—"}
-          />
+          <DetailRow icon={Truck} label={t("detail_livreur")} value={bl.livreurName ?? "—"} />
           {bl.telephone && (
             <DetailRow icon={Phone} label={t("detail_telephone")} value={bl.telephone} />
           )}
@@ -149,17 +197,9 @@ const BLCard = ({ bl }) => {
               href={whatsappUrl}
             />
           )}
-          {bl.ville && (
-            <DetailRow icon={MapPin} label={t("detail_ville")} value={bl.ville} />
-          )}
-
+          {bl.ville && <DetailRow icon={MapPin} label={t("detail_ville")} value={bl.ville} />}
           {bl.localisation && (
-            <DetailRow
-              icon={MapPin}
-              label={t("detail_localisation")}
-              value={bl.localisation}
-              full
-            />
+            <DetailRow icon={MapPin} label={t("detail_localisation")} value={bl.localisation} full />
           )}
           <DetailRow
             icon={CreditCard}
@@ -169,11 +209,7 @@ const BLCard = ({ bl }) => {
           <DetailRow
             icon={Package}
             label={t("detail_montant")}
-            value={
-              bl.amountDue != null
-                ? `${Number(bl.amountDue).toFixed(2)} MAD`
-                : "—"
-            }
+            value={bl.amountDue != null ? `${fmtMad(bl.amountDue)} MAD` : "—"}
           />
           {bl.observation && (
             <DetailRow
@@ -184,38 +220,45 @@ const BLCard = ({ bl }) => {
               isNotes
             />
           )}
-
           {bl.reste != null && bl.reste > 0 && (
             <DetailRow
               icon={Package}
               label={t("detail_reste")}
-              value={`${Number(bl.reste).toFixed(2)} MAD`}
+              value={`${fmtMad(bl.reste)} MAD`}
             />
           )}
 
-          {/* Flags */}
-          <div className="col-span-2 flex flex-wrap gap-2 pt-1">
-            <span
-              className={`inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-lg ${status.bg} ${status.text}`}
-            >
-              <span className={`w-1.5 h-1.5 rounded-full ${status.dot}`} />
+          <div className="col-span-2 flex flex-wrap items-center gap-2 pt-1">
+            <span className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-semibold ${status.bg} ${status.text}`}>
+              <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />
               {status.label}
             </span>
             {bl.isReported && (
-              <span className="inline-flex items-center text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400">
+              <span className="inline-flex items-center rounded-lg bg-orange-50 px-2.5 py-1 text-[11px] font-semibold text-orange-600 dark:bg-orange-950/40 dark:text-orange-400">
                 {t("badge_reported")}
               </span>
             )}
             {bl.isSuspended && (
-              <span className="inline-flex items-center text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400">
+              <span className="inline-flex items-center rounded-lg bg-red-50 px-2.5 py-1 text-[11px] font-semibold text-red-600 dark:bg-red-950/40 dark:text-red-400">
                 {t("badge_suspended")}
               </span>
             )}
             {bl.agenceName && (
-              <span className="inline-flex items-center text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#222222] text-slate-600 dark:text-slate-300">
+              <span className="inline-flex items-center rounded-lg bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-600 dark:bg-[#222222] dark:text-slate-300">
                 {bl.agenceName}
               </span>
             )}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/commandes/${bl.id}`);
+              }}
+              className="ms-auto inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-[11px] font-semibold text-[#B12B89] transition hover:bg-slate-50 dark:border-[#2e2e2e] dark:hover:bg-[#222222]"
+            >
+              <ClipboardList size={12} />
+              {t("open_details")}
+            </button>
           </div>
         </div>
       )}
@@ -225,13 +268,11 @@ const BLCard = ({ bl }) => {
 
 const DetailRow = ({ icon: Icon, label, value, full, href, isNotes }) => (
   <div className={`flex items-start gap-2 ${full ? "col-span-2" : ""}`}>
-    <Icon size={13} className="text-slate-400 mt-0.5 shrink-0" />
+    <Icon size={13} className="mt-0.5 shrink-0 text-slate-400" />
     <div>
-      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-        {label}
-      </p>
+      <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</p>
       {isNotes ? (
-        <p className="text-[12px] font-semibold text-slate-700 dark:text-slate-100 bg-amber-50 dark:bg-amber-900/30 border border-amber-100 dark:border-amber-800/60 rounded-xl px-2.5 py-2 whitespace-pre-wrap break-words leading-relaxed max-h-28 overflow-y-auto">
+        <p className="max-h-28 overflow-y-auto whitespace-pre-wrap break-words rounded-xl border border-amber-100 bg-amber-50 px-2.5 py-2 text-[12px] font-semibold leading-relaxed text-slate-700 dark:border-amber-800/60 dark:bg-amber-900/30 dark:text-slate-100">
           {value ?? "—"}
         </p>
       ) : href && value ? (
@@ -239,30 +280,25 @@ const DetailRow = ({ icon: Icon, label, value, full, href, isNotes }) => (
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[12px] font-semibold text-emerald-600 dark:text-emerald-400 hover:underline break-words"
+          className="break-words text-[12px] font-semibold text-emerald-600 hover:underline dark:text-emerald-400"
         >
           {value}
         </a>
       ) : (
-        <p className="text-[12px] font-semibold text-slate-700 dark:text-slate-200 break-words">
+        <p className="break-words text-[12px] font-semibold text-slate-700 dark:text-slate-200">
           {value ?? "—"}
         </p>
       )}
-
     </div>
   </div>
 );
 
-
-// ─── Mini Calendar ─────────────────────────────────────────────────────────
 const MiniCalendar = ({ planningData, calMonth, setCalMonth, onDaySelect, selectedDay }) => {
   const { t } = useTranslation("plannings");
   const startOfMonth = calMonth.startOf("month");
   const daysInMonth = calMonth.daysInMonth();
-  const firstDow = startOfMonth.day(); // 0=Sun
+  const firstDow = startOfMonth.day();
 
-  // Map "DD/MM/YYYY" → { count, inRange }
-  // inRange = true if the backend returned this date (even with empty array)
   const dayInfoMap = useMemo(() => {
     const m = {};
     planningData?.forEach(({ date, advancedBonLivraisons }) => {
@@ -287,39 +323,36 @@ const MiniCalendar = ({ planningData, calMonth, setCalMonth, onDaySelect, select
     dayjs().year() === calMonth.year();
 
   return (
-    <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm overflow-hidden">
-      {/* Month nav */}
-      <div className="flex items-center justify-between px-3 sm:px-5 py-3 sm:py-4 border-b border-slate-100 dark:border-[#2e2e2e]">
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-[#2e2e2e] dark:bg-[#1c1c1c]">
+      <div className="flex items-center justify-between border-b border-slate-100 px-3 py-3 dark:border-[#2e2e2e] sm:px-4">
         <button
           type="button"
           onClick={() => setCalMonth((m) => m.subtract(1, "month"))}
-          className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-slate-100 dark:hover:bg-[#222222] transition"
+          className="flex h-8 w-8 items-center justify-center rounded-lg transition hover:bg-slate-100 dark:hover:bg-[#222222]"
         >
           <ChevronLeft size={16} className="text-slate-500" />
         </button>
-        <p className="text-sm font-bold text-slate-700 dark:text-slate-200 capitalize">
+        <p className="text-sm font-bold capitalize text-slate-700 dark:text-slate-200">
           {calMonth.format("MMMM YYYY")}
         </p>
         <button
           type="button"
           onClick={() => setCalMonth((m) => m.add(1, "month"))}
-          className="w-8 h-8 rounded-xl flex items-center justify-center hover:bg-slate-100 dark:hover:bg-[#222222] transition"
+          className="flex h-8 w-8 items-center justify-center rounded-lg transition hover:bg-slate-100 dark:hover:bg-[#222222]"
         >
           <ChevronRight size={16} className="text-slate-500" />
         </button>
       </div>
 
-      {/* Day headers */}
-      <div className="grid grid-cols-7 px-2 sm:px-4 pt-3 pb-1">
+      <div className="grid grid-cols-7 px-2 pb-1 pt-3 sm:px-4">
         {[t("day_sun"), t("day_mon"), t("day_tue"), t("day_wed"), t("day_thu"), t("day_fri"), t("day_sat")].map((d) => (
-          <div key={d} className="text-center text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400 py-1">
+          <div key={d} className="py-1 text-center text-[9px] font-bold uppercase tracking-wider text-slate-400 sm:text-[10px]">
             {d}
           </div>
         ))}
       </div>
 
-      {/* Grid — pt-2 so top-row badges aren't clipped */}
-      <div className="grid grid-cols-7 gap-0.5 px-2 sm:px-4 pt-2 pb-3 sm:pb-4">
+      <div className="grid grid-cols-7 gap-0.5 px-2 pb-3 pt-2 sm:px-4 sm:pb-4">
         {blanks.map((_, i) => (
           <div key={`b${i}`} />
         ))}
@@ -339,28 +372,26 @@ const MiniCalendar = ({ planningData, calMonth, setCalMonth, onDaySelect, select
               onClick={() => inRange && onDaySelect(selected ? null : key)}
               disabled={!inRange}
               className={[
-                "relative mx-auto flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full transition-all text-[11px] sm:text-[13px] font-semibold",
+                "relative mx-auto flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-semibold transition-all sm:h-9 sm:w-9 sm:text-[13px] md:h-10 md:w-10",
                 selected
                   ? "text-white shadow-md"
                   : hasDeliveries
-                    ? "text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40"
+                    ? "text-emerald-700 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-950/40"
                     : inRange
-                      ? "text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#222222]"
-                      : "text-slate-300 dark:text-slate-700 cursor-default",
-                today && !selected ? "ring-2 ring-blue-400" : "",
+                      ? "text-slate-800 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#222222]"
+                      : "cursor-default text-slate-300 dark:text-slate-700",
+                today && !selected ? "ring-2 ring-[#B12B89]/50" : "",
               ].join(" ")}
               style={selected ? { backgroundColor: BRAND_COLOR } : {}}
             >
               {hasDeliveries && !selected && (
-                <span className="absolute inset-0 rounded-full opacity-10 bg-emerald-500" />
+                <span className="absolute inset-0 rounded-full bg-emerald-500 opacity-10" />
               )}
-
               <span className="relative z-10">{d}</span>
-
               {hasDeliveries && (
                 <span
                   className={[
-                    "absolute -top-1 -right-0.5 sm:-right-1 min-w-[14px] sm:min-w-[16px] h-3.5 sm:h-4 px-0.5 sm:px-1 rounded-full text-[8px] sm:text-[9px] font-bold leading-none flex items-center justify-center shadow-sm",
+                    "absolute -right-0.5 -top-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-0.5 text-[8px] font-bold leading-none shadow-sm sm:-right-1 sm:h-4 sm:min-w-[16px] sm:px-1 sm:text-[9px]",
                     selected ? "bg-white text-[#B12B89]" : "bg-emerald-500 text-white",
                   ].join(" ")}
                 >
@@ -372,38 +403,41 @@ const MiniCalendar = ({ planningData, calMonth, setCalMonth, onDaySelect, select
         })}
       </div>
 
-      {/* Legend */}
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 px-3 sm:px-5 pb-3 sm:pb-4 pt-1">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 px-3 pb-3 pt-1 sm:px-4 sm:pb-4">
         <span className="flex items-center gap-1.5 text-[10px] text-slate-400">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+          <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-400" />
           {t("legend_with_deliveries")}
         </span>
         <span className="flex items-center gap-1.5 text-[10px] text-slate-400">
-          <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-[#2e2e2e] shrink-0" />
+          <span className="h-2 w-2 shrink-0 rounded-full bg-slate-300 dark:bg-[#2e2e2e]" />
           {t("legend_without")}
         </span>
         <span className="flex items-center gap-1.5 text-[10px] text-slate-300 dark:text-slate-700">
-          <span className="w-2 h-2 rounded-full bg-slate-200 dark:bg-[#222222] shrink-0" />
+          <span className="h-2 w-2 shrink-0 rounded-full bg-slate-200 dark:bg-[#222222]" />
           {t("legend_out_of_range")}
         </span>
       </div>
     </div>
   );
 };
-// ─── Main Page ─────────────────────────────────────────────────────────────
+
 export const PlanningLivraisonPage = () => {
   const { t } = useTranslation("plannings");
   const { user } = useAuth();
-  const canFilterByLivreur = !!(user?.isSuperAdmin || user?.role === "Societe_Admin");
-  const today = dayjs();
+  const roleName = getUserRoleName(user);
+  const canFilterByLivreur =
+    !!user?.isSuperAdmin || ["Societe_Admin", "Gerant"].includes(roleName);
 
-  const [startDateTime, setStartDateTime] = useState(today.startOf("week"));
-  const [endDateTime, setEndDateTime] = useState(today.endOf("week"));
-  const [selectedLivreurId, setSelectedLivreurId] = useState("");
-  const [calMonth, setCalMonth] = useState(today);
-  const [selectedDay, setSelectedDay] = useState(null); // "DD/MM/YYYY"
+  const [startDateTime, setStartDateTime] = useState(() => getPresetRange(PLANNING_PRESET)[0]);
+  const [endDateTime, setEndDateTime] = useState(() => getPresetRange(PLANNING_PRESET)[1]);
+  const [selectedLivreur, setSelectedLivreur] = useState(null);
+  const [statusFilter, setStatusFilter] = useState(null);
+  const [cityFilter, setCityFilter] = useState(null);
+  const [search, setSearch] = useState("");
+  const [flagFilter, setFlagFilter] = useState(null);
+  const [calMonth, setCalMonth] = useState(() => getPresetRange(PLANNING_PRESET)[0]);
+  const [selectedDay, setSelectedDay] = useState(null);
 
-  // Format for API: YYYY-MM-DD
   const startDate = startDateTime?.format("YYYY-MM-DD");
   const endDate = endDateTime?.format("YYYY-MM-DD");
 
@@ -414,92 +448,205 @@ export const PlanningLivraisonPage = () => {
   } = usePlanningLivraison({
     startDate,
     endDate,
-    livreurId: selectedLivreurId || undefined,
+    livreurId: selectedLivreur?.id || undefined,
   });
 
   const { data: deliveriesResponse } = useDeliveries({ pageSize: 1000 });
 
-  const metrics = planningResponse?.metrics ?? {};
   const planningData = planningResponse?.data ?? [];
+  const livreurs = deliveriesResponse?.data ?? [];
 
-  const livreurOptions = useMemo(() => {
-    const list = deliveriesResponse?.data ?? [];
-    return [
-      { value: "", label: t("filter_all_livreurs") },
-      ...list.map((l) => ({ value: l.id, label: l.name })),
-    ];
-  }, [deliveriesResponse, t]);
+  const cityOptions = useMemo(() => {
+    const set = new Set();
+    planningData.forEach((day) => {
+      day.advancedBonLivraisons?.forEach((bl) => {
+        const city = (bl.ville || "").trim();
+        if (city) set.add(city);
+      });
+    });
+    return Array.from(set)
+      .sort((a, b) => a.localeCompare(b, "fr"))
+      .map((city) => ({ value: city, label: city }));
+  }, [planningData]);
 
-  // Days to display: if a day is selected show only that one, else all
+  const statusOptions = useMemo(
+    () => STATUS_FILTER_VALUES.map((value) => ({ value, label: t(`status_label_${value}`) })),
+    [t],
+  );
+
+  const matchesBl = (bl) => {
+    if (statusFilter?.value && bl.commandStatus !== statusFilter.value) return false;
+    if (cityFilter?.value && (bl.ville || "").trim() !== cityFilter.value) return false;
+    if (flagFilter?.value === "reported" && !bl.isReported) return false;
+    if (flagFilter?.value === "suspended" && !bl.isSuspended) return false;
+    const q = search.trim().toLowerCase();
+    if (q) {
+      const hay = [
+        bl.clientName,
+        bl.documentNumber,
+        bl.ville,
+        bl.localisation,
+        bl.telephone,
+        bl.whatsapp,
+        bl.livreurName,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  };
+
+  const filteredPlanning = useMemo(
+    () =>
+      planningData.map((day) => ({
+        ...day,
+        advancedBonLivraisons: (day.advancedBonLivraisons ?? []).filter(matchesBl),
+      })),
+    [planningData, statusFilter, cityFilter, flagFilter, search],
+  );
+
+  const filteredBls = useMemo(
+    () => filteredPlanning.flatMap((d) => d.advancedBonLivraisons),
+    [filteredPlanning],
+  );
+
   const displayedDays = useMemo(() => {
-    if (!selectedDay) return planningData;
-    return planningData.filter((d) => d.date === selectedDay);
-  }, [planningData, selectedDay]);
+    if (selectedDay) return filteredPlanning.filter((d) => d.date === selectedDay);
+    return filteredPlanning.filter((d) => d.advancedBonLivraisons.length > 0);
+  }, [filteredPlanning, selectedDay]);
+
+  const metrics = useMemo(() => {
+    const daysWith = filteredPlanning.filter((d) => d.advancedBonLivraisons.length > 0).length;
+    return {
+      totalAdvancedBonLivraisons: filteredBls.length,
+      totalColis: filteredBls.reduce((s, bl) => s + Number(bl.nombreDeColis || 0), 0),
+      totalMontantAdvancedBonLivraisons: filteredBls.reduce((s, bl) => s + Number(bl.reste || 0), 0),
+      totalDays: daysWith,
+    };
+  }, [filteredPlanning, filteredBls]);
+
+  const hasActiveFilters = !!(
+    search.trim() ||
+    statusFilter ||
+    cityFilter ||
+    selectedLivreur ||
+    flagFilter ||
+    selectedDay
+  );
+
+  const handleReset = () => {
+    const [start, end] = getPresetRange(PLANNING_PRESET);
+    setStartDateTime(start);
+    setEndDateTime(end);
+    setCalMonth(start);
+    setSelectedLivreur(null);
+    setStatusFilter(null);
+    setCityFilter(null);
+    setSearch("");
+    setFlagFilter(null);
+    setSelectedDay(null);
+  };
+
+  const handleDateChange = (from, to) => {
+    setStartDateTime(from);
+    setEndDateTime(to);
+    if (from?.isValid() && to?.isValid() && from.isSame(to, "day")) {
+      setSelectedDay(toDayKey(from));
+    } else {
+      setSelectedDay(null);
+    }
+  };
+
+  useEffect(() => {
+    if (startDateTime?.isValid()) setCalMonth(startDateTime);
+  }, [startDate]);
+
+  const formatDayTitle = (dateStr) => {
+    const d = parseDayKey(dateStr);
+    if (!d?.isValid()) return dateStr;
+    if (d.isSame(dayjs(), "day")) return t("today_badge");
+    if (d.isSame(dayjs().add(1, "day"), "day")) return t("tomorrow_badge");
+    return d.format("dddd D MMM");
+  };
 
   return (
-    <div className="min-h-screen pb-16">
-      {/* ── Page header ── */}
-      <div className="px-4 md:px-8 pt-6 pb-4 ">
-        <HeaderTable
-          title={t("page_title")}
-          icon={<Calendar className="w-6 h-6 text-[#B12B89]" />}
-        />
+    <div className="min-h-screen p-4 md:p-8">
+      <HeaderTable
+        title={t("page_title")}
+        count={isLoading ? undefined : metrics.totalAdvancedBonLivraisons}
+      />
 
+      <div className="mb-5">
+        <DashboardDateFilter
+          from={startDateTime}
+          to={endDateTime}
+          onChange={handleDateChange}
+        />
       </div>
 
-      <div className="px-4 md:px-8 space-y-6">
-        {/* ── Filters ── */}
-        <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm p-5">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-4">
-            {t("filter_label")}
-          </p>
-          <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <FormDatePicker
-                label={t("filter_start_date")}
-                name="startDate"
-                value={startDateTime?.format("YYYY-MM-DD") ?? ""}
-                onChange={(e) => {
-                  const nextStart = e.target.value
-                    ? dayjs(e.target.value).startOf("day")
-                    : null;
-                  setStartDateTime(nextStart);
-                  if (nextStart && endDateTime && nextStart.isAfter(endDateTime, "day")) {
-                    setEndDateTime(nextStart.endOf("day"));
-                  }
-                }}
-              />
-              <FormDatePicker
-                label={t("filter_end_date")}
-                name="endDate"
-                value={endDateTime?.format("YYYY-MM-DD") ?? ""}
-                onChange={(e) => {
-                  const nextEnd = e.target.value
-                    ? dayjs(e.target.value).endOf("day")
-                    : null;
-                  setEndDateTime(nextEnd);
-                }}
-              />
-            </div>
-            {canFilterByLivreur && (
-              <div className="w-full sm:max-w-xs">
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">
-                  {t("filter_livreur")}
-                </label>
-                <Select
-                  name="livreurId"
-                  value={selectedLivreurId}
-                  onChange={(e) => setSelectedLivreurId(e.target.value)}
-                  options={livreurOptions}
-                  title={t("filter_all_livreurs")}
-                />
-              </div>
-            )}
-          </div>
-        </div>
+      <FiltersBar
+        t={t}
+        hasActiveFilters={hasActiveFilters}
+        onReset={handleReset}
+        cols={{
+          xs: "1fr",
+          sm: "repeat(2, 1fr)",
+          md: `repeat(${canFilterByLivreur ? 4 : 3}, 1fr)`,
+        }}
+        filters={[
+          {
+            type: "select",
+            id: "status",
+            label: t("filter_status"),
+            options: statusOptions,
+            value: statusFilter,
+            onChange: setStatusFilter,
+          },
+          {
+            type: "select",
+            id: "city",
+            label: t("filter_city"),
+            options: cityOptions,
+            value: cityFilter,
+            onChange: setCityFilter,
+            searchable: true,
+          },
+          {
+            type: "select",
+            id: "flag",
+            label: t("filter_flags"),
+            options: [
+              { value: "reported", label: t("flag_reported") },
+              { value: "suspended", label: t("flag_suspended") },
+            ],
+            value: flagFilter,
+            onChange: setFlagFilter,
+          },
+          ...(canFilterByLivreur
+            ? [
+                {
+                  type: "async-select",
+                  id: "livreur",
+                  label: t("filter_livreur"),
+                  icon: Truck,
+                  options: livreurs,
+                  value: selectedLivreur,
+                  onChange: setSelectedLivreur,
+                  getOptionLabel: (o) => o?.name ?? "",
+                  allLabel: t("filter_all_livreurs"),
+                },
+              ]
+            : []),
+        ]}
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder={t("search_placeholder")}
+      />
 
-        {/* ── Metrics ── */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="space-y-5">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           <StatCard
             icon={Truck}
             label={t("stat_bl")}
@@ -515,11 +662,7 @@ export const PlanningLivraisonPage = () => {
           <StatCard
             icon={CreditCard}
             label={t("stat_montant")}
-            value={
-              metrics.totalMontantAdvancedBonLivraisons != null
-                ? `${Number(metrics.totalMontantAdvancedBonLivraisons).toFixed(2)} MAD`
-                : "—"
-            }
+            value={`${fmtMad(metrics.totalMontantAdvancedBonLivraisons)} MAD`}
             color="#f59e0b"
           />
           <StatCard
@@ -530,12 +673,10 @@ export const PlanningLivraisonPage = () => {
           />
         </div>
 
-        {/* ── Calendar + List ── */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Calendar */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
           <div className="md:col-span-5 lg:col-span-4">
             <MiniCalendar
-              planningData={planningData}
+              planningData={filteredPlanning}
               calMonth={calMonth}
               setCalMonth={setCalMonth}
               onDaySelect={setSelectedDay}
@@ -545,39 +686,35 @@ export const PlanningLivraisonPage = () => {
               <button
                 type="button"
                 onClick={() => setSelectedDay(null)}
-                className="mt-2 text-[12px] font-semibold text-blue-500 hover:underline ml-1"
+                className="mt-2 ml-1 text-[12px] font-semibold text-[#B12B89] hover:underline"
               >
                 {t("back_all_days")}
               </button>
             )}
           </div>
 
-          {/* Daily list */}
-          <div className="md:col-span-7 lg:col-span-8 space-y-5">
+          <div className="space-y-5 md:col-span-7 lg:col-span-8">
             {isLoading || isFetching ? (
               <SectionLoader />
             ) : displayedDays.length === 0 ? (
-              <div className="bg-white dark:bg-[#1c1c1c] rounded-3xl border border-slate-200 dark:border-[#2e2e2e] shadow-sm p-10 text-center">
-                <Truck size={36} className="text-slate-300 dark:text-slate-700 mx-auto mb-3" />
+              <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center dark:border-[#2e2e2e] dark:bg-[#1c1c1c]">
+                <Search size={32} className="mx-auto mb-3 text-slate-300 dark:text-slate-700" />
                 <p className="text-sm font-semibold text-slate-400">
-                  {t("empty_period")}
+                  {hasActiveFilters ? t("empty_filters") : t("empty_period")}
                 </p>
               </div>
             ) : (
               displayedDays.map(({ date, advancedBonLivraisons }) => (
                 <div key={date}>
-                  {/* Day header */}
-                  <div className="flex items-center gap-3 mb-2">
-                    <p className="text-[13px] font-bold text-slate-700 dark:text-slate-200">
-                      {date}
+                  <div className="mb-2 flex items-center gap-3">
+                    <p className="text-[13px] font-bold capitalize text-slate-700 dark:text-slate-200">
+                      {formatDayTitle(date)}
                     </p>
+                    <span className="text-[11px] text-slate-400">{date}</span>
                     {advancedBonLivraisons.length > 0 ? (
                       <span
-                        className="text-[11px] font-bold px-2 py-0.5 rounded-lg"
-                        style={{
-                          backgroundColor: "#10b98118",
-                          color: "#10b981",
-                        }}
+                        className="rounded-lg px-2 py-0.5 text-[11px] font-bold"
+                        style={{ backgroundColor: "#10b98118", color: "#10b981" }}
                       >
                         {t("delivery_count", { count: advancedBonLivraisons.length })}
                       </span>
@@ -586,10 +723,9 @@ export const PlanningLivraisonPage = () => {
                         {t("no_delivery")}
                       </span>
                     )}
-                    <div className="flex-1 h-px bg-slate-100 dark:bg-[#222222]" />
+                    <div className="h-px flex-1 bg-slate-100 dark:bg-[#222222]" />
                   </div>
 
-                  {/* BL cards */}
                   {advancedBonLivraisons.length > 0 ? (
                     <div className="space-y-2">
                       {advancedBonLivraisons.map((bl) => (
@@ -597,10 +733,8 @@ export const PlanningLivraisonPage = () => {
                       ))}
                     </div>
                   ) : (
-                    <div className="bg-slate-50 dark:bg-[#1c1c1c]/50 rounded-2xl border border-dashed border-slate-200 dark:border-[#2e2e2e] py-4 px-5">
-                      <p className="text-[12px] text-slate-400 text-center">
-                        {t("day_no_delivery")}
-                      </p>
+                    <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-4 dark:border-[#2e2e2e] dark:bg-[#1c1c1c]/50">
+                      <p className="text-center text-[12px] text-slate-400">{t("day_no_delivery")}</p>
                     </div>
                   )}
                 </div>
@@ -612,4 +746,3 @@ export const PlanningLivraisonPage = () => {
     </div>
   );
 };
-

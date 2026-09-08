@@ -3,7 +3,7 @@ const ADMIN_ROLES = new Set(["Societe_Admin", "Société_Admin", "Societe Admin"
 function isAttendanceAdmin(user) {
   if (!user) return false;
   if (user.isSuperAdmin) return true;
-  const role = user.role || user.roleName || "";
+  const role = user.role?.name || user.role || user.roleName || "";
   return ADMIN_ROLES.has(role);
 }
 

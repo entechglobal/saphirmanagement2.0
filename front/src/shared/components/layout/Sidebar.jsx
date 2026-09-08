@@ -32,7 +32,6 @@ import {
   ShoppingBag,
   Search,
   CalendarDays,
-  Clock,
   ShieldCheck,
   Settings,
   Fingerprint,
@@ -195,7 +194,6 @@ export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose
           { key: "statistiques-commerciaux", label: t("saphirManagement.commercialStats"), path: "/statistiques-commerciaux", icon: BarChart3, permission: PERMISSIONS.VIEW_ADVANCED_BL },
           { key: "colis-tracking", label: t("saphirManagement.colisTracking"), path: "/colis-tracking", icon: Search, permission: PERMISSIONS.VIEW_ADVANCED_BL },
           { key: "planning-livraison", label: t("saphirManagement.planningLivraison"), path: "/planning-livraison", icon: CalendarDays, permission: PERMISSIONS.VIEW_ADVANCED_BL },
-          { key: "delivery-shifts", label: t("saphirManagement.deliveryShifts"), path: "/delivery-shifts", icon: Clock, permission: [PERMISSIONS.VIEW_DELIVERY_SHIFTS, PERMISSIONS.MANAGE_DELIVERY_SHIFTS] },
         ],
       },
       {

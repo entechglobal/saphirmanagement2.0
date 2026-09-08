@@ -63,13 +63,12 @@
     "factureFournisseur": "Supplier Invoice"
   },
   "saphirManagement": {
-    "label": "Saphir Management",
+    "label": "Ecommerce management",
     "dashboard": "Dashboard",
     "agences": "Agencies",
     "commandes": "Orders",
     "colisTracking": "Package Tracking",
     "planningLivraison": "Delivery Planning",
-    "deliveryShifts": "Delivery shifts",
     "commercialStats": "Commercial stats"
   },
   "gestion": {

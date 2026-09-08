@@ -43,8 +43,22 @@ button { cursor: pointer; }
   padding: 36px 32px;
 }
 
+.brand-mark {
+  display: block;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(177, 43, 137, 0.22);
+}
 .brand-logo { display: block; height: 42px; width: auto; margin: 0 auto 18px; }
-.header-logo { height: 28px; width: auto; }
+.header-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  flex-shrink: 0;
+}
+.header-logo { height: 22px; width: auto; }
 .auth-card h1,
 .connect-card h2 { margin: 0 0 8px; text-align: center; font-size: 22px; }
 .lead { margin: 0 0 22px; color: var(--muted); text-align: center; font-size: 14px; line-height: 1.5; }

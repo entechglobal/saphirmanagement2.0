@@ -1,25 +1,22 @@
 import { useState, useCallback, memo, useMemo, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "@/shared/utils/toast";
 import {
-  ShoppingCart,
   CheckCircle2,
   Clock,
   User,
-  Building2,
   Truck,
   Printer,
-  MessageCircle,
   ChevronDown,
   AlertTriangle,
   PlayCircle,
   CalendarClock,
-  CircleX,
   MoreVertical,
   Pencil, Trash2,
   PauseCircle,
   X, Loader2, XCircle,
+  Eye,
 } from "lucide-react";
 import { Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
@@ -43,15 +40,15 @@ import { useCurrentUser } from "../../../users/hooks/useUsers";
 import { ReusableTable } from "../../../../shared/components/ReusableTable";
 import { FiltersBar } from "../../../../shared/components/FiltersBar";
 import { HeaderTable } from "../../../../shared/components/HeaderTable";
-import { ShiftStatusBanner } from "../../shifts/components/ShiftStatusBanner";
 import { ConfirmationModal } from "../../../../shared/components/ConfirmationModal";
 import { FormDatePicker } from "../../../../shared/FormDatePicker";
+import { PayOrderModal } from "../components/PayOrderModal";
 
 /* ─────────────────────────────────────────────
    STATUS FLOW
 ───────────────────────────────────────────── */
 const NEXT_STATUS = {
-  EN_COURS: ["CONFIRME", "ANNULE"],
+  EN_COURS: ["PREPARE", "CONFIRME", "ANNULE"],
   CONFIRME: ["PREPARE", "ANNULE"],
   PREPARE: ["COLLECTE", "ANNULE"],
   COLLECTE: ["EN_ROUTE", "ANNULE"],
@@ -329,7 +326,6 @@ const InlineStatusDropdown = memo(({ status, allowedTargets, onSelect, isLoading
             : "cursor-pointer hover:brightness-95 active:scale-95",
         ].join(" ")}
       >
-        {cfg.icon}
         {cfg.label}
         {!isTerminal && (
           <ChevronDown
@@ -663,9 +659,18 @@ export const ReportModal = ({ open, onClose, command, onConfirm, isLoading }) =>
 /* ─────────────────────────────────────────────
    MAIN PAGE
 ───────────────────────────────────────────── */
+const statusOptionFromParam = (raw, t) => {
+  if (!raw || !STATUS_CONFIG[raw]) return null;
+  return {
+    value: raw,
+    label: t(`status_label_${raw}`, STATUS_CONFIG[raw].label),
+  };
+};
+
 export const CommandsPage = () => {
   const { t } = useTranslation("commands");
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { data: currentUser } = useCurrentUser();
   const roleName     = currentUser?.data?.role?.name;
   const upperRole    = roleName?.trim().toUpperCase();
@@ -683,8 +688,11 @@ export const CommandsPage = () => {
 
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [reportingCommand, setReportingCommand] = useState(null);
+  const [payOrder, setPayOrder] = useState(null);
 
-  const [statusFilter, setStatusFilter] = useState(null);
+  const [statusFilter, setStatusFilter] = useState(() =>
+    statusOptionFromParam(new URLSearchParams(window.location.search).get("status"), (key, fallback) => fallback),
+  );
   const [selectedLivreur, setSelectedLivreur] = useState(null);
   const [selectedCommercial, setSelectedCommercial] = useState(null);
   const [selectedAgency, setSelectedAgency] = useState(null);
@@ -693,6 +701,29 @@ export const CommandsPage = () => {
   const { data: commercialData, isLoading: commercialLoading } = useCommercials();
   const { data: agenciesData, isLoading: agenciesLoading } = useAgences();
   const { data: clientsData } = useCommandClients({ limit: 10000 });
+
+  const setStatusQuery = useCallback(
+    (value) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          if (value) next.set("status", value);
+          else next.delete("status");
+          return next;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
+
+  useEffect(() => {
+    const next = statusOptionFromParam(searchParams.get("status"), t);
+    setStatusFilter((prev) => {
+      if (prev?.value === next?.value && (!next || prev.label === next.label)) return prev;
+      return next;
+    });
+  }, [searchParams, t]);
 
   const { data, isLoading, isFetching, isError } = useCommands({
     pageIndex: pagination.pageIndex,
@@ -738,8 +769,9 @@ export const CommandsPage = () => {
     setSelectedCommercial(null);
     setSelectedAgency(null);
     setGlobalFilter("");
+    setStatusQuery(null);
     resetPage();
-  }, [resetPage]);
+  }, [resetPage, setStatusQuery]);
 
   /* ── Stable handlers ── */
   const handleDeleteClick = useCallback((row) => {
@@ -814,6 +846,39 @@ export const CommandsPage = () => {
     [reportMutation, t]
   );
 
+  const applyStatusChange = useCallback(
+    (command, targetStatus, payments) => {
+      updateStatusMutation.mutate(
+        { commandId: command.id, targetStatus, payments },
+        {
+          onSuccess: () => {
+            toast.success(t("toast.status_updated"));
+            if (payments?.some((p) => p.modeReglement === "ESPECE")) {
+              toast.success(t("toast.cash_remittance"));
+            }
+            setPayOrder(null);
+          },
+          onError: (err) =>
+            toast.error(
+              err?.response?.data?.message || t("toast.status_error")
+            ),
+        }
+      );
+    },
+    [updateStatusMutation, t]
+  );
+
+  const handleStatusSelect = useCallback(
+    (command, targetStatus) => {
+      if (targetStatus === "PAYE") {
+        setPayOrder(command);
+        return;
+      }
+      applyStatusChange(command, targetStatus);
+    },
+    [applyStatusChange]
+  );
+
   const fmt = useCallback(
     (n) =>
       Number(n ?? 0).toLocaleString("fr-FR", {
@@ -828,46 +893,18 @@ export const CommandsPage = () => {
       {
         id: "client",
         header: t("client"),
-        Cell: ({ row }) => {
-          const name = row.original.clientName;
-          const whatsapp = row.original.whatsapp;
-          if (!whatsapp)
-            return (
-              <div className="flex flex-col py-1">
-                <div className="flex items-center gap-2">
-                  <User size={18} className="text-gray-500" />
-                  <span className="text-lg semi-bold text-gray-800 dark:text-gray-100">
-                    {name || "—"}
-                  </span>
-                </div>
-              </div>
-            );
-          const cleaned = whatsapp.replace(/\D/g, "");
-          const normalized = cleaned.startsWith("0")
-            ? "212" + cleaned.slice(1)
-            : cleaned;
-          const url = `https://wa.me/${normalized}`;
-          return (
-            <div className="flex flex-col py-1">
-              <div className="flex items-center gap-2">
-                <User size={20} className="text-[#B12B89] dark:text-blue-400" />
-                <span className="text-lg font-bold text-gray-800 dark:text-gray-100 leading-tight">
-                  {name || "—"}
-                </span>
-              </div>
-              <a
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-sm font-medium text-green-600 hover:text-green-500 mt-1.5 transition-colors group"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <MessageCircle size={16} className="fill-green-600/10" />
-                <span className="group-hover:underline">{whatsapp}</span>
-              </a>
-            </div>
-          );
-        },
+        Cell: ({ row }) => (
+          <div className="flex flex-col py-1 gap-0.5">
+            <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+              {row.original.clientName || "—"}
+            </span>
+            {row.original.whatsapp && (
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {row.original.whatsapp}
+              </span>
+            )}
+          </div>
+        ),
       },
       {
         accessorKey: "ville",
@@ -882,12 +919,9 @@ export const CommandsPage = () => {
         accessorKey: "agenceName",
         header: t("agency"),
         Cell: ({ cell }) => (
-          <div className="flex items-center gap-2">
-            <Building2 className="w-4 h-4 text-purple-400" />
-            <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-              {cell.getValue() || "—"}
-            </span>
-          </div>
+          <span className="text-sm text-gray-700 dark:text-gray-200">
+            {cell.getValue() || "—"}
+          </span>
         ),
       },
       {
@@ -908,15 +942,9 @@ export const CommandsPage = () => {
                 {dateLivraison || "—"}
               </span>
               {isReplaced && (
-                <div className="flex items-center gap-1 mt-0.5">
-                  <CalendarClock size={11} className="text-orange-400 flex-shrink-0" />
-                  <span className="text-[11px] font-semibold text-orange-500 dark:text-orange-400">
-                    {nextDeliveryDate}
-                  </span>
-                  <span className="text-[9px] text-gray-400 italic ml-1">
-                    {t("reported")}
-                  </span>
-                </div>
+                <span className="text-[11px] font-medium text-orange-500 dark:text-orange-400">
+                  {nextDeliveryDate} · {t("reported")}
+                </span>
               )}
             </div>
           );
@@ -934,16 +962,7 @@ export const CommandsPage = () => {
               allowedTargets={allowed}
               isLoading={updateStatusMutation.isPending}
               onSelect={(targetStatus) =>
-                updateStatusMutation.mutate(
-                  { commandId: row.original.id, targetStatus },
-                  {
-                    onSuccess: () => toast.success(t("toast.status_updated")),
-                    onError: (err) =>
-                      toast.error(
-                        err?.response?.data?.message || t("toast.status_error")
-                      ),
-                  }
-                )
+                handleStatusSelect(row.original, targetStatus)
               }
             />
           );
@@ -974,6 +993,15 @@ export const CommandsPage = () => {
         },
       },
       {
+        id: "commission",
+        header: t("col_commission"),
+        Cell: ({ row }) => (
+          <span className="text-sm font-semibold text-[#B12B89]">
+            {fmt(row.original.totalCommission || 0)} MAD
+          </span>
+        ),
+      },
+      {
         id: "isPaid",
         header: t("col_is_paid"),
         Cell: ({ row }) => {
@@ -982,13 +1010,15 @@ export const CommandsPage = () => {
           const status = row.original.commandStatus;
           const isFullyPaid = paid >= total && total > 0;
           return (
-            <div>
-              {isFullyPaid || status === "PAYE" ? (
-                <CheckCircle2 size={22} className="text-emerald-500 fill-emerald-500/10" />
-              ) : (
-                <CircleX size={22} className="text-red-400 fill-red-400/10" />
-              )}
-            </div>
+            <span
+              className={`text-sm font-medium ${
+                isFullyPaid || status === "PAYE"
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : "text-slate-500 dark:text-slate-400"
+              }`}
+            >
+              {isFullyPaid || status === "PAYE" ? t("paid_yes") : t("paid_no")}
+            </span>
           );
         },
       },
@@ -1009,18 +1039,28 @@ export const CommandsPage = () => {
         header: t("col_actions"),
         enableSorting: false,
         Cell: ({ row }) => (
-          <RowActionsMenu
-            row={row.original}
-            onEdit={(r) => navigate(`/commandes/${r.id}/edit`)}
-            onDelete={handleDeleteClick}
-            onPrint={handlePrintPDF}
-            onReport={handleReportClick}
-            onSuspend={handleSuspendClick}
-            isSuspendPending={suspendMutation.isPending}
-            isPrintPending={printMutation.isPending}
-            isReportPending={reportMutation.isPending}
-            restrictedRole={restrictedRole}
-          />
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              title={t("see_order")}
+              onClick={() => navigate(`/commandes/${row.original.id}`)}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-[#B12B89] dark:hover:bg-[#222]"
+            >
+              <Eye className="h-[17px] w-[17px]" strokeWidth={1.75} />
+            </button>
+            <RowActionsMenu
+              row={row.original}
+              onEdit={(r) => navigate(`/commandes/${r.id}/edit`)}
+              onDelete={handleDeleteClick}
+              onPrint={handlePrintPDF}
+              onReport={handleReportClick}
+              onSuspend={handleSuspendClick}
+              isSuspendPending={suspendMutation.isPending}
+              isPrintPending={printMutation.isPending}
+              isReportPending={reportMutation.isPending}
+              restrictedRole={restrictedRole}
+            />
+          </div>
         ),
       },
     ],
@@ -1034,6 +1074,7 @@ export const CommandsPage = () => {
       handlePrintPDF,
       handleReportClick,
       handleSuspendClick,
+      handleStatusSelect,
       updateStatusMutation.isPending,
       printMutation.isPending,
       reportMutation.isPending,
@@ -1043,7 +1084,6 @@ export const CommandsPage = () => {
 
   return (
     <div className="p-4 md:p-8 min-h-screen transition-colors duration-300">
-      <ShiftStatusBanner />
       <HeaderTable
         title={t("title")}
         onCreate={restrictedRole ? undefined : () => navigate("/commandes/create")}
@@ -1060,7 +1100,11 @@ export const CommandsPage = () => {
             icon: CheckCircle2,
             options: Object.entries(STATUS_CONFIG).map(([value, cfg]) => ({ value, label: t(`status_label_${value}`, cfg.label) })),
             value: statusFilter,
-            onChange: (v) => { setStatusFilter(v); resetPage(); },
+            onChange: (v) => {
+              setStatusFilter(v);
+              setStatusQuery(v?.value || null);
+              resetPage();
+            },
           },
           ...(!isLivreur ? [{
             type: "async-select",
@@ -1138,6 +1182,17 @@ export const CommandsPage = () => {
         command={reportingCommand}
         onConfirm={handleReportConfirm}
         isLoading={reportMutation.isPending}
+      />
+
+      <PayOrderModal
+        isOpen={!!payOrder}
+        order={payOrder}
+        isLoading={updateStatusMutation.isPending}
+        onClose={() => setPayOrder(null)}
+        onConfirm={(payments) => {
+          if (!payOrder) return;
+          applyStatusChange(payOrder, "PAYE", payments);
+        }}
       />
     </div>
   );

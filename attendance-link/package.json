@@ -30,17 +30,17 @@
     "files": [
       "src/**/*",
       "renderer/**/*",
-      "build/icon.png",
+      "assets/**/*",
       "package.json",
       "!**/{.github,tests,docs,example,examples}/**",
       "!**/*.{md,map,ts}"
     ],
     "directories": {
       "output": "dist",
-      "buildResources": "build"
+      "buildResources": "assets"
     },
     "win": {
-      "icon": "build/icon.png",
+      "icon": "assets/icon.png",
       "target": [
         {
           "target": "portable",

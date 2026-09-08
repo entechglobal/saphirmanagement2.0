@@ -10,7 +10,6 @@ import {
   Trash2,
   Loader2,
   X,
-  Building2,
   User,
   ShoppingCart,
   Truck,
@@ -159,37 +158,25 @@ const statusMeta = {
 const LivreurTypeSwitch = ({ value, onChange }) => {
   const { t } = useTranslation("commands");
   const options = [
-    { id: "intern", icon: User, title: t("form_livreur_intern"), hint: t("form_livreur_intern_hint") },
-    { id: "extern", icon: Building2, title: t("form_livreur_societe"), hint: t("form_livreur_societe_hint") },
+    { id: "intern", label: t("form_livreur_intern") },
+    { id: "extern", label: t("form_livreur_extern") },
   ];
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      {options.map((opt) => {
-        const Icon = opt.icon;
-        const active = value === opt.id;
-        return (
-          <button
-            key={opt.id}
-            type="button"
-            onClick={() => onChange(opt.id)}
-            className={`text-left p-4 rounded-lg border-2 transition-all ${
-              active
-                ? "border-[#B12B89] bg-[#B12B89]/5 dark:bg-[#B12B89]/10 shadow-sm"
-                : "border-slate-200 dark:border-[#2e2e2e] hover:border-slate-300 dark:hover:border-[#3a3a3a]"
-            }`}
-          >
-            <div className="flex items-center gap-2.5 mb-1.5">
-              <div className={`w-8 h-8 rounded-md flex items-center justify-center ${active ? "bg-[#B12B89] text-white" : "bg-slate-100 dark:bg-[#2e2e2e] text-slate-400"}`}>
-                <Icon size={15} />
-              </div>
-              <span className={`text-sm font-semibold ${active ? "text-[#B12B89]" : "text-slate-700 dark:text-slate-200"}`}>
-                {opt.title}
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">{opt.hint}</p>
-          </button>
-        );
-      })}
+    <div className="inline-flex rounded-lg border border-slate-200 dark:border-[#2e2e2e] p-0.5 bg-slate-50 dark:bg-[#222222]/60">
+      {options.map((opt) => (
+        <button
+          key={opt.id}
+          type="button"
+          onClick={() => onChange(opt.id)}
+          className={`px-3 h-8 rounded-md text-xs font-semibold whitespace-nowrap transition-colors ${
+            value === opt.id
+              ? "bg-[#B12B89] text-white shadow-sm"
+              : "text-slate-500 dark:text-slate-400 hover:text-slate-700"
+          }`}
+        >
+          {opt.label}
+        </button>
+      ))}
     </div>
   );
 };
@@ -935,32 +922,33 @@ export const AdvancedBonLivraisonForm = () => {
         </div>
       </OrderSection>
 
-      <OrderSection title={t("card_livreur")}>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">{t("form_livreur_type_hint")}</p>
-        <LivreurTypeSwitch
-          value={livreurType}
-          onChange={(ltype) => {
-            setLivreurType(ltype);
-            setForm((prev) => ({ ...prev, livreurId: "", providerConfigId: "" }));
-          }}
-        />
-        <div className="mt-6">
-          <SelectDropDown
-            label={livreurType === "extern" ? t("form_livreur_societe") : t("form_livreur_label")}
-            name="livreurId"
-            value={form.livreurId}
-            options={displayedLivreurs.map((l) => ({
-              value: l.id,
-              label: l.name,
-              subLabel: l.entityType === "SOCIETE" ? t("form_livreur_entity_societe") : t("form_livreur_entity_interne"),
-            }))}
-            isLoading={livreursLoading}
-            onChange={handleChange}
-            disabled={!form.agenceId}
-            placeholder={!form.agenceId ? t("form_select_agence_first") : t("form_select_livreur")}
-            required
+      <OrderSection
+        title={t("card_livreur")}
+        action={
+          <LivreurTypeSwitch
+            value={livreurType}
+            onChange={(ltype) => {
+              setLivreurType(ltype);
+              setForm((prev) => ({ ...prev, livreurId: "", providerConfigId: "" }));
+            }}
           />
-        </div>
+        }
+      >
+        <SelectDropDown
+          label={livreurType === "extern" ? t("form_livreur_societe") : t("form_livreur_label")}
+          name="livreurId"
+          value={form.livreurId}
+          options={displayedLivreurs.map((l) => ({
+            value: l.id,
+            label: l.name,
+            subLabel: l.entityType === "SOCIETE" ? t("form_livreur_entity_societe") : t("form_livreur_entity_interne"),
+          }))}
+          isLoading={livreursLoading}
+          onChange={handleChange}
+          disabled={!form.agenceId}
+          placeholder={!form.agenceId ? t("form_select_agence_first") : t("form_select_livreur")}
+          required
+        />
         {showBusinessConfig && (
           <div className="mt-6">
             <SelectDropDown

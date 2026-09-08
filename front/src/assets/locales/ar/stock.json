@@ -10,6 +10,7 @@
   "product_type": "نوع المنتج",
   "barcode": "الباركود",
   "available": "متوفر",
+  "stock_value": "قيمة المخزون",
   "stock_alert": "تنبيه المخزون",
   "low_stock": "مخزون منخفض",
   "out_of_stock": "نفذ من المخزون",

@@ -10,6 +10,7 @@
   "product_type": "Product Type",
   "barcode": "Barcode",
   "available": "Available",
+  "stock_value": "Stock value",
   "stock_alert": "Stock Alert",
   "low_stock": "Low Stock",
   "out_of_stock": "Out of Stock",
