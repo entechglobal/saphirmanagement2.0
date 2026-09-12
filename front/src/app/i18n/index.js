@@ -4,6 +4,7 @@ import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { supportedLangs } from "./supportedLngs";
 import { DEFAULT_LANG, RTL_LANGS } from "./config";
+import { applyDayjsLocale } from "../../shared/lib/localizedDayjs";
 
 // Bundle locale JSON at build time. Glob must be relative — Vite does not resolve @ here.
 const localeModules = import.meta.glob(
@@ -46,6 +47,8 @@ i18n
     },
   });
 
+applyDayjsLocale(i18n.resolvedLanguage || i18n.language || DEFAULT_LANG);
+
 
 // Initialize language and direction
 const initializeLanguageAndDirection = () => {
@@ -56,6 +59,7 @@ const initializeLanguageAndDirection = () => {
   document.documentElement.lang = savedLanguage;
   document.documentElement.dir = direction;
   localStorage.setItem("direction", direction);
+  applyDayjsLocale(savedLanguage);
 };
 
 if (typeof window !== "undefined") {
@@ -70,6 +74,7 @@ i18n.on("languageChanged", (lng) => {
 
   document.documentElement.lang = lng;
   document.documentElement.dir = direction;
+  applyDayjsLocale(lng);
 
   // // Force a tiny delay to ensure the DOM is ready for the change
   // console.log(`Language changed to: ${lng}, Direction: ${direction}`);

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Tag,
@@ -7,6 +8,7 @@ import {
   KeyRound,
   SlidersHorizontal,
   FileText,
+  Clock,
 } from "lucide-react";
 import {
   PRICE_FIELD_OPTIONS,
@@ -19,10 +21,12 @@ import { PermissionsPage } from "../features/settings/permissions/pages/Permissi
 import { CaisseLabelsPage } from "../features/caisse";
 import { SystemSettingsPage } from "../features/settings/systemSettings/pages/SystemSettingsPage";
 import { DocumentHeaderSettingsPage } from "../features/settings/documentHeader/pages/DocumentHeaderSettingsPage";
+import { AttendanceSettingsPage } from "../features/settings/attendance/pages/AttendanceSettingsPage";
 import { useAuth } from "@/features/auth";
 import {
   hasPermission,
   isSuperAdmin,
+  isSocieteAdmin,
   PERMISSIONS,
 } from "@/shared/utils/permissions";
 
@@ -134,15 +138,28 @@ const ALL_TABS = [
     icon: SlidersHorizontal,
     superAdminOnly: true,
   },
+  {
+    id: "attendance",
+    tKey: "tabs.attendance",
+    icon: Clock,
+    show: (user) =>
+      isSuperAdmin(user) ||
+      isSocieteAdmin(user) ||
+      hasPermission(user, PERMISSIONS.MANAGE_ATTENDANCE),
+  },
 ];
 
 export const SettingsPage = () => {
   const { t } = useTranslation("settings");
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState("prices");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(
+    () => searchParams.get("tab") || "prices",
+  );
   const [active, setActive] = useState(getActivePriceFields);
 
   const tabs = ALL_TABS.filter((tab) => {
+    if (typeof tab.show === "function") return tab.show(user);
     if (tab.superAdminOnly) return isSuperAdmin(user);
     return !tab.perm || hasPermission(user, tab.perm);
   });
@@ -174,7 +191,13 @@ export const SettingsPage = () => {
                 <button
                   key={tab.id}
                   type="button"
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setSearchParams(
+                      tab.id === "prices" ? {} : { tab: tab.id },
+                      { replace: true },
+                    );
+                  }}
                   className={`flex min-w-max items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-[13px] font-semibold transition-colors lg:min-w-0 ${
                     isActive
                       ? "bg-[#B12B89]/10 text-[#B12B89]"
@@ -202,6 +225,7 @@ export const SettingsPage = () => {
           {safeTab === "labels" && <CaisseLabelsPage />}
           {safeTab === "permissions" && <PermissionsPage />}
           {safeTab === "system" && <SystemSettingsPage />}
+          {safeTab === "attendance" && <AttendanceSettingsPage />}
         </div>
       </div>
     </div>

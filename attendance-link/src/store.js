@@ -6,11 +6,12 @@ const DEFAULTS = {
   deviceIp: "192.168.1.201",
   devicePort: 4370,
   commKey: "",
-  timeoutMs: 10000,
+  timeoutMs: 30000,
   apiUrl: "http://localhost:3000/api",
   email: "",
   token: "",
   user: null,
+  societeId: "",
 };
 
 function filePath() {

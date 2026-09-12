@@ -13,6 +13,7 @@ import {
   resolveDocumentHeaderConfig,
   sanitizeDocumentHeaderConfig,
 } from "../utils/documentHeaderConfig.js";
+import { resolveAttendanceSettings } from "../utils/attendanceSettings.js";
 
 export const uploadSocieteImage = uploadSingleImage("logo");
 
@@ -171,6 +172,7 @@ export const getById = async (id, requestingUser = null) => {
     documentHeaderConfig: resolveDocumentHeaderConfig(
       societe.documentHeaderConfig,
     ),
+    attendanceSettings: resolveAttendanceSettings(societe.attendanceSettings),
   };
   return validsociete;
 };

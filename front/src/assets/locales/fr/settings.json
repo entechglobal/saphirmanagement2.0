@@ -14,7 +14,9 @@
     "permissions": "Permissions & Accès",
     "permissions_desc": "Rôles et droits utilisateurs",
     "system": "Système",
-    "system_desc": "Options globales de la plateforme"
+    "system_desc": "Options globales de la plateforme",
+    "attendance": "Pointage",
+    "attendance_desc": "Horaires standards et montant retard / heures supp."
   },
   "price_grid": {
     "title": "Grilles de prix",
@@ -48,5 +50,35 @@
     "no_societe_title": "Aucune société",
     "no_societe_list": "Créez une société pour personnaliser ses documents.",
     "load_error": "Impossible de charger cette société."
+  },
+  "attendance": {
+    "title": "Gestion du temps",
+    "subtitle": "Horaires standards utilisés pour comparer les pointages, et règle de montant.",
+    "societe_label": "Société",
+    "save": "Enregistrer",
+    "toast_saved": "Horaires de pointage enregistrés",
+    "toast_error": "Échec de l'enregistrement",
+    "load_error": "Impossible de charger les paramètres de pointage.",
+    "no_societe_title": "Aucune société",
+    "no_societe_list": "Créez une société pour définir ses horaires de pointage.",
+    "hours_title": "Horaires standards",
+    "hours_subtitle": "Matin, pause, puis après-midi — référence pour retards et heures supplémentaires.",
+    "morning_start": "Début matin",
+    "morning_end": "Fin matin",
+    "afternoon_start": "Reprise après pause",
+    "afternoon_end": "Fin de journée",
+    "pause": "Pause",
+    "expected_day": "{{hours}} / jour",
+    "amount_title": "Montant par tranche",
+    "amount_subtitle": "Tous les X heures de retard : −Y DH. Tous les X heures supplémentaires : +Y DH.",
+    "block_hours": "Tous les (heures)",
+    "amount": "Montant (DH)",
+    "amount_preview": "Tous les {{hours}} h de retard = −{{amount}} DH · tous les {{hours}} h supp. = +{{amount}} DH",
+    "errors": {
+      "time": "Chaque horaire doit être au format HH:MM.",
+      "order": "L'ordre doit être : début matin < fin matin ≤ reprise < fin de journée.",
+      "block": "La tranche horaire doit être supérieure à 0.",
+      "amount": "Le montant doit être positif ou nul."
+    }
   }
 }

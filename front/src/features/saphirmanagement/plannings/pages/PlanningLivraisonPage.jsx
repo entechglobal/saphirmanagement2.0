@@ -1,13 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Package,
   Truck,
   Calendar,
-  ChevronLeft,
-  ChevronRight,
   Phone,
   MapPin,
   Clock,
@@ -26,11 +24,17 @@ import {
   getPresetRange,
 } from "@/features/dashboard/components/DashboardDateFilter";
 import { usePlanningLivraison } from "../hooks/usePlanningLivraison";
+import {
+  parseDayKey,
+  PlanningMiniCalendar,
+  toDayKey,
+} from "../components/PlanningMiniCalendar";
 import { useDeliveriesList as useDeliveries } from "../../../stracture/delivries/hooks/useDeliveries";
 import { useAuth } from "../../../auth/hooks/useAuth";
 import { getUserRoleName } from "../../../../shared/utils/permissions";
 import { SectionLoader } from "../../../../shared/components/loadersCollections/SectionLoader";
 import { HeaderTable } from "../../../../shared/components/HeaderTable";
+import { formatWithLocale } from "@/shared/lib/localizedDayjs";
 
 const BRAND_COLOR = "#B12B89";
 
@@ -91,13 +95,10 @@ const STATUS_FILTER_VALUES = [
 
 const PLANNING_PRESET = "this_week";
 
-const toDayKey = (d) => d.format("DD/MM/YYYY");
-
-const parseDayKey = (dateStr) => {
-  if (!dateStr || typeof dateStr !== "string") return null;
-  const [dd, mm, yyyy] = dateStr.split("/");
-  if (!dd || !mm || !yyyy) return null;
-  return dayjs(`${yyyy}-${mm}-${dd}`);
+const readDateParam = (value) => {
+  if (!value) return null;
+  const parsed = dayjs(value);
+  return parsed.isValid() ? parsed : null;
 };
 
 const fmtMad = (n) =>
@@ -293,150 +294,35 @@ const DetailRow = ({ icon: Icon, label, value, full, href, isNotes }) => (
   </div>
 );
 
-const MiniCalendar = ({ planningData, calMonth, setCalMonth, onDaySelect, selectedDay }) => {
-  const { t } = useTranslation("plannings");
-  const startOfMonth = calMonth.startOf("month");
-  const daysInMonth = calMonth.daysInMonth();
-  const firstDow = startOfMonth.day();
-
-  const dayInfoMap = useMemo(() => {
-    const m = {};
-    planningData?.forEach(({ date, advancedBonLivraisons }) => {
-      m[date] = {
-        count: advancedBonLivraisons?.length ?? 0,
-        inRange: true,
-      };
-    });
-    return m;
-  }, [planningData]);
-
-  const blanks = Array.from({ length: firstDow });
-  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-
-  const fmtKey = (d) =>
-    `${String(d).padStart(2, "0")}/${String(calMonth.month() + 1).padStart(2, "0")}/${calMonth.year()}`;
-
-  const isSelected = (d) => selectedDay === fmtKey(d);
-  const isToday = (d) =>
-    dayjs().date() === d &&
-    dayjs().month() === calMonth.month() &&
-    dayjs().year() === calMonth.year();
-
-  return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-[#2e2e2e] dark:bg-[#1c1c1c]">
-      <div className="flex items-center justify-between border-b border-slate-100 px-3 py-3 dark:border-[#2e2e2e] sm:px-4">
-        <button
-          type="button"
-          onClick={() => setCalMonth((m) => m.subtract(1, "month"))}
-          className="flex h-8 w-8 items-center justify-center rounded-lg transition hover:bg-slate-100 dark:hover:bg-[#222222]"
-        >
-          <ChevronLeft size={16} className="text-slate-500" />
-        </button>
-        <p className="text-sm font-bold capitalize text-slate-700 dark:text-slate-200">
-          {calMonth.format("MMMM YYYY")}
-        </p>
-        <button
-          type="button"
-          onClick={() => setCalMonth((m) => m.add(1, "month"))}
-          className="flex h-8 w-8 items-center justify-center rounded-lg transition hover:bg-slate-100 dark:hover:bg-[#222222]"
-        >
-          <ChevronRight size={16} className="text-slate-500" />
-        </button>
-      </div>
-
-      <div className="grid grid-cols-7 px-2 pb-1 pt-3 sm:px-4">
-        {[t("day_sun"), t("day_mon"), t("day_tue"), t("day_wed"), t("day_thu"), t("day_fri"), t("day_sat")].map((d) => (
-          <div key={d} className="py-1 text-center text-[9px] font-bold uppercase tracking-wider text-slate-400 sm:text-[10px]">
-            {d}
-          </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-7 gap-0.5 px-2 pb-3 pt-2 sm:px-4 sm:pb-4">
-        {blanks.map((_, i) => (
-          <div key={`b${i}`} />
-        ))}
-        {days.map((d) => {
-          const key = fmtKey(d);
-          const info = dayInfoMap[key];
-          const count = info?.count ?? 0;
-          const inRange = info?.inRange ?? false;
-          const hasDeliveries = count > 0;
-          const selected = isSelected(d);
-          const today = isToday(d);
-
-          return (
-            <button
-              key={d}
-              type="button"
-              onClick={() => inRange && onDaySelect(selected ? null : key)}
-              disabled={!inRange}
-              className={[
-                "relative mx-auto flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-semibold transition-all sm:h-9 sm:w-9 sm:text-[13px] md:h-10 md:w-10",
-                selected
-                  ? "text-white shadow-md"
-                  : hasDeliveries
-                    ? "text-emerald-700 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-950/40"
-                    : inRange
-                      ? "text-slate-800 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#222222]"
-                      : "cursor-default text-slate-300 dark:text-slate-700",
-                today && !selected ? "ring-2 ring-[#B12B89]/50" : "",
-              ].join(" ")}
-              style={selected ? { backgroundColor: BRAND_COLOR } : {}}
-            >
-              {hasDeliveries && !selected && (
-                <span className="absolute inset-0 rounded-full bg-emerald-500 opacity-10" />
-              )}
-              <span className="relative z-10">{d}</span>
-              {hasDeliveries && (
-                <span
-                  className={[
-                    "absolute -right-0.5 -top-1 flex h-3.5 min-w-[14px] items-center justify-center rounded-full px-0.5 text-[8px] font-bold leading-none shadow-sm sm:-right-1 sm:h-4 sm:min-w-[16px] sm:px-1 sm:text-[9px]",
-                    selected ? "bg-white text-[#B12B89]" : "bg-emerald-500 text-white",
-                  ].join(" ")}
-                >
-                  {count}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 px-3 pb-3 pt-1 sm:px-4 sm:pb-4">
-        <span className="flex items-center gap-1.5 text-[10px] text-slate-400">
-          <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-400" />
-          {t("legend_with_deliveries")}
-        </span>
-        <span className="flex items-center gap-1.5 text-[10px] text-slate-400">
-          <span className="h-2 w-2 shrink-0 rounded-full bg-slate-300 dark:bg-[#2e2e2e]" />
-          {t("legend_without")}
-        </span>
-        <span className="flex items-center gap-1.5 text-[10px] text-slate-300 dark:text-slate-700">
-          <span className="h-2 w-2 shrink-0 rounded-full bg-slate-200 dark:bg-[#222222]" />
-          {t("legend_out_of_range")}
-        </span>
-      </div>
-    </div>
-  );
-};
-
 export const PlanningLivraisonPage = () => {
-  const { t } = useTranslation("plannings");
+  const { t, i18n } = useTranslation("plannings");
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const roleName = getUserRoleName(user);
   const canFilterByLivreur =
     !!user?.isSuperAdmin || ["Societe_Admin", "Gerant"].includes(roleName);
 
-  const [startDateTime, setStartDateTime] = useState(() => getPresetRange(PLANNING_PRESET)[0]);
-  const [endDateTime, setEndDateTime] = useState(() => getPresetRange(PLANNING_PRESET)[1]);
+  const [startDateTime, setStartDateTime] = useState(() => {
+    const parsed = readDateParam(searchParams.get("date"));
+    return parsed ? parsed.startOf("month") : getPresetRange(PLANNING_PRESET)[0];
+  });
+  const [endDateTime, setEndDateTime] = useState(() => {
+    const parsed = readDateParam(searchParams.get("date"));
+    return parsed ? parsed.endOf("month") : getPresetRange(PLANNING_PRESET)[1];
+  });
   const [selectedLivreur, setSelectedLivreur] = useState(null);
   const [statusFilter, setStatusFilter] = useState(null);
   const [cityFilter, setCityFilter] = useState(null);
   const [search, setSearch] = useState("");
   const [flagFilter, setFlagFilter] = useState(null);
-  const [calMonth, setCalMonth] = useState(() => getPresetRange(PLANNING_PRESET)[0]);
-  const [selectedDay, setSelectedDay] = useState(null);
+  const [calMonth, setCalMonth] = useState(() => {
+    const parsed = readDateParam(searchParams.get("date"));
+    return parsed ?? getPresetRange(PLANNING_PRESET)[0];
+  });
+  const [selectedDay, setSelectedDay] = useState(() => {
+    const parsed = readDateParam(searchParams.get("date"));
+    return parsed ? toDayKey(parsed) : null;
+  });
 
   const startDate = startDateTime?.format("YYYY-MM-DD");
   const endDate = endDateTime?.format("YYYY-MM-DD");
@@ -536,6 +422,13 @@ export const PlanningLivraisonPage = () => {
     selectedDay
   );
 
+  const clearDateParam = () => {
+    if (!searchParams.get("date")) return;
+    const next = new URLSearchParams(searchParams);
+    next.delete("date");
+    setSearchParams(next, { replace: true });
+  };
+
   const handleReset = () => {
     const [start, end] = getPresetRange(PLANNING_PRESET);
     setStartDateTime(start);
@@ -547,6 +440,7 @@ export const PlanningLivraisonPage = () => {
     setSearch("");
     setFlagFilter(null);
     setSelectedDay(null);
+    clearDateParam();
   };
 
   const handleDateChange = (from, to) => {
@@ -557,7 +451,19 @@ export const PlanningLivraisonPage = () => {
     } else {
       setSelectedDay(null);
     }
+    clearDateParam();
   };
+
+  const dateParam = searchParams.get("date");
+
+  useEffect(() => {
+    const parsed = readDateParam(dateParam);
+    if (!parsed) return;
+    setStartDateTime(parsed.startOf("month"));
+    setEndDateTime(parsed.endOf("month"));
+    setCalMonth(parsed);
+    setSelectedDay(toDayKey(parsed));
+  }, [dateParam]);
 
   useEffect(() => {
     if (startDateTime?.isValid()) setCalMonth(startDateTime);
@@ -568,7 +474,7 @@ export const PlanningLivraisonPage = () => {
     if (!d?.isValid()) return dateStr;
     if (d.isSame(dayjs(), "day")) return t("today_badge");
     if (d.isSame(dayjs().add(1, "day"), "day")) return t("tomorrow_badge");
-    return d.format("dddd D MMM");
+    return formatWithLocale(d, "dddd D MMM", i18n.language);
   };
 
   return (
@@ -675,12 +581,16 @@ export const PlanningLivraisonPage = () => {
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
           <div className="md:col-span-5 lg:col-span-4">
-            <MiniCalendar
+            <PlanningMiniCalendar
               planningData={filteredPlanning}
               calMonth={calMonth}
               setCalMonth={setCalMonth}
-              onDaySelect={setSelectedDay}
               selectedDay={selectedDay}
+              onDayClick={(key, { inRange, selected }) => {
+                if (!inRange) return;
+                setSelectedDay(selected ? null : key);
+              }}
+              clickHint={t("hover_filter")}
             />
             {selectedDay && (
               <button

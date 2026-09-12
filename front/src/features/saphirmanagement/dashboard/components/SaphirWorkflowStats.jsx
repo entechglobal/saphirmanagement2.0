@@ -11,7 +11,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useAuth } from "@/features/auth";
-import { isSuperAdmin } from "@/shared/utils/permissions";
+import { getUserRoleName, isSuperAdmin } from "@/shared/utils/permissions";
 import { useWorkflowCounts } from "../../commandes/hooks/useCommands";
 
 const CARD_ORDER = ["aPreparer", "aCollecter", "enRoute", "aLivrer", "aPayer"];
@@ -23,6 +23,8 @@ const SUPER_ADMIN_CARD_ORDER = [
   "livre",
   "paye",
 ];
+const LIVREUR_CARD_ORDER = ["aCollecter", "enRoute", "aLivrer", "aPayer"];
+const PREPARATEUR_CARD_ORDER = ["aPreparer"];
 
 const CARD_META = {
   aPreparer: {
@@ -90,11 +92,18 @@ export const SaphirWorkflowStats = ({ dateFrom, dateTo }) => {
   const { t } = useTranslation("dashboard");
   const { user } = useAuth();
   const superAdmin = isSuperAdmin(user);
+  const role = getUserRoleName(user).trim().toLowerCase();
   const { data, isLoading, isFetching } = useWorkflowCounts({ dateFrom, dateTo });
   const counts = data?.data ?? {};
 
-  const cardOrder = superAdmin ? SUPER_ADMIN_CARD_ORDER : CARD_ORDER;
-  const visibleKeys = cardOrder.filter((key) => counts[key] !== undefined);
+  const cardOrder = superAdmin
+    ? SUPER_ADMIN_CARD_ORDER
+    : role === "livreur"
+      ? LIVREUR_CARD_ORDER
+      : role === "preparateur"
+        ? PREPARATEUR_CARD_ORDER
+        : CARD_ORDER;
+  const visibleKeys = cardOrder;
   const total = Number(counts.total ?? 0);
   const pipelineTotal = ["aPreparer", "aCollecter", "enRoute", "aLivrer", "aPayer"].reduce(
     (sum, key) => sum + Number(counts[key] ?? 0),
@@ -103,9 +112,9 @@ export const SaphirWorkflowStats = ({ dateFrom, dateTo }) => {
 
   const handleCardClick = (cardKey) => {
     const status = CARD_TO_STATUS[cardKey];
-    if (status) {
-      navigate(`/commandes?status=${status}`);
-    }
+    if (!status) return;
+    const opsRole = role === "livreur" || role === "preparateur";
+    navigate(opsRole ? `/commandes-ops?status=${status}` : `/commandes?status=${status}`);
   };
 
   if (isLoading && !data) {
@@ -144,21 +153,16 @@ export const SaphirWorkflowStats = ({ dateFrom, dateTo }) => {
         </p>
       </div>
 
-      {visibleKeys.length === 0 ? (
-        <div className="border-t border-slate-100 px-4 py-8 text-center text-sm text-slate-400 dark:border-[#2e2e2e]">
-          {t("saphir_stats.empty")}
-        </div>
-      ) : (
-        <div
-          className={`grid gap-px border-t border-slate-100 bg-slate-100 dark:border-[#2e2e2e] dark:bg-[#2e2e2e] ${
-            visibleKeys.length <= 2
-              ? "grid-cols-1 md:grid-cols-2"
-              : visibleKeys.length >= 6
-                ? "grid-cols-1 md:grid-cols-3 xl:grid-cols-6"
-                : "grid-cols-1 md:grid-cols-3 xl:grid-cols-5"
-          }`}
-        >
-          {visibleKeys.map((key) => {
+      <div
+        className={`grid gap-px border-t border-slate-100 bg-slate-100 dark:border-[#2e2e2e] dark:bg-[#2e2e2e] ${
+          visibleKeys.length <= 2
+            ? "grid-cols-1 md:grid-cols-2"
+            : visibleKeys.length >= 6
+              ? "grid-cols-1 md:grid-cols-3 xl:grid-cols-6"
+              : "grid-cols-1 md:grid-cols-3 xl:grid-cols-5"
+        }`}
+      >
+        {visibleKeys.map((key) => {
             const meta = CARD_META[key];
             const Icon = meta.icon;
             const value = Number(counts[key] ?? 0);
@@ -215,8 +219,7 @@ export const SaphirWorkflowStats = ({ dateFrom, dateTo }) => {
               </button>
             );
           })}
-        </div>
-      )}
+      </div>
     </div>
   );
 };

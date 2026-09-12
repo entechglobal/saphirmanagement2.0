@@ -39,7 +39,7 @@ import {
 } from "lucide-react";
 
 import { useAuth } from "@/features/auth";
-import { PERMISSIONS, hasAnyPermission } from "@/shared/utils/permissions";
+import { PERMISSIONS, getUserRoleName, hasAnyPermission } from "@/shared/utils/permissions";
 import { useTranslation } from "react-i18next";
 import { SidebarSkeleton } from "@/shared/components/skeletons/SidebarSkeleton";
 import { MobileBottomBar } from "./MobileBottomBar";
@@ -190,8 +190,8 @@ export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose
         label: t("saphirManagement.label"),
         icon: Globe2,
         items: [
-          { key: "commandes", label: t("saphirManagement.commandes"), path: "/commandes", icon: ShoppingBag, permission: PERMISSIONS.VIEW_ADVANCED_BL },
-          { key: "statistiques-commerciaux", label: t("saphirManagement.commercialStats"), path: "/statistiques-commerciaux", icon: BarChart3, permission: PERMISSIONS.VIEW_ADVANCED_BL },
+          { key: "commandes", label: t("saphirManagement.commandes"), path: ["Livreur", "Preparateur"].includes(getUserRoleName(user)) ? "/commandes-ops" : "/commandes", icon: ShoppingBag, permission: PERMISSIONS.VIEW_ADVANCED_BL },
+          { key: "statistiques-commerciaux", label: t("saphirManagement.commercialStats"), path: "/statistiques-commerciaux", icon: BarChart3, permission: PERMISSIONS.VIEW_ADVANCED_BL, hiddenForRoles: ["Preparateur", "Livreur"] },
           { key: "colis-tracking", label: t("saphirManagement.colisTracking"), path: "/colis-tracking", icon: Search, permission: PERMISSIONS.VIEW_ADVANCED_BL },
           { key: "planning-livraison", label: t("saphirManagement.planningLivraison"), path: "/planning-livraison", icon: CalendarDays, permission: PERMISSIONS.VIEW_ADVANCED_BL },
         ],
@@ -211,7 +211,7 @@ export const Sidebar = ({ isOpen, isCollapsed = false, isDesktop = true, onClose
         ],
       },
     ],
-    [t]
+    [t, user]
   );
 
   const isItemVisible = useCallback(

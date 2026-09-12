@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
+import { formatWithLocale } from "@/shared/lib/localizedDayjs";
 import { FormDatePicker } from "@/shared/FormDatePicker";
 
 const startOfWeek = (d) => {
@@ -62,15 +63,14 @@ const isSameRange = (from, to, range) =>
   from.isSame(range[0], "day") &&
   to.isSame(range[1], "day");
 
-const formatRangeLabel = (from, to) => {
+const formatRangeLabel = (from, to, lng) => {
   if (!from?.isValid() || !to?.isValid()) return "";
-  const sameDay = from.isSame(to, "day");
-  const fmt = (d) => d.format("D MMM YYYY");
-  return sameDay ? fmt(from) : `${fmt(from)} — ${fmt(to)}`;
+  const fmt = (d) => formatWithLocale(d, "D MMM YYYY", lng);
+  return from.isSame(to, "day") ? fmt(from) : `${fmt(from)} — ${fmt(to)}`;
 };
 
-export const DashboardDateFilter = ({ from, to, onChange }) => {
-  const { t } = useTranslation("dashboard");
+export const DashboardDateFilter = ({ from, to, onChange, className = "" }) => {
+  const { t, i18n } = useTranslation("dashboard");
   const [customOpen, setCustomOpen] = useState(false);
 
   const matchedPreset = useMemo(() => {
@@ -79,7 +79,7 @@ export const DashboardDateFilter = ({ from, to, onChange }) => {
   }, [from, to]);
 
   const activePreset = customOpen ? "custom" : matchedPreset;
-  const rangeLabel = formatRangeLabel(from, to);
+  const rangeLabel = formatRangeLabel(from, to, i18n.language);
 
   const applyPreset = (id) => {
     setCustomOpen(false);
@@ -88,8 +88,9 @@ export const DashboardDateFilter = ({ from, to, onChange }) => {
   };
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-[#2e2e2e] dark:bg-[#222222] sm:p-4">
-   
+    <div
+      className={`flex flex-col justify-center rounded-xl border border-slate-200 bg-white p-3 dark:border-[#2e2e2e] dark:bg-[#222222] sm:p-4 ${className}`}
+    >
       <div className="flex flex-wrap items-center gap-1.5">
         {DATE_PRESETS.map((preset) => {
           const active = activePreset === preset.id;
@@ -98,7 +99,7 @@ export const DashboardDateFilter = ({ from, to, onChange }) => {
               key={preset.id}
               type="button"
               onClick={() => applyPreset(preset.id)}
-              className={`h-8 rounded-lg px-3 text-[12px] font-semibold transition-all ${
+              className={`h-10 rounded-lg px-3 text-[12px] font-semibold transition-all ${
                 active
                   ? "bg-[#B12B89] text-white shadow-sm"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-[#2e2e2e] dark:text-slate-300 dark:hover:bg-[#3a3a3a]"
@@ -111,7 +112,7 @@ export const DashboardDateFilter = ({ from, to, onChange }) => {
         <button
           type="button"
           onClick={() => setCustomOpen(true)}
-          className={`h-8 rounded-lg px-3 text-[12px] font-semibold transition-all ${
+          className={`h-10 rounded-lg px-3 text-[12px] font-semibold transition-all ${
             activePreset === "custom"
               ? "bg-[#B12B89] text-white shadow-sm"
               : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-[#2e2e2e] dark:text-slate-300 dark:hover:bg-[#3a3a3a]"

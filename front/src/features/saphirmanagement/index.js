@@ -3,6 +3,7 @@ export { AgenceForm } from "./agences/components/AgenceForm";
 export { AgenceFormEdit } from "./agences/components/AgenceFormEdit";
 export { PacksPage } from "./packs/pages/PacksPage";
 export { CommandsPage } from "./commandes/pages/CommandsPage";
+export { OperationalOrdersPage } from "./commandes/pages/OperationalOrdersPage";
 export {AdvancedBonLivraisonForm} from "./commandes/pages/AdvancedBonLivraisonForm";
 export {AdvancedBonLivraisonEditForm} from "./commandes/pages/AdvancedBonLivraisonEditForm";
 export { CommandDetailsPage} from "./commandes/pages/CommandDetailsPage";

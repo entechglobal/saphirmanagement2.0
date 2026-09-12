@@ -43,22 +43,8 @@ button { cursor: pointer; }
   padding: 36px 32px;
 }
 
-.brand-mark {
-  display: block;
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 14px;
-  border-radius: 14px;
-  box-shadow: 0 8px 20px rgba(177, 43, 137, 0.22);
-}
 .brand-logo { display: block; height: 42px; width: auto; margin: 0 auto 18px; }
-.header-mark {
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
-  flex-shrink: 0;
-}
-.header-logo { height: 22px; width: auto; }
+.header-logo { height: 28px; width: auto; }
 .auth-card h1,
 .connect-card h2 { margin: 0 0 8px; text-align: center; font-size: 22px; }
 .lead { margin: 0 0 22px; color: var(--muted); text-align: center; font-size: 14px; line-height: 1.5; }
@@ -150,12 +136,33 @@ button:disabled { opacity: 0.55; cursor: not-allowed; }
 .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
 .workspace { padding: 22px; }
-.toolbar { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 16px; align-items: flex-end; }
+.toolbar { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 16px; align-items: flex-end; flex-wrap: wrap; }
 .toolbar h2 { margin: 0 0 4px; font-size: 20px; }
 .toolbar p { margin: 0; color: var(--muted); font-size: 13px; }
-.toolbar-actions { display: flex; gap: 8px; align-items: center; }
-.toolbar-actions input { width: 260px; }
+.toolbar-actions { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
+.toolbar-actions input,
+.toolbar-actions select { width: 220px; }
 .toolbar-actions .btn-primary { width: auto; }
+.date-filters { display: flex; gap: 10px; align-items: flex-end; }
+.date-filters label { margin: 0; font-size: 12px; }
+.date-filters input[type="date"] { width: 150px; margin-top: 4px; }
+
+.selection-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  background: var(--accent-soft);
+  border: 1px solid #f0cfe4;
+  border-radius: 12px;
+}
+.select-all { display: flex; align-items: center; gap: 10px; margin: 0; font-weight: 600; }
+.select-all input { width: auto; margin: 0; }
+.selection-bar .btn-primary { width: auto; }
+.col-check { width: 36px; }
+.col-check input { width: auto; margin: 0; }
 
 .table-wrap {
   background: var(--surface);
@@ -171,6 +178,8 @@ th { color: var(--muted); font-size: 11px; letter-spacing: 0.04em; text-transfor
 .badge { display: inline-block; border-radius: 999px; padding: 3px 8px; font-size: 11px; font-weight: 600; }
 .badge.ok { background: var(--ok-bg); color: var(--ok); }
 .badge.off { background: #f1f5f9; color: var(--muted); }
+.btn-tiny.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-tiny.primary:hover { background: var(--accent-hover); color: #fff; }
 
 .result {
   margin-bottom: 14px;

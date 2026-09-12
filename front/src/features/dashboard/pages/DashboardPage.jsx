@@ -40,7 +40,9 @@ export const DashboardPage = () => {
   const showSaphir =
     hasAnyPermission(user, [PERMISSIONS.VIEW_ADVANCED_BL]) || isOperational;
   const showWallets = isSuperAdmin;
-  const showCommercials = showSaphir;
+  const isOpsRole = FINANCE_HIDDEN_ROLES.has(roleName);
+  const showCommercials = showSaphir && !isOpsRole;
+  const ordersPath = isOpsRole ? "/commandes-ops" : "/commandes";
   const showPlanning = showSaphir;
   const showRail = showWallets || showCommercials || showPlanning;
 
@@ -124,7 +126,7 @@ export const DashboardPage = () => {
         {showSaphir && (
           <div className="flex flex-wrap items-center gap-2">
             <Link
-              to="/commandes"
+              to={ordersPath}
               className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[12px] font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-[#2e2e2e] dark:bg-[#1c1c1c] dark:text-slate-200 dark:hover:bg-[#222222]"
             >
               <ClipboardList className="h-3.5 w-3.5" />

@@ -66,7 +66,8 @@
     "see_less": "Réduire",
     "see_more_count": "Voir plus ({{count}})",
     "today_count": "{{count}} aujourd'hui",
-    "commercials_preview": "{{count}} cmd · {{amount}} MAD"
+    "commercials_preview": "{{count}} cmd · {{amount}} MAD",
+    "reorder": "Glisser pour réorganiser"
   },
   "modes": {
     "ESPECE": "Espèces",
@@ -192,7 +193,7 @@
     "a_payer": "À encaisser",
     "livre": "Livré",
     "paye": "Payé",
-    "hint_preparer": "Nouvelles commandes et commandes confirmées à préparer",
+    "hint_preparer": "Commandes confirmées à préparer",
     "hint_collecter": "Commandes préparées prêtes pour le livreur",
     "hint_en_route": "Prises en charge",
     "hint_livrer": "En cours de livraison",
@@ -211,7 +212,8 @@
     "cities": "Villes",
     "unassigned": "Non assigné",
     "orders_count": "{{count}} commande(s)",
-    "more": "+{{count}} autres"
+    "more": "+{{count}} autres",
+    "hover_hint": "Survolez un jour pour le détail, cliquez pour ouvrir le planning"
   },
   "saphir_top_commercials": {
     "title": "Top commerciaux",
@@ -232,6 +234,7 @@
     "kpi_orders": "Commandes",
     "kpi_ca": "Chiffre d'affaires",
     "kpi_commission": "Commission totale",
+    "kpi_net_profit": "Bénéfice net",
     "commission": "Commission",
     "orders_label": "{{count}} commande(s)",
     "no_orders": "Aucune commande",
@@ -255,12 +258,31 @@
     "col_amount": "Montant",
     "col_date": "Date",
     "col_launched_by": "Lancée par",
+    "back_to_commercials": "Retour aux commerciaux",
     "see_orders": "Voir les commandes",
     "see_order": "Voir la commande",
     "col_actions": "Actions",
     "orders_of": "Commandes — {{name}}",
     "search_commercials": "Rechercher un commercial",
-    "search_orders": "Rechercher une commande"
+    "search_orders": "Rechercher une commande",
+    "col_net_profit": "Bénéfice net",
+    "hide_net_profit": "Masquer le bénéfice net",
+    "show_net_profit": "Afficher le bénéfice net",
+    "col_buy": "Prix d'achat",
+    "details": "Détails",
+    "details_title": "Détail de la commande",
+    "close": "Fermer",
+    "no_products": "Aucun produit sur cette commande",
+    "col_product": "Produit",
+    "col_kind": "Type",
+    "col_qty": "Qté",
+    "col_unit_sell": "Prix vente",
+    "col_unit_buy": "Prix achat",
+    "col_unit_commission": "Commission unit.",
+    "col_line_commission": "Commission",
+    "kind_article": "Article",
+    "kind_variant": "Variante",
+    "kind_pack": "Pack"
   },
 
   "status_label_EN_COURS": "En cours",

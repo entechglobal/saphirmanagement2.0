@@ -47,6 +47,32 @@ const resolveLivreurDeliveryId = async (userId) => {
   return delivery?.id ?? -1;
 };
 
+const LIVREUR_STATUSES = ["PREPARE", "COLLECTE", "EN_ROUTE", "LIVRE"];
+const PREPARATEUR_DEFAULT_STATUSES = ["CONFIRME"];
+const PREPARATEUR_FILTERABLE_STATUSES = ["CONFIRME", "PREPARE"];
+
+/**
+ * Status filter for list endpoints. Role defaults win when the caller
+ * does not pass a status; an explicit status is kept only if allowed.
+ */
+const resolveRoleStatusFilter = (user, requestedStatus) => {
+  const requested = requestedStatus || undefined;
+  if (isAdminLevelUser(user)) return requested;
+
+  const role = getRoleName(user);
+  if (role === "livreur") {
+    if (requested && LIVREUR_STATUSES.includes(requested)) return requested;
+    return { in: LIVREUR_STATUSES };
+  }
+  if (role === "preparateur") {
+    if (requested && PREPARATEUR_FILTERABLE_STATUSES.includes(requested)) {
+      return requested;
+    }
+    return { in: PREPARATEUR_DEFAULT_STATUSES };
+  }
+  return requested;
+};
+
 /**
  * Restrict Advanced BL queries to the caller's own orders.
  * Super_Admin / Societe_Admin keep société (or global) visibility.
@@ -1712,37 +1738,13 @@ export const getAll = async (query, user) => {
 
   // ── Role-based scope ───────────────────────────────────────────
   // Admins      → société (or global) visibility
-  // Livreur     → only BLs assigned to their Delivery.id, restricted to
-  //               execution-phase statuses
-  //               (PREPARE, COLLECTE, EN_ROUTE, LIVRE).
-  // Preparateur → only BLs assigned to themselves, restricted to
-  //               commandStatus = CONFIRME (ready to prepare).
+  // Livreur     → BLs assigned to their Delivery.id, execution statuses
+  //               (PREPARE, COLLECTE, EN_ROUTE, LIVRE). A requested status
+  //               is applied when it belongs to that set.
+  // Preparateur → BLs assigned to themselves. Default = CONFIRME (ready
+  //               to prepare). PREPARE is allowed as an explicit filter.
   // Commercial  → only BLs they own (commercialId = user.id).
   // Other roles → orders they created or own as commercial.
-  const roleScope = {};
-  if (!isAdminLevelUser(user)) {
-    if (user.roleName === "Livreur") {
-      roleScope.livreurId = await resolveLivreurDeliveryId(user.id);
-      roleScope.commandStatus = {
-        in: ["PREPARE", "COLLECTE", "EN_ROUTE", "LIVRE"],
-      };
-    } else if (user.roleName === "Preparateur") {
-      roleScope.preparateurId = user.id;
-      roleScope.commandStatus = { in: ["EN_COURS", "CONFIRME"] };
-    } else if (user.roleName === "Commercial") {
-      roleScope.commercialId = user.id;
-    } else {
-      roleScope.AND = [
-        {
-          OR: [
-            { document: { createdBy: user.id } },
-            { commercialId: user.id },
-          ],
-        },
-      ];
-    }
-  }
-
   const where = {
     type: "ADVANCED",
     document: isSuperAdminUser(user) ? undefined : { societeId: user.societeId },
@@ -1753,12 +1755,17 @@ export const getAll = async (query, user) => {
       ],
     }),
     ...(agenceId && { agenceId: parseInt(agenceId) }),
-    ...(commandStatus && { commandStatus }),
     ...(commercialId && { commercialId: parseInt(commercialId) }),
     ...(preparateurId && { preparateurId: parseInt(preparateurId) }),
     ...(livreurId && { livreurId: parseInt(livreurId) }),
-    ...roleScope,
   };
+
+  if (!isAdminLevelUser(user)) {
+    await applyPersonalOrderScope(where, user);
+  }
+
+  const statusFilter = resolveRoleStatusFilter(user, commandStatus);
+  if (statusFilter) where.commandStatus = statusFilter;
 
   const parsedPage = parseInt(page);
   const parsedLimit = parseInt(limit);
@@ -1770,6 +1777,8 @@ export const getAll = async (query, user) => {
       select: {
         id: true,
         ville: true,
+        localisation: true,
+        telephone: true,
         whatsapp: true,
         dateLivraison: true,
         heureLivraison: true,
@@ -1778,6 +1787,7 @@ export const getAll = async (query, user) => {
         isSuspended: true,
         nextDeliveryDate: true,
         colisTrackingNumber: true,
+        nombreDeColis: true,
         withFacture: true,
         ice: true,
         raisonSocial: true,
@@ -1786,9 +1796,35 @@ export const getAll = async (query, user) => {
         banqueId: true,
         totalCommission: true,
         document: {
-          select: { clientName: true, amountDue: true, amountPaid: true, documentNumber: true },
+          select: {
+            clientName: true,
+            amountDue: true,
+            amountPaid: true,
+            documentNumber: true,
+            user: { select: { name: true } },
+            lines: {
+              select: {
+                description: true,
+                quantity: true,
+                unitPrice: true,
+                totalTTC: true,
+                article: { select: { name: true } },
+                variant: { select: { name: true } },
+              },
+              orderBy: { lineNumber: "asc" },
+            },
+          },
+        },
+        packLines: {
+          select: {
+            quantity: true,
+            prixVente: true,
+            pack: { select: { name: true } },
+          },
         },
         agence: { select: { name: true } },
+        livreur: { select: { id: true, name: true } },
+        preparateur: { select: { id: true, name: true } },
       },
       orderBy: [{ documentDate: "desc" }, { createdAt: "desc" }],
       skip: (parsedPage - 1) * parsedLimit,
@@ -1808,8 +1844,10 @@ export const getAll = async (query, user) => {
   const data = rows.map((bl) => ({
     id: bl.id,
     clientName: bl.document?.clientName ?? null,
+    telephone: bl.telephone ?? null,
     whatsapp: bl.whatsapp,
     ville: bl.ville,
+    localisation: bl.localisation ?? null,
     agenceName: bl.agence?.name ?? null,
     dateLivraison: fmt(bl.dateLivraison),
     heureLivraison: bl.heureLivraison,
@@ -1821,12 +1859,36 @@ export const getAll = async (query, user) => {
     modeReglement: bl.modeReglement ?? null,
     banqueId: bl.banqueId ?? null,
     documentNumber: bl.document?.documentNumber ?? null,
+    createdByName: bl.document?.user?.name ?? null,
+    livreurId: bl.livreur?.id ?? null,
+    livreurName: bl.livreur?.name ?? null,
+    preparateurId: bl.preparateur?.id ?? null,
+    preparateurName: bl.preparateur?.name ?? null,
+    nombreDeColis: bl.nombreDeColis ?? 0,
     isReported: bl.isReported,
     isSuspended: bl.isSuspended,
     colisTrackingNumber: bl.colisTrackingNumber,
     nextDeliveryDate: fmt(bl.nextDeliveryDate),
     isFacture: bl.withFacture === true || !!(bl.ice || bl.raisonSocial || bl.siegeSocial),
     totalCommission: parseFloat(bl.totalCommission || 0),
+    products: [
+      ...(bl.document?.lines ?? []).map((l) => ({
+        kind: "article",
+        name: l.article?.name || l.variant?.name || l.description || "—",
+        quantity: parseFloat(l.quantity),
+        unitPrice: parseFloat(l.unitPrice),
+        total: parseFloat(l.totalTTC),
+      })),
+      ...(bl.packLines ?? []).map((pl) => ({
+        kind: "pack",
+        name: pl.pack?.name ?? "—",
+        quantity: parseFloat(pl.quantity),
+        unitPrice: parseFloat(pl.prixVente),
+        total: parseFloat(
+          (parseFloat(pl.prixVente || 0) * parseFloat(pl.quantity || 0)).toFixed(2),
+        ),
+      })),
+    ],
   }));
 
   return {
@@ -1981,8 +2043,14 @@ export const getAdvancedBLDetails = async (id, user) => {
               unitPrice: true,
               commission: true,
               totalTTC: true,
-              article: { select: { id: true, name: true } },
-              variant: { select: { id: true, name: true } },
+              article: { select: { id: true, name: true, prixAchat: true } },
+              variant: {
+                select: {
+                  id: true,
+                  name: true,
+                  article: { select: { name: true, prixAchat: true } },
+                },
+              },
             },
             orderBy: { lineNumber: "asc" },
           },
@@ -1996,7 +2064,14 @@ export const getAdvancedBLDetails = async (id, user) => {
           quantity: true,
           prixVente: true,
           commission: true,
-          pack: { select: { id: true, name: true } },
+          pack: {
+            select: {
+              id: true,
+              name: true,
+              purchasePrice: true,
+              coutRevient: true,
+            },
+          },
         },
       },
       statusHistory: {
@@ -2035,40 +2110,17 @@ export const getAdvancedBLDetails = async (id, user) => {
     siegeSocial: bl.siegeSocial ?? null,
   };
 
-  const products = [
-    ...bl.document.lines.map((l) => ({
-      kind: "article",
-      name: l.article?.name || l.variant?.name || l.description || "—",
-      quantity: parseFloat(l.quantity),
-      unitPrice: parseFloat(l.unitPrice),
-      commission: parseFloat(l.commission || 0),
-      commissionTotal: parseFloat(
-        (parseFloat(l.commission || 0) * parseFloat(l.quantity)).toFixed(2),
-      ),
-      total: parseFloat(l.totalTTC),
-    })),
-    ...bl.packLines.map((pl) => ({
-      kind: "pack",
-      name: pl.pack?.name ?? "—",
-      quantity: parseFloat(pl.quantity),
-      unitPrice: parseFloat(pl.prixVente),
-      commission: parseFloat(pl.commission || 0),
-      commissionTotal: parseFloat(
-        (parseFloat(pl.commission || 0) * parseFloat(pl.quantity)).toFixed(2),
-      ),
-      total: parseFloat(
-        (parseFloat(pl.prixVente) * parseFloat(pl.quantity)).toFixed(2),
-      ),
-    })),
-  ];
+  const finances = mapOrderFinancials(bl);
 
   const blInfo = {
     montantDue: parseFloat(bl.document.amountDue || 0),
     montantPaid: parseFloat(bl.document.amountPaid || 0),
-    totalCommission: parseFloat(bl.totalCommission || 0),
+    totalCommission: finances.totalCommission,
+    boughtPrice: finances.boughtPrice,
+    netProfit: finances.netProfit,
     commercialName: bl.commercial?.name ?? null,
     commercialId: bl.commercial?.id ?? null,
-    products,
+    products: finances.products,
   };
 
   const propos = {
@@ -3124,6 +3176,82 @@ const buildCommercialStatsWhere = async (user, query = {}) => {
   return where;
 };
 
+const roundMoney = (n) => parseFloat(Number(n || 0).toFixed(2));
+
+const unitBuyFromLine = (line) =>
+  parseFloat(line.article?.prixAchat ?? line.variant?.article?.prixAchat ?? 0);
+
+const unitBuyFromPack = (pack) => {
+  const purchase = parseFloat(pack?.purchasePrice ?? 0);
+  if (purchase > 0) return purchase;
+  return parseFloat(pack?.coutRevient ?? 0);
+};
+
+const mapOrderFinancials = (bl) => {
+  const products = [
+    ...(bl.document?.lines || []).map((l) => {
+      const quantity = parseFloat(l.quantity || 0);
+      const unitPrice = parseFloat(l.unitPrice || 0);
+      const unitCommission = parseFloat(l.commission || 0);
+      const unitBuy = unitBuyFromLine(l);
+      const sellTotal = roundMoney(unitPrice * quantity);
+      const buyTotal = roundMoney(unitBuy * quantity);
+      const commissionTotal = roundMoney(unitCommission * quantity);
+      return {
+        kind: l.variant && !l.article ? "variant" : "article",
+        name: l.article?.name || l.variant?.name || l.description || "—",
+        quantity,
+        unitPrice: roundMoney(unitPrice),
+        unitBuy: roundMoney(unitBuy),
+        unitCommission: roundMoney(unitCommission),
+        commission: roundMoney(unitCommission),
+        commissionTotal,
+        sellTotal,
+        buyTotal,
+        total: sellTotal,
+        netProfit: roundMoney(sellTotal - buyTotal - commissionTotal),
+      };
+    }),
+    ...(bl.packLines || []).map((pl) => {
+      const quantity = parseFloat(pl.quantity || 0);
+      const unitPrice = parseFloat(pl.prixVente || 0);
+      const unitCommission = parseFloat(pl.commission || 0);
+      const unitBuy = unitBuyFromPack(pl.pack);
+      const sellTotal = roundMoney(unitPrice * quantity);
+      const buyTotal = roundMoney(unitBuy * quantity);
+      const commissionTotal = roundMoney(unitCommission * quantity);
+      return {
+        kind: "pack",
+        name: pl.pack?.name ?? "—",
+        quantity,
+        unitPrice: roundMoney(unitPrice),
+        unitBuy: roundMoney(unitBuy),
+        unitCommission: roundMoney(unitCommission),
+        commission: roundMoney(unitCommission),
+        commissionTotal,
+        sellTotal,
+        buyTotal,
+        total: sellTotal,
+        netProfit: roundMoney(sellTotal - buyTotal - commissionTotal),
+      };
+    }),
+  ];
+
+  const boughtPrice = roundMoney(products.reduce((sum, p) => sum + p.buyTotal, 0));
+  const sellPrice = roundMoney(
+    parseFloat(bl.document?.amountDue ?? bl.document?.totalTTC ?? 0),
+  );
+  const totalCommission = roundMoney(parseFloat(bl.totalCommission || 0));
+
+  return {
+    products,
+    boughtPrice,
+    sellPrice,
+    totalCommission,
+    netProfit: roundMoney(sellPrice - boughtPrice - totalCommission),
+  };
+};
+
 const emptyOwnerStats = (id, name, roleName) => ({
   id,
   name: name || "—",
@@ -3132,6 +3260,8 @@ const emptyOwnerStats = (id, name, roleName) => ({
   totalCommission: 0,
   totalCA: 0,
   totalPaid: 0,
+  totalBought: 0,
+  totalNetProfit: 0,
   orders: [],
 });
 
@@ -3152,6 +3282,21 @@ export const getCommercialStats = async (user, query = {}) => {
         commercial: {
           select: { id: true, name: true, role: { select: { name: true } } },
         },
+        packLines: {
+          select: {
+            quantity: true,
+            prixVente: true,
+            commission: true,
+            pack: {
+              select: {
+                id: true,
+                name: true,
+                purchasePrice: true,
+                coutRevient: true,
+              },
+            },
+          },
+        },
         document: {
           select: {
             createdBy: true,
@@ -3159,9 +3304,28 @@ export const getCommercialStats = async (user, query = {}) => {
             clientName: true,
             amountDue: true,
             amountPaid: true,
+            totalTTC: true,
             createdAt: true,
             user: {
               select: { id: true, name: true, role: { select: { name: true } } },
+            },
+            lines: {
+              select: {
+                description: true,
+                quantity: true,
+                unitPrice: true,
+                commission: true,
+                totalTTC: true,
+                article: { select: { id: true, name: true, prixAchat: true } },
+                variant: {
+                  select: {
+                    id: true,
+                    name: true,
+                    article: { select: { name: true, prixAchat: true } },
+                  },
+                },
+              },
+              orderBy: { lineNumber: "asc" },
             },
           },
         },
@@ -3207,24 +3371,29 @@ export const getCommercialStats = async (user, query = {}) => {
     if (!entry.name || entry.name === "—") entry.name = ownerName || "—";
     if (!entry.roleName) entry.roleName = roleName;
 
-    const commission = parseFloat(bl.totalCommission || 0);
-    const ca = parseFloat(bl.document?.amountDue || 0);
+    const finances = mapOrderFinancials(bl);
     const paid = parseFloat(bl.document?.amountPaid || 0);
 
     entry.orderCount += 1;
-    entry.totalCommission += commission;
-    entry.totalCA += ca;
+    entry.totalCommission += finances.totalCommission;
+    entry.totalCA += finances.sellPrice;
     entry.totalPaid += paid;
+    entry.totalBought += finances.boughtPrice;
+    entry.totalNetProfit += finances.netProfit;
     entry.orders.push({
       id: bl.id,
       documentNumber: bl.document?.documentNumber ?? null,
       clientName: bl.document?.clientName ?? null,
       commandStatus: bl.commandStatus,
       dateLivraison: bl.dateLivraison,
-      amountDue: ca,
+      createdAt: bl.document?.createdAt ?? null,
+      amountDue: finances.sellPrice,
       amountPaid: paid,
-      totalCommission: commission,
+      boughtPrice: finances.boughtPrice,
+      totalCommission: finances.totalCommission,
+      netProfit: finances.netProfit,
       createdByName: bl.document?.user?.name ?? null,
+      products: finances.products,
     });
   }
 
@@ -3234,6 +3403,8 @@ export const getCommercialStats = async (user, query = {}) => {
       totalCommission: parseFloat(c.totalCommission.toFixed(2)),
       totalCA: parseFloat(c.totalCA.toFixed(2)),
       totalPaid: parseFloat(c.totalPaid.toFixed(2)),
+      totalBought: parseFloat(c.totalBought.toFixed(2)),
+      totalNetProfit: parseFloat(c.totalNetProfit.toFixed(2)),
     }))
     .sort(
       (a, b) =>
@@ -3273,9 +3444,18 @@ export const getCommercialStats = async (user, query = {}) => {
       acc.totalCommission += c.totalCommission;
       acc.totalCA += c.totalCA;
       acc.totalPaid += c.totalPaid;
+      acc.totalBought += c.totalBought;
+      acc.totalNetProfit += c.totalNetProfit;
       return acc;
     },
-    { orderCount: 0, totalCommission: 0, totalCA: 0, totalPaid: 0 },
+    {
+      orderCount: 0,
+      totalCommission: 0,
+      totalCA: 0,
+      totalPaid: 0,
+      totalBought: 0,
+      totalNetProfit: 0,
+    },
   );
 
   return {
@@ -3284,6 +3464,8 @@ export const getCommercialStats = async (user, query = {}) => {
       totalCommission: parseFloat(totals.totalCommission.toFixed(2)),
       totalCA: parseFloat(totals.totalCA.toFixed(2)),
       totalPaid: parseFloat(totals.totalPaid.toFixed(2)),
+      totalBought: parseFloat(totals.totalBought.toFixed(2)),
+      totalNetProfit: parseFloat(totals.totalNetProfit.toFixed(2)),
       commercialCount: commercials.length,
     },
     commercials,
@@ -3318,8 +3500,8 @@ export const getTopCommercials = async (user, query = {}) => {
    - livreurId: optional; ignored for Livreur (forced to own Delivery.id)
 ============================================================ */
 const STATUS_BY_ROLE = {
-  Livreur: new Set(["PREPARE", "COLLECTE", "EN_ROUTE", "LIVRE"]),
-  Preparateur: new Set(["CONFIRME"]),
+  Livreur: new Set(LIVREUR_STATUSES),
+  Preparateur: new Set(PREPARATEUR_FILTERABLE_STATUSES),
 };
 const VISIBLE_STATUSES = new Set([
   "CONFIRME",
@@ -3355,8 +3537,7 @@ export const getBLsByStatus = async (query, user) => {
   // Role-based row scoping
   const where = {
     type: "ADVANCED",
-    commandStatus:
-      status === "CONFIRME" ? { in: ["EN_COURS", "CONFIRME"] } : status,
+    commandStatus: status,
     ...(isSuperAdminUser(user) ? {} : { document: { societeId: user.societeId } }),
   };
 
@@ -3501,7 +3682,7 @@ export const getBLsByStatus = async (query, user) => {
      - Commercial / Gerant / Caissier / other non-admins
          → 5 counters on their own orders
      - Livreur     → only aCollecter, enRoute, aLivrer, aPayer (own BLs)
-     - Preparateur → only aPreparer (own BLs)
+     - Preparateur → only aPreparer = CONFIRME (own BLs, ready to prepare)
 ============================================================ */
 export const getWorkflowCounts = async (user, query = {}) => {
   const { dateFrom, dateTo } = query;
@@ -3551,7 +3732,7 @@ export const getWorkflowCounts = async (user, query = {}) => {
 
   // Counter map: current status → next-step label
   const allCounts = {
-    aPreparer: (byStatus.EN_COURS ?? 0) + (byStatus.CONFIRME ?? 0),
+    aPreparer: byStatus.CONFIRME ?? 0,
     aCollecter: byStatus.PREPARE ?? 0,
     enRoute: byStatus.COLLECTE ?? 0,
     aLivrer: byStatus.EN_ROUTE ?? 0,
@@ -3561,16 +3742,19 @@ export const getWorkflowCounts = async (user, query = {}) => {
   const total = Object.values(byStatus).reduce((s, n) => s + n, 0);
 
   if (getRoleName(user) === "livreur") {
-    return {
+    const livreurCounts = {
       aCollecter: allCounts.aCollecter,
       enRoute: allCounts.enRoute,
       aLivrer: allCounts.aLivrer,
       aPayer: allCounts.aPayer,
-      total,
+    };
+    return {
+      ...livreurCounts,
+      total: Object.values(livreurCounts).reduce((s, n) => s + n, 0),
     };
   }
   if (getRoleName(user) === "preparateur") {
-    return { aPreparer: allCounts.aPreparer, total };
+    return { aPreparer: allCounts.aPreparer, total: allCounts.aPreparer };
   }
   if (isSuperAdminUser(user)) {
     return {

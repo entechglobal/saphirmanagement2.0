@@ -8,11 +8,9 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron .",
+    "postinstall": "node scripts/patch-zkteco.js",
     "icon": "node scripts/make-icon.js",
     "dist": "electron-builder --win portable --x64"
-  },
-  "dependencies": {
-    "zkteco-js": "^1.7.2"
   },
   "devDependencies": {
     "electron": "^33.4.0",
@@ -26,25 +24,29 @@
     "asar": true,
     "compression": "maximum",
     "removePackageScripts": true,
-    "electronLanguages": ["fr"],
+    "electronLanguages": [
+      "fr"
+    ],
     "files": [
       "src/**/*",
       "renderer/**/*",
-      "assets/**/*",
+      "build/icon.png",
       "package.json",
       "!**/{.github,tests,docs,example,examples}/**",
       "!**/*.{md,map,ts}"
     ],
     "directories": {
       "output": "dist",
-      "buildResources": "assets"
+      "buildResources": "build"
     },
     "win": {
-      "icon": "assets/icon.png",
+      "icon": "build/icon.png",
       "target": [
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "artifactName": "AttendanceLink.exe",
@@ -53,5 +55,8 @@
     "portable": {
       "artifactName": "AttendanceLink.exe"
     }
+  },
+  "dependencies": {
+    "zkteco-js": "^1.7.2"
   }
 }

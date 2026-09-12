@@ -85,5 +85,7 @@
   "day_no_delivery": "No deliveries this day",
   "empty_period": "No deliveries for this period",
   "empty_filters": "No results with these filters",
-  "back_all_days": "All days"
+  "back_all_days": "All days",
+  "hover_open": "Click to open planning",
+  "hover_filter": "Click to view this day"
 }

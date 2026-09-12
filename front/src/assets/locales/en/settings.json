@@ -14,7 +14,9 @@
     "permissions": "Permissions & Access",
     "permissions_desc": "Roles and user rights",
     "system": "System",
-    "system_desc": "Global platform options"
+    "system_desc": "Global platform options",
+    "attendance": "Attendance",
+    "attendance_desc": "Standard hours and late / overtime amount"
   },
   "price_grid": {
     "title": "Price Grids",
@@ -48,5 +50,35 @@
     "no_societe_title": "No companies",
     "no_societe_list": "Create a company to customize its documents.",
     "load_error": "Could not load this company."
+  },
+  "attendance": {
+    "title": "Time management",
+    "subtitle": "Standard hours used to compare punches, and the amount rule.",
+    "societe_label": "Company",
+    "save": "Save",
+    "toast_saved": "Attendance hours saved",
+    "toast_error": "Failed to save",
+    "load_error": "Could not load attendance settings.",
+    "no_societe_title": "No companies",
+    "no_societe_list": "Create a company to set its attendance hours.",
+    "hours_title": "Standard hours",
+    "hours_subtitle": "Morning, break, then afternoon — baseline for lateness and overtime.",
+    "morning_start": "Morning start",
+    "morning_end": "Morning end",
+    "afternoon_start": "Back from break",
+    "afternoon_end": "End of day",
+    "pause": "Break",
+    "expected_day": "{{hours}} / day",
+    "amount_title": "Amount per block",
+    "amount_subtitle": "Every X hours late: −Y DH. Every X hours overtime: +Y DH.",
+    "block_hours": "Every (hours)",
+    "amount": "Amount (DH)",
+    "amount_preview": "Every {{hours}} h late = −{{amount}} DH · every {{hours}} h overtime = +{{amount}} DH",
+    "errors": {
+      "time": "Each time must be in HH:MM format.",
+      "order": "Order must be: morning start < morning end ≤ afternoon start < end of day.",
+      "block": "The hour block must be greater than 0.",
+      "amount": "Amount must be zero or more."
+    }
   }
 }

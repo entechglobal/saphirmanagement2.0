@@ -85,5 +85,7 @@
   "day_no_delivery": "Journée sans livraison",
   "empty_period": "Aucune livraison pour cette période",
   "empty_filters": "Aucun résultat avec ces filtres",
-  "back_all_days": "Tous les jours"
+  "back_all_days": "Tous les jours",
+  "hover_open": "Cliquer pour ouvrir le planning",
+  "hover_filter": "Cliquer pour voir ce jour"
 }

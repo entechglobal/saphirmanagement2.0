@@ -1,13 +1,6 @@
 {
   "title": "Pointage",
   "subtitle": "Pointages importés depuis le terminal ZKTeco via Attendance Link",
-  "banner": {
-    "title": "Import via l'application bureau",
-    "desc": "Connectez le terminal avec Attendance Link (dossier attendance-link), ajoutez les utilisateurs par ID, enrôlez les empreintes / cartes, puis importez. Les doublons déjà importés sont ignorés."
-  },
-  "stats": {
-    "today": "Aujourd'hui"
-  },
   "table": {
     "id": "ID",
     "user": "Utilisateur",
@@ -19,18 +12,42 @@
   },
   "filters": {
     "from": "Du",
-    "to": "Au"
+    "to": "Au",
+    "user": "Utilisateur",
+    "type": "Type",
+    "types": {
+      "check_in": "Entrée",
+      "check_out": "Sortie",
+      "break_out": "Début pause",
+      "break_in": "Fin pause"
+    }
   },
   "punchType": {
     "0": "Entrée",
     "1": "Sortie",
     "2": "Début pause",
     "3": "Fin pause",
-    "4": "Début HS",
-    "5": "Fin HS"
+    "4": "Sortie",
+    "5": "Entrée"
   },
   "search": "Rechercher",
   "search_placeholder": "Nom ou email…",
   "reset": "Réinitialiser",
-  "all": "Tous"
+  "all": "Tous",
+  "views": {
+    "punches": "Pointages",
+    "comparison": "Comparaison"
+  },
+  "summary": {
+    "days": "Jours",
+    "expected": "Attendu",
+    "worked": "Travaillé",
+    "late": "Retard",
+    "overtime": "Heures supp.",
+    "amount": "Montant",
+    "net": "Net",
+    "open_settings": "Horaires",
+    "users_days": "{{users}} utilisateurs · {{days}} jours",
+    "schedule_hint": "{{morningStart}} → {{morningEnd}} · pause · {{afternoonStart}} → {{afternoonEnd}} · tous les {{hours}} h = ±{{amount}} DH"
+  }
 }

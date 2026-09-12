@@ -81,6 +81,7 @@ import {
   AdvancedBonLivraisonForm,
   AdvancedBonLivraisonEditForm,
   CommandsPage,
+  OperationalOrdersPage,
   CommandDetailsPage,
   PackForm,
   PlanningLivraisonPage,
@@ -629,6 +630,10 @@ export const router = createBrowserRouter([
           {
             path: "commandes",
             element: <PG p={PERMISSIONS.VIEW_ADVANCED_BL}><CommandsPage /></PG>,
+          },
+          {
+            path: "commandes-ops",
+            element: <PG p={PERMISSIONS.VIEW_ADVANCED_BL}><OperationalOrdersPage /></PG>,
           },
           {
             path: "commandes/create",

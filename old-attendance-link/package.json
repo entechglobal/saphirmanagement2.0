@@ -1,0 +1,57 @@
+{
+  "name": "attendance-link",
+  "version": "1.0.0",
+  "private": true,
+  "author": "SaphirCaisse",
+  "description": "Desktop bridge between SaphirCaisse and ZKTeco attendance terminals",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "icon": "node scripts/make-icon.js",
+    "dist": "electron-builder --win portable --x64"
+  },
+  "dependencies": {
+    "zkteco-js": "^1.7.2"
+  },
+  "devDependencies": {
+    "electron": "^33.4.0",
+    "electron-builder": "^25.1.8",
+    "png-to-ico": "^2.1.8"
+  },
+  "build": {
+    "appId": "com.saphir.attendance-link",
+    "productName": "Attendance Link",
+    "copyright": "SaphirCaisse",
+    "asar": true,
+    "compression": "maximum",
+    "removePackageScripts": true,
+    "electronLanguages": ["fr"],
+    "files": [
+      "src/**/*",
+      "renderer/**/*",
+      "assets/**/*",
+      "package.json",
+      "!**/{.github,tests,docs,example,examples}/**",
+      "!**/*.{md,map,ts}"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "assets"
+    },
+    "win": {
+      "icon": "assets/icon.png",
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "artifactName": "AttendanceLink.exe",
+      "signAndEditExecutable": false
+    },
+    "portable": {
+      "artifactName": "AttendanceLink.exe"
+    }
+  }
+}

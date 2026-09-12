@@ -30,6 +30,37 @@ export const listValidator = [
     .isString()
     .isLength({ max: 120 })
     .withMessage("search cannot exceed 120 characters"),
+  query("punchType")
+    .optional()
+    .isString()
+    .isLength({ max: 20 })
+    .withMessage("punchType is invalid"),
+  validatorMiddleware,
+];
+
+const isHm = (value) => /^([01]?\d|2[0-3]):([0-5]\d)(:[0-5]\d)?$/.test(String(value || "").trim());
+
+export const settingsValidator = [
+  body("morningStart")
+    .custom(isHm)
+    .withMessage("morningStart must be HH:MM"),
+  body("morningEnd")
+    .custom(isHm)
+    .withMessage("morningEnd must be HH:MM"),
+  body("afternoonStart")
+    .custom(isHm)
+    .withMessage("afternoonStart must be HH:MM"),
+  body("afternoonEnd")
+    .custom(isHm)
+    .withMessage("afternoonEnd must be HH:MM"),
+  body("blockHours")
+    .isFloat({ gt: 0, max: 24 })
+    .withMessage("blockHours must be between 0 and 24")
+    .toFloat(),
+  body("amount")
+    .isFloat({ min: 0, max: 1_000_000 })
+    .withMessage("amount must be a positive number")
+    .toFloat(),
   validatorMiddleware,
 ];
 

@@ -1,6 +1,6 @@
 import { useState, useCallback, memo, useMemo, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "@/shared/utils/toast";
 import {
   CheckCircle2,
@@ -58,12 +58,17 @@ const NEXT_STATUS = {
   ANNULE: [],
 };
 
+const STATUS_OPTIONS_BY_ROLE = {
+  LIVREUR: ["PREPARE", "COLLECTE", "EN_ROUTE", "LIVRE"],
+  PREPARATEUR: ["CONFIRME", "PREPARE"],
+};
+
 const getAllowedTargetStatuses = (roleName, currentStatus) => {
   const role = roleName?.trim().toUpperCase();
   const next = NEXT_STATUS[currentStatus] ?? [];
   if (["SUPER_ADMIN", "SOCIETE_ADMIN", "COMMERCIAL", "GERANT"].includes(role)) return next;
   switch (role) {
-    case "PREPARATEUR": return ["EN_COURS", "CONFIRME", "PREPARE"].includes(currentStatus) ? next : [];
+    case "PREPARATEUR": return ["CONFIRME", "PREPARE"].includes(currentStatus) ? next : [];
     case "LIVREUR": return ["PREPARE", "COLLECTE", "EN_ROUTE", "LIVRE"].includes(currentStatus) ? next : [];
     default: return [];
   }
@@ -725,6 +730,13 @@ export const CommandsPage = () => {
     });
   }, [searchParams, t]);
 
+  useEffect(() => {
+    if (!isPreparateur) return;
+    const current = searchParams.get("status");
+    if (current) return;
+    setStatusQuery("CONFIRME");
+  }, [isPreparateur, searchParams, setStatusQuery]);
+
   const { data, isLoading, isFetching, isError } = useCommands({
     pageIndex: pagination.pageIndex,
     pageSize: pagination.pageSize,
@@ -751,7 +763,9 @@ export const CommandsPage = () => {
   const agencyOptions = agenciesData?.data ?? [];
 
   const hasActiveFilters = !!(
-    statusFilter ||
+    (isPreparateur
+      ? statusFilter?.value && statusFilter.value !== "CONFIRME"
+      : statusFilter) ||
     (!isLivreur && selectedLivreur) ||
     (!isCommercial && selectedCommercial) ||
     selectedAgency ||
@@ -764,14 +778,19 @@ export const CommandsPage = () => {
   );
 
   const handleReset = useCallback(() => {
-    setStatusFilter(null);
     setSelectedLivreur(null);
     setSelectedCommercial(null);
     setSelectedAgency(null);
     setGlobalFilter("");
-    setStatusQuery(null);
+    if (isPreparateur) {
+      setStatusFilter(statusOptionFromParam("CONFIRME", t));
+      setStatusQuery("CONFIRME");
+    } else {
+      setStatusFilter(null);
+      setStatusQuery(null);
+    }
     resetPage();
-  }, [resetPage, setStatusQuery]);
+  }, [resetPage, setStatusQuery, isPreparateur, t]);
 
   /* ── Stable handlers ── */
   const handleDeleteClick = useCallback((row) => {
@@ -1082,6 +1101,16 @@ export const CommandsPage = () => {
     ]
   );
 
+  if (restrictedRole) {
+    const status = searchParams.get("status");
+    return (
+      <Navigate
+        to={status ? `/commandes-ops?status=${encodeURIComponent(status)}` : "/commandes-ops"}
+        replace
+      />
+    );
+  }
+
   return (
     <div className="p-4 md:p-8 min-h-screen transition-colors duration-300">
       <HeaderTable
@@ -1098,7 +1127,12 @@ export const CommandsPage = () => {
             id: "status",
             label: t("status_filter"),
             icon: CheckCircle2,
-            options: Object.entries(STATUS_CONFIG).map(([value, cfg]) => ({ value, label: t(`status_label_${value}`, cfg.label) })),
+            options: Object.entries(STATUS_CONFIG)
+              .filter(([value]) => {
+                const allowed = STATUS_OPTIONS_BY_ROLE[upperRole];
+                return !allowed || allowed.includes(value);
+              })
+              .map(([value, cfg]) => ({ value, label: t(`status_label_${value}`, cfg.label) })),
             value: statusFilter,
             onChange: (v) => {
               setStatusFilter(v);

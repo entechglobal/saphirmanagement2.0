@@ -1,13 +1,6 @@
 {
   "title": "Attendance",
   "subtitle": "Punches imported from the ZKTeco terminal via Attendance Link",
-  "banner": {
-    "title": "Import with the desktop app",
-    "desc": "Connect the terminal with Attendance Link (attendance-link folder), add users by ID, enroll fingerprints / cards, then import. Already imported punches are skipped."
-  },
-  "stats": {
-    "today": "Today"
-  },
   "table": {
     "id": "ID",
     "user": "User",
@@ -19,18 +12,42 @@
   },
   "filters": {
     "from": "From",
-    "to": "To"
+    "to": "To",
+    "user": "User",
+    "type": "Type",
+    "types": {
+      "check_in": "Check-in",
+      "check_out": "Check-out",
+      "break_out": "Break out",
+      "break_in": "Break in"
+    }
   },
   "punchType": {
     "0": "Check-in",
     "1": "Check-out",
     "2": "Break out",
     "3": "Break in",
-    "4": "OT in",
-    "5": "OT out"
+    "4": "Check-out",
+    "5": "Check-in"
   },
   "search": "Search",
   "search_placeholder": "Name or email…",
   "reset": "Reset",
-  "all": "All"
+  "all": "All",
+  "views": {
+    "punches": "Punches",
+    "comparison": "Comparison"
+  },
+  "summary": {
+    "days": "Days",
+    "expected": "Expected",
+    "worked": "Worked",
+    "late": "Late",
+    "overtime": "Overtime",
+    "amount": "Amount",
+    "net": "Net",
+    "open_settings": "Hours",
+    "users_days": "{{users}} users · {{days}} days",
+    "schedule_hint": "{{morningStart}} → {{morningEnd}} · break · {{afternoonStart}} → {{afternoonEnd}} · every {{hours}} h = ±{{amount}} DH"
+  }
 }

@@ -252,6 +252,9 @@ model Societe {
   /// PDF / printable document header branding (colors, logo, layout)
   documentHeaderConfig Json? @map("document_header_config")
 
+  /// Standard work hours + late/overtime amount rule for pointage
+  attendanceSettings Json? @map("attendance_settings")
+
   depots               Depot[]
   users                User[]
   clients              Client[]
